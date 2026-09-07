@@ -16,6 +16,7 @@ import type {TimetableEvent} from "@/types";
 import {ConsentOverlay} from "../consent";
 import {useWorkbenchUi} from "../uiContext";
 import {useConsent, DEFAULT_TERM_LABEL, detectConflicts} from "../logic";
+import {rememberContributed} from "../contributed";
 import {PlanTree} from "./PlanTree";
 import {TermPillar} from "../TermPillar";
 import wb from "../wb.module.scss";
@@ -228,7 +229,16 @@ export function TimetableBody({onPickMod}: Props) {
                         termEnd: dates[dates.length - 1],
                     },
                     slots,
-                }).then(setShared);
+                }).then((ok) => {
+                    setShared(ok);
+                    // So the mod pages can tell "contributed, waiting on the
+                    // next deploy" from "nobody is taking this".
+                    if (ok) {
+                        rememberContributed([
+                            ...new Set(slots.map((s) => s.mod)),
+                        ]);
+                    }
+                });
             } else if (slots.length > 0) {
                 setShared(false);
             }

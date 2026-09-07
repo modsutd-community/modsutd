@@ -9,6 +9,7 @@ import { pillarColor, modPillars } from '../pillars';
 import { notify } from '../notice';
 import { getToken } from '../sync';
 import { useTelegramData, isActive, fetchJoinLink, nextDeploy } from '../telegram';
+import { awaitingDeploy } from '../contributed';
 import { ReviewForm } from '../ReviewForm';
 import { defaultLevel, useFreshmore, freshmoreFixedSet } from '../logic';
 import { useWorkbenchUi } from '../uiContext';
@@ -60,11 +61,17 @@ function TeleChat({ mod }: { mod: Mod }) {
   // first paste arrives.
   const today = new Date().toISOString().slice(0, 10);
   const termLive = !!tg?.term.end && today <= tg.term.end;
-  const eligible =
+  // Everything except the schedules. Those arrive only in the deployed bundle,
+  // so they are what separates "offered" from "waiting on the next build".
+  const couldBeOffered =
     (Number(mod.term) >= 3 || modPillars(mod).includes('HASS'))
-    && mod.schedules.length > 0
     && termLive
     && !SOLO_PROJECT.test(mod.name);
+  const eligible = couldBeOffered && mod.schedules.length > 0;
+  // This browser pasted a timetable covering this mod and the deployed data
+  // has not caught up. Nobody else can see this state, and nobody else needs
+  // to: the person owed an explanation is the one who pasted.
+  const awaiting = couldBeOffered && awaitingDeploy(mod.code, mod.schedules.length > 0);
   const entryRaw = tg?.registry[mod.code];
   const entry = entryRaw && isActive(entryRaw) ? entryRaw : undefined;
 
@@ -74,7 +81,25 @@ function TeleChat({ mod }: { mod: Mod }) {
     return () => clearInterval(t);
   }, [pending, entry, refresh]);
 
-  if (!eligible) return null;
+  if (!eligible) {
+    if (!awaiting) return null;
+    // Dotted and unpressable, because pressing it could not do anything yet.
+    // The tip names the build, not the two minutes: the chat cannot even be
+    // asked for until the slots ship.
+    return (
+      <div className={styles.teleRow}>
+        <button
+          type="button"
+          className={`${styles.teleBtn} ${styles.teleWaiting}`}
+          disabled
+          data-act="tele-awaiting"
+          data-tip={`your timetable reached the repo. the chat can be started once it ships - check back at ${nextDeploy()}`}
+        >
+          <TelegramIcon /> chat opens after the next update
+        </button>
+      </div>
+    );
+  }
 
   if (entry) {
     // The link is fetched on demand rather than rendered from the registry:

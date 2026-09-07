@@ -88,6 +88,29 @@ test.describe('telegram batch chat', () => {
     await expect.poll(() => reads, { timeout: 15_000 }).toBeGreaterThan(afterLoad);
   });
 
+  // Between pasting and the next deploy, a mod that was just contributed looked
+  // exactly like one nobody is taking: no button and no reason. It says so now,
+  // and only to the browser that pasted - nobody else is owed the explanation.
+  test('a mod this browser contributed says it is waiting on the build', async ({ page, isMobile }) => {
+    test.skip(!!isMobile, 'same component in the mobile sheet');
+    // Deployed data with NO schedules for 50.001 - the state under test.
+    await page.route('**/data/term-window.json', (r) => r.fulfill({ json: LIVE_TERM }));
+    await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: {} }));
+
+    await page.goto('/mods/50.001');
+    const waiting = page.locator('[data-act="tele-awaiting"]');
+    // Nobody who has not pasted sees anything at all.
+    await expect(waiting).toHaveCount(0);
+
+    await page.evaluate(() => localStorage.setItem(
+      'modsutd.contributed.v1', JSON.stringify({ '50.001': Date.now() })));
+    await page.reload();
+
+    await expect(waiting).toBeVisible();
+    await expect(waiting).toBeDisabled();
+    await expect(waiting).toHaveAttribute('data-tip', /check back at/);
+  });
+
   test('a refused link is explained in the top banner, not inline', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'same component in the mobile sheet');
     await stub(page, ['50.001'], ENTRY);

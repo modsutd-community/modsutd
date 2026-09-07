@@ -288,6 +288,17 @@ Two are deliberately not monthly, and say why in their own headers:
 - The giscus themes are `data:` URIs built in `config/giscus.ts`, and they carry
   the workbench palette as Primer variables. Without it the frame keeps GitHub's
   near-white on GitHub's navy and reads as a window from another site.
+- **A contributed mod and an unoffered one look identical until the deploy.**
+  A batch chat needs crowdsourced schedules, and those reach the browser only
+  in the deployed bundle - `deploy.yml` batches them four times a day rather
+  than building per paste. `workbench/contributed.ts` is the difference: the
+  browser that pasted remembers which mods it covered, and those show a dotted
+  "chat opens after the next update" until the deployed data has the schedules,
+  at which point the entry is dropped. Client-side on purpose - the person owed
+  the explanation is the one who pasted, this browser is the only thing that
+  knows they did, and a server-side queue would be the backend this project
+  does not have. Entries also age out after a week, so slots that were rejected
+  stop promising a button.
 - **The stored invite link dies when the creator leaves.** `create_group.py`
   exports the link as the creating account; `grant_admin.py` promotes the first
   human and then removes that account from the chat, and Telegram revokes the
