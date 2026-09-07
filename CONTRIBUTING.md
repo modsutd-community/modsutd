@@ -63,6 +63,10 @@ git push -u origin fix/prereq-50001
 The **branch** says what kind of change it is: `feat/`, `fix/`, `perf/`,
 `docs/` or `chore/`.
 
+The PR body has a template - cause, fix, test - which GitHub prefills for you
+in the browser. `gh pr create` does not prefill it, so pass
+`--body-file .github/pull_request_template.md` and fill it in.
+
 The **PR title** says where it lands, because that is what a reviewer picks
 from a list: `data:` for `/data/`, `frontend:`, `scraper:`, `docs:` for
 `/docs/` and top-level `*.md`, `chore:` for repo plumbing. One concern per PR.

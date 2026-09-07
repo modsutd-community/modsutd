@@ -627,6 +627,26 @@ export function TimetableBody({onPickMod}: Props) {
                                                                 styles.event
                                                             }
                                                             style={{
+                                                                // Inline, with
+                                                                // the rest of
+                                                                // the geometry.
+                                                                // global.scss
+                                                                // has
+                                                                // [data-tip] {
+                                                                // position:
+                                                                // relative },
+                                                                // which ties
+                                                                // with a class
+                                                                // and wins by
+                                                                // load order.
+                                                                // An inline
+                                                                // style beats
+                                                                // both and does
+                                                                // not care what
+                                                                // element this
+                                                                // is.
+                                                                position:
+                                                                    "absolute",
                                                                 top,
                                                                 height,
                                                                 borderLeftColor:
