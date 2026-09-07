@@ -109,6 +109,11 @@ jobs:
                   llm_auth_token: ${{ secrets.GEMINI_TOKEN }}
                   llm_model: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
                   llm_use_anthropic: "false"
+                  # The action defaults extra_body to {"thinking": ...}, which
+                  # none of these three accept: Gemini answers 400 "Unknown name
+                  # thinking" in under a second, and the run reads as "provider
+                  # or subtask request failed" with no clue which field did it.
+                  llm_extra_body: "{}"
                   base_ref: ${{ needs.context.outputs.base_ref }}
                   head_sha: ${{ needs.context.outputs.head_sha }}
 
@@ -128,6 +133,11 @@ jobs:
                   llm_auth_token: ${{ secrets.GROQ_TOKEN }}
                   llm_model: ${{ vars.GROQ_MODEL || 'openai/gpt-oss-20b' }}
                   llm_use_anthropic: "false"
+                  # The action defaults extra_body to {"thinking": ...}, which
+                  # none of these three accept: Gemini answers 400 "Unknown name
+                  # thinking" in under a second, and the run reads as "provider
+                  # or subtask request failed" with no clue which field did it.
+                  llm_extra_body: "{}"
                   base_ref: ${{ needs.context.outputs.base_ref }}
                   head_sha: ${{ needs.context.outputs.head_sha }}
 
@@ -148,5 +158,10 @@ jobs:
                   llm_auth_token: ${{ secrets.OPENAI_TOKEN }}
                   llm_model: ${{ vars.OPENAI_MODEL || 'gpt-5.4-mini' }}
                   llm_use_anthropic: "false"
+                  # The action defaults extra_body to {"thinking": ...}, which
+                  # none of these three accept: Gemini answers 400 "Unknown name
+                  # thinking" in under a second, and the run reads as "provider
+                  # or subtask request failed" with no clue which field did it.
+                  llm_extra_body: "{}"
                   base_ref: ${{ needs.context.outputs.base_ref }}
                   head_sha: ${{ needs.context.outputs.head_sha }}
