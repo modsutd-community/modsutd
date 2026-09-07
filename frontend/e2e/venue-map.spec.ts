@@ -189,9 +189,13 @@ test.describe('venue map', () => {
 
     // Every lift drawn has to be one of this building's. J serves building 3;
     // A, C, E and F are buildings 1 and 2.
-    const lifts = await map.locator('.wb-lift').allInnerTexts();
-    expect(lifts.length).toBeGreaterThan(0);
-    for (const l of lifts) expect(l).toContain('J');
+    // Polled, not read once: a lift is a divIcon marker, not a path, so the
+    // count of paths above says nothing about whether the markers have landed.
+    await expect.poll(() => map.locator('.wb-lift').count(), { timeout: 15_000 })
+      .toBeGreaterThan(0);
+    for (const l of await map.locator('.wb-lift').allInnerTexts()) {
+      expect(l).toContain('J');
+    }
   });
 
   // The sweep. Fixing the building filter broke the floor, because the panel
@@ -311,11 +315,13 @@ test.describe('venue map', () => {
     await map.locator('.leaflet-control-zoom-in').click();
     await expect(map.locator('[data-act="map-level"]')).toHaveText('L4');
 
-    const lifts = (await map.locator('.wb-lift').allInnerTexts()).map((t) => t.replace(/[^A-Z]/g, ''));
     // Both of building 1's lobbies, and nothing else. An unnamed elevator node
     // stays in the data and off the plan: a bare arrow is a mark you cannot
-    // act on.
-    expect(lifts.sort()).toEqual(['A', 'C']);
+    // act on. Polled because a marker is not a path, so nothing above waits
+    // for it.
+    const letters = () => map.locator('.wb-lift').allInnerTexts()
+      .then((t) => t.map((x) => x.replace(/[^A-Z]/g, '')).sort());
+    await expect.poll(letters, { timeout: 15_000 }).toEqual(['A', 'C']);
   });
 
   // The donor is part of what a room is called, so it stays - but only the
