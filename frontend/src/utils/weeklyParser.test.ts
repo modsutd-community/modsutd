@@ -93,4 +93,14 @@ describe('parseWeeklyHtml', () => {
     expect(looksWeekly(GRID)).toBe(true);
     expect(looksWeekly('<p>hello</p>')).toBe(false);
   });
+
+  // The id is the easy half. A selection of the grid alone, or a browser that
+  // drops ids on copy, arrives without it and has to be recognised by the day
+  // headers - which SAMS writes as "Monday<br> 14 Sep", so the day name and its
+  // date are only adjacent once the tags are gone.
+  it('still recognises the grid when the copy lost the table id', () => {
+    const noId = GRID.replace(/ id="WEEKLY_SCHED_HTMLAREA"/, '');
+    expect(noId).not.toContain('WEEKLY_SCHED_HTMLAREA');
+    expect(looksWeekly(noId)).toBe(true);
+  });
 });

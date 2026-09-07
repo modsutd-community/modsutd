@@ -153,6 +153,13 @@ export function parseWeeklyHtml(html: string, alsoSearch = ''): WeeklyParseResul
 
 /** True when a pasted HTML fragment looks like the weekly grid rather than anything else. */
 export function looksWeekly(html: string): boolean {
-  return /WEEKLY_SCHED_HTMLAREA/.test(html)
-    || (/<t(able|d)\b/i.test(html) && /\b(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day\s+\d{1,2}\s+[A-Z][a-z]{2}/.test(html));
+  if (/WEEKLY_SCHED_HTMLAREA/.test(html)) return true;
+  if (!/<t(able|d)\b/i.test(html)) return false;
+  // Match the day headers on the TEXT, not the markup. SAMS writes them as
+  // "Monday<br> 14 Sep", so a regex run over the raw HTML never finds the day
+  // name next to its date, and this fallback only ever fired on the table id.
+  // A copy that loses the id, a selection of the grid alone or a browser that
+  // drops it, then read as "not weekly" and the paste was refused.
+  const text = html.replace(/<[^>]+>/g, " ");
+  return /\b(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day\s+\d{1,2}\s+[A-Z][a-z]{2}/.test(text);
 }
