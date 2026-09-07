@@ -278,6 +278,20 @@
   &:disabled { opacity: 0.6; cursor: default; }
 }
 
+// Waiting for the workflow. A dimmed solid button reads as broken; an outline
+// with a dotted edge reads as "not yet", which is what it is. The Telegram
+// blue stays so it is still recognisably the same control.
+.teleWaiting,
+.teleWaiting:disabled {
+  opacity: 1;
+  color: #7fc9ee;
+  background: none;
+  border: 1px dashed #2aabee;
+  cursor: help;
+
+  &:hover { background: rgba(42, 171, 238, 0.08); }
+}
+
 .teleIcon {
   width: 14px;
   height: 14px;

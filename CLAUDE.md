@@ -288,6 +288,14 @@ Two are deliberately not monthly, and say why in their own headers:
 - The giscus themes are `data:` URIs built in `config/giscus.ts`, and they carry
   the workbench palette as Primer variables. Without it the frame keeps GitHub's
   near-white on GitHub's navy and reads as a window from another site.
+- **The stored invite link dies when the creator leaves.** `create_group.py`
+  exports the link as the creating account; `grant_admin.py` promotes the first
+  human and then removes that account from the chat, and Telegram revokes the
+  invite links of a user who leaves. The registry then serves a link that
+  answers "This invite link has expired" forever, because nothing re-exports
+  it. Seen live: `t.me/+GcXBjiQg7D83Mzk1` stopped working and the group's own
+  link had become `t.me/+4bKYe16tWWBhZDE1`. Not one-use and not owner-bound -
+  creator-bound. Anything that changes the handover has to answer this first.
 - A review must be a **comment** on the mod's discussion, never the discussion
   body. giscus renders a discussion's comments and never its body, so a review
   written into the first post is invisible on the mod page forever. One real

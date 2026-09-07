@@ -33,6 +33,12 @@ test.describe('telegram batch chat', () => {
     await expect(join).toHaveCSS('color', 'rgb(255, 255, 255)');
     // The registry is public, so it must never carry a usable link.
     expect(await page.content()).not.toContain('t.me/+');
+
+    // The supergroup caveat is a hover, not a permanent line of small print
+    // under the button - it is only worth reading once a link has refused, and
+    // sitting there it reads as a warning about the button itself.
+    await expect(join).toHaveAttribute('data-tip', /supergroup/);
+    await expect(page.locator('[data-panel="mod"]')).not.toContainText('link invalid?');
   });
 
   // The registry is a file on main, and a group is created by a workflow

@@ -112,3 +112,21 @@ export async function fetchJoinLink(entry: TgEntry, token: string | null): Promi
   if (!body.link) throw new Error('the server returned no link');
   return body.link;
 }
+
+// deploy.yml's cron, in UTC hours: "0 22,2,6,10 * * *". Contributed slots ride
+// a schedule rather than deploying per paste, so a chat that has just been
+// asked for can be waiting on the next build rather than on Telegram.
+const DEPLOY_HOURS_UTC = [22, 2, 6, 10];
+
+/** The next scheduled deploy, in the reader's own clock. */
+export function nextDeploy(now = new Date()): string {
+  const soonest = DEPLOY_HOURS_UTC
+    .map((h) => {
+      const d = new Date(now);
+      d.setUTCHours(h, 0, 0, 0);
+      if (d <= now) d.setUTCDate(d.getUTCDate() + 1);
+      return d;
+    })
+    .sort((a, b) => a.getTime() - b.getTime())[0];
+  return soonest.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+}

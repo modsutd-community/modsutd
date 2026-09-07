@@ -8,7 +8,7 @@ import type { Mod } from '@/types';
 import { pillarColor, modPillars } from '../pillars';
 import { notify } from '../notice';
 import { getToken } from '../sync';
-import { useTelegramData, isActive, fetchJoinLink } from '../telegram';
+import { useTelegramData, isActive, fetchJoinLink, nextDeploy } from '../telegram';
 import { ReviewForm } from '../ReviewForm';
 import { defaultLevel, useFreshmore, freshmoreFixedSet } from '../logic';
 import { useWorkbenchUi } from '../uiContext';
@@ -26,6 +26,23 @@ function TelegramIcon() {
   return (
     <svg className={styles.teleIcon} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" />
+    </svg>
+  );
+}
+
+// A share glyph rather than a copy one: what a reader wants to do with a chat
+// link is send it to their cohort, and "copy" is only the mechanism. Clicking
+// still copies - the Web Share API is a phone affordance and would be a dead
+// button on the desktop this panel mostly runs on.
+function ShareIcon() {
+  return (
+    <svg className={styles.teleIcon} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round"
+      strokeLinejoin="round" aria-hidden>
+      <circle cx="18" cy="5" r="3" />
+      <circle cx="6" cy="12" r="3" />
+      <circle cx="18" cy="19" r="3" />
+      <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
     </svg>
   );
 }
@@ -78,6 +95,11 @@ function TeleChat({ mod }: { mod: Mod }) {
           <button
             type="button"
             className={styles.teleBtn}
+            // On the button rather than under it: the caveat is only worth
+            // reading once the link has actually refused, and a line of small
+            // print sitting there permanently reads as a warning about the
+            // button you are being asked to press.
+            data-tip="link invalid? the chat may have been upgraded to a supergroup - ask around in the SUTD group chat"
             onClick={() => reveal((link) => window.open(link, '_blank', 'noopener,noreferrer'))}
           >
             <TelegramIcon /> Join the Tele chat!
@@ -94,12 +116,9 @@ function TeleChat({ mod }: { mod: Mod }) {
               setTimeout(() => setCopied(false), 1500);
             })}
           >
-            {copied ? '✓' : '⧉'}
+            {copied ? '✓' : <ShareIcon />}
           </button>
         </div>
-        <p className={wb.faint} style={{ fontSize: 10, margin: '3px 0 0' }}>
-          link invalid? might have been upgraded to a supergroup - try asking around in the SUTD group chat
-        </p>
       </div>
     );
   }
@@ -108,8 +127,15 @@ function TeleChat({ mod }: { mod: Mod }) {
     <div className={styles.teleRow}>
       <button
         type="button"
-        className={styles.teleBtn}
+        className={`${styles.teleBtn} ${pending ? styles.teleWaiting : ''}`}
         disabled={pending}
+        // Waiting is a state, not a failure. Dotted so it reads as pending
+        // rather than pressable, and the tip names the outside edge: the chat
+        // itself is usually a couple of minutes, but the slots that make the
+        // button appear ride the deploy schedule.
+        data-tip={pending
+          ? `usually under 2 minutes. if it is still not here, check back at ${nextDeploy()}`
+          : undefined}
         onClick={async () => {
           setPending(true);
           try {
