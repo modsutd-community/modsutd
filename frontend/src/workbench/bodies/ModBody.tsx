@@ -131,6 +131,7 @@ function TeleChat({mod}: {mod: Mod}) {
                     className={`${styles.teleBtn} ${styles.teleWaiting}`}
                     disabled
                     data-act="tele-awaiting"
+                    data-tip-side="block"
                     data-tip={`Please check back at ${nextDeploy()}`}
                 >
                     <TelegramIcon /> chat opens after the next update
@@ -162,6 +163,7 @@ function TeleChat({mod}: {mod: Mod}) {
                         // reading once the link has actually refused, and a line of small
                         // print sitting there permanently reads as a warning about the
                         // button you are being asked to press.
+                        data-tip-side="block"
                         data-tip="link invalid? the chat may have been upgraded to a supergroup - ask around in the SUTD group chat"
                         onClick={() =>
                             reveal((link) =>
@@ -231,10 +233,8 @@ function TeleChat({mod}: {mod: Mod}) {
                                 .catch(() => ({error: `HTTP ${r.status}`}));
                             throw new Error(j.error ?? `HTTP ${r.status}`);
                         }
-                        notify(
-                            "setting up the chat - the join button appears here in about 2 minutes",
-                            "ok",
-                        );
+                        // No banner on success: the button already says it is
+                        // setting up, and it is the thing being watched.
                     } catch (e) {
                         setPending(false);
                         notify((e as Error).message);

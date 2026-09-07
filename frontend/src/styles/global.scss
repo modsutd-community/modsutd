@@ -173,6 +173,19 @@ pre {
   transform: none;
 }
 
+// A tip on a wide element inside a narrow panel: centring it puts half the box
+// outside the panel, where it is clipped, and anchoring one edge only helps if
+// the tip is narrower than the element. This pins the box to the element's own
+// width instead, so a long tip wraps rather than overflowing in either
+// direction. Use it on full-width buttons and rows.
+[data-tip][data-tip-side='block']::after {
+  left: 0;
+  right: 0;
+  transform: none;
+  width: auto;
+  max-width: none;
+}
+
 // Touch: long-press already means drag in this app; suppress hover tips.
 @media (pointer: coarse) {
   [data-tip]::after { display: none; }
