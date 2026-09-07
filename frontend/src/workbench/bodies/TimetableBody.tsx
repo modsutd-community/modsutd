@@ -257,9 +257,13 @@ export function TimetableBody({onPickMod}: Props) {
                     // So the mod pages can tell "contributed, waiting on the
                     // next deploy" from "nobody is taking this".
                     if (ok) {
-                        rememberContributed([
-                            ...new Set(slots.map((s) => s.mod)),
-                        ]);
+                        // The term end travels with it, so the waiting state
+                        // does not have to wait on term-window.json coming back
+                        // through GitHub's raw CDN to know its own term.
+                        rememberContributed(
+                            [...new Set(slots.map((s) => s.mod))],
+                            dates[dates.length - 1],
+                        );
                     }
                 });
             } else if (slots.length > 0) {

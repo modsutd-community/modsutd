@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { WEEKLY_HTML, WEEKLY_TEXT } from './support/weekly';
 
 // SAMS refuses List View until enrolment is final but keeps rendering the
 // Weekly Calendar View, so this paste path is the only one a student has in
@@ -12,28 +13,6 @@ const KEY = 'modsutd.timetable.consent.v3';
 const scope = (page: import('@playwright/test').Page, isMobile: boolean | undefined) =>
   isMobile ? page.locator('body') : page.locator('[data-panel="tt"]');
 
-const cell = (lines: string[]) => `<span>${lines.join('<br>')}</span>`;
-const empty = '<td>&nbsp;</td>';
-
-// Row 5 carries six <td> for eight columns: the Time column and Friday are
-// still spoken for by rowspans above it. Counting cells puts this class on
-// Tuesday; it is on Wednesday.
-const WEEKLY_HTML = `<p>Week of 14/9/2026 - 20/9/2026</p>
-<table id="WEEKLY_SCHED_HTMLAREA">
-<tr><th>Time</th><th>Monday<br> 14 Sep</th><th>Tuesday<br> 15 Sep</th>
-<th>Wednesday<br> 16 Sep</th><th>Thursday<br> 17 Sep</th><th>Friday<br> 18 Sep</th>
-<th>Saturday<br> 19 Sep</th><th>Sunday<br> 20 Sep</th></tr>
-<tr><td>8:00AM</td>${empty}${empty}${empty}${empty}
-<td rowspan="5">${cell(['01 .400 - CC01', 'Capstone 1', 'Cohort Based Learning', '8:30AM - 11:30AM', 'ECC Building 1 1.411'])}</td>${empty}${empty}</tr>
-<tr><td>9:00AM</td>${empty}${empty}${empty}${empty}${empty}${empty}</tr>
-<tr><td rowspan="2">10:00AM</td>${empty}${empty}${empty}${empty}${empty}${empty}</tr>
-<tr>${empty}${empty}<td rowspan="4">${cell(['02 .155 - L01', 'Design Thinking', 'Lecture', '10:30AM - 12:00PM', 'Lecture Theatre 2 2.401'])}</td>${empty}${empty}${empty}</tr>
-<tr><td>11:00AM</td>${empty}${empty}${empty}${empty}${empty}</tr>
-</table>`;
-
-// What the same copy looks like as plain text - the flavour the old parser got,
-// and which yields nothing.
-const WEEKLY_TEXT = 'Week of 14/9/2026 - 20/9/2026\nTime\tMonday\tTuesday\n8:00AM\t\t';
 
 test.describe('timetable · weekly calendar view', () => {
   test.beforeEach(async ({ page, isMobile }) => {

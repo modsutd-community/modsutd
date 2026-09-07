@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test';
+import { pasteWeekly, openPasteBox } from './support/weekly';
 import { coursesWithSchedules } from './support/courses';
 
 // The batch-chat button and its eligibility rules. Shipped data has no
@@ -103,12 +104,54 @@ test.describe('telegram batch chat', () => {
     await expect(waiting).toHaveCount(0);
 
     await page.evaluate(() => localStorage.setItem(
-      'modsutd.contributed.v1', JSON.stringify({ '50.001': Date.now() })));
+      'modsutd.contributed.v2',
+      JSON.stringify({ '50.001': { at: Date.now(), termEnd: '2099-12-12' } })));
     await page.reload();
 
     await expect(waiting).toBeVisible();
     await expect(waiting).toBeDisabled();
     await expect(waiting).toHaveAttribute('data-tip', /check back at/);
+  });
+
+  // The state exists to cover the gap before a deploy, and on the first paste
+  // of a term the deployed window is still empty - so gating it on that window
+  // hid it during exactly the period it is for. The entry carries its own term
+  // end instead.
+  test('waits even when no term window has been deployed yet', async ({ page, isMobile }) => {
+    test.skip(!!isMobile, 'same component in the mobile sheet');
+    await page.route('**/data/term-window.json', (r) => r.fulfill({ json: {} }));
+    await page.route(/term-window\.json/, (r) => r.fulfill({ json: {} }));
+    await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: {} }));
+
+    await page.goto('/mods/50.001');
+    await page.evaluate(() => localStorage.setItem(
+      'modsutd.contributed.v2',
+      JSON.stringify({ '50.001': { at: Date.now(), termEnd: '2099-12-12' } })));
+    await page.reload();
+
+    await expect(page.locator('[data-act="tele-awaiting"]')).toBeVisible();
+  });
+
+  // A weekly paste contributes nothing, so it must promise nothing. It returns
+  // before the relay post, which is the only thing that records a mod here.
+  test('a weekly paste promises no chat', async ({ page, isMobile }) => {
+    test.skip(!!isMobile, 'same component in the mobile sheet');
+    await page.route('**/data/term-window.json', (r) => r.fulfill({ json: LIVE_TERM }));
+    await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: {} }));
+    let posted = 0;
+    await page.route('**/api/contribute', (r) => { posted += 1; return r.fulfill({ json: { ok: true } }); });
+
+    await openPasteBox(page);
+    await pasteWeekly(page);
+    // it did render, so this is "contributed nothing", not "parsed nothing"
+    await expect(page.locator('[data-act="tt-grid"]')).toBeVisible();
+
+    expect(posted).toBe(0);
+    const stored = await page.evaluate(() => localStorage.getItem('modsutd.contributed.v2'));
+    expect(stored).toBe(null);
+
+    await page.goto('/mods/50.001');
+    await expect(page.locator('[data-act="tele-awaiting"]')).toHaveCount(0);
   });
 
   test('a refused link is explained in the top banner, not inline', async ({ page, isMobile }) => {
