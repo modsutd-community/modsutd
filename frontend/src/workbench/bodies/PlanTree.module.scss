@@ -478,3 +478,18 @@
   &:active { cursor: grabbing; }
   &:hover { background: rgba(255, 176, 0, 0.08); }
 }
+
+// Sits in the export menu, under the two actions it qualifies.
+.autoToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-top: 1px solid var(--wb-line);
+  font-size: 10.5px;
+  color: var(--wb-text-dim);
+  cursor: pointer;
+  white-space: nowrap;
+
+  input { margin: 0; accent-color: var(--wb-accent); }
+}

@@ -12,6 +12,7 @@ import { unmet, treeOf } from '@/utils/prereq';
 import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFreshmore, freshmoreFixedSet } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
 import { useGithubLink, startDeviceFlow, pollForToken, pushBackup, DeviceStart } from '../sync';
+import { useAutoBackup, useAutoSaveSetting, setAutoSave } from '../autoBackup';
 import { useWorkbenchUi } from '../uiContext';
 import wb from '../wb.module.scss';
 import styles from './PlanTree.module.scss';
@@ -43,6 +44,10 @@ export function PlanTree({ onPick }: Props) {
   const [exportOpen, setExportOpen] = useState(false);
   const [device, setDevice] = useState<DeviceStart | null>(null);
   const [syncStatus, setSyncStatus] = useState<string | null>(null);
+  const autoOn = useAutoSaveSetting();
+  // Deliberately not memoised on the three parts: the hook compares the
+  // serialised bundle, so a new object per render costs nothing.
+  const auto = useAutoBackup({ records, plans, declared });
 
   const suppressClick = useRef(false);
 
@@ -217,7 +222,7 @@ export function PlanTree({ onPick }: Props) {
                       }
                     }}
                   >
-                    save to github
+                    save to github now
                   </button>
                 ) : (
                   <button
@@ -237,6 +242,16 @@ export function PlanTree({ onPick }: Props) {
                   >
                     link github first…
                   </button>
+                )}
+                {linked && (
+                  <label className={styles.autoToggle}>
+                    <input
+                      type="checkbox"
+                      checked={autoOn}
+                      onChange={(e) => setAutoSave(e.target.checked)}
+                    />
+                    keep it saved automatically
+                  </label>
                 )}
               </span>
             )}
@@ -318,6 +333,11 @@ export function PlanTree({ onPick }: Props) {
         </p>
       )}
       {syncStatus && <p className={wb.faint} style={{ fontSize: 10.5, margin: '2px 0' }}>{syncStatus}</p>}
+      {!syncStatus && linked && autoOn && (auto.busy || auto.at || auto.error) && (
+        <p className={wb.faint} style={{ fontSize: 10.5, margin: '2px 0' }} data-act="autosave-status">
+          {auto.error ? `✗ autosave: ${auto.error}` : auto.busy ? 'saving…' : '✓ saved to your private gist'}
+        </p>
+      )}
 
       {issueCount > 0 && (
         <div className={styles.issues} data-act="plan-issues" data-count={issueCount}>
