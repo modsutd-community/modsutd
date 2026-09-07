@@ -7,5 +7,14 @@
   "pillar": "EPD",
   "term": "7",
   "prerequisites": [],
-  "schedules": []
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Friday",
+      "startTime": "08:30",
+      "endTime": "11:30",
+      "location": "1.411",
+      "instructors": []
+    }
+  ]
 }

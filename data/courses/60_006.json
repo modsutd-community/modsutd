@@ -7,6 +7,19 @@
   "pillar": "DAI",
   "term": "7",
   "prerequisites": [],
-  "schedules": [],
-  "tags": ["Term 7", "Core", "DAI"]
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Wednesday",
+      "startTime": "10:30",
+      "endTime": "12:00",
+      "location": "2.401",
+      "instructors": []
+    }
+  ],
+  "tags": [
+    "Term 7",
+    "Core",
+    "DAI"
+  ]
 }
