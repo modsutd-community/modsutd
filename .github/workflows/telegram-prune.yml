@@ -71,10 +71,23 @@ jobs:
                   reg = json.loads(p.read_text() or '{}')
                   today = datetime.date.today()
 
+                  # The daily sweep leaves each chat once its term is over and marks
+                  # the entry `left`. Dropping the entry before that loses the chatId
+                  # it needs, and the throwaway stays in the group for good. So an
+                  # expired entry waits - but not indefinitely: this file is public
+                  # and the ciphertext is the thing being removed, so after the grace
+                  # period the security win beats the tidiness one.
+                  LEAVE_GRACE_DAYS = 60
+
                   def stale(entry):
                       exp = str(entry.get('expires') or '')
                       if exp:
-                          return exp < today.isoformat(), f'term ended {exp}'
+                          if exp >= today.isoformat():
+                              return False, f'term runs to {exp}'
+                          overdue = (today - datetime.date.fromisoformat(exp)).days
+                          if not entry.get('left') and overdue <= LEAVE_GRACE_DAYS:
+                              return False, f'term ended {exp}, waiting for the sweep to leave'
+                          return True, f'term ended {exp}'
                       made = str(entry.get('createdDay') or '')
                       if not made:
                           return True, 'no expires and no createdDay'

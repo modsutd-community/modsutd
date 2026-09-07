@@ -39,9 +39,18 @@ jobs:
                   import json, os, pathlib
                   if os.environ.get("HAS_SESSION") != "true":
                       print("run=no"); raise SystemExit
+                  import datetime
                   reg = json.loads(pathlib.Path("data/telegram-groups.json").read_text() or "{}")
+                  today = datetime.date.today().isoformat()
+                  # Two jobs now: hand a chat over to its first human, and walk
+                  # out of one whose term is done. Gating on handover alone
+                  # meant the leaving half never ran.
                   pending = any(not e.get("adminGranted") for e in reg.values())
-                  print(f"run={'yes' if pending else 'no'}")
+                  leaving = any(
+                      not e.get("left") and str(e.get("expires") or "") and str(e["expires"]) < today
+                      for e in reg.values()
+                  )
+                  print(f"run={'yes' if pending or leaving else 'no'}")
                   PY
 
             - name: Hand over to the first joiner
