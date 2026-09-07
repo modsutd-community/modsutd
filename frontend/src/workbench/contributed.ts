@@ -94,3 +94,11 @@ export function awaitingDeploy(code: string, deployed: boolean): boolean {
   }
   return true;
 }
+
+/** True when any mod here is still waiting on a build. Drives the data poll. */
+export function anyAwaiting(): boolean {
+  const today = new Date().toISOString().slice(0, 10);
+  return Object.values(read()).some(
+    (e) => e.termEnd === undefined || today <= e.termEnd,
+  );
+}
