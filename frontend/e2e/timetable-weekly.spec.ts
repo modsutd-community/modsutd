@@ -128,10 +128,26 @@ test.describe('timetable · weekly calendar view', () => {
     expect(box.x + box.width).toBeLessThanOrEqual(view.width);
   });
 
-  test('the same text with no html still says why nothing parsed', async ({ page, isMobile }) => {
+  // Filling the box sets no clipboard, so this is the plain-text case: the
+  // weekly page is on screen and the grid still cannot be read. The error has
+  // to name the copy, not the view. Sending this reader to List View is advice
+  // they often cannot take, since no access to it is why they are here.
+  test('a plain-text weekly copy is blamed on the clipboard, not on List View', async ({
+    page,
+    isMobile,
+  }) => {
     const box = scope(page, isMobile).locator('textarea');
     await box.fill(WEEKLY_TEXT);
     await scope(page, isMobile).getByRole('button', { name: /^parse/i }).click();
-    await expect(page.getByText(/only List View/i)).toBeVisible();
+    await expect(page.locator('[data-act="weekly-plain-text"]')).toBeVisible();
+  });
+
+  // The other half of the split: text that is neither view keeps the message
+  // that explains both, so a genuinely wrong paste is not told to re-copy.
+  test('text that is neither view says so', async ({ page, isMobile }) => {
+    const box = scope(page, isMobile).locator('textarea');
+    await box.fill('hello, this is not a timetable at all');
+    await scope(page, isMobile).getByRole('button', { name: /^parse/i }).click();
+    await expect(page.locator('[data-act="not-a-timetable"]')).toBeVisible();
   });
 });

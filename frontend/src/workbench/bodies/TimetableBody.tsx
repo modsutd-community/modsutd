@@ -2,7 +2,7 @@ import {useEffect, useMemo, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {setTimetableEvents, clearTimetable} from "@/reducers/timetableReducer";
 import {parseTimetableText} from "@/utils/timetableParser";
-import {parseWeeklyHtml, looksWeekly} from "@/utils/weeklyParser";
+import {parseWeeklyHtml, looksWeekly, looksWeeklyText} from "@/utils/weeklyParser";
 import {expandWeekToTerm, labelFor} from "@/utils/termCalendar";
 import type {TermCalendar, ExpandResult} from "@/utils/termCalendar";
 import {downloadICS} from "@/utils/icsGenerator";
@@ -89,6 +89,10 @@ export function TimetableBody({onPickMod}: Props) {
 
     const [text, setText] = useState("");
     const [error, setError] = useState<string | null>(null);
+    // Which paste failure is on screen. The copy explains it to a reader; this
+    // is what a test asserts on, so rewording the message cannot silently turn
+    // an absence check into one that passes because the words moved.
+    const [errorKind, setErrorKind] = useState<string | null>(null);
     const [shared, setShared] = useState(false);
     // The clipboard carries text/html beside the plain text. For the Weekly
     // Calendar View that HTML is the only copy that keeps which day a class is
@@ -166,12 +170,14 @@ export function TimetableBody({onPickMod}: Props) {
 
     const onParse = () => {
         setError(null);
+        setErrorKind(null);
         try {
             const parsed = parseTimetableText(text);
             if (!parsed.length) {
                 if (looksWeekly(pastedHtml)) {
                     const weekly = parseWeeklyHtml(pastedHtml, text);
                     if (weekly.missingWeek) {
+                        setErrorKind("weekly-missing-week");
                         setError(
                             "this is the Weekly Calendar View, but the copy is missing the " +
                                 '"Week of" line above the grid that carries the year. select the ' +
@@ -191,10 +197,27 @@ export function TimetableBody({onPickMod}: Props) {
                         return;
                     }
                 }
+                // The grid is parsed from the text/html flavour of the clipboard,
+                // so a plain-text copy fails with the weekly page perfectly visible
+                // on screen. Naming the clipboard rather than the view matters here:
+                // List View is often the one this reader has no access to, so
+                // sending them there is advice they cannot act on.
+                if (looksWeeklyText(text)) {
+                    setErrorKind("weekly-plain-text");
+                    setError(
+                        "this is the Weekly Calendar View, but it arrived as plain text. " +
+                            "the grid needs the formatting to keep each class in its own day " +
+                            "column. click the MyPortal page, Ctrl/Cmd A, Ctrl/Cmd C, then " +
+                            "paste with Ctrl/Cmd V (not Ctrl/Cmd Shift V).",
+                    );
+                    return;
+                }
+                setErrorKind("not-a-timetable");
                 setError(
-                    "nothing parsed. this reads like the Weekly Calendar View - only List View " +
-                        "carries the dates an export needs. If List View says you have no access, " +
-                        "your enrolment is not final yet.",
+                    "nothing parsed. this is neither view - select the whole MyPortal " +
+                        "schedule page and copy it. List View is the one that carries the " +
+                        "dates an export needs; if it says you have no access, your " +
+                        "enrolment is not final yet and the Weekly view still works.",
                 );
                 return;
             }
@@ -467,7 +490,11 @@ export function TimetableBody({onPickMod}: Props) {
                                 : "Contribute now?"}
                         </p>
                     )}
-                    {error && <div className={wb.error}>! {error}</div>}
+                    {error && (
+                        <div className={wb.error} data-act={errorKind ?? "error"}>
+                            ! {error}
+                        </div>
+                    )}
                     <button
                         type="button"
                         className={wb.btn}

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
-import { parseWeeklyHtml, looksWeekly } from './weeklyParser';
+import { parseWeeklyHtml, looksWeekly, looksWeeklyText } from './weeklyParser';
 
 // Shaped exactly like the live SAMS grid: <br> between the lines of a class
 // cell, &nbsp; in empty ones, and - the point of the whole file - a class cell
@@ -102,5 +102,25 @@ describe('parseWeeklyHtml', () => {
     const noId = GRID.replace(/ id="WEEKLY_SCHED_HTMLAREA"/, '');
     expect(noId).not.toContain('WEEKLY_SCHED_HTMLAREA');
     expect(looksWeekly(noId)).toBe(true);
+  });
+
+  // Tells a bad clipboard apart from a bad page, so the error can name the one
+  // that actually happened. Keyed on the week line and the day headers only:
+  // "Weekly Calendar View" is a tab label a List View copy carries too.
+  describe('looksWeeklyText', () => {
+    it('recognises a plain-text copy of the grid', () => {
+      expect(looksWeeklyText('Week of 14/9/2026 - 20/9/2026')).toBe(true);
+      expect(looksWeeklyText('Monday 14 Sep Tuesday 15 Sep Wednesday 16 Sep')).toBe(true);
+    });
+
+    it('does not fire on a List View copy of the same page', () => {
+      const listView = [
+        'My Class Schedule',
+        'List View Weekly Calendar View',
+        '50.001 Information Systems & Programming',
+        'Lecture Monday 14 Sep 2026 9:00AM - 10:30AM 1.502',
+      ].join('\n');
+      expect(looksWeeklyText(listView)).toBe(false);
+    });
   });
 });

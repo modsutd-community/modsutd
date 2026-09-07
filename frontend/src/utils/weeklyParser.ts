@@ -151,6 +151,25 @@ export function parseWeeklyHtml(html: string, alsoSearch = ''): WeeklyParseResul
   return { events: out };
 }
 
+/**
+ * True when the PLAIN TEXT of a paste is the weekly grid.
+ *
+ * Used only to tell a bad clipboard apart from a bad page. The grid needs
+ * text/html to be parsed at all, so when that flavour is missing the reader
+ * has to be told to re-copy rather than sent to List View, which may well be
+ * the view they cannot open.
+ *
+ * Keyed on the "Week of" line and the day headers, never on the words
+ * "Weekly Calendar View": those are a tab label that a List View copy of the
+ * same page carries too.
+ */
+export function looksWeeklyText(text: string): boolean {
+  if (WEEK_OF_RE.test(text)) return true;
+  const days = text.match(/\b(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day\s+\d{1,2}\s+[A-Z][a-z]{2}/g);
+  // Three of them, so one stray date in a List View row cannot pass for a week.
+  return (days?.length ?? 0) >= 3;
+}
+
 /** True when a pasted HTML fragment looks like the weekly grid rather than anything else. */
 export function looksWeekly(html: string): boolean {
   if (/WEEKLY_SCHED_HTMLAREA/.test(html)) return true;
