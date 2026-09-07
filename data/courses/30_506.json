@@ -1,0 +1,16 @@
+{
+  "code": "30.506",
+  "name": "Data Structure & Algorithms",
+  "description": "This course introduces data structure and algorithms for engineering research. Students will learn to design and select suitable data structure that is most efficient to represent a problem. And to implement and understand efficient algorithms that solve engineering problems effectively. (Basic knowledge of programming is required)",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ]
+}

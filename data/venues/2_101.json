@@ -1,0 +1,25 @@
+{
+  "code": "2.101",
+  "name": "Auditorium",
+  "building": "2",
+  "floor": 1,
+  "type": "Lecture Theatre",
+  "capacity": 300,
+  "facilities": [
+    "Projector",
+    "Audio System",
+    "Air Conditioning",
+    "Recording Equipment"
+  ],
+  "panoScenes": [
+    {
+      "scene": "auditorium_level_1",
+      "title": "Auditorium"
+    },
+    {
+      "scene": "auditorium_level_2",
+      "title": "Auditorium L2"
+    }
+  ],
+  "mapName": "Auditorium"
+}

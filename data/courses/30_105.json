@@ -1,0 +1,13 @@
+{
+  "code": "30.105",
+  "name": "Machine Element Design",
+  "description": "Provides advanced knowledge for designing key machine elements and mechanisms such as bearings, shafts, gears, and springs, alongside analytical, heuristic and case-based knowledge to make machines as integrated systems of machine elements. Emphasis is on use of core engineering knowledge, including mechanics and materials, along with design principles to ensure machine elements remain within operational limits while providing the necessary system level requirements. Students work in small groups to analyze and size machine elements.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "6",
+  "prerequisites": ["30.001"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 6", "Core Elective", "EPD"]
+}

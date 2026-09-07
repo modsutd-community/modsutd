@@ -1,0 +1,21 @@
+{
+  "code": "40.009",
+  "name": "Simulation",
+  "description": "Methods for simulating stochastic systems including discrete event simulation, Monte Carlo methods, input modelling, output analysis and variance reduction. Includes hands-on simulation projects in industry-style settings.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "7",
+  "prerequisites": [
+    "40.001",
+    "40.004"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ]
+}

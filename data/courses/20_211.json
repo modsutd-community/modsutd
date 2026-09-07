@@ -1,0 +1,11 @@
+{
+  "code": "20.211",
+  "name": "Introduction to Design Computation",
+  "description": "An introduction to concepts and methods, as well as practical techniques in architectural design computation. Comprises three learning segments: foundations in computational geometry, principles of algorithmic design, and associative/parametric design. Students gain experience in geometric modelling, visual programming, and reading and writing simple generative computer programs through active learning sessions and design exercises. Students learn to create, analyse and evaluate computational and geometric constructs in a design context, providing a basis for developing a critical approach towards using computational tools in architectural education.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "3",
+  "prerequisites": [],
+  "schedules": []
+}

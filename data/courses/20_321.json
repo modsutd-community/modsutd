@@ -1,0 +1,27 @@
+{
+  "code": "20.321",
+  "name": "Architecture Acoustics",
+  "description": "This course introduces architectural and urban acoustics by emphasizing the importance of space shaping, material selection, indoor and outdoor sound planning for enhancing our aural experiences. Topics of this course will include the fundamentals of sound and hearing, the acoustic properties of materials, room acoustics, and urban sound planning. The course is integrated with a series of lectures, reading assignments, acoustic measurements, and field trips to performing spaces. Throughout this course, students will gain the knowledge to evaluate acoustic conditions of spaces and to design indoor and outdoor environments with sound in mind.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [
+    "20.201",
+    "20.202"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 3,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 9,
+    "total": 12,
+    "source": "official"
+  }
+}

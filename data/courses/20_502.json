@@ -1,0 +1,16 @@
+{
+  "code": "20.502",
+  "name": "Design Computation in Architecture (Design Exploration)",
+  "description": "This is an introductory PhD Design Computation course. It consists of a design exploration component and a seminar component. The design exploration component consists of formulating a design related issue or problem, and iteratively exploring this issue or problem using relevant and suitable computational tools and techniques. The seminar component consists of reading and discussing selected texts. The deliverables for the class, in addition to class discussions, are a paper (seminar component), and a presentation and a report (design exploration component) 12 Credits Pre-Requisites:",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Core"
+  ]
+}

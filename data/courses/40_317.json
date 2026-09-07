@@ -1,0 +1,16 @@
+{
+  "code": "40.317",
+  "name": "Financial Systems Design",
+  "description": "This is a course in computational finance in which students learn the tools for delivering financial services and the algorithms used to price complex financial instruments (derivatives). It also abstracts the design of financial services, focusing on interface design, which reduces to language design. Only moderate coding proficiency is required (Python 3) but there are weekly coding exercises. The design exercise is to propose an interactive, distributed trading game and to specify the interfaces. Topics include:",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "ESD"
+  ]
+}

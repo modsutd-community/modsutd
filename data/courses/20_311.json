@@ -1,0 +1,12 @@
+{
+  "code": "20.311",
+  "name": "Architectural Robotics",
+  "description": "Covers advanced topics in digital design and fabrication, namely additive manufacturing, architectural robotics and automation in construction. Builds upon undergraduate design computation courses and aligns with Master's thesis research, requiring students to develop proposals, methods, and artifacts for publication.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "7",
+  "prerequisites": ["20.212", "20.213"],
+  "schedules": [],
+  "tags": ["ASD", "Elective / Technical Elective"]
+}

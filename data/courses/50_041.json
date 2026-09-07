@@ -1,0 +1,19 @@
+{
+  "code": "50.041",
+  "name": "Distributed Systems and Computing",
+  "description": "Covers principles and practice of distributed systems including consistency, replication, fault tolerance, consensus and modern distributed computing patterns.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "8",
+  "prerequisites": [
+    "50.005"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ]
+}

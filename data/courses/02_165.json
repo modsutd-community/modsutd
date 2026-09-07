@@ -1,0 +1,21 @@
+{
+  "code": "02.165",
+  "name": "Empathy: An interdisciplinary concept (Special Topics)",
+  "description": "Empathy is a valued trait in professional and social life, and is fundamental to healthy interpersonal relationships in both professional and social contexts. Learning about empathy is advantageous for students of design and engineering in promoting more effective interpersonal communication through cognitive and affective perspective taking, as well as a deeper consideration of end user needs and challenges. This subject explores this specific dimension of human behaviour from an interdisciplinary perspective, fostering an understanding of the main issues and debates surrounding the phenomenon of empathy. Through understanding the role of empathy in diverse settings such as healthcare, research work, and corporate culture, students will better appreciate the importance of the ability to take multiple perspectives. Discussion of the current issues surrounding this topic aims to provoke reflection on the application of empathy and its challenges in different situations. The course will involve case studies, role play, presentations and sharing of personal experience. In addition, the readings, reflections and project work in the course are directed at encouraging critical and independent thinking about a facet of social life that is often acknowledged and invoked, but rarely examined as an object of study.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "4",
+  "prerequisites": [
+    "02.003"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "HASS"
+  ]
+}

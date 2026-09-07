@@ -1,0 +1,14 @@
+{
+  "code": "03.008",
+  "name": "Innovating with Design and AI-2 (IDeA-2)",
+  "description": "Continuation of IDeA-1, focused on later stages of human-centred innovation with design thinking and AI. Builds on prototyping and concept development with iterative testing, refinement and communication of design outcomes",
+  "credits": 6,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "2",
+  "prerequisites": [
+    "03.007"
+  ],
+  "corequisites": [],
+  "schedules": []
+}

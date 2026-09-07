@@ -1,0 +1,15 @@
+{
+  "code": "Swimming Pool",
+  "name": "Swimming Pool",
+  "building": "61",
+  "floor": 1,
+  "type": "Facility",
+  "facility": true,
+  "panoScenes": [
+    {
+      "scene": "pool",
+      "title": "Swimming Pool"
+    }
+  ],
+  "mapName": "Swimming Pool"
+}

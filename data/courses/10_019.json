@@ -1,0 +1,25 @@
+{
+  "code": "10.019",
+  "name": "Science and Technology for Healthcare",
+  "description": "Focuses on the basic concepts in chemistry and biology that are important for the understanding and solving of healthcare problems in Singapore. Using case studies, leading chronic conditions (e.g. cancer and diabetes) will be studied throughout the term. Major topics covered by this course include the life of a cell, DNA, genes and organ systems. Function and regulation between healthy and diseased states are compared. The course also introduces emerging technologies to show the advancement of our understanding of disease conditions and their respective treatments. Importance of public health is explored to appreciate healthcare at the community level.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "3",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 3",
+    "Freshmore Elective",
+    "SMT"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  }
+}

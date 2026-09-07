@@ -1,0 +1,25 @@
+{
+  "code": "20.512",
+  "name": "Thesis",
+  "description": "Every student’s journey leads to and ends with an independent M.Arch thesis, where the student investigates a specific thesis and envisions its architectural specificity. The M.Arch Thesis represents an opportunity for students to pursue a project of their passion through concentrated work over two terms; it is an exercise in autonomy yet there will be interaction with peers within the guided thematic orientations; it will have as its ultimate goal to challenge and make an intellectual contribution to the future of the architectural and urban discipline, with all the tools, technologies, arts and sciences acquired during their entire studies at SUTD. The M.Arch thesis starts during the Structured Internship with the identification of a thesis topic, continues in Term 9, with the Thesis Preparation module, and evolves in the Thesis module in Term 10, from the refinement of the thesis proposal to the translation of the thesis proposal into an architectural project within a specific site and programme. Students work on their M.Arch Thesis project independently, based upon their thesis proposal. Students meet for reviews with their thesis advisors based on a schedule previously established between the advisors and the students.",
+  "credits": 30,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "10",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 10",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 12,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 24,
+    "total": 36,
+    "source": "official"
+  }
+}

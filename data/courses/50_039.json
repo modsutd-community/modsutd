@@ -1,0 +1,20 @@
+{
+  "code": "50.039",
+  "name": "Theory and Practice of Deep Learning",
+  "description": "Theory and applications of deep neural networks. Covers feedforward networks, backpropagation, convolutional networks, recurrent and attention models, and best practices for training and deploying deep models.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "8",
+  "prerequisites": [
+    "50.007"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ]
+}

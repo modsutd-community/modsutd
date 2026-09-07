@@ -1,0 +1,13 @@
+{
+  "code": "50.040",
+  "name": "Natural Language Processing",
+  "description": "Natural Language Processing (NLP) is an important area within the general field of Artificial Intelligence (AI). Modern NLP models focus on using machine learning algorithms for solving various text processing problems. This course covers fundamental topics within the domain of NLP, including word representations, language modelling, sequence-to-sequence models, attention, and transformer architectures. Students also explore advanced methods in the modern paradigm of large language models (LLMs), such as pre-training, fine-tuning, and efficient adaptation strategies. The course emphasizes both fundamental algorithms and state-of-the-art techniques, with hands-on experience implementing fundamental algorithms and experimenting with advanced deep learning-based NLP techniques, culminating in projects that explore real-world applications of LLMs.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": ["50.007"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "ISTD"]
+}

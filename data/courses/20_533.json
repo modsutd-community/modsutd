@@ -1,0 +1,25 @@
+{
+  "code": "20.533",
+  "name": "Net Zero Design: Case Studies for Whole Life Decarbonisation",
+  "description": "The course provides a cross-disciplinary overview of methods to assess and design Net Zero buildings, products, and systems in the context of global climate change. The course is a cross-disciplinary collaboration between Architecture and Sustainable Design and Engineering Product Development. The course investigates contemporary definitions of Net Zero Carbon and argues for the necessity of Whole Life Carbon assessment and design. An understanding of contemporary assessment methods is provided through study of the GHG Protocol, explicating the three scopes of carbon emissions, in concert with critically examined case studies of Net Zero buildings, products and systems. The course prioritizes preventing carbon emissions before they take place as part of the whole life carbon position, through lectures on impact assessment, design/process optimization. Additionally, an overview of contemporary work on carbon cycle, carbon management, carbon offsets and credits including carbon capture and sequestration provides a fuller picture to students of how Net Zero carbon may be attained. Students apply critical thinking and their disciplinary expertise to developing case study reports on a product, building or system of their choice and how it may be converted to Net Zero whole life carbon. Additional creative activities with lifecycle assessment, systems thinking, and games provide students with understanding and tools to supplement the case study with projections or scenarios. The final written report may be used for future sharing in educational context or in the context of conferences, publications.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "9",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 9",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 2,
+    "tutorial": 0,
+    "project": 3,
+    "preparation": 4,
+    "total": 9,
+    "source": "official"
+  }
+}

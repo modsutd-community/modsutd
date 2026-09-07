@@ -1,0 +1,17 @@
+{
+  "code": "02.181",
+  "name": "AI & Society",
+  "description": "Wherever we look, artificial intelligence (AI) becomes increasingly part of our social lives. Whether in physical or digital shape, AI seems to gradually entangle human practices, social structures, and even our expectations for our future world as human beings. At the same time, the social implications of AI are incrementally coming into view: the work of designers and data workers, the real-world settings in which systems operate, the cultural imaginaries attached to “intelligent” technologies, and the everyday encounters people have with automated systems are only a few of the most urgent issues that emerge. But how precisely is AI related to society, and how can we make sense of this relationship in actual AI design? From a social science perspective, this course teaches students to understand AI as a socio-technical system – that is, as something produced through human labour, organisational routines, cultural assumptions, power relations, governance and everyday practices – not just code and models. It provides a fundamental basis for understanding AI solutions in a socially conscious manner, seeking to answer this and other pressing questions of our time: What forms of human labour and expertise are required to produce and sustain AI systems? How do people make sense of, resist, or accommodate AI in their daily lives? And how can engineers consider the political and ethical questions that accompany AI’s increasing influence? In the course, students will learn about the relationship between AI and society and become familiar with analytical tools to understand various aspects that shape how AI systems are imagined, built, implemented, maintained and lived with in real-world contexts. You will become acquainted with foundational social science perspectives on AI and society, engage with empirical studies, and learn methodological tools for studying AI “in the wild.” Across a multi-disciplinary set of perspectives – from science and technology studies (STS) to critical data studies – you will learn to situate AI within broader social relations, labour structures, cultural imaginaries, and power dynamics that shape its development and use. The course offers essential preparation for engineers who wish to design AI technologies responsibly, attend to their social context, and contribute to sustainable and socially aware innovation. Structurally, the course is constructed to complement students’ technical education by providing a foundation for critically and constructively engaging with AI as a socio-technical system, enabling students to approach design and engineering work with greater societal awareness. The examination includes active participation in weekly seminars, prepared oral presentations, peer-feedback and a final paper. Through this work, the students will demonstrate how the social perspectives taught in this course can support novel and responsible ways of thinking about, implementing, and evaluating AI technologies.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "7",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "HASS"
+  ]
+}

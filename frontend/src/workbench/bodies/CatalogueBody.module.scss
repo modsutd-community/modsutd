@@ -1,0 +1,63 @@
+.headRow {
+  display: grid;
+  grid-template-columns: 66px 1fr 56px 32px 38px;
+  padding: 0 12px;
+  height: 30px;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--wb-titlebar);
+  flex: none;
+}
+
+.head {
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  color: rgba(233, 234, 237, 0.45);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+
+  &:hover { color: #fff; }
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 66px 1fr 56px 32px 38px;
+  padding: 0 12px;
+  min-height: 33px;
+  width: 100%;
+  align-items: center;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-left: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: inherit;
+  text-align: left;
+  color: inherit;
+
+  &:hover { background: rgba(255, 255, 255, 0.045); }
+}
+
+.code { font-weight: 700; color: #e9eaed; }
+
+.name {
+  color: rgba(233, 234, 237, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 8px;
+}
+
+.pillar { font-size: 10px; }
+.term { color: rgba(233, 234, 237, 0.55); text-align: center; }
+.cr { color: rgba(233, 234, 237, 0.5); text-align: right; }
+
+.pillarMore {
+  margin-left: 3px;
+  font-size: 9px;
+  color: rgba(233, 234, 237, 0.5);
+}

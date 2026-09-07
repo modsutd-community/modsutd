@@ -1,0 +1,13 @@
+{
+  "code": "30.109",
+  "name": "Thermal Systems For Power & Environment",
+  "description": "Extends the fundamental concepts of thermodynamics from Engineering in The Physical World to include phase-change processes, transient systems and the concept of useful work and irreversibility. Also focuses on fundamental heat transfer processes such as steady state and transient conduction, forced and natural convection systems. These fundamental concepts are then applied to the design of processes and equipment.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "6",
+  "prerequisites": ["10.015"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 6", "Core Elective", "EPD"]
+}

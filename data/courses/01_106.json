@@ -1,0 +1,13 @@
+{
+  "code": "01.106",
+  "name": "Engineering Management",
+  "description": "Overview of engineering management including financial principles, technology strategy, and best management practices. Focuses on individual skills and teamwork in engineering decision-making scenarios with case studies from semiconductor, technology, and airline companies. Students learn to apply financial principles to analyze financial statements, evaluate engineering companies using ratio analysis, recognise essential elements of intellectual property management, and develop business plans using financial analysis and market research.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "8",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 8", "Elective / Technical Elective", "EPD"]
+}

@@ -1,0 +1,17 @@
+{
+  "code": "30.205",
+  "name": "Aerodynamics",
+  "description": "",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD"
+  ]
+}

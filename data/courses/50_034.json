@@ -1,0 +1,15 @@
+{
+  "code": "50.034",
+  "name": "Introduction to Probability and Statistics",
+  "description": "Foundational course in probability and statistics for ISTD students. Covers axioms of probability, random variables, common distributions, expectation, limit theorems, estimation and hypothesis testing.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "5",
+  "prerequisites": [
+    "10.013",
+    "10.018"
+  ],
+  "corequisites": [],
+  "schedules": []
+}

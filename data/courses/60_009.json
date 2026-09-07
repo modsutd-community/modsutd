@@ -1,0 +1,11 @@
+{
+  "code": "60.009",
+  "name": "Data and Design",
+  "description": "An undergraduate module offered by the DAI pillar.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "5",
+  "prerequisites": [],
+  "schedules": []
+}

@@ -1,0 +1,13 @@
+{
+  "code": "30.113",
+  "name": "Design and Fabrication of Microelectromechanical Systems (MEMS)",
+  "description": "Introduces design and fabrication of MEMS, including topics of material properties, micro-fabrication technologies, and basic principles of MEMS sensors and actuators. The first half covers basic microfabrication techniques and process flow, MEMS materials and their properties, structural behaviour and packaging. The second half covers different sensing and actuating working principles (electrostatic, piezoelectric, piezoresistive, thermal capacitive, microfluidics, etc.), design and analysis. A variety of MEMS devices are analysed including inertial sensors, pressure sensors, gyroscope, optical MEMS, and bioMEMS. Hands-on lab sessions in cleanroom are significant components.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "8",
+  "prerequisites": ["03.007A", "03.007B", "30.001", "30.002"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 8", "Elective / Technical Elective", "EPD"]
+}

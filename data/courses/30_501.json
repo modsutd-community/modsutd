@@ -1,0 +1,16 @@
+{
+  "code": "30.501",
+  "name": "Modeling Multi-Energy Systems",
+  "description": "This course will survey modern methods for modeling multi-domain energy systems, selecting several key techniques for deeper exploration. Bond-graph models, optimization using dynamic programming, and statistical parameter estimation techniques will be covered in detail. The emphasis of this course will be on sensing to obtain accurate signals, inferring using appropriately designed and validated models, and acting with stable and optimal control. Throughout this course, concepts will be presented an analyzed from the critical point viewpoint epitomized by George E. P. Box’s insight that: “Essentially, all models are wrong, but some are useful.”",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ]
+}

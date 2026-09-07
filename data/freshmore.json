@@ -1,0 +1,39 @@
+{
+  "source": "https://www.sutd.edu.sg/education/undergraduate/freshmore-subjects/ + official listing tags (Freshmore Core / Term N)",
+  "gathered": "2026-07-17",
+  "note": "Terms 1-3 are common to all students. 'classic' is the current catalogue's core (what upper-year prerequisites reference); 'ay2026' is the revamped curriculum - its uncoded subjects live in the catalogue as 99.999, distinct by name (refs here use '99.999|<name>').",
+  "curricula": {
+    "classic": {
+      "terms": {
+        "1": {
+          "fixed": ["10.013", "10.014", "10.015"],
+          "choice": { "label": "1 HASS", "count": 1, "anyOf": ["02.001", "02.003", "02.XFER"] }
+        },
+        "2": {
+          "fixed": ["10.016", "10.017", "10.018"],
+          "choice": { "label": "1 HASS", "count": 1, "anyOf": ["02.001", "02.003", "02.XFER"] }
+        },
+        "3": {
+          "fixed": [],
+          "choice": { "label": "2 freshmore electives", "count": 2, "anyOf": ["10.019", "10.020", "10.022", "10.023", "10.024"] }
+        }
+      }
+    },
+    "ay2026": {
+      "terms": {
+        "1": {
+          "fixed": ["03.007", "99.999|Introduction to Programming", "99.999|Calculus", "99.999|Sustainability: Science and System Thinking"],
+          "choice": { "label": "1 HASS", "count": 1, "anyOf": ["02.001", "02.003", "02.XFER"] }
+        },
+        "2": {
+          "fixed": ["03.008", "99.999|Algorithmic Thinking & Object-Oriented Programming", "99.999|Linear Algebra & Multivariable Calculus (E/S)", "99.999|Physics Principles and Applications 1"],
+          "choice": { "label": "1 HASS", "count": 1, "anyOf": ["02.001", "02.003", "02.XFER"] }
+        },
+        "3": {
+          "fixed": ["99.999|Innovating with Design & AI 3", "99.999|Introduction to Machine Learning", "99.999|Introduction to Probability and Statistics (E/S)"],
+          "choice": { "label": "2 freshmore electives", "count": 2, "anyOf": ["10.026", "02.005", "99.999|Designing Sustainable Energy Solutions", "99.999|Freshmore Design Studio", "99.999|Introduction to Discrete Mathematics", "99.999|Introduction to Healthcare Technology", "99.999|Physics Principles and Applications 2", "99.999|Qualitative & Quantitative Research Methods"] }
+        }
+      }
+    }
+  }
+}

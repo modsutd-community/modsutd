@@ -1,0 +1,13 @@
+{
+  "code": "40.260",
+  "name": "Supply Chain Management",
+  "description": "Introduces concepts of supply chain design and operation. Topics include demand estimation, location and capacity planning, process analysis, inventory management, revenue management, supply chain procurement and coordination, and emerging topics in supply chains. A major aspect of the class is a student project on supply chain design.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "6",
+  "prerequisites": ["40.017", "40.012"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["ESD", "Term 6", "Elective / Technical Elective"]
+}

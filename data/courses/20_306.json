@@ -1,0 +1,24 @@
+{
+  "code": "20.306",
+  "name": "Integrated Building Design",
+  "description": "The course is intended to give students enrolled a working understanding of integrated building design, in principle and practice. To enable students to coordinate a design proposal, integrating the different engineering systems. Moreover to have the skills to lead this process, and manage consultants, by identifying clear but inclusive design goals. Through a series of lectures that focus on different aspects such as structure, services, envelope and transportation, appreciation of ‘good’ and ‘bad’ integration will be developed, using predominantly case-studies and examples to provide students with design-strategies and approximation approaches to undertake their own integration activities themselves, supported analytically by an introduction to the relevant first-principal and codified assessment methods. Where possible the course will be supplemented by guest presentations from engineering professionals in associated fields to give their multiple viewpoints on these issues. No of Credits: 9 Pre-requisites: 20.201 Architecture Science & Technology and 20.202 Architectural Structure & Enclosure Design Workload: 4-0-5 Learning Objectives By the end of this course, you will be able to: Measurable Outcomes",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 4,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  }
+}

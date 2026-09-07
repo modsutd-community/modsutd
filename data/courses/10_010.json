@@ -1,0 +1,17 @@
+{
+  "code": "10.010",
+  "name": "Introduction To Biology",
+  "description": "",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD"
+  ]
+}

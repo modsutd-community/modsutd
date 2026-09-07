@@ -1,0 +1,19 @@
+{
+  "code": "40.240",
+  "name": "Investment Science",
+  "description": "ESD elective on the quantitative analysis of financial investments: time value of money, fixed income, mean-variance portfolio theory, asset pricing, derivatives and risk management.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "6",
+  "prerequisites": [
+    "40.001"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Elective / Technical Elective",
+    "ESD"
+  ]
+}

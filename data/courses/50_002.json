@@ -1,0 +1,19 @@
+{
+  "code": "50.002",
+  "name": "Computation Structures",
+  "description": "Introduces architecture of digital systems, emphasising structural principles common across technologies. Covers multilevel implementation strategies, gates, instructions, processes, pipelining, instruction set design and architectural support for software structures.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "4",
+  "prerequisites": [
+    "10.014"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Core",
+    "ISTD"
+  ]
+}

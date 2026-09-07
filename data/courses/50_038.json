@@ -1,0 +1,20 @@
+{
+  "code": "50.038",
+  "name": "Computational Data Science",
+  "description": "An undergraduate ISTD elective covering practical data science methods including data acquisition and cleaning, exploratory analysis, modelling and the communication of results from large datasets.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": [
+    "50.034"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ]
+}

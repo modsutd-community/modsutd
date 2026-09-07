@@ -1,0 +1,25 @@
+{
+  "code": "10.025",
+  "name": "Computational Thinking for Design",
+  "description": "An introductory programming course targeted at novice programmers taught using the Python programming language. It will introduce students to programming skills that are essential for their studies in SUTD, regardless of pillar choice.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ISTD",
+    "Term 1",
+    "Freshmore Core"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  }
+}

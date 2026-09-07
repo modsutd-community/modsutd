@@ -1,0 +1,16 @@
+{
+  "code": "40.510",
+  "name": "Linear Optimisation",
+  "description": "This is a graduate level course on linear optimisation. It covers the theory of optimizing a linear function over a polyhedron, computational aspects of solving linear programs by the simplex method, graphs and the network simplex method, integer programming formulations, an overview of solution methods for integer programs, and applications. Topics include:",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "ESD"
+  ]
+}

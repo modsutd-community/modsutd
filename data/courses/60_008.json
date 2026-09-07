@@ -1,0 +1,12 @@
+{
+  "code": "60.008",
+  "name": "Systems Design Studio",
+  "description": "Explores the design of large, complex systems like manufacturing plants and airports using simulation models and systematic search techniques. Students apply design methods to do problem framing, identify users and their needs, and use genetic algorithms to guide the search through design possibilities.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "6",
+  "prerequisites": ["50.004"],
+  "schedules": [],
+  "tags": ["Term 6", "Core", "DAI"]
+}

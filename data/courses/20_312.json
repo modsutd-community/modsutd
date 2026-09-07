@@ -1,0 +1,23 @@
+{
+  "code": "20.312",
+  "name": "Social Architecture: Theory and Practice",
+  "description": "Equips students with theoretical and historical knowledge of Social Architecture as well as practical skills for practicing it. Covers community architecture, design, and planning through case studies, fieldwork, and workshops that teach design processes that often involve the members of community.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "7",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 4,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  }
+}

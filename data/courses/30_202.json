@@ -1,0 +1,13 @@
+{
+  "code": "30.202",
+  "name": "Design of Intelligent Digital Integrated Circuits and Systems",
+  "description": "Examines device and circuit level optimization of digital building blocks. Topics include MOS device models with Deep Sub-Micron effects; circuit design styles for logic, arithmetic and sequential blocks; energy consumption estimation and minimization; interconnect models and parasitic effects; device sizing and logical effort; timing issues including clock skew and jitter; active clock distribution techniques; memory architectures, circuits and devices; integrated circuit testing. Employs extensive use of circuit layout and SPICE in design projects, and covers machine learning and cryptography for system-level design.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "7",
+  "prerequisites": ["10.013", "10.015", "10.017", "10.018", "30.101", "30.002"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "EPD"]
+}

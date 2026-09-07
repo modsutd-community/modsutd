@@ -1,0 +1,14 @@
+{
+  "code": "1.606",
+  "name": "Capstone 5",
+  "building": "1",
+  "floor": 6,
+  "type": "Cohort Classroom",
+  "panoScenes": [
+    {
+      "scene": "cohort_classroom",
+      "title": "Cohort Classroom"
+    }
+  ],
+  "mapName": "Capstone 5 - 1.606"
+}

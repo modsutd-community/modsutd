@@ -1,0 +1,18 @@
+{
+  "code": "02.001",
+  "name": "Global Humanities: Literature, Philosophy, and Ethics",
+  "description": "Equips students with critical reading, thinking and writing skills by engaging with major documents of human civilization. Covers literary and philosophical works from East Asia, Europe, South Asia and the Islamic world, exploring different cultures' perceptions of self and society.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "1",
+  "prerequisites": [],
+  "schedules": [],
+  "corequisites": [],
+  "tags": [
+    "Term 1",
+    "Term 3",
+    "Freshmore Core",
+    "HASS"
+  ]
+}

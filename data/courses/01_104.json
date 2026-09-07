@@ -1,0 +1,16 @@
+{
+  "code": "01.104",
+  "name": "Networked Life",
+  "description": "Driven by a number of real-world questions about our networked lives, this course explores the technology behind the multi-trillion dollar Internet and wireless industries. How does Google sell ad space and rank webpages? How does Netflix recommend movies and Amazon rank products? How can you influence people on Facebook and Twitter and can you really reach anyone in six steps? How can you make your video viral on YouTube? Why doesn’t the Internet collapse under congestion and does it have an Achilles’ heel? Why are you charged per gigabyte for mobile data? How does CDMA work in my smartphone? These are some of the networked life issues the course will address in providing answers to the above questions, which are the subject of a fascinating intersection of disciplines, including computer science, physics, sociology, mathematics and economics. Researchers from these areas all strive to quantify and explain the growing complexity and connectivity of the world around us, and they have begun to develop a rich new science along the way to reason about the new social, economic and technological networks. The course will motivate the student through actual applications to enable both an overview of these systems and a fundamental understanding of the key ideas. It will introduce the various tools and modelling concepts that apply in each situation, targeting at a truly interdisciplinary learning experience.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "ESD"
+  ]
+}

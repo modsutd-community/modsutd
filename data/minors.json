@@ -1,0 +1,598 @@
+{
+  "source": "https://www.sutd.edu.sg/education/undergraduate/minors/ + each minor page",
+  "gathered": "2026-07-23",
+  "note": "codes with letter suffixes (02.143DH) are stored as their base code; a few lists are approximations - see per-minor notes; notFor = degree pillars barred from the minor (its offering pillar's own students; dai assumed closed to DAI majors too)",
+  "minors": [
+    {
+      "id": "minor-aai",
+      "pillar": "Minor",
+      "name": "Analytics and AI",
+      "source": "https://www.sutd.edu.sg/esd/education/undergraduate/minors/analytics-and-ai/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "10.022"
+          ],
+          "label": "prerequisite"
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "40.002"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "40.016"
+          ]
+        },
+        {
+          "count": 2,
+          "anyOf": [
+            "30.100",
+            "30.114",
+            "30.115",
+            "40.316",
+            "40.319",
+            "50.007",
+            "50.021",
+            "50.035",
+            "50.038",
+            "50.039",
+            "50.040",
+            "50.043",
+            "50.045",
+            "50.050",
+            "50.055",
+            "60.001",
+            "60.002"
+          ],
+          "label": "electives (24 credits)"
+        }
+      ],
+      "note": "non-ESD only; elective count approximates the 24-credit rule",
+      "notFor": [
+        "ESD"
+      ]
+    },
+    {
+      "id": "minor-ai",
+      "pillar": "Minor",
+      "name": "Artificial Intelligence",
+      "source": "https://www.sutd.edu.sg/istd/education/undergraduate/minors/ai/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "50.003",
+            "50.004"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "40.319",
+            "50.007"
+          ]
+        },
+        {
+          "count": 3,
+          "anyOf": [
+            "01.116",
+            "01.117",
+            "02.143",
+            "30.100",
+            "30.119",
+            "30.202",
+            "40.002",
+            "40.016",
+            "50.021",
+            "50.035",
+            "50.038",
+            "50.039",
+            "50.040",
+            "50.045",
+            "50.047",
+            "50.050",
+            "50.055"
+          ],
+          "label": "electives"
+        }
+      ],
+      "note": "AY2023-onwards intake rules",
+      "notFor": [
+        "CSD"
+      ]
+    },
+    {
+      "id": "minor-cs",
+      "pillar": "Minor",
+      "name": "Computer Science",
+      "source": "https://www.sutd.edu.sg/istd/education/undergraduate/minors/cs/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "50.001",
+            "50.002",
+            "50.003",
+            "50.004",
+            "50.005"
+          ],
+          "label": "foundation"
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "01.116",
+            "01.117",
+            "50.001",
+            "50.002",
+            "50.003",
+            "50.004",
+            "50.005",
+            "50.006",
+            "50.007",
+            "50.012",
+            "50.016",
+            "50.017",
+            "50.020",
+            "50.021",
+            "50.033",
+            "50.034",
+            "50.035",
+            "50.037",
+            "50.038",
+            "50.039",
+            "50.040",
+            "50.041",
+            "50.042",
+            "50.043",
+            "50.044",
+            "50.045",
+            "50.046",
+            "50.047",
+            "50.050",
+            "50.051",
+            "50.052",
+            "50.053",
+            "50.054",
+            "50.055",
+            "50.056",
+            "50.057",
+            "50.500",
+            "50.510",
+            "50.511",
+            "50.530",
+            "50.570",
+            "50.571",
+            "50.572",
+            "50.573",
+            "50.574",
+            "50.590"
+          ],
+          "label": "CSD / AI"
+        },
+        {
+          "count": 2,
+          "anyOf": [
+            "30.100",
+            "30.101",
+            "30.110",
+            "30.115",
+            "30.119",
+            "30.201",
+            "40.002",
+            "40.015",
+            "40.016",
+            "40.302",
+            "40.319",
+            "60.001",
+            "60.002",
+            "60.004",
+            "60.005"
+          ],
+          "label": "cross-pillar (union of per-pillar lists)"
+        }
+      ],
+      "note": "cross-pillar list depends on home pillar; encoded as the union",
+      "notFor": [
+        "CSD"
+      ]
+    },
+    {
+      "id": "minor-dai",
+      "pillar": "Minor",
+      "name": "Design and Artificial Intelligence",
+      "source": "https://www.sutd.edu.sg/istd/education/undergraduate/minors/dai",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "50.004"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "40.319",
+            "50.007"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "01.116",
+            "01.117",
+            "30.100",
+            "30.101",
+            "30.110",
+            "30.114",
+            "30.119",
+            "30.202",
+            "30.303",
+            "40.002",
+            "40.012",
+            "40.016",
+            "40.302",
+            "40.305",
+            "40.316",
+            "50.021",
+            "50.035",
+            "50.038",
+            "50.039",
+            "50.040",
+            "50.045",
+            "50.047",
+            "50.050",
+            "50.055",
+            "60.001",
+            "60.002",
+            "60.005"
+          ],
+          "label": "AI applications"
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "02.137",
+            "02.140",
+            "02.143",
+            "02.147",
+            "02.151",
+            "02.159",
+            "02.174",
+            "02.176",
+            "02.201",
+            "02.204",
+            "02.216",
+            "02.228"
+          ],
+          "label": "DAI studio / HCD"
+        }
+      ],
+      "notFor": [
+        "CSD",
+        "DAI"
+      ]
+    },
+    {
+      "id": "minor-dts",
+      "pillar": "Minor",
+      "name": "Design, Technology and Society",
+      "source": "https://www.sutd.edu.sg/hass/education/undergraduate/minors/design-technology-and-society-minor/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "02.003"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "02.147"
+          ]
+        },
+        {
+          "count": 4,
+          "anyOf": [
+            "02.102",
+            "02.104",
+            "02.135",
+            "02.140",
+            "02.145",
+            "02.148",
+            "02.151",
+            "02.152",
+            "02.153",
+            "02.155",
+            "02.159",
+            "02.160",
+            "02.164",
+            "02.165",
+            "02.166",
+            "02.167",
+            "02.170",
+            "02.181",
+            "02.182",
+            "02.183",
+            "02.201",
+            "02.204",
+            "02.210",
+            "02.216",
+            "02.218",
+            "02.219",
+            "02.222",
+            "02.228",
+            "02.230",
+            "02.231"
+          ],
+          "label": "electives"
+        }
+      ],
+      "note": "declare before Term 4 in the student portal"
+    },
+    {
+      "id": "minor-dh",
+      "pillar": "Minor",
+      "name": "Digital Humanities",
+      "source": "https://www.sutd.edu.sg/hass/education/undergraduate/minors/digital-humanities-minor/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "02.001"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "02.137"
+          ]
+        },
+        {
+          "count": 4,
+          "anyOf": [
+            "02.102",
+            "02.105",
+            "02.108",
+            "02.110",
+            "02.120",
+            "02.121",
+            "02.124",
+            "02.128",
+            "02.132",
+            "02.135",
+            "02.143",
+            "02.144",
+            "02.148",
+            "02.151",
+            "02.155",
+            "02.156",
+            "02.158",
+            "02.159",
+            "02.164",
+            "02.167",
+            "02.170",
+            "02.172",
+            "02.173",
+            "02.175",
+            "02.180",
+            "02.181",
+            "02.182",
+            "02.183"
+          ],
+          "label": "electives"
+        }
+      ]
+    },
+    {
+      "id": "minor-hi",
+      "pillar": "Minor",
+      "name": "Healthcare Informatics",
+      "source": "https://www.sutd.edu.sg/epd/education/undergraduate/minor-programmes/healthcare-informatics-minor/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "02.230"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "01.116"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "01.101",
+            "01.114"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "40.319",
+            "50.007"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "30.203",
+            "40.015",
+            "40.016",
+            "50.043"
+          ],
+          "label": "elective"
+        }
+      ],
+      "notFor": [
+        "EPD"
+      ]
+    },
+    {
+      "id": "minor-hcd",
+      "pillar": "Minor",
+      "name": "Human-Centred Design",
+      "source": "https://www.sutd.edu.sg/hass/education/undergraduate/minors/human-centred-design-minor/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "02.003"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "02.005"
+          ]
+        },
+        {
+          "count": 4,
+          "anyOf": [
+            "02.104",
+            "02.145",
+            "02.148",
+            "02.164",
+            "02.165",
+            "02.166",
+            "02.167",
+            "02.173",
+            "02.174",
+            "02.180",
+            "02.181",
+            "02.182",
+            "02.201",
+            "02.202",
+            "02.208",
+            "02.211",
+            "02.216",
+            "02.217",
+            "02.218",
+            "02.226",
+            "02.228",
+            "02.230"
+          ],
+          "label": "electives (max 2 substitutions allowed)"
+        }
+      ],
+      "note": "AY2024-onwards intake; up to 2 electives substitutable with pre-approved pillar/MTD courses"
+    },
+    {
+      "id": "minor-pbm",
+      "pillar": "Minor",
+      "name": "Psychology & Business Management",
+      "source": "https://www.sutd.edu.sg/hass/education/undergraduate/minors/psychology-business-management-minor/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "02.001"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "02.003"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "02.145",
+            "02.218"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "02.202",
+            "02.211"
+          ]
+        },
+        {
+          "count": 3,
+          "anyOf": [
+            "01.106",
+            "02.146",
+            "02.148",
+            "02.174",
+            "02.176",
+            "02.182",
+            "02.202",
+            "02.203",
+            "02.208",
+            "02.211",
+            "02.226",
+            "02.230",
+            "30.111",
+            "40.240",
+            "40.324"
+          ],
+          "label": "electives (1 psych, 1 business, 1 any)"
+        }
+      ],
+      "note": "the psych/business split inside the 3 electives is not machine-checked"
+    },
+    {
+      "id": "minor-sbd",
+      "pillar": "Minor",
+      "name": "Sustainability by Design",
+      "source": "https://www.sutd.edu.sg/smt/education/undergraduate/minors/",
+      "requirements": [
+        {
+          "count": 1,
+          "anyOf": [
+            "40.230"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "20.322"
+          ]
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "02.104",
+            "02.146",
+            "02.147",
+            "02.153",
+            "02.154",
+            "02.155",
+            "02.166",
+            "02.167",
+            "02.219",
+            "02.222",
+            "02.228",
+            "02.231"
+          ],
+          "label": "sustainability HASS"
+        },
+        {
+          "count": 1,
+          "anyOf": [
+            "01.101",
+            "01.102",
+            "01.116",
+            "30.120",
+            "30.123",
+            "30.316",
+            "40.260",
+            "40.318"
+          ],
+          "label": "elective"
+        }
+      ],
+      "note": "AY2024-onwards intake rules"
+    }
+  ]
+}

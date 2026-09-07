@@ -1,0 +1,16 @@
+{
+  "code": "40.612",
+  "name": "Distributionally Robust Optimization",
+  "description": "This is a special topics in optimization course which will focus on applications and methods to solve optimization problems under uncertainty – the main focus will be on distributionally robust optimization (DRO) where the decision-maker has to choose the optimal decision accounting for the worst-case distribution. The goal is to get students introduced to the topic through the lens of two stage linear and discrete optimization problems. From a tools perspective, the students will pick up ideas in modeling and solving such problems using techniques from linear optimization, conic optimization, integer optimization and learn the use of some basic tools in probability, complexity and graph theory. The course will involve the use of computational optimization tools and is positioned as a research topics class. Students are expected to have taken a prior graduate level course that introduces them to the basics of linear and discrete optimization.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "ESD"
+  ]
+}

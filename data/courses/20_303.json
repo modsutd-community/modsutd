@@ -1,0 +1,16 @@
+{
+  "code": "20.303",
+  "name": "Urban Analysis",
+  "description": "The seminar will investigate a number of qualitative and quantitative methods to measure and analyze urban spatial problems. The course is structured around five experiments, three weeks in duration each,  where groups of students are asked to tackle a real world urban analytics exercise from beginning to end, starting with a introduction of theory and methods, followed by data collection and analysis and ending with a presentation of findings to the rest of the class. The nature of experiments can vary from year to year, allowing the course to address current and relevant urban issues. No of Credits: 9 Pre-requisites: 20.231 The Built Environment and Value",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ]
+}

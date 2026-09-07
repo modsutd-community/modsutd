@@ -1,0 +1,13 @@
+{
+  "code": "30.119",
+  "name": "Intelligent Robotics",
+  "description": "Provides an overview of robot mechanisms, dynamics, and intelligent controls. Topics include planar and spatial kinematics, and motion planning; mechanism design for manipulators and mobile robots; multi-body dynamics; control design, actuators, and sensors; sensing and perception to enable intelligent behavior; and computer vision. Weekly laboratories provide experience with servo drives, real-time control, task modelling and embedded software. Students build working robotic systems in a group-based term project.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "7",
+  "prerequisites": ["30.002", "30.101"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "EPD"]
+}

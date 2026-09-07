@@ -1,0 +1,69 @@
+{
+  "_provenance": {
+    "source": "https://www.sutd.edu.sg/wp-content/uploads/2025/01/EPD-Curriculum-Matrix-Dec-24.pdf",
+    "method": "hand-extracted from the rendered matrix (visual read of every track band, codes cross-checked against data/courses names), 2026-07-16",
+    "caveat": "The matrix titles itself 'EPD CURRICULUM MATRIX 2020-2023 [new calendar]' - it applies to those intakes; newer intakes may differ. Re-verify when EPD publishes a newer matrix.",
+    "encoding": "restricted track electives are all-of; 'N Pillar Electives' / 'N Advanced Pillar Electives' counts come from the matrix term headers; advanced pools merge Term 7+8 columns. Cross-pillar substitution options stay in notes (they replace, not define, the track)."
+  },
+  "tracks": {
+    "epd-self-directed-programme": {
+      "requirements": [
+        { "count": 1, "anyOf": ["30.102", "30.103"], "label": "restricted pillar elective (T5)" },
+        { "count": 3, "anyOf": ["30.104", "30.105", "30.106", "30.107", "30.108", "30.109", "30.110", "30.111", "30.203", "30.316"], "label": "pillar electives (choose 3, T6)" },
+        { "count": 4, "anyOf": ["30.114", "30.119", "30.120", "30.123", "30.202", "30.303", "30.113", "30.115", "30.117", "30.118", "30.200", "30.201"], "label": "advanced pillar electives (2 in T7 + 2 in T8)" }
+      ],
+      "notes": "Self-directed: no restricted track electives - any advised combination. Up to 3 pillar/advanced pillar electives may be replaced with Unrestricted Electives per the matrix."
+    },
+    "epd-mechanical-engineering": {
+      "requirements": [
+        { "count": 2, "anyOf": ["30.103", "30.105"], "label": "restricted track electives (30.103 Fluid Mechanics T5, 30.105 Machine Element Design T6 - both required)" },
+        { "count": 2, "anyOf": ["30.104", "30.108", "30.109", "30.111", "30.203", "30.316"], "label": "pillar electives (choose 2, T6)" },
+        { "count": 4, "anyOf": ["30.114", "30.119", "30.120", "30.123", "30.113", "30.118", "30.200", "30.201"], "label": "advanced pillar electives (2 in T7 + 2 in T8)" }
+      ],
+      "notes": "Professional Engineering Board requirements apply only to students in this track. 01.112 Machine Learning (CSD) appears as an other-elective option."
+    },
+    "epd-electrical-engineering": {
+      "requirements": [
+        { "count": 3, "anyOf": ["30.102", "30.107", "30.117"], "label": "restricted track electives (30.102 T5, 30.107 Power Electronics T6, 30.117 Electric Power Systems T8 - all required)" },
+        { "count": 2, "anyOf": ["30.106", "30.108", "30.109", "30.110", "30.111", "30.203", "30.316"], "label": "pillar electives (choose 2, T6)" },
+        { "count": 3, "anyOf": ["30.114", "30.119", "30.123", "30.202", "30.113", "30.115", "30.118", "30.201"], "label": "advanced pillar electives (2 in T7 + 1 in T8)" }
+      ],
+      "notes": "Professional Engineering Board requirements apply only to students in this track. 01.119 Nanoelectronics and Technology (SMT) appears as a cross-pillar option in T7."
+    },
+    "epd-robotics": {
+      "requirements": [
+        { "count": 1, "anyOf": ["30.119"], "label": "restricted track elective (30.119 Intelligent Robotics, T7)" },
+        { "count": 1, "anyOf": ["30.102", "30.103"], "label": "restricted pillar elective (T5)" },
+        { "count": 3, "anyOf": ["30.104", "30.105", "30.110", "30.111", "30.203", "30.316"], "label": "pillar electives (choose 3, T6)" },
+        { "count": 3, "anyOf": ["30.114", "30.120", "30.123", "30.115", "30.117", "30.118", "30.201"], "label": "advanced pillar electives (1 in T7 + 2 in T8)" }
+      ],
+      "notes": ""
+    },
+    "epd-computer-engineering": {
+      "requirements": [
+        { "count": 2, "anyOf": ["30.102", "30.110"], "label": "restricted track electives (30.102 T5, 30.110 Digital Systems Lab T6 - both required)" },
+        { "count": 2, "anyOf": ["30.106", "30.107", "30.111", "30.203", "30.316"], "label": "pillar electives (choose 2, T6)" },
+        { "count": 4, "anyOf": ["30.123", "30.202", "30.115", "30.201", "50.005", "50.012", "50.030", "50.046", "50.017", "50.021", "01.116"], "label": "advanced pillar electives incl. cross-pillar options (2 in T7 + 2 in T8)" }
+      ],
+      "notes": "Up to 3 pillar/advanced pillar electives may be replaced with Cross-Pillar Electives (pink box): CSD 50.001/50.002/50.004/50.007/50.038/50.039/50.043, ESD 40.319 in T6; CSD 50.005/50.012/50.030/50.046 + SMT 01.116 in T7; CSD 50.017/50.021 in T8. The advanced pool includes those cross-pillar options."
+    },
+    "epd-healthcare-engineering-design": {
+      "requirements": [
+        { "count": 2, "anyOf": ["30.203", "30.123"], "label": "restricted track electives (30.203 Topics in Biomedical & Healthcare T6, 30.123 Healthcare Product Design T7 - both required)" },
+        { "count": 1, "anyOf": ["30.102", "30.103"], "label": "restricted pillar elective (T5)" },
+        { "count": 2, "anyOf": ["30.104", "30.105", "30.106", "30.107", "30.108", "30.109", "30.110", "30.111", "30.316"], "label": "pillar electives (choose 2, T6)" },
+        { "count": 3, "anyOf": ["30.114", "30.119", "30.120", "30.113", "30.115", "30.118", "30.200", "30.201"], "label": "advanced pillar electives (1 in T7 + 2 in T8)" }
+      ],
+      "notes": "T8 requires at least 1 Advanced Pillar Elective from the (A) list per the matrix; the (A)/(B) split is not machine-encoded."
+    },
+    "epd-beyond-industry-4-0": {
+      "requirements": [
+        { "count": 1, "anyOf": ["30.303"], "label": "restricted track elective (30.303 Industry 4.0 & 3D Printing, T7)" },
+        { "count": 1, "anyOf": ["30.102", "30.103"], "label": "restricted pillar elective (T5)" },
+        { "count": 3, "anyOf": ["30.105", "30.108", "30.109", "30.110", "30.316"], "label": "pillar electives (choose 3, T6)" },
+        { "count": 3, "anyOf": ["30.114", "30.119", "30.120", "30.115", "30.201", "50.006", "50.021"], "label": "advanced/cross-pillar electives (1 in T7 + 2 in T8, ≥1 from the advanced (A) list)" }
+      ],
+      "notes": "T8 allows 1 Advanced (A) + 1 Advanced/Cross-Pillar (B) - cross-pillar (B) options are CSD 50.006 and 50.021; the (A)/(B) split is not machine-encoded. Cross-pillar swaps in T6 include 01.112 Machine Learning (CSD)."
+    }
+  }
+}

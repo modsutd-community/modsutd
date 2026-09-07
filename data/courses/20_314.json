@@ -1,0 +1,25 @@
+{
+  "code": "20.314",
+  "name": "Paradigms of Adaptation",
+  "description": "Examines paradigms of adaptation in the field of architecture and urbanism today. Covers various scales through comparative case studies in Singapore and overseas, addressing adaptation challenges across cultural, informal, shrinking, landscape, and resilience typologies.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "7",
+  "prerequisites": [
+    "20.222"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 4,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  }
+}

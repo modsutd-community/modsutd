@@ -1,0 +1,132 @@
+# Pulls the campus map back out of OpenStreetMap and opens a PR when it moved.
+#
+# The site draws its floor plans from a committed file rather than querying
+# OpenStreetMap in the browser, because a live query is blank about one load in
+# three (measured: 38 shapes, 38 shapes, then a 504). That trade only works if
+# the file is refreshed, and a refresh that depends on somebody remembering a
+# command is a file that goes stale.
+#
+# So this runs it. A person's job is to edit OSM; the snapshot catches up on its
+# own, as a PR rather than a push, because map data changing under the site
+# without anyone looking is how a wrong room ships.
+name: Refresh OSM snapshot
+
+on:
+    schedule:
+        # Fridays 16:00 UTC is Saturday 00:00 in Singapore; the job keeps only the
+        # first Saturday of the month. Campus rooms do not move often enough to
+        # read the whole map every week, and a runner that finds nothing changed
+        # still costs a runner.
+        - cron: "0 16 * * 5"
+    workflow_dispatch:
+
+permissions:
+    contents: write
+    pull-requests: write
+
+concurrency:
+    group: osm-refresh
+    cancel-in-progress: false
+
+jobs:
+    refresh:
+        runs-on: ubuntu-latest
+        steps:
+            # cron cannot say "first Saturday", so workaround:
+            - name: First Saturday of the month
+              id: when
+              run: |
+                  d=$(TZ=Asia/Singapore date +%d)
+                  if [ "$((10#$d))" -le 7 ]; then
+                    echo "go=true" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "go=false" >> "$GITHUB_OUTPUT"
+                    echo "Not the first Saturday in Singapore ($d) - nothing to do." >> "$GITHUB_STEP_SUMMARY"
+                  fi
+
+            - uses: actions/checkout@v4
+              if: steps.when.outputs.go == 'true'
+            - uses: actions/setup-python@v5
+              if: steps.when.outputs.go == 'true'
+              with:
+                  python-version: "3.12"
+
+            # Overpass 504s often enough that one attempt is not a result. Both
+            # scripts already retry across mirrors and refuse to write a thin
+            # answer, so a failure here leaves the committed files untouched.
+            - name: Read OpenStreetMap
+              id: pull
+              if: steps.when.outputs.go == 'true'
+              run: |
+                  ok=0
+                  for attempt in 1 2 3; do
+                    if python tools/osm/extract_room_coords.py && python tools/osm/extract_indoor_geojson.py; then
+                      ok=1; break
+                    fi
+                    echo "attempt $attempt failed; waiting"
+                    sleep 30
+                  done
+                  [ "$ok" = 1 ] || { echo "overpass never answered"; exit 1; }
+
+            - name: What changed
+              id: diff
+              if: steps.when.outputs.go == 'true'
+              run: |
+                  if git diff --quiet -- data/indoor.geojson data/_meta/room-coords.json; then
+                    echo "changed=false" >> "$GITHUB_OUTPUT"
+                    echo "The map has not moved since the last refresh." >> "$GITHUB_STEP_SUMMARY"
+                  else
+                    echo "changed=true" >> "$GITHUB_OUTPUT"
+                    python3 - <<'PY' >> "$GITHUB_STEP_SUMMARY"
+                  import json, subprocess
+                  def old(p):
+                      return json.loads(subprocess.run(['git', 'show', f'HEAD:{p}'],
+                                        capture_output=True, text=True).stdout or '{}')
+                  new_c = json.load(open('data/_meta/room-coords.json', encoding='utf-8'))
+                  old_c = old('data/_meta/room-coords.json')
+                  def keys(d, field):
+                      return {(s.get('ref') or '', s.get('name') or '') for s in d.get(field, [])}
+                  added = keys(new_c, 'shapes') - keys(old_c, 'shapes')
+                  gone = keys(old_c, 'shapes') - keys(new_c, 'shapes')
+                  print('## OSM snapshot refresh\n')
+                  print(f"- shapes: {len(old_c.get('shapes', []))} -> {len(new_c['shapes'])}")
+                  print(f"- lifts: {len(old_c.get('lifts', []))} -> {len(new_c['lifts'])}\n")
+                  for label, s in (('added', added), ('gone', gone)):
+                      if s:
+                          print(f'**{label}**\n')
+                          for ref, name in sorted(s)[:40]:
+                              print(f'- `{ref or "-"}` {name}')
+                          print()
+                  PY
+                  fi
+
+            - name: Rebuild what the site ships
+              if: steps.diff.outputs.changed == 'true'
+              working-directory: frontend
+              run: |
+                  npm ci --no-audit --no-fund
+                  node scripts/sync-data.mjs
+
+            - name: Open a pull request
+              if: steps.diff.outputs.changed == 'true'
+              uses: peter-evans/create-pull-request@v6
+              with:
+                  token: ${{ secrets.MODSUTD_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+                  branch: osm-refresh
+                  base: main
+                  commit-message: "data: refresh the OSM snapshot"
+                  title: "data: refresh the OSM snapshot"
+                  labels: data
+                  add-paths: |
+                      data/indoor.geojson
+                      data/_meta/room-coords.json
+                  body: |
+                      OpenStreetMap has changed since the last refresh, so the floor plans
+                      the site draws are out of date.
+
+                      The summary on the workflow run lists what appeared and what went.
+                      Worth a glance before merging: a shape vanishing usually means an
+                      edit removed or retagged it, and `sync-data.mjs` warns on the run if
+                      a venue's door plate disagrees with the map.
+
+                      Nobody wrote this by hand - `.github/workflows/osm-refresh.yml` did.

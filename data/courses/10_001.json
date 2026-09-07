@@ -1,0 +1,16 @@
+{
+  "code": "10.001",
+  "name": "Advanced Mathematics I",
+  "description": "The main objective of the subject is to provide firm foundations of single variable calculus. It aims to motivate students on why math is important and to demonstrate mathematics in action. Students learn the basic concepts, techniques, and applications of two branches of calculus – differentiation and integration.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Freshmore Core",
+    "SMT"
+  ]
+}

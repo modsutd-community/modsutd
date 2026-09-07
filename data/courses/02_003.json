@@ -1,0 +1,18 @@
+{
+  "code": "02.003",
+  "name": "Social Science: Understanding Behaviour, Culture & Society",
+  "description": "This subject is an introduction to the social sciences that provides students with the conceptual tools necessary to make sense of the complex problems that they face in the modern world. The subject cultivates an understanding of core issues, fundamental theories and philosophical stances in the social sciences, and explores the manner in which social scientists formulate questions about society that can be addressed with empirical research. Canonical social science texts and methodologies are explored in lecture, discussion and group exercises",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "1",
+  "prerequisites": [],
+  "schedules": [],
+  "corequisites": [],
+  "tags": [
+    "Term 1",
+    "Term 3",
+    "Freshmore Core",
+    "HASS"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "code": "40.014",
+  "name": "Engineering Systems Architecture",
+  "description": "Prepares students for leadership roles in systems engineering. Covers system architecture, multi-objective optimisation, model-based systems engineering and the Capella tool, blending design principles with operations research.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "5",
+  "prerequisites": [
+    "40.011"
+  ],
+  "corequisites": [],
+  "schedules": []
+}

@@ -1,0 +1,16 @@
+{
+  "code": "30.901",
+  "name": "Graduate Project Seminar I",
+  "description": "Graduate Project Seminar-II course is a mandatory module for all EPD PhD students. The main objective of this course is to enable graduate students to improve and optimize their research planning, organisation and presentation skills – oral and writing. Besides, it is also meant to encourage graduate students to participate in scientific seminars and to critically evaluate/ assimilate contents. As part of this module, students are required to attend seminars/ invited talks (both internal and external when possible) and also present individual research projects and plans.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ]
+}

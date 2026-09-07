@@ -1,0 +1,13 @@
+{
+  "code": "60.005",
+  "name": "Human Computer Interaction and AI",
+  "description": "An introductory course examining how to design for people while leveraging artificial intelligence. Topics include establishing user requirements, interaction models, prototyping, human memory and attention, evaluating designs and AI in Human Computer Interaction. Explored via a combination of lectures, individual mini-projects and a group project to develop an AI-powered application to empower humans.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "5",
+  "prerequisites": ["10.014"],
+  "corequisites": ["60.004"],
+  "schedules": [],
+  "tags": ["Term 5", "Core", "DAI"]
+}

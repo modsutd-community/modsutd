@@ -1,0 +1,13 @@
+{
+  "code": "40.242",
+  "name": "Derivative Pricing and Risk Management",
+  "description": "Introduction to the theory and practice of mathematical finance: basics of derivative securities; interest rate and bonds; forward and futures contracts, hedging using futures contracts; option contracts and arbitrage relationship; binomial model, no-arbitrage pricing, risk-neutral pricing, and American options pricing; Brownian motion, Black-Scholes-Merton model, delta hedging, Greek letters, implied volatility, and volatility smile; classical and advanced portfolio management and execution models and strategies.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "7",
+  "prerequisites": ["40.240", "40.324"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "ESD"]
+}

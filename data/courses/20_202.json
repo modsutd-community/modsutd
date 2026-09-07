@@ -1,0 +1,24 @@
+{
+  "code": "20.202",
+  "name": "Architectural Structure & Enclosure Design",
+  "description": "Introduces structural analysis and design fundamentals, treating structures as architectural components. Students learn to design structures using force flow diagrams and simple computational tools while exploring how structures generate space and inform building facades.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "4",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 4",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 4,
+    "total": 9,
+    "source": "official"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "code": "01.116",
+  "name": "AI for Healthcare",
+  "description": "This course introduces the concept of artificial intelligence through machine learning and deep learning algorithms. In evidence‐based medicine, it is important to gather useful insights from both structured (e.g. data collected by machines) and unstructured data (e.g. notes from clinicians’ observations). The course highlights the use of AI for medical diagnostics, doctor consultation, personalized disease treatments, electronic health records, drug discovery and others. This poses both opportunities and challenges to gather buy‐in from various stakeholders, namely patients, doctors, researchers, and telehealth. In their various group projects, students will get to work on real‐life healthcare problems faced in hospitals and use AI to solve them.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "1",
+  "prerequisites": [
+    "50.007",
+    "40.319"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "Artificial Intelligence",
+    "Data Analytics",
+    "Financial Technology",
+    "IoT And Intelligent Systems",
+    "Security",
+    "Software Engineering",
+    "Visual Analytics And Computing"
+  ]
+}

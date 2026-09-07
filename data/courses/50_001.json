@@ -1,0 +1,19 @@
+{
+  "code": "50.001",
+  "name": "Information Systems & Programming",
+  "description": "An introduction to the design and programming of information systems, taught using Java. Topics include object-oriented programming, data structures, OO design principles, mobile programming, design patterns and use of software libraries.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "4",
+  "prerequisites": [
+    "10.014"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Core",
+    "ISTD"
+  ]
+}

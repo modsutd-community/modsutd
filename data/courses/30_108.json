@@ -1,0 +1,13 @@
+{
+  "code": "30.108",
+  "name": "Material Science",
+  "description": "Fundamentals of structure and energetics that underpin materials science. Covers structure descriptors for crystalline and non-crystalline states; the relationship between structure, processing, performance and properties of materials; and materials selection for sustainable product design and to meet engineering requirements.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "6",
+  "prerequisites": ["30.001"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 6", "Core Elective", "EPD"]
+}

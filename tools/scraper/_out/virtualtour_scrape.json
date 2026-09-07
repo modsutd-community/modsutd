@@ -1,0 +1,2574 @@
+{
+  "scenes": [
+    {
+      "sceneName": "scene_aerial_entrance",
+      "title": "Main Entrance",
+      "friendly": "Main Entrance",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/aerial_entrance.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_aerial_entrance.jpg",
+      "thumbbytes": 31360,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_lounge_area_near_lift",
+          "title": "Library",
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_cohort_classroom",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_root_cove",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot4",
+          "type": "text",
+          "linkedscene": "scene_architecture_studio",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot5",
+          "type": "text",
+          "linkedscene": "scene_campus_centre",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot6",
+          "type": "text",
+          "linkedscene": "scene_auditorium_level_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot7",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot8",
+          "type": "text",
+          "linkedscene": "scene_track_and_field",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot10",
+          "type": "text",
+          "linkedscene": "scene_aerial_middle",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot11",
+          "type": "text",
+          "linkedscene": "scene_indoor_sports_hall",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "emerging",
+          "type": "text",
+          "linkedscene": null,
+          "title": "The world’s top emerging engineering school",
+          "description": "SUTD is ranked first in an MIT-commissioned study ‘The Global State of the Art in Engineering Education’."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_aerial_middle",
+      "title": "Middle",
+      "friendly": "Middle",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/aerial_middle.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_aerial_middle.jpg",
+      "thumbbytes": 32568,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_architecture_studio",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_root_cove",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_cohort_classroom",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot4",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_lounge_area_near_lift",
+          "title": "Library",
+          "description": null
+        },
+        {
+          "name": "spot5",
+          "type": "text",
+          "linkedscene": "scene_auditorium_level_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot6",
+          "type": "text",
+          "linkedscene": "scene_campus_centre",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot7",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_entrance",
+          "title": "Fabrication Lab",
+          "description": null
+        },
+        {
+          "name": "spot8",
+          "type": "text",
+          "linkedscene": "scene_antique_house",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot9",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot10",
+          "type": "text",
+          "linkedscene": "scene_indoor_sports_hall",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot11",
+          "type": "text",
+          "linkedscene": "scene_aerial_entrance",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "first",
+          "type": "text",
+          "linkedscene": null,
+          "title": "First to offer an interdisciplinary, design-centric education",
+          "description": "Established in 2009 in collaboration with MIT, SUTD was the first among local public universities to offer a truly interdisciplinary education focused on designing human-centric solutions."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_antique_house",
+      "title": "Antique Houses",
+      "friendly": "Antique Houses",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/antique_house.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_antique_house.jpg",
+      "thumbbytes": 31561,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_entrance",
+          "title": "Fabrication Lab",
+          "description": null
+        },
+        {
+          "name": "structures",
+          "type": "text",
+          "linkedscene": null,
+          "title": "SUTD has four 400 year-old structures",
+          "description": "Donated by international film star Jackie Chan, the collection of these 400 year-old structures stand regally on the SUTD campus. The buildings were reassembled from about 4,000 pieces and are now used as event and recreational spaces at SUTD."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_architecture_studio",
+      "title": "Architecture Studio",
+      "friendly": "Architecture Studio",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/architecture_studio.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_architecture_studio.jpg",
+      "thumbbytes": 33684,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_root_cove",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_entrance",
+          "title": "Fabrication Lab",
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_cohort_classroom",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "architecture",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Architecture and Sustainable Design",
+          "description": "The Architecture and Sustainable Design programme nurtures architects and urban designers to build not only structures, but also better communities and a better tomorrow through the power of design and technology."
+        },
+        {
+          "name": "chinatown",
+          "type": "text",
+          "linkedscene": null,
+          "title": "For over a decade, SUTDents have designed the CNY light up at Chinatown",
+          "description": "The annual Chinese New Year light-up at Chinatown has become a much-anticipated festival highlight. Each year, the precinct is adorned with hundreds of lanterns designed in collaboration with SUTD undergraduates. In 2022, the Year of the Tiger is the 11th year of SUTD’s participation in the 880 metre-long display."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_auditorium_level_1",
+      "title": "Auditorium",
+      "friendly": "Auditorium",
+      "code": "2.101",
+      "curatedFromName": true,
+      "type": "Auditorium",
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/auditorium_level_1.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_auditorium_level_1.jpg",
+      "thumbbytes": 24224,
+      "mirrorCodeThumb": "frontend/public/maps/scenes/2_101.jpg",
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_entrance",
+          "title": "Fabrication Lab",
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_campus_centre",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_auditorium_level_2",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "auditorium",
+          "type": "text",
+          "linkedscene": null,
+          "title": "SUTD Grad Day",
+          "description": "SUTD Grad Day 2019 at the SUTD Auditorium and Campus Centre"
+        },
+        {
+          "name": "lf_0",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_1",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_2",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_3",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_4",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_5",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_6",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_7",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_8",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_9",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_10",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_11",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_12",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_13",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_14",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_15",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_16",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_17",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_18",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_19",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_20",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_21",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_22",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_23",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_24",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_25",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_26",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_27",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_28",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_auditorium_level_2",
+      "title": "Auditorium L2",
+      "friendly": "Auditorium L2",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/auditorium_level_2.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_auditorium_level_2.jpg",
+      "thumbbytes": 23484,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_cohort_classroom",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_auditorium_level_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "auditorium",
+          "type": "text",
+          "linkedscene": null,
+          "title": "SUTD Grad Day",
+          "description": "SUTD Grad Day 2019 at the SUTD Auditorium and Campus Centre"
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_architecture_studio",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_0",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_1",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_2",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_3",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_4",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_5",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_6",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_7",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_8",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_9",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_10",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_11",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_12",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_13",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_14",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_15",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_16",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_17",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_18",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_19",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_20",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_21",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_22",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_23",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_24",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_25",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_26",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_27",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_28",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_campus_centre",
+      "title": "Campus Centre",
+      "friendly": "Campus Centre",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/campus_centre.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_campus_centre.jpg",
+      "thumbbytes": 33197,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_auditorium_level_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_lounge_area_near_lift",
+          "title": "Library",
+          "description": null
+        },
+        {
+          "name": "campus1",
+          "type": "text",
+          "linkedscene": null,
+          "title": "SUTD Time Capsule",
+          "description": "The SUTD Time Capsule preserves and exhibits the university’s most significant innovations and milestones over the first 10 years. The form of the capsule represents the cyclical nature of time: a periodic surface peels from the ground in an oscillating motion, holding the collection in a secure yet open space. To create this unique form, digital tools and advanced manufacturing methods were developed and applied. The capsule’s surface consists of 3,582 unique panels, which were computationally designed and 3D printed with biopolymers, producing zero waste."
+        },
+        {
+          "name": "campus2",
+          "type": "text",
+          "linkedscene": null,
+          "title": "What Design means at SUTD",
+          "description": "Design is the creation of human-centred solutions that better the world. Nurturing Design innovators is crucial to the continued advancement of humankind in a world bombarded by unprecedented challenges. They will transform our lives, drive innovation and grow economies sustainably. At SUTD, our mission is to nurture the future generation of Design innovators."
+        },
+        {
+          "name": "campus3",
+          "type": "text",
+          "linkedscene": null,
+          "title": "A Better World by Design",
+          "description": "SUTD is Singapore’s fourth public university, and one of the first universities in the world to incorporate the art and science of design and technology into an interdisciplinary curriculum. We seek to advance knowledge and nurture technically-grounded leaders and innovators to serve societal needs. Check out our achievements."
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": "Hostel",
+          "description": null
+        },
+        {
+          "name": "spot4",
+          "type": "text",
+          "linkedscene": "scene_track_and_field",
+          "title": "Sports and Recreation Centre",
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_cohort_classroom",
+      "title": "Cohort Classroom",
+      "friendly": "Cohort Classroom",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/cohort_classroom.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_cohort_classroom.jpg",
+      "thumbbytes": 30206,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_architecture_studio",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_lounge_area_near_lift",
+          "title": "Library",
+          "description": null
+        },
+        {
+          "name": "cohort",
+          "type": "text",
+          "linkedscene": null,
+          "title": "The Freshmore Story",
+          "description": "The Freshmore terms at SUTD provide the foundation as well as the opportunity for exploration before students select their majors. Check out the experience of 12 Freshmore students here."
+        },
+        {
+          "name": "collaborative",
+          "type": "text",
+          "linkedscene": null,
+          "title": "A hands-on collaborative learning experience",
+          "description": "SUTDents work on over 20 real-world design projects, which will be reflected in their graduation transcript."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_dance_studio",
+      "title": "Dance Studio",
+      "friendly": "Dance Studio",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/dance_studio.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_dance_studio.jpg",
+      "thumbbytes": 29825,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_track_and_field",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_indoor_sports_hall",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "dedicated",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Dedicated time for interests",
+          "description": "No classes scheduled on Wednesday and Friday afternoons so SUTDents can use this time to pursue their passions."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fab_lab_level_1_3d_printers",
+      "title": "Level 1: 3D Prototyping Section",
+      "friendly": "Level 1: 3D Prototyping Section",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fab_lab_level_1_3d_printers.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fab_lab_level_1_3d_printers.jpg",
+      "thumbbytes": 39350,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_campus_centre",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_entrance",
+          "title": "Level 1: Main Entrance",
+          "description": null
+        },
+        {
+          "name": "nurtured",
+          "type": "text",
+          "linkedscene": null,
+          "title": "66 start-ups nurtured, with more to come",
+          "description": "The strong entrepreneurial culture at SUTD has already led to more than 66 start-ups, many of which emerged from students’ final year Capstone projects."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fab_lab_level_1_assembly_space",
+      "title": " Level 1: Assembly Space",
+      "friendly": "Level 1: Assembly Space",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fab_lab_level_1_assembly_space.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fab_lab_level_1_assembly_space.jpg",
+      "thumbbytes": 36473,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_entrance",
+          "title": "Level 1: Main Entrance",
+          "description": null
+        },
+        {
+          "name": "fabass",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Woodworking Section",
+          "description": "The Woodworking Section has equipment like CNC routers for students in the Architecture and Sustainable Design programme to fabricate their models for studio."
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_campus_centre",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_auditorium_level_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot4",
+          "type": "text",
+          "linkedscene": "scene_cohort_classroom",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fab_lab_level_1_entrance",
+      "title": "Level 1: Main Entrance",
+      "friendly": "Level 1: Main Entrance",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fab_lab_level_1_entrance.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fab_lab_level_1_entrance.jpg",
+      "thumbbytes": 32952,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_assembly_space",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_2_maker_space",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_3d_printers",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "fab1",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Metal Machining Section",
+          "description": "At the Metal Machining Section, there are state-of-the-art waterjet machines that can cut ferrous and non-ferrous materials."
+        },
+        {
+          "name": "fab2",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Maker Space 1",
+          "description": "The Maker Space is open to students 24/7 and provides the space and basic equipment for them to work on projects."
+        },
+        {
+          "name": "fab3",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Welcome to SUTD's Fab Lab",
+          "description": "Spanning 3000 sqm over two levels with 10 sections of facilities and high-performance machines, Fab Lab is where students turn their ideas into reality. "
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fab_lab_level_1_entrance_dots",
+      "title": "Fab Lab: Main Entrance",
+      "friendly": "Fab Lab: Main Entrance",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fab_lab_level_1_entrance.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fab_lab_level_1_entrance_dots.jpg",
+      "thumbbytes": 32952,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_assembly_space",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_2_maker_space",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_3d_printers",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "fab1",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Metal Machining Section",
+          "description": "At the Metal Machining Section, there are state-of-the-art waterjet machines that can cut ferrous and non-ferrous materials."
+        },
+        {
+          "name": "fab2",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Maker Space 1",
+          "description": "The Maker Space is open to students 24/7 and provides the space and basic equipment for them to work on projects."
+        },
+        {
+          "name": "fab3",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Welcome to SUTD's Fab Lab",
+          "description": "Spanning 3000 sqm over two levels with 10 sections of facilities and high-performance machines, Fab Lab is where students turn their ideas into reality. "
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fab_lab_level_2_electronics_lab",
+      "title": "Level 2: Electronics Lab",
+      "friendly": "Level 2: Electronics Lab",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fab_lab_level_2_electronics_lab.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fab_lab_level_2_electronics_lab.jpg",
+      "thumbbytes": 39867,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_2_laser_cutting_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_2_maker_space",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fab_lab_level_2_laser_cutting_room",
+      "title": "Level 2: Laser Cutting Section",
+      "friendly": "Level 2: Laser Cutting Section",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fab_lab_level_2_laser_cutting_room.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fab_lab_level_2_laser_cutting_room.jpg",
+      "thumbbytes": 39489,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_2_electronics_lab",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_2_maker_space",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fab_lab_level_2_maker_space",
+      "title": "Level 2: Maker Space ",
+      "friendly": "Level 2: Maker Space",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fab_lab_level_2_maker_space.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fab_lab_level_2_maker_space.jpg",
+      "thumbbytes": 37020,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_1_entrance",
+          "title": "Level 1: Main Entrance",
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_2_electronics_lab",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_fab_lab_level_2_laser_cutting_room",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_gym",
+      "title": "Fitness Centre",
+      "friendly": "Fitness Centre",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/gym.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_gym.jpg",
+      "thumbbytes": 31521,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_pool",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_track_and_field",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_hostel_hostel_room",
+      "title": "Hostel Room",
+      "friendly": "Hostel Room",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/hostel_hostel_room.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_hostel_hostel_room.jpg",
+      "thumbbytes": 25532,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_hostel_recreation_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_hostel_kitchen",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "hostel",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Hostel Living",
+          "description": "Community makes a hostel a home."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_hostel_kitchen",
+      "title": "Communal Kitchen",
+      "friendly": "Communal Kitchen",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/hostel_kitchen.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_hostel_kitchen.jpg",
+      "thumbbytes": 31168,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_hostel_meeting_room",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_hostel_meeting_room",
+      "title": "Meeting Room",
+      "friendly": "Meeting Room",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/hostel_meeting_room.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_hostel_meeting_room.jpg",
+      "thumbbytes": 32302,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_hostel_recreation_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_hostel_kitchen",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_antique_house",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_hostel_recreation_room",
+      "title": "Recreation Room",
+      "friendly": "Recreation Room",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/hostel_recreation_room.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_hostel_recreation_room.jpg",
+      "thumbbytes": 31623,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_indoor_sports_hall",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_hostel_meeting_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "video_on_screen",
+          "type": "plugin",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "recroom",
+          "type": "text",
+          "linkedscene": "scene_aerial_entrance",
+          "title": "A Day in the life of SUTDents",
+          "description": "Take a look behind-the-scenes at the campus lives of five dynamic SUTDents as they make the most of their typical day at SUTD. "
+        },
+        {
+          "name": "spot4",
+          "type": "text",
+          "linkedscene": "scene_pool",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot5",
+          "type": "text",
+          "linkedscene": "scene_track_and_field",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_indoor_sports_hall",
+      "title": "Indoor Sports Hall",
+      "friendly": "Indoor Sports Hall",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/indoor_sports_hall.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_indoor_sports_hall.jpg",
+      "thumbbytes": 36307,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_gym",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_track_and_field",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_dance_studio",
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_library_level_1_lounge_area_near_lift",
+      "title": "Level 1: Main Entrance",
+      "friendly": "Level 1: Main Entrance",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/Library_level_1_lounge_area_near_lift.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_library_level_1_lounge_area_near_lift.jpg",
+      "thumbbytes": 32412,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_library_level_2_green_steps_area",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_materials_collection",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_campus_centre",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "top",
+          "type": "text",
+          "linkedscene": null,
+          "title": "SUTD faculty listed among the world’s top scientists",
+          "description": "24% of SUTD faculty are listed among the world’s top 2% of scientists according to a database released by Stanford University and Elsevier BV."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_library_level_1_lounge_area_near_lift_dots",
+      "title": "Level 1: Main Entrance",
+      "friendly": "Level 1: Main Entrance",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/Library_level_1_lounge_area_near_lift.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_library_level_1_lounge_area_near_lift_dots.jpg",
+      "thumbbytes": 32412,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_library_level_2_green_steps_area",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_materials_collection",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_campus_centre",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "top",
+          "type": "text",
+          "linkedscene": null,
+          "title": "SUTD faculty listed among the world’s top scientists",
+          "description": "24% of SUTD faculty are listed among the world’s top 2% of scientists according to a database released by Stanford University and Elsevier BV."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_library_level_1_materials_collection",
+      "title": "Level 1: Materials Collection",
+      "friendly": "Level 1: Materials Collection",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/library_level_1_materials_collection.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_library_level_1_materials_collection.jpg",
+      "thumbbytes": 34739,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_library_level_2_green_steps_area",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_lounge_area_near_lift",
+          "title": "Level 1: Main Entrance",
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_library_level_2_green_steps_area",
+      "title": "Level 2: Parkscape",
+      "friendly": "Level 2: Parkscape",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/library_level_2_green_steps_area.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_library_level_2_green_steps_area.jpg",
+      "thumbbytes": 36584,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_library_level_3_near_discussion_booths",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_materials_collection",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "gamechangers",
+          "type": "text",
+          "linkedscene": null,
+          "title": "SUTDents are gamechangers who impact the world",
+          "description": "SUTD nurtures our students to become design innovators capable of tackling real-world challenges like those that arose from the Covid-19 pandemic."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_library_level_3_near_discussion_booths",
+      "title": "Level 3: Discussion Booth",
+      "friendly": "Level 3: Discussion Booth",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/library_level_3_near_discussion_booths.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_library_level_3_near_discussion_booths.jpg",
+      "thumbbytes": 22454,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_library_level_2_green_steps_area",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_cohort_classroom",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "competency",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Digital competency for all students",
+          "description": "From Computational Thinking, to Artificial Intelligence, Data Science and Machine Learning, these are incorporated across all levels and disciplines."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_pool",
+      "title": "Swimming Pool",
+      "friendly": "Swimming Pool",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/pool.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_pool.jpg",
+      "thumbbytes": 28973,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_dance_studio",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_gym",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot4",
+          "type": "text",
+          "linkedscene": "scene_track_and_field",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_0",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_1",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_2",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_3",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_4",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_5",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_6",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_7",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_8",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_9",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_10",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_11",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_12",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_13",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_14",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_15",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_16",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_17",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_18",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_19",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_20",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_21",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_22",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_23",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_24",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_25",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_26",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_27",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_28",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_root_cove",
+      "title": "ROOT Cove",
+      "friendly": "ROOT Cove",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/root_cove.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_root_cove.jpg",
+      "thumbbytes": 25965,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_cohort_classroom",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_architecture_studio",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "root",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Hangout Spots on Campus",
+          "description": "Want to know where to hang out on campus?"
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_track_and_field",
+      "title": "Stadium",
+      "friendly": "Stadium",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/track_and_field.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_track_and_field.jpg",
+      "thumbbytes": 24428,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_indoor_sports_hall",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_pool",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_aerial_middle",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot4",
+          "type": "text",
+          "linkedscene": "scene_aerial_entrance",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot5",
+          "type": "text",
+          "linkedscene": "scene_dance_studio",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot6",
+          "type": "text",
+          "linkedscene": "scene_hostel_hostel_room",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot7",
+          "type": "text",
+          "linkedscene": "scene_library_level_1_lounge_area_near_lift",
+          "title": "Library",
+          "description": null
+        },
+        {
+          "name": "spot8",
+          "type": "text",
+          "linkedscene": "scene_campus_centre",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_0",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_1",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_2",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_3",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_4",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_5",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_6",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_7",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_8",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_9",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_10",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_11",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_12",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_13",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_14",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_15",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_16",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_17",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_18",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_19",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_20",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_21",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_22",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_23",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_24",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_25",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_26",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_27",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_28",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_29",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_30",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_31",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "lf_32",
+          "type": "image",
+          "linkedscene": null,
+          "title": null,
+          "description": null
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fcp_entrance",
+      "title": "Main Entrance",
+      "friendly": "Main Entrance",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fcp_entrance.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fcp_entrance.jpg",
+      "thumbbytes": 26209,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fcp_area_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot_rru",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Remote Radio Unit (RRU)",
+          "description": "An RRU (N78 band) is connected through single-mode fibre to the indoor fronthaul gateway (FHGW), indoor BBU, and 5G core located in FCCLab's server room."
+        },
+        {
+          "name": "spot_fcp",
+          "type": "text",
+          "linkedscene": null,
+          "title": "About the Asia & Pacfic O-RAN Testing and Integration entre (OTIC)",
+          "description": "The world today is highly dependent on the telecommunication infrastructure. This makes it critical to ensure that it is secure, robust and reliable. The new Asia & Pacific OTIC in Singapore will look to advance Singapore’s digital infrastructure capabilities and enable the next level of innovation in future communications and capabilities."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fcp_area_1",
+      "title": "FCP Open Space",
+      "friendly": "FCP Open Space",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fcp_area_1.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fcp_area_1.jpg",
+      "thumbbytes": 23440,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot4",
+          "type": "text",
+          "linkedscene": "scene_aerial_arena",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fcp_entrance",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fcp_vr",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_fcp_area_2",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot_5g",
+          "type": "text",
+          "linkedscene": null,
+          "title": "5G drone via VR headset",
+          "description": "The pilot (indoor) controls a 5G-native drone that flies in the AerialArena @ SUTD (outdoor). Two pilots control 5G drones in a virtual environment through VR headsets to compete each other and fly their drones through virtual challenges (e.g., achieve gaming scores if flying through without collision). The winner is the one who brings the drone to the finish line early with the highest score."
+        },
+        {
+          "name": "spot_scas",
+          "type": "text",
+          "linkedscene": null,
+          "title": "SCAS Test",
+          "description": "In order to obtain the O-RAN E2E Badge, a gNB must pass the \"gNB Security Assurance Specification (SCAS) required by 3GPP SA3\". We particularly use gNB from QCT as the System Under Test (SUT) and wrapped around by emulated UE and emulated 5G core. This demo shows the capability of running SCAS test cases automatically with Keysight's Test Management Center (TMC), which can automatically controls emulated UE and 5G core to execute all SCAS test cases, evaluate their results, and obtain reproducible results."
+        },
+        {
+          "name": "spot_ocloud",
+          "type": "text",
+          "linkedscene": null,
+          "title": "O-Cloud Test",
+          "description": "To verify that a noisy neighbor DoS attack against O-Cloud for resource starvation will not degrade service availability or performance of the O-RAN system served by the network slice under test. We evaluate the end-to-end performance of 5G users with 2 scenarios: (i) without any noisy neighbor attack as a baseline, and (ii) with noisy neighbor attack trying to exhaust O-Cloud resources."
+        },
+        {
+          "name": "spot_radio",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Remote Radio Unit (RRU)",
+          "description": "An indoor RRU (N78 band) provides 5G signal covered the demo area. It is connected through single-mode fibre to the indoor fronthaul gateway (FHGW), indoor BBU and 5G core located in FCCLab's server room."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fcp_area_2",
+      "title": "Demo Area",
+      "friendly": "Demo Area",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fcp_area_2.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fcp_area_2.jpg",
+      "thumbbytes": 23076,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot1",
+          "type": "text",
+          "linkedscene": "scene_fcp_robotics",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fcp_vr",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot5",
+          "type": "text",
+          "linkedscene": "scene_fcp_area_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot_safety",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Safety AI",
+          "description": "5G camera stream video with low-latency and high quality to GPU edge server for processing, and work with the robot arms in the loop to create a virtual fence surrounding the robot-arm. Besides the 5G camera, we also introduce mmWave radar sensor to detect human, which shows potential of combining communication and sensing with mmWave in the future 6G."
+        },
+        {
+          "name": "spot_mobile",
+          "type": "text",
+          "linkedscene": null,
+          "title": "5G Autonomous Mobile Robot",
+          "description": "5G Autonomous Mobile Robot: 5G smart Autonomous Mobile Robot (5G-AMR) developed by FCP and AI-Mega Centre transmits high quality video via a private 5G networks, and is controlled by a remote operator if needed. The 5G-AMR can autonomously do patrol in a predefined path, and suspicious inspection by offloading AI inference tasks to an edge server, resulting in the reduction of device cost and energy consumption of the 5G-AMR. Whenever detecting a suspicious item or emergency situation, an operator in the central control room will take over the 5G-robot to handle the emergency situation."
+        },
+        {
+          "name": "spot_mixed",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Mixed-reality for cabling server rack demo",
+          "description": "This demonstration is designed to showcase the potential of on-site training for new workers through the use of Mixed-Reality (MR) technology. In contrast to traditional training methods that take place in a classroom setting, MR offers a more intuitive and immersive training experience directly at the job site. The integration of 5G technology plays a crucial role by enabling a seamless experience for a multitude of users simultaneously, ensuring low latency and delivering a high-quality and highly engaging training environment."
+        },
+        {
+          "name": "spot_ocloud",
+          "type": "text",
+          "linkedscene": null,
+          "title": "O-Cloud Test",
+          "description": "To verify that a noisy neighbor DoS attack against O-Cloud for resource starvation will not degrade service availability or performance of the O-RAN system served by the network slice under test. We evaluate the end-to-end performance of 5G users with 2 scenarios: (i) without any noisy neighbor attack as a baseline, and (ii) with noisy neighbor attack trying to exhaust O-Cloud resources."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fcp_robotics",
+      "title": "MARVL Lab",
+      "friendly": "MARVL Lab",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fcp_robotics.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fcp_robotics.jpg",
+      "thumbbytes": 27435,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot2",
+          "type": "text",
+          "linkedscene": "scene_fcp_area_2",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot_planning",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Interactive Planning under Uncertainty",
+          "description": "In this project, we present an interactive behavior planner that considers road context, short-term driver intent, and long-term driving style to predict neighboring vehicle states. We assess its robustness in challenging scenarios with irrational drivers using simulations and a full-size self-driving car. Our experiments demonstrate that our algorithm enhances safety and travel time efficiency in autonomous driving, outperforming baselines even in adversarial scenarios."
+        },
+        {
+          "name": "spot_astralis",
+          "type": "text",
+          "linkedscene": null,
+          "title": "ASTRALIS",
+          "description": "In this project we aim to develop tools for heterogeneous robots and human-robot teaming for search and rescue missions. Specifically, the aerial drones can cooperatively follow as well as lead human ground operators during search and rescue missions. The search and rescue scenarios can be generated with high-fidelity with sim-to-real features developed in our simulation environment."
+        },
+        {
+          "name": "spot_robotics",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Robotics for Education",
+          "description": "First graduate-level robotics course at SUTD with hands-on experience on 1/10th size self-driving cars."
+        },
+        {
+          "name": "spot_monitoring",
+          "type": "text",
+          "linkedscene": "scene_fcp_entrance",
+          "title": "Marine Environment Monitoring",
+          "description": "In this project, we focus on the problem of marine environment monitoring using design principles from bio-inspired swarming and multi-agent reinforcement learning (MARL)."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_fcp_vr",
+      "title": "Computer Vision & Learning Group (VLG) Metaverse Lab",
+      "friendly": "Computer Vision & Learning Group (VLG) Metaverse Lab",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/fcp_vr.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_fcp_vr.jpg",
+      "thumbbytes": 29536,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot3",
+          "type": "text",
+          "linkedscene": "scene_fcp_area_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot_pose",
+          "type": "text",
+          "linkedscene": "scene_fcp_vr",
+          "title": "Pose Estimation Game",
+          "description": "Based on the skeleton data extracted by the pose estimation algorithm, we can control the avatar in real-time to avoid obstacles."
+        },
+        {
+          "name": "spot_mesh",
+          "type": "text",
+          "linkedscene": "scene_fcp_vr",
+          "title": "3D Mesh Recovery using a single RGB camera",
+          "description": "Based on video stream captured by the single RGB camera, the demo system will output the 3D mesh of the people in the scene in real-time. The camera and the workstation are connected via 5G, to enable remote and fast 3D mesh estimation."
+        },
+        {
+          "name": "spot_camera",
+          "type": "text",
+          "linkedscene": "scene_fcp_vr",
+          "title": "Camera",
+          "description": "Camera array for multi-view data capture."
+        }
+      ]
+    },
+    {
+      "sceneName": "scene_aerial_arena",
+      "title": "AerialArena @ SUTD",
+      "friendly": "AerialArena @ SUTD",
+      "code": null,
+      "curatedFromName": false,
+      "type": null,
+      "thumbsource": "https://virtualtour.sutd.edu.sg/panos/aerial_arena.tiles/thumb.jpg",
+      "thumbpath": "frontend/public/maps/scenes/scene_aerial_arena.jpg",
+      "thumbbytes": 37958,
+      "mirrorCodeThumb": null,
+      "hotspots": [
+        {
+          "name": "spot5",
+          "type": "text",
+          "linkedscene": "scene_fcp_area_1",
+          "title": null,
+          "description": null
+        },
+        {
+          "name": "spot_enabled",
+          "type": "text",
+          "linkedscene": null,
+          "title": "5G-enabled drone",
+          "description": "The 5G-enabled drone carries 360-camera and streams 360-video to the control station via the private 5G network."
+        },
+        {
+          "name": "spot_outdoor",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Outdoor Remote Radio Unit (RRU)",
+          "description": "An outdoor RRU (N78 band) provides 5G signal coverage for Aerial Arena and nearby areas. It is connected through single-mode fibre to the outdoor fronthaul gateway (FHGW), outdoor BBU and 5G core located in FCCLab's server room."
+        },
+        {
+          "name": "spot_outdoor2",
+          "type": "text",
+          "linkedscene": null,
+          "title": "Outdoor Remote Radio Unit (RRU)",
+          "description": "An outdoor RRU (N78 band) provides 5G signal coverage for Aerial Arena and nearby areas. It is connected through single-mode fibre to the outdoor fronthaul gateway (FHGW), outdoor BBU and 5G core located in FCCLab's server room."
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "name": "g1",
+      "title": "Aerial Views",
+      "scenes": [
+        "scene_aerial_entrance",
+        "scene_aerial_middle"
+      ]
+    },
+    {
+      "name": "g2",
+      "title": "Campus",
+      "scenes": [
+        "scene_campus_centre",
+        "scene_auditorium_level_1",
+        "scene_library_level_1_lounge_area_near_lift_dots",
+        "scene_cohort_classroom",
+        "scene_architecture_studio",
+        "scene_fab_lab_level_1_entrance_dots",
+        "scene_root_cove"
+      ]
+    },
+    {
+      "name": "g3",
+      "title": "Campus: Library",
+      "scenes": [
+        "scene_library_level_1_lounge_area_near_lift",
+        "scene_library_level_1_materials_collection",
+        "scene_library_level_2_green_steps_area",
+        "scene_library_level_3_near_discussion_booths"
+      ]
+    },
+    {
+      "name": "g4",
+      "title": "Campus: Fabrication Lab",
+      "scenes": [
+        "scene_fab_lab_level_1_entrance",
+        "scene_fab_lab_level_1_3d_printers",
+        "scene_fab_lab_level_1_assembly_space",
+        "scene_fab_lab_level_2_maker_space",
+        "scene_fab_lab_level_2_laser_cutting_room",
+        "scene_fab_lab_level_2_electronics_lab"
+      ]
+    },
+    {
+      "name": "g5",
+      "title": "Campus: Future Communications R&D Programme",
+      "scenes": [
+        "scene_fcp_entrance",
+        "scene_fcp_area_1",
+        "scene_fcp_area_2",
+        "scene_fcp_vr",
+        "scene_fcp_robotics",
+        "scene_aerial_arena"
+      ]
+    },
+    {
+      "name": "g6",
+      "title": "Hostel",
+      "scenes": [
+        "scene_hostel_hostel_room",
+        "scene_hostel_meeting_room",
+        "scene_hostel_recreation_room",
+        "scene_hostel_kitchen"
+      ]
+    },
+    {
+      "name": "g7",
+      "title": "Sports & Recreation Centre",
+      "scenes": [
+        "scene_indoor_sports_hall",
+        "scene_dance_studio",
+        "scene_gym",
+        "scene_track_and_field",
+        "scene_pool"
+      ]
+    },
+    {
+      "name": "g8",
+      "title": "Traditional Chinese Structures",
+      "scenes": [
+        "scene_antique_house"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "code": "60.002",
+  "name": "AI Applications in Design",
+  "description": "Introduces students to design ontology and practical data science applications. Students extract actionable knowledge from the data and learn to formulate design representations while applying AI techniques through group projects.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "4",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": ["Term 4", "Core", "DAI"]
+}

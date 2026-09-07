@@ -1,0 +1,16 @@
+{
+  "code": "10.005",
+  "name": "Physics II",
+  "description": "This course is the typical first year Electromagnetism course for engineering students, based on a similar course offered at MIT. The materials include Electrostatics: electric charge, Coulomb’s law, electrostatic field, Gauss’ Law, electric potential difference, electrostatic energy; electric structure of matter: conductors, capacitors, and dielectrics; electric current: current, resistance, Ohm’s Law, and DC circuit theory with capacitors; magnetostatics: magnetic field, Lorentz Force Law, Biot-Savart Law, and Ampere’s law; magnetic properties of materials; time-varying fields: electromotive force, Faraday’s law of induction, inductors, energy stored in magnetic field; Maxwell’s equations: displacement current, Poynting vector, and conservation of energy; electromagnetic waves: plane, standing and travelling conditions.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Freshmore Core",
+    "SMT"
+  ]
+}

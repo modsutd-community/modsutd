@@ -1,0 +1,13 @@
+{
+  "code": "40.321",
+  "name": "Airport Systems Modelling and Simulation",
+  "description": "Airports are complex systems that require specialized modelling tools for efficient operation and management. Equips students with knowledge and modelling skills to apply simulation and optimization tools for airport systems planning, management, and design. The modelling approach extends to other complex systems such as manufacturing facilities and hospitals. Topics include airside capacity estimation, optimization of airport capacity utilization, airport demand management, simulation of airside aircraft movements, simulation of landside processes, and air traffic flow management. Students complete a final project conducting comprehensive simulation studies using fast-time airport simulation tools (TAAM, Airtop, or CAST).",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "7",
+  "prerequisites": ["40.002", "60.008"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "ESD"]
+}

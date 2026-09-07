@@ -1,0 +1,13 @@
+{
+  "code": "50.053",
+  "name": "Software Testing and Verification",
+  "description": "Introduces automated testing algorithms and verification fundamentals via model checking. Emphasis is on designing test algorithms rather than tool usage. Students learn to test complex systems, with coverage-based and unit testing review, followed by systematic test generation strategies. The final week explores impactful recent research and synergies between model checking and testing. Students develop a medium-scale software prototype and conduct systematic testing using course techniques, with prototypes exchanged among groups to simulate industry testing practices.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": ["50.003"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 6", "Term 8", "Elective / Technical Elective", "ISTD"]
+}

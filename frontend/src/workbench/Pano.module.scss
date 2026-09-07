@@ -1,0 +1,117 @@
+.wrap {
+  --pano-r: 512px; // half the 1024px face size: 90deg FOV per face
+  border: 1px solid rgba(255, 176, 0, 0.3);
+  background: #000;
+
+  &.fs {
+    display: flex;
+    flex-direction: column;
+
+    .scene { flex: 1; aspect-ratio: auto; }
+  }
+}
+
+.scene {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  perspective: var(--pano-r);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+
+  &:active { cursor: grabbing; }
+}
+
+.cube {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+}
+
+.face {
+  position: absolute;
+  left: -512px;
+  top: -512px;
+  width: 1024px;
+  height: 1024px;
+  max-width: none;
+  backface-visibility: hidden;
+  // overscan hides the 1px seams between faces
+  scale: 1.006;
+}
+
+.loading {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-size: 10px;
+  color: rgba(233, 234, 237, 0.75);
+  background: rgba(0, 0, 0, 0.55);
+  padding: 3px 8px;
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hint {
+  font-size: 10px;
+  color: rgba(233, 234, 237, 0.5);
+}
+
+.fsBtn {
+  background: none;
+  border: 1px solid rgba(255, 176, 0, 0.4);
+  color: var(--wb-amber-soft);
+  font-family: inherit;
+  font-size: 10.5px;
+  padding: 3px 9px;
+  cursor: pointer;
+
+  &:hover { background: rgba(255, 176, 0, 0.12); }
+}
+
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 30px;
+  height: 44px;
+  font-size: 22px;
+  line-height: 1;
+  color: var(--wb-amber);
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 176, 0, 0.5);
+  font-family: inherit;
+  cursor: pointer;
+
+  &:hover { background: rgba(255, 176, 0, 0.2); }
+}
+
+.navPrev { left: 8px; }
+.navNext { right: 8px; }
+
+.fsTitle {
+  position: absolute;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  z-index: 2;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--wb-amber-soft);
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 176, 0, 0.4);
+  padding: 5px 14px;
+  pointer-events: none;
+}

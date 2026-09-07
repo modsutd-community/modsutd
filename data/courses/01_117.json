@@ -1,0 +1,20 @@
+{
+  "code": "01.117",
+  "name": "Brain-inspired Computing and its Applications",
+  "description": "The brain-inspired computing and its application course focuses on understanding the fundamental principles of brain and cognitive functions used for edge computing, artificial intelligence (AI) tasks and bioinformatics. This includes advanced theoretical models and practical aspect of major processes, such as description of neurons, the response of neurons to sensory stimuli and neuronal networks. Other topics covered include: statistical inference, decision making and more. This course is intended for anyone considering research or a career in next-generation microelectronics, AI or healthcare informatics.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "8",
+  "prerequisites": [
+    "10.015",
+    "10.013"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 8",
+    "Elective / Technical Elective",
+    "SMT"
+  ]
+}

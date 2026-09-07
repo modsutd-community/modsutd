@@ -1,0 +1,122 @@
+// Looks like what it is: a comment form, visually apart from the mod
+// information above it.
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  // No max-width: the container is the measure. A cap here left a gutter down
+  // the right of every field while the description above it ran full width,
+  // and keying the override off pointer:coarse missed a narrow desktop window
+  // entirely.
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 176, 0, 0.25);
+  border-left: 3px solid rgba(255, 176, 0, 0.5);
+  padding: 12px;
+}
+
+.selRow {
+  display: flex;
+  gap: 6px;
+
+  select { flex: 1; cursor: pointer; }
+  option { background: var(--wb-panel); color: var(--wb-ink); }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.label {
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--wb-ink);
+}
+
+.input,
+.area {
+  width: 100%;
+  background: var(--wb-well);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--wb-amber-soft);
+  font-family: inherit;
+  font-size: 11px;
+  line-height: 1.45;
+  padding: 6px 8px;
+  caret-color: var(--wb-amber);
+
+  &:focus { outline: none; border-color: rgba(255, 176, 0, 0.5); }
+  &::placeholder { color: rgba(233, 234, 237, 0.3); }
+}
+
+.area { resize: vertical; }
+
+.chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.note {
+  font-size: 10.5px;
+  color: var(--wb-ink-dim);
+  margin: 0;
+
+  a { color: var(--wb-amber-soft); }
+}
+
+// Disabled by design, not broken. The reason rides in the tooltip (and in an
+// sr-only paragraph beside it), so the row itself stays one quiet line.
+.anonRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  font-size: 11px;
+  color: var(--wb-ink-dim);
+  cursor: not-allowed;
+
+  input { cursor: not-allowed; }
+}
+
+
+// The reason for the disabled checkbox lives in a tooltip, and tooltips are
+// suppressed on touch - so on a phone the row would sit there disabled with no
+// explanation at all. Hidden from sighted desktop users, who get the tooltip;
+// shown on touch, where nothing else would carry it.
+.anonWhy {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+
+  @media (pointer: coarse) {
+    position: static;
+    width: auto; height: auto;
+    margin: 3px 0 0 21px;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    font-size: 10px;
+    line-height: 1.45;
+    color: var(--wb-ink-dim);
+  }
+}
+
+// A link that performs an action before navigating: it must be a button for
+// keyboard and screen-reader users, but read as the link it replaced.
+.linkish {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--wb-amber-soft);
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:disabled { opacity: 0.35; cursor: not-allowed; text-decoration: none; }
+}
