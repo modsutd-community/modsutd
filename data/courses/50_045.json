@@ -6,8 +6,24 @@
   "department": "Information Systems Technology and Design",
   "pillar": "CSD",
   "term": "7",
-  "prerequisites": ["50.007", "50.021", "50.038", "50.039"],
+  "prerequisites": [
+    "50.007",
+    "50.021",
+    "50.038",
+    "50.039"
+  ],
+  "prereqTree": {
+    "or": [
+      "50.007",
+      "50.021",
+      "50.038",
+      "50.039"
+    ]
+  },
   "corequisites": [],
   "schedules": [],
-  "tags": ["Elective / Technical Elective", "ISTD"]
+  "tags": [
+    "Elective / Technical Elective",
+    "ISTD"
+  ]
 }

@@ -6,8 +6,21 @@
   "department": "Engineering Systems and Design",
   "pillar": "ESD",
   "term": "7",
-  "prerequisites": ["40.002", "60.008"],
+  "prerequisites": [
+    "40.002",
+    "60.008"
+  ],
+  "prereqTree": {
+    "or": [
+      "40.002",
+      "60.008"
+    ]
+  },
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 7", "Elective / Technical Elective", "ESD"]
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ESD"
+  ]
 }

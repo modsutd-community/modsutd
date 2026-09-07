@@ -8,6 +8,7 @@ import { importPlans } from '@/reducers/timetableReducer';
 import { isBundle } from '../backup';
 import type { Mod, RecordsState } from '@/types';
 import { pillarColor } from '../pillars';
+import { unmet, treeOf } from '@/utils/prereq';
 import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFreshmore, freshmoreFixedSet } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
 import { useGithubLink, startDeviceFlow, pollForToken, pushBackup, DeviceStart } from '../sync';
@@ -92,9 +93,12 @@ export function PlanTree({ onPick }: Props) {
       const mod = mods[key];
       if (!mod) return;
       const level = Math.min(10, Math.max(1, levelOf.get(key)!));
-      const missing = (mod.prerequisites ?? []).filter((p) => {
+      // Through the tree, so an "or" is satisfied by either branch. The flat
+      // list cannot express that and read 40.321 as needing both 40.002 and
+      // 60.008 when the listing says either.
+      const missing = unmet(treeOf(mod.prereqTree, mod.prerequisites), (p) => {
         const pl = levelOf.get(p);
-        return pl === undefined || pl >= level;
+        return pl !== undefined && pl < level;
       });
       byLevel.get(level)!.push({ mod, missing, isFixed });
     };

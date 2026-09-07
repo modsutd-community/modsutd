@@ -64,6 +64,18 @@ check every field against the others:
   ones were deleted: "next to 1.502" is what the floor plan is for, and
   "Building 1 Level 5" was the location printed a second time. If a room is
   genuinely hard to find, the fix is a missing lift or shape in the survey.
+- **A prerequisite list cannot say "or".** SUTD writes "40.002 Optimisation or
+  60.008 Systems Design Studio" and `gather_listing.py` keeps only the codes, so
+  `prerequisites` reads as "all of" and the plan demands both. When the listing
+  joins the CODES with "or", add a `prereqTree` beside it:
+  `{"or": ["40.002", "60.008"]}`, or `{"and": ["50.003", {"or": [...]}]}` for a
+  mixed one. `tools/scraper/audit_prereqs.py` lists every course whose listing
+  contains a joining word, and the tree is what both the plan and the
+  prerequisite diagram read.
+  Careful with the near-misses: "20.201 and 20.202 **or speak with the
+  professor**" and "50.001, 50.004; **or** a working knowledge of Python" both
+  contain "or" and both still require every code. Read the sentence, not the
+  word.
 - Data honesty everywhere: `workload`/`grading` exist ONLY when official
   (`source: "official"`), `schedules` ONLY from crowdsourced timetables.
   Never invent, never estimate.
