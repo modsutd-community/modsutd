@@ -2,7 +2,11 @@ import {useEffect, useMemo, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {setTimetableEvents, clearTimetable} from "@/reducers/timetableReducer";
 import {parseTimetableText} from "@/utils/timetableParser";
-import {parseWeeklyHtml, looksWeekly, looksWeeklyText} from "@/utils/weeklyParser";
+import {
+    parseWeeklyHtml,
+    looksWeekly,
+    looksWeeklyText,
+} from "@/utils/weeklyParser";
 import {expandWeekToTerm, labelFor} from "@/utils/termCalendar";
 import type {TermCalendar, ExpandResult} from "@/utils/termCalendar";
 import {downloadICS} from "@/utils/icsGenerator";
@@ -179,9 +183,8 @@ export function TimetableBody({onPickMod}: Props) {
                     if (weekly.missingWeek) {
                         setErrorKind("weekly-missing-week");
                         setError(
-                            "this is the Weekly Calendar View, but the copy is missing the " +
-                                '"Week of" line above the grid that carries the year. select the ' +
-                                "whole page and paste again.",
+                            "You are missing a part of the text for successful parsing, please select the " +
+                                "entire page and paste again.",
                         );
                         return;
                     }
@@ -197,27 +200,22 @@ export function TimetableBody({onPickMod}: Props) {
                         return;
                     }
                 }
-                // The grid is parsed from the text/html flavour of the clipboard,
-                // so a plain-text copy fails with the weekly page perfectly visible
-                // on screen. Naming the clipboard rather than the view matters here:
-                // List View is often the one this reader has no access to, so
-                // sending them there is advice they cannot act on.
+                // The grid is parsed from the clipboard's text/html, so a
+                // plain-text copy fails with the weekly page on screen. Say that
+                // rather than pointing at List View, which is often the view this
+                // reader cannot open.
                 if (looksWeeklyText(text)) {
                     setErrorKind("weekly-plain-text");
                     setError(
-                        "this is the Weekly Calendar View, but it arrived as plain text. " +
-                            "the grid needs the formatting to keep each class in its own day " +
-                            "column. click the MyPortal page, Ctrl/Cmd A, Ctrl/Cmd C, then " +
-                            "paste with Ctrl/Cmd V (not Ctrl/Cmd Shift V).",
+                        "pasted as plain text. copy the whole MyPortal page with " +
+                            "Ctrl/Cmd A, then paste with Ctrl/Cmd V.",
                     );
                     return;
                 }
                 setErrorKind("not-a-timetable");
                 setError(
-                    "nothing parsed. this is neither view - select the whole MyPortal " +
-                        "schedule page and copy it. List View is the one that carries the " +
-                        "dates an export needs; if it says you have no access, your " +
-                        "enrolment is not final yet and the Weekly view still works.",
+                    "nothing parsed. select the whole MyPortal schedule page and " +
+                        "copy it. List View carries the dates an export needs.",
                 );
                 return;
             }
@@ -495,7 +493,10 @@ export function TimetableBody({onPickMod}: Props) {
                         </p>
                     )}
                     {error && (
-                        <div className={wb.error} data-act={errorKind ?? "error"}>
+                        <div
+                            className={wb.error}
+                            data-act={errorKind ?? "error"}
+                        >
                             ! {error}
                         </div>
                     )}

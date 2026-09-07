@@ -151,18 +151,10 @@ export function parseWeeklyHtml(html: string, alsoSearch = ''): WeeklyParseResul
   return { events: out };
 }
 
-/**
- * True when the PLAIN TEXT of a paste is the weekly grid.
- *
- * Used only to tell a bad clipboard apart from a bad page. The grid needs
- * text/html to be parsed at all, so when that flavour is missing the reader
- * has to be told to re-copy rather than sent to List View, which may well be
- * the view they cannot open.
- *
- * Keyed on the "Week of" line and the day headers, never on the words
- * "Weekly Calendar View": those are a tab label that a List View copy of the
- * same page carries too.
- */
+// True when the PLAIN TEXT of a paste is the weekly grid, so the error can
+// name a bad clipboard instead of sending the reader to List View. Keyed on
+// the week line and the day headers, never on "Weekly Calendar View": that is
+// a tab label a List View copy carries too.
 export function looksWeeklyText(text: string): boolean {
   if (WEEK_OF_RE.test(text)) return true;
   const days = text.match(/\b(Mon|Tues|Wednes|Thurs|Fri|Satur|Sun)day\s+\d{1,2}\s+[A-Z][a-z]{2}/g);
