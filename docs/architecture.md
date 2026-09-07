@@ -95,9 +95,16 @@ rather than failing.
 | `TG_SESSION`                                           |    x    |        |       |
 | `TG_BOT_USERNAME` _(var)_                              |   opt   |        |  opt  |
 | `SITE_URL` _(var)_                                     |   opt   |        |  opt  |
-| `VERCEL_TOKEN` / `VERCEL_ORG_ID` / `VERCEL_PROJECT_ID` |    x    |        |       |
+| `VERCEL_DEPLOY_HOOK`                                   |    x    |        |       |
 
 `GITHUB_TOKEN` is provided by Actions; never set it yourself.
+
+`VERCEL_DEPLOY_HOOK` is a URL from Project Settings → Git → Deploy Hooks,
+pointed at `main`. It carries its own secret in the path and needs no token, so
+it is all `deploy.yml` uses. The Vercel CLI is deliberately not used: `vercel
+pull` and `vercel build` resolve the token's user first, and a token scoped to
+a team has none - `/v2/user` answers 404 and the CLI stops at "Could not
+retrieve Project Settings" without saying why.
 
 Three that are easy to get wrong:
 

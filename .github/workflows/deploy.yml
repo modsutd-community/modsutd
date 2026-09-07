@@ -68,31 +68,31 @@ jobs:
             contents: write
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/setup-node@v4
-              with:
-                  node-version-file: .nvmrc
-                  cache: "npm"
-                  cache-dependency-path: frontend/package-lock.json
-            - name: install vercel cli
-              run: npm install -g vercel@latest
-            # At the REPO ROOT, not frontend/. Vercel's Root Directory cannot
-            # reach above itself, so the project is rooted here: vercel.json and
-            # api/ are here, and `vercel build` finds neither from frontend/.
-            - name: pull env
+            # A Deploy Hook, not the CLI. `vercel pull` and `vercel build`
+            # both resolve the token's user first, and a token scoped to a team
+            # has none - /v2/user answers 404 and the CLI stops at "Could not
+            # retrieve Project Settings" with no hint that the scope is why.
+            # The hook needs no token at all, and Vercel builds it server-side,
+            # so vercel.json and the root directory apply without repeating
+            # them here.
+            - name: ask vercel to build production
               env:
-                  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-                  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-              run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
-            - name: build
-              env:
-                  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-                  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-              run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-            - name: deploy
-              env:
-                  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-                  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-              run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+                  HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+              run: |
+                  if [ -z "$HOOK" ]; then
+                    echo "VERCEL_DEPLOY_HOOK is not set - nothing to deploy with." >&2
+                    exit 1
+                  fi
+                  code=$(curl -sS -X POST -o /tmp/hook.json -w '%{http_code}' "$HOOK")
+                  cat /tmp/hook.json
+                  echo
+                  # The hook answers with a queued job. Anything else is a
+                  # revoked URL or a project that has moved.
+                  case "$code" in
+                    2*) echo "queued";;
+                    *) echo "deploy hook returned HTTP $code" >&2; exit 1;;
+                  esac
+
             - name: mark what production now serves
               run: |
                   git tag -f deployed "$GITHUB_SHA"
