@@ -72,6 +72,15 @@ test.describe('timetable · grid geometry', () => {
     // 3h block must be ~1.5× the 2h block (exact ratio, generous tolerance).
     expect(h3 / h2).toBeGreaterThan(1.4);
     expect(h3 / h2).toBeLessThan(1.6);
+    // And it fills the day it is in. Every block carries data-tip, and
+    // `[data-tip] { position: relative }` in global.scss has the same
+    // specificity as the block's own class - the global sheet won, which made
+    // left/right inert and shrank each block to the width of its own text.
+    const col = page.locator('[data-act="tt-day"]').first();
+    const colW = (await col.boundingBox())!.width;
+    const evW = (await twoHour.boundingBox())!.width;
+    expect(evW / colW).toBeGreaterThan(0.95);
+
     // And a 2h block is visibly two rows tall, not a squished sliver.
     expect(h2).toBeGreaterThan(50);
 

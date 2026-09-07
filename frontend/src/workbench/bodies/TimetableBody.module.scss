@@ -133,7 +133,13 @@
     bottom: 0;
 }
 
-.event {
+// button.event, not .event: every block carries data-tip, and
+// `[data-tip] { position: relative }` in global.scss has the same specificity
+// as a class. The global sheet loaded later and won, so the block was
+// positioned relatively - which makes left/right inert, so it shrank to the
+// width of its own text instead of filling the day, and stacked its siblings
+// instead of placing them by time. The element selector puts it back.
+button.event {
     position: absolute;
     left: 1px;
     right: 1px;

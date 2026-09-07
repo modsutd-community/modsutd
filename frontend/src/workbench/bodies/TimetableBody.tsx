@@ -578,7 +578,11 @@ export function TimetableBody({onPickMod}: Props) {
                             {DAYS.map((day) => {
                                 const rows = packed[day];
                                 return (
-                                    <div key={day} className={styles.dayCol}>
+                                    <div
+                                        key={day}
+                                        className={styles.dayCol}
+                                        data-act="tt-day"
+                                    >
                                         {hours.map((h) => (
                                             <div
                                                 key={h}
