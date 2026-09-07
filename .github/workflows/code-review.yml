@@ -100,6 +100,11 @@ jobs:
     gemini:
         runs-on: ubuntu-latest
         timeout-minutes: 30
+        # An attempt, not the verdict. The next provider takes over when this
+        # one is unreachable - Gemini answers 503 often enough - and a red
+        # check nobody can act on would block branch protection for no reason.
+        # Only the last in the chain reports failure.
+        continue-on-error: true
         needs: context
         if: needs.context.outputs.has_gemini == 'true'
         steps:
@@ -120,6 +125,11 @@ jobs:
     groq:
         runs-on: ubuntu-latest
         timeout-minutes: 30
+        # An attempt, not the verdict. The next provider takes over when this
+        # one is unreachable - Gemini answers 503 often enough - and a red
+        # check nobody can act on would block branch protection for no reason.
+        # Only the last in the chain reports failure.
+        continue-on-error: true
         needs: [context, gemini]
         if: |
             always()
