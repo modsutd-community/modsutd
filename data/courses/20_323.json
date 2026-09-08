@@ -1,0 +1,27 @@
+{
+  "code": "20.323",
+  "name": "Forms and Types of Media Representation",
+  "description": "",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [
+    "20.102"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 3,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 6,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-323-forms-and-types-of-media-representation/"
+}

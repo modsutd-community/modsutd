@@ -1,0 +1,52 @@
+:root {
+  --wb-bg: #0d0e11;
+  --wb-bar: #101216;
+  --wb-panel: #14161a;
+  --wb-titlebar: #181b20;
+  --wb-well: #101216;
+  --wb-amber: #ffb000;
+  --wb-amber-soft: #ffce5a;
+  --wb-red: #ff5d6c;
+  --wb-green: #3ca87a;
+  --wb-violet: #6c7be0;
+  --wb-ink: #e9eaed;
+  --wb-ink-strong: #ffffff;
+  --wb-ink-dim: rgba(233, 234, 237, 0.55);
+  --wb-ink-faint: rgba(233, 234, 237, 0.18);
+  --wb-ink-trace: rgba(233, 234, 237, 0.06);
+  --wb-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --wb-display: 'Archivo', system-ui, sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --t-fast:   180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-mid:    320ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-slow:   600ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+$breakpoint-mobile: 720px;
+$breakpoint-tablet: 1024px;
+$breakpoint-desktop: 1280px;
+
+@mixin mobile        { @media (max-width: #{$breakpoint-mobile - 1px}) { @content; } }
+@mixin tablet-down   { @media (max-width: #{$breakpoint-tablet - 1px}) { @content; } }
+@mixin tablet-up     { @media (min-width: #{$breakpoint-mobile})       { @content; } }
+@mixin desktop-up    { @media (min-width: #{$breakpoint-tablet})       { @content; } }
+
+@keyframes fade-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

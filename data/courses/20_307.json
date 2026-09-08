@@ -1,0 +1,27 @@
+{
+  "code": "20.307",
+  "name": "Toward Carbon-Neutral Architecture and Urban Design",
+  "description": "The course is intended to give students enrolled a working understanding of how to design, construct, and operate sustainable architecture and urban design developments and projects toward achieving carbon neutral on all aspects. Students will develop an understanding of a building’s relationship to its site’s natural systems; the building enclosure’s ability to mitigate outdoor conditions; passive systems for conditioning and lighting; mechanical heating, cooling and ventilation strategies; lighting and daylighting opportunities; site and building water cycles; and health and well-being, and advanced building and environmental system simulation through a series of lectures and workshops. Case studies will be introduced based on the lecture themes. Topics are discussed based on the physical laws that govern the exchange of energy between building and environment and how they relate to human comfort. The ability and confidence in making both quantitative and qualitative statements about building performance will help students in integrating these considerations into their future architecture and urban design work. Ultimately students will be able to understand the impact of their design decisions on building performance in order to mitigate the carbon footprint. Workshops throughout the semester will be a series of design exercise and environmental design studies as well as calculations, which will serve as supporting documents for the final carbon-neutral project at the end of the semester.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [
+    "20.203"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 2,
+    "tutorial": 0,
+    "project": 2,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-307-toward-carbon-neutral-architecture-and-urban-design/"
+}

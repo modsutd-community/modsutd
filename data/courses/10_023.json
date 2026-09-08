@@ -1,0 +1,26 @@
+{
+  "code": "10.023",
+  "name": "Designing Energy Systems",
+  "description": "This course teaches physical and design concepts in energy related products and systems, such as lighting, mobile phones, and photovoltaic systems. Students will apply reverse engineering, redesigning, data analysis, modelling and simulations to these systems. In this course, students will be required to synthesize innovative solutions to real world problems.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "3",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 3",
+    "Freshmore Elective",
+    "SMT"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-023-designing-energy-systems-elective/"
+}

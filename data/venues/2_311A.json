@@ -1,0 +1,14 @@
+{
+  "code": "2.311A",
+  "name": "Root Cove",
+  "building": "2",
+  "floor": 3,
+  "type": "Facility",
+  "mapName": "Root Cove - 2.311A",
+  "panoScenes": [
+    {
+      "scene": "root_cove",
+      "title": "ROOT Cove"
+    }
+  ]
+}

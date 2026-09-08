@@ -1,0 +1,20 @@
+{
+  "code": "01.119",
+  "name": "Nanoelectronics and Technology",
+  "description": "Traditionally, progress in electronics has been driven by miniaturisation guided by Moore’s law and scaling of CMOS devices in Silicon based electronic integrated circuits. This course begins with introduction to nanoelectronics, CMOS scaling beyond 65nm technology node according ITRS roadmap, current FINFET technology and challenges ahead for further scaling. When the dimension of electronic devices goes to nano-meter scale or the nano-materials were used, the traditional model of the electronics must be revised. The device physics and significance of quantum mechanics in the nanoscale electronic devices and materials will be discussed. This course provides knowledge into the fabrication process flow, device architecture, device physics, operating mechanism and characterization techniques of current state-of-the-art logic and memory devices (such as FinFETs, NAND Flash devices etc.), supported by fundamental solid-state physics and quantum mechanics. Then new emerging logic and memory devices together with 2D materials will be introduced and its applications will be studied supported by recent research progress in these topics.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "7",
+  "prerequisites": [
+    "30.002"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "SMT"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/01-119-nanoelectronics-and-technology/"
+}

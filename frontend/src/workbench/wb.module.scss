@@ -1,0 +1,167 @@
+// Shared vocabulary for panel bodies - chips, rows, labels, scrollers.
+// Everything reads from the --wb-* tokens set on the workbench root.
+
+.scroll {
+  overflow-y: auto;
+  // Never sideways. A panel is a column of rows; anything wider than it - a
+  // hover card, a long chip row - has to wrap or clip, not push a horizontal
+  // bar under the whole panel. min-width:0 is the other half: a flex child
+  // defaults to its content's width and would otherwise refuse to shrink.
+  overflow-x: hidden;
+  min-height: 0;
+  min-width: 0;
+
+  &::-webkit-scrollbar { width: 9px; height: 9px; }
+  &::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.16); }
+  &::-webkit-scrollbar-track { background: transparent; }
+}
+
+.nobar {
+  overflow-x: auto;
+  scrollbar-width: none;
+  &::-webkit-scrollbar { width: 0; height: 0; }
+}
+
+.chip {
+  cursor: pointer;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: rgba(233, 234, 237, 0.6);
+  background: transparent;
+  white-space: nowrap;
+  font-family: inherit;
+
+  &:hover { border-color: rgba(255, 176, 0, 0.6); }
+}
+
+.chipOn {
+  color: var(--wb-ink-strong);
+  border-color: var(--wb-amber);
+  background: rgba(255, 176, 0, 0.16);
+}
+
+.chipRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 11px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex: none;
+}
+
+.eyebrow {
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  color: rgba(233, 234, 237, 0.62);
+  text-transform: uppercase;
+}
+
+.dim { color: rgba(233, 234, 237, 0.55); }
+.faint { color: rgba(233, 234, 237, 0.62); }
+.amber { color: var(--wb-amber); }
+
+.btn {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 8px 14px;
+  background: rgba(255, 176, 0, 0.1);
+  color: var(--wb-amber-soft);
+  border: 1px solid rgba(255, 176, 0, 0.5);
+  font-family: inherit;
+
+  &:hover:not(:disabled) { background: rgba(255, 176, 0, 0.18); }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
+}
+
+.btnQuiet {
+  cursor: pointer;
+  font-size: 11px;
+  padding: 7px 12px;
+  background: transparent;
+  color: rgba(233, 234, 237, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-family: inherit;
+
+  &:hover:not(:disabled) { color: #fff; border-color: rgba(255, 255, 255, 0.3); }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
+}
+
+.input {
+  background: var(--wb-well);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--wb-ink);
+  font-family: inherit;
+  font-size: 12px;
+  padding: 7px 10px;
+  caret-color: var(--wb-amber);
+  outline: none;
+
+  &::placeholder { color: rgba(233, 234, 237, 0.3); }
+  &:focus { border-color: rgba(255, 176, 0, 0.5); }
+}
+
+.inputBad {
+  border-color: rgba(255, 93, 108, 0.6) !important;
+}
+
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.statCell {
+  background: var(--wb-panel);
+  padding: 11px 12px;
+}
+
+.statLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  color: rgba(233, 234, 237, 0.62);
+}
+
+.statValue {
+  font-family: var(--wb-display);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--wb-ink);
+}
+
+.hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 14px 0;
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 48px 20px;
+  text-align: center;
+  font-size: 13px;
+  color: rgba(233, 234, 237, 0.5);
+  line-height: 1.5;
+}
+
+.ottoDim { color: rgba(255, 176, 0, 0.35); }
+
+.error {
+  font-size: 12px;
+  color: var(--wb-red);
+  border: 1px solid rgba(255, 93, 108, 0.4);
+  background: rgba(255, 93, 108, 0.07);
+  padding: 9px 12px;
+  margin: 10px 0;
+}

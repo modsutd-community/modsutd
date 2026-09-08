@@ -1,0 +1,17 @@
+{
+  "code": "40.520",
+  "name": "Stochastic Models",
+  "description": "The aim of this course is to acquaint the students with the basic tools for modelling stochastic phenomena. The course will not use measure theory, but theorems will be proved and knowledge of elementary probability and advanced calculus will be assumed. In particular, after revisiting the main concepts of probability, we will treat the following topics:",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-520-stochastic-models/"
+}

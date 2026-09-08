@@ -1,0 +1,22 @@
+{
+  "code": "30.001",
+  "name": "Structures & Materials",
+  "description": "Introduces statics and the mechanics of rigid bodies, emphasizing equilibrium principles, geometric compatibility, and material behavior. Covers mechanics of materials including mechanical properties of rigid and deformable bodies; analysis and design of beams and structural members subjected to tension, compression, torsion, bending and combined stresses; and an introduction to mechanical behavior of engineering materials for mechanical design.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "4",
+  "prerequisites": [
+    "10.013",
+    "10.015",
+    "10.016"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Core",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-001-structures-materials/"
+}

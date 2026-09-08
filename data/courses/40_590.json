@@ -1,0 +1,17 @@
+{
+  "code": "40.590",
+  "name": "Research Seminar",
+  "description": "This is the ESD seminar series which is offered as a research seminar course for graduate students. Prominent international invited speakers will present their work covering different research areas of the pillar. This will expose the students to the frontier of research and will indicate possible directions for their own scientific investigation. Furthermore, the seminar will provide the students with the possibility of establishing long term connections with important research centres abroad. During their candidature, PhD students (matriculating in AY2025 and beyond) are required to enrol in this course and satisfy the minimum attendance requirement (80%) for four terms to achieve a 12-credit points. For each term, an attendance of 80% at the research seminars will earn the enrolled students 3 credits. PhD students matriculating prior to AY2025 are required to attend two terms of research seminars with 80% attendance per term. Their attendance is not credit-bearing. 12 Credits Prerequisites : –",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-590-research-seminar/"
+}

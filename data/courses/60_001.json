@@ -1,0 +1,19 @@
+{
+  "code": "60.001",
+  "name": "Applied Deep Learning",
+  "description": "Explores deep neural networks through an applied lens, covering their concepts and practical implementation. Students engage in complete deep learning projects using PyTorch, including data gathering and augmentation through to implementing and running a deep neural network. Mutually exclusive with 50.039 Theory and Practice of Deep Learning.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "6",
+  "prerequisites": [
+    "50.007"
+  ],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Core",
+    "DAI"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/60-001-applied-deep-learning/"
+}

@@ -1,0 +1,14 @@
+{
+  "code": "61.101",
+  "name": "Dance Studio 1",
+  "building": "61",
+  "floor": 1,
+  "type": "Studio",
+  "panoScenes": [
+    {
+      "scene": "dance_studio",
+      "title": "Dance Studio"
+    }
+  ],
+  "mapName": "Dance Studio 1 & 2 (DS1/2)"
+}

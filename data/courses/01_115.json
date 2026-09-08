@@ -1,0 +1,33 @@
+{
+  "code": "01.115",
+  "name": "Science of Sound: Acoustics, Audio & Music",
+  "description": "This Science, Mathematics and Technology (SMT) Elective introduces the main technical and technological aspects related to Acoustics, Audio and Music, identifying topics with strong relevance to EPD, ISTD, ASD and possibly ESD. Topics covered include (1) Physical Acoustics, (2) Quantifying Sound and Instrumentation, (3) Sound and Perception, (4) Music Acoustics & Voice Science, (5) Room/Architectural Acoustics + Industrial Noise Control. Through this course, we will first understand the physical basis of sound (acoustics), its production and propagation, as well as models with which to evaluate and predict its interaction with physical (and digital) systems. Next, we will recognize psychoacoustic processes and human perception of hearing. Combining these two insights, we will then examine the “applications” of sound in various contexts: music and speech, room acoustics, audio signal processing, and environmental noise control. We will also look at current research frontiers in selected topics. This course draws on what students have already learnt earlier in physics, mathematics, and design science, and will prepare students with the necessary foundation for subsequent acoustic, audio and music related implementations of design, engineering and technological applications both in industry and at postgraduate level.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "6",
+  "prerequisites": [
+    "10.013",
+    "10.015",
+    "10.017",
+    "10.018",
+    "03.007A",
+    "03.007B"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Elective / Technical Elective",
+    "SMT"
+  ],
+  "workload": {
+    "lecture": 3,
+    "tutorial": 0,
+    "project": 2,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/01-115-science-of-sound-acoustics-audio-music/"
+}

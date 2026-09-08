@@ -1,0 +1,41 @@
+{
+  "code": "50.051",
+  "name": "Programming Language Concepts",
+  "description": "Students learn about data representation, programming and compilation. The first part covers how binary is used to encode values (data) and instructions (code), creating complex data types, and how object-oriented programming works behind the scenes. The second part addresses different aspects of compilation, including lexical and syntactic analysis, parsing, and programming language design. Students complete four small projects (2 individual and 2 group assignments) on memory management in C, C++, and compilation. Through this knowledge, students understand how programming languages are designed.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": [
+    "10.014",
+    "10.025"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "prereqTree": {
+    "or": [
+      {
+        "code": "10.014",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "classic"
+        ]
+      },
+      {
+        "code": "10.025",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "ay2025",
+          "ay2026"
+        ]
+      }
+    ]
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-051-programming-language-concepts/"
+}

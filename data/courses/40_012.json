@@ -1,0 +1,21 @@
+{
+  "code": "40.012",
+  "name": "Manufacturing and Service Operations",
+  "description": "ESD core covering manufacturing and service operations design and management, with quantitative tools for capacity planning, process design, scheduling, and lean operations.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "5",
+  "prerequisites": [
+    "40.002",
+    "40.017"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ESD",
+    "Term 5",
+    "Core"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-012-manufacturing-and-service-operations/"
+}

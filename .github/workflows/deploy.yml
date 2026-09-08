@@ -1,0 +1,105 @@
+name: deploy
+
+# Code pushes deploy immediately. Data does not: contributed slots auto-commit
+# to main, so at term start every paste would queue its own production build.
+# Those ride a schedule instead - the room heatmaps being up to few hours stale
+# costs a student nothing, and it bounds the bill no matter how busy a day is.
+on:
+    push:
+        branches: [main]
+        paths-ignore:
+            - "data/**"
+            - "docs/**"
+            - "**.md"
+    # NOT monthly, unlike the other scheduled jobs here. Contributed slots
+    # auto-commit to main, and a student who pastes a timetable should see the
+    # room heatmaps move the same day - a month of invisibility would read as the
+    # contribution having been thrown away.
+    #
+    # Four times a day rather than hourly: 06:00, 10:00, 14:00 and 18:00
+    # Singapore. A contribution is live within about four hours, which nobody
+    # will notice, and it is a quarter of the runs. Nothing overnight, because
+    # nobody is checking whether a room is free at 3am.
+    schedule:
+        - cron: "0 22,2,6,10 * * *"
+    workflow_dispatch:
+
+concurrency:
+    group: deploy-production
+    cancel-in-progress: true
+
+jobs:
+    changed:
+        runs-on: ubuntu-latest
+        outputs:
+            deploy: ${{ steps.check.outputs.deploy }}
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+                  # Pushes to main, so it must authenticate as the token's owner.
+                  # main's ruleset requires a reviewed pull request and its only
+                  # bypass actor is the admin repository role, which
+                  # github-actions[bot] does not hold and cannot be granted.
+                  # Without this the push is rejected GH013 after the work is done.
+                  token: ${{ secrets.MODSUTD_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+            - id: check
+              name: Has anything shipped since the last deploy?
+              run: |
+                  # A push here already means real changes, so only the cron has to ask.
+                  if [ "${{ github.event_name }}" != "schedule" ]; then
+                    echo "deploy=true" >> "$GITHUB_OUTPUT"; exit 0
+                  fi
+                  # The `deployed` tag marks what production is currently serving.
+                  # Comparing against it - rather than a time window - means a skipped
+                  # or failed run never silently drops an hour of contributions.
+                  if ! git rev-parse -q --verify refs/tags/deployed >/dev/null; then
+                    echo "no deployed tag yet - first scheduled run deploys"
+                    echo "deploy=true" >> "$GITHUB_OUTPUT"; exit 0
+                  fi
+                  if git diff --quiet deployed HEAD -- data/ frontend/; then
+                    echo "nothing since the last deploy - skipping this hour"
+                    echo "deploy=false" >> "$GITHUB_OUTPUT"
+                  else
+                    git diff --stat deployed HEAD -- data/ frontend/ | tail -5
+                    echo "deploy=true" >> "$GITHUB_OUTPUT"
+                  fi
+
+    vercel:
+        needs: changed
+        if: needs.changed.outputs.deploy == 'true'
+        runs-on: ubuntu-latest
+        timeout-minutes: 8
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+            # A Deploy Hook, not the CLI. `vercel pull` and `vercel build`
+            # both resolve the token's user first, and a token scoped to a team
+            # has none - /v2/user answers 404 and the CLI stops at "Could not
+            # retrieve Project Settings" with no hint that the scope is why.
+            # The hook needs no token at all, and Vercel builds it server-side,
+            # so vercel.json and the root directory apply without repeating
+            # them here.
+            - name: ask vercel to build production
+              env:
+                  HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+              run: |
+                  if [ -z "$HOOK" ]; then
+                    echo "VERCEL_DEPLOY_HOOK is not set - nothing to deploy with." >&2
+                    exit 1
+                  fi
+                  code=$(curl -sS -X POST -o /tmp/hook.json -w '%{http_code}' "$HOOK")
+                  cat /tmp/hook.json
+                  echo
+                  # The hook answers with a queued job. Anything else is a
+                  # revoked URL or a project that has moved.
+                  case "$code" in
+                    2*) echo "queued";;
+                    *) echo "deploy hook returned HTTP $code" >&2; exit 1;;
+                  esac
+
+            - name: mark what production now serves
+              run: |
+                  git tag -f deployed "$GITHUB_SHA"
+                  git push -f origin refs/tags/deployed

@@ -1,0 +1,21 @@
+{
+  "code": "50.044",
+  "name": "System Security",
+  "description": "Covers security of users and individual computer systems, including personal computers, smart cards, and embedded platforms. Begins with common security flaws, platform security, and user authentication. Addresses physical-layer attacks and tamper-resistant hardware. Concludes with selected topics including biometrics, computer forensics, and Bitcoin.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": [
+    "50.042"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-044-system-security/"
+}

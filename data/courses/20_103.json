@@ -1,0 +1,29 @@
+{
+  "code": "20.103",
+  "name": "Architecture Core Studio 3",
+  "description": "Expands the complexity of architectural design challenges further to the issue of human habitation. Seeking sustainable approaches to high-density living, students investigate the essential physical and social requirements for human dwelling and the mutual potentials evolving between the urban condition and innovative forms of residence. Students develop building structures through integrative design, examining load-bearing systems, spatial hierarchies, and building envelope performance for climate control and material composition.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "6",
+  "prerequisites": [
+    "20.101",
+    "20.102"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 6",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 12,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 9,
+    "total": 21,
+    "source": "official"
+  },
+  "noBatchChat": true,
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-103-architecture-core-studio-3/"
+}

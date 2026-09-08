@@ -1,0 +1,123 @@
+# Creates a mod's batch chat on first click, relayed by /api/telegram-group
+# as a repository_dispatch. The registry (data/telegram-groups.json) is the
+# idempotency gate; the payload is attacker-reachable so it stays in env
+# vars and is validated from scratch (code format, mod exists, term >= 3 or
+# HASS).Relies on TG_* secrets.
+name: Create telegram group
+
+on:
+    repository_dispatch:
+        types: [telegram-group]
+
+permissions:
+    contents: write
+
+concurrency:
+    group: telegram-groups
+    cancel-in-progress: false
+
+jobs:
+    create:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: main
+                  # Pushes to main, so it must authenticate as the token's owner.
+                  # main's ruleset requires a reviewed pull request and its only
+                  # bypass actor is the admin repository role, which
+                  # github-actions[bot] does not hold and cannot be granted.
+                  # Without this the push is rejected GH013 after the work is done.
+                  token: ${{ secrets.MODSUTD_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+
+            - name: Validate and gate on the registry
+              id: gate
+              env:
+                  PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+              run: |
+                  python3 - <<'PY' >> "$GITHUB_OUTPUT"
+                  import datetime, json, os, pathlib, re, sys
+                  payload = json.loads(os.environ["PAYLOAD"])
+                  code = str(payload.get("mod", ""))
+                  if not re.fullmatch(r"\d{2}\.\d{3}", code):
+                      print("skip=bad-code"); sys.exit(0)
+                  f = pathlib.Path(f"data/courses/{code.replace('.', '_')}.json")
+                  if not f.exists():
+                      print("skip=unknown-mod"); sys.exit(0)
+                  mod = json.loads(f.read_text())
+                  hass = mod.get("pillar") == "HASS" or "HASS" in (mod.get("tags") or [])
+                  if not hass and int(mod.get("term", "1")) < 3:
+                      print("skip=ineligible"); sys.exit(0)
+                  # Capstone / thesis: own project teams, no cohort to chat with.
+                  # The data says which mods get no chat; the name regex
+                  # stays as a fallback for records that predate the flag.
+                  if mod.get("noBatchChat") or re.search(r"(?i)capstone|thesis", mod["name"]):
+                      print("skip=solo-project"); sys.exit(0)
+                  # Offered this term = has crowdsourced schedules. No group for a
+                  # mod nobody is taking.
+                  if not mod.get("schedules"):
+                      print("skip=not-offered"); sys.exit(0)
+                  # The batch window comes from the term dates carried by the
+                  # crowdsourced timetables themselves.
+                  win = json.loads(pathlib.Path("data/term-window.json").read_text() or "{}")
+                  t = datetime.date.today()
+                  if not win.get("end") or win["end"] < t.isoformat():
+                      print("skip=no-live-term"); sys.exit(0)
+                  reg = json.loads(pathlib.Path("data/telegram-groups.json").read_text() or "{}")
+                  cur = reg.get(code)
+                  if cur and t.isoformat() <= str(cur.get("expires") or ""):
+                      print("skip=exists"); sys.exit(0)
+                  print(f"expires={win['end']}")
+                  if sum(1 for v in reg.values() if v.get("createdDay") == t.isoformat()) >= 6:
+                      print("skip=daily-cap"); sys.exit(0)
+                  print("skip=")
+                  print(f"code={code}")
+                  print(f"name={mod['name']}")
+                  PY
+
+            - name: Create the group
+              if: steps.gate.outputs.skip == ''
+              env:
+                  TG_API_ID: ${{ secrets.TG_API_ID }}
+                  TG_API_HASH: ${{ secrets.TG_API_HASH }}
+                  TG_SESSION: ${{ secrets.TG_SESSION }}
+                  TG_LINK_KEY: ${{ secrets.TG_LINK_KEY }}
+                  TG_BOT_USERNAME: ${{ vars.TG_BOT_USERNAME }}
+                  MOD_CODE: ${{ steps.gate.outputs.code }}
+                  MOD_NAME: ${{ steps.gate.outputs.name }}
+              run: |
+                  pip install --quiet telethon cryptography
+                  python3 tools/telegram/create_group.py | tee /tmp/created.json
+
+            - name: Commit the registry entry
+              if: steps.gate.outputs.skip == ''
+              env:
+                  EXPIRES: ${{ steps.gate.outputs.expires }}
+              run: |
+                  python3 - <<'PY'
+                  import datetime, json, pathlib
+                  created = json.load(open('/tmp/created.json'))
+                  p = pathlib.Path('data/telegram-groups.json')
+                  reg = json.loads(p.read_text() or '{}')
+                  import os
+                  reg[created['code']] = {
+                      'linkEnc': created['linkEnc'],
+                      'title': created['title'],
+                      'created': created['created'],
+                      'createdDay': datetime.date.today().isoformat(),
+                      'expires': os.environ.get('EXPIRES', ''),
+                      'chatId': created['chatId'],
+                  }
+                  p.write_text(json.dumps(reg, indent=2, sort_keys=True) + '\n')
+                  PY
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add data/telegram-groups.json
+                  git commit -m "data: telegram group registry entry"
+                  for i in 1 2 3; do
+                    git push origin HEAD:main && exit 0
+                    git pull --rebase origin main || exit 1
+                    sleep 3
+                  done
+                  exit 1

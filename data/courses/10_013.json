@@ -1,0 +1,26 @@
+{
+  "code": "10.013",
+  "name": "Modelling and Analysis",
+  "description": "Foundations of single-variable calculus, including differentiation, integration, and applications to engineering, physical and biological sciences. Students also learn to use software to implement basic numerical methods.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "workload": {
+    "lecture": 6,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 6,
+    "total": 12,
+    "source": "official"
+  },
+  "tags": [
+    "Term 1",
+    "Freshmore Core",
+    "SMT"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-013-modelling-and-analysis/"
+}

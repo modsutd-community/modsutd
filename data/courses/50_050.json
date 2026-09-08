@@ -1,0 +1,22 @@
+{
+  "code": "50.050",
+  "name": "Advanced Algorithms",
+  "description": "An in-depth understanding of Computer Science requires strong mathematical foundations. Students learn the foundations of discrete mathematics and other mathematical areas, with an emphasis on understanding the underlying mathematics for algorithms beyond those covered in 50.004 Algorithms. Topics include counting methods, logic and proof methods, graph theory (incl. graph colourings, matchings, Ramsey theory), graph algorithms (Fleury's, Kosaraju's, Kruskal's, Prim's), number theory (modular arithmetic, Euclidean algorithm), coding theory (Huffman coding, Hamming codes), convex geometry (polytopes, Voronoi diagrams), and computational geometry (Fortune's algorithm, Gilbert-Johnson-Keerthi algorithm).",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": [
+    "50.004",
+    "10.018"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-050-advanced-algorithms/"
+}

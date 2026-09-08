@@ -1,0 +1,21 @@
+{
+  "code": "30.200",
+  "name": "Micro-Nano Projects Laboratory",
+  "description": "Introduces students to key micro-fabrication and nano-engineering techniques serving as a toolbox for product design in micro/nano-technology. Concepts and enabling tools are taught through hands-on intensive lab modules including microfluidics, micro and nano-patterning, nanomaterials and molecular scale imaging tools. Students learn to operate common instruments such as UV exposure, plasma treatment machines, fluorescence microscopes, nanoimprinters, and scanning electron microscopes. The course develops integrative thinking by building, observing and manipulating objects at micro and nano-scales, with applications in biomedical and precise manufacturing.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "8",
+  "prerequisites": [
+    "30.103",
+    "30.108"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 8",
+    "Elective / Technical Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-200-micro-nano-projects-laboratory/"
+}

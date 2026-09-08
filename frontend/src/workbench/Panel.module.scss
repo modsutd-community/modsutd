@@ -1,0 +1,112 @@
+.panel {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  background: var(--wb-panel);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 24px 60px -18px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
+  min-width: 280px;
+}
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 11px;
+  background: var(--wb-titlebar);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: grab;
+  user-select: none;
+  flex: none;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.grip {
+  letter-spacing: 1px;
+  color: rgba(255, 176, 0, 0.65);
+  font-size: 12px;
+}
+
+.title {
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--wb-amber-soft);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.meta {
+  margin-left: auto;
+  font-size: 10px;
+  color: rgba(233, 234, 237, 0.62);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hbtn {
+  cursor: pointer;
+  color: rgba(233, 234, 237, 0.65);
+  font-size: 12px;
+  padding: 0 3px;
+  background: none;
+  border: none;
+  font-family: inherit;
+  line-height: 1;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+// Corners sit on top of the edges (higher z) so they win the diagonal cursors.
+.rz {
+  position: absolute;
+  background: transparent;
+  border: none;
+  padding: 0;
+  touch-action: none;
+  z-index: 3;
+
+  &:hover { background: rgba(255, 176, 0, 0.28); }
+}
+
+$edge: 7px;
+$corner: 16px;
+
+.rz_n { top: 0; left: $corner; right: $corner; height: $edge; cursor: ns-resize; }
+.rz_s { bottom: 0; left: $corner; right: $corner; height: $edge; cursor: ns-resize; }
+.rz_e { right: 0; top: $corner; bottom: $corner; width: $edge; cursor: ew-resize; }
+.rz_w { left: 0; top: $corner; bottom: $corner; width: $edge; cursor: ew-resize; }
+.rz_ne { top: 0; right: 0; width: $corner; height: $corner; cursor: nesw-resize; z-index: 4; }
+.rz_sw { bottom: 0; left: 0; width: $corner; height: $corner; cursor: nesw-resize; z-index: 4; }
+.rz_nw { top: 0; left: 0; width: $corner; height: $corner; cursor: nwse-resize; z-index: 4; }
+
+.rz_se {
+  bottom: 0;
+  right: 0;
+  width: $corner;
+  height: $corner;
+  cursor: nwse-resize;
+  z-index: 4;
+  background: linear-gradient(135deg, transparent 50%, rgba(255, 176, 0, 0.25) 50%);
+
+  &:hover { background: linear-gradient(135deg, transparent 50%, rgba(255, 176, 0, 0.5) 50%); }
+}

@@ -1,0 +1,39 @@
+{
+  "code": "50.056",
+  "name": "Software Abstraction Functional Programming",
+  "description": "Introduces students to functional programming and how to construct software abstractions. Students learn how to compose functions and perform computation in a functional way. Higher-order functions are taught as a way to abstract computation. The course then introduces students to abstracting data in functional programming, and a discussion of state-based computation and how it is best done to allow better testing and concurrency. In the later part of the course, students learn how they can apply many of these concepts to create meta-circular evaluators and implement lazy evaluations. The course introduces many concepts that inspire various programming languages, with the idea of software abstraction emphasised throughout.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "10.014",
+    "10.025"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "prereqTree": {
+    "or": [
+      {
+        "code": "10.014",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "classic"
+        ]
+      },
+      {
+        "code": "10.025",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "ay2025",
+          "ay2026"
+        ]
+      }
+    ]
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-056-software-abstraction-functional-programming/"
+}

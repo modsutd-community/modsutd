@@ -1,0 +1,59 @@
+# Folds anonymously contributed timetable slots (relayed by the site's
+# /api/contribute function as a repository_dispatch) straight into
+# /data/courses on main - no PR. fold_slots.py IS the gate: the payload is
+# attacker-reachable, so it reaches python only via an env var and is
+# re-validated from scratch; anything that fails validation is silently
+# dropped. Availability data must not wait on a human (owner decision) -
+# the constrained slot fields keep auto-merge safe.
+name: Fold timetable contribution
+
+on:
+  repository_dispatch:
+    types: [timetable-contribution]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crowd-slots
+  cancel-in-progress: false
+
+jobs:
+  fold:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          # Push as the token's owner, not as github-actions[bot]. main's
+          # ruleset requires a pull request with an approving review, and its
+          # only bypass actor is the admin repository role - which the bot does
+          # not hold and cannot be granted, since GitHub refuses an Integration
+          # bypass for an app outside the ruleset's own organisation. Without
+          # this the push is rejected GH013 and every contributed slot is
+          # folded, committed and then thrown away.
+          token: ${{ secrets.MODSUTD_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Fold slots into /data/courses
+        env:
+          PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+        run: python3 tools/fold_slots.py
+
+      - name: Commit to main
+        run: |
+          if git diff --quiet; then
+            echo "nothing new - all slots were duplicates or unknown mods"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/courses data/term-window.json
+          git commit -m "data: crowdsourced timetable slots (auto-validated)"
+          # Retry around racing pushes (another fold or a human commit).
+          for i in 1 2 3; do
+            git push origin HEAD:main && exit 0
+            git pull --rebase origin main || exit 1
+            sleep 3
+          done
+          exit 1

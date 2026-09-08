@@ -1,0 +1,25 @@
+{
+  "code": "20.501",
+  "name": "Graduate Studio",
+  "description": "Explores the multi-dimensional issues of sustainable design through a variety of lenses and at diverse temporal and spatial scales. Students develop architectural and urban design solutions addressing themes like land scarcity, demographic change, material innovation, and energy efficiency, culminating in speculative final projects.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "9",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 9",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 8,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 10,
+    "total": 18,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-501-graduate-studio/"
+}

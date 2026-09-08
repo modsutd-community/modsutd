@@ -1,0 +1,40 @@
+{
+  "code": "50.004",
+  "name": "Algorithms",
+  "description": "An introduction to algorithms and algorithmic thinking. Covers common algorithms, paradigms and data structures for solving computational problems, with emphasis on understanding why algorithms work and analysing their complexity. Includes graph algorithms, dynamic programming and NP-completeness.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "4",
+  "prerequisites": [
+    "10.014",
+    "10.025"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Core",
+    "ISTD"
+  ],
+  "prereqTree": {
+    "or": [
+      {
+        "code": "10.014",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "classic"
+        ]
+      },
+      {
+        "code": "10.025",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "ay2025",
+          "ay2026"
+        ]
+      }
+    ]
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-004-algorithms/"
+}

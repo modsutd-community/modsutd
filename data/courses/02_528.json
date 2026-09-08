@@ -1,0 +1,17 @@
+{
+  "code": "02.528",
+  "name": "Spatial Analysis of Urban Data",
+  "description": "This course focuses on the use of GIS (Geographic Information Systems) in the urban context, applying GIS tools and techniques for analysing, modelling, and visualising geospatial data in urban environments. The most fundamental concepts and techniques in GIS and spatial data analysis are covered in this course, including data collection, data management, and data visualisation. Additionally, specific applications of GIS in the urban studies will be taught, namely 3D mapping, basic network analysis, and advanced spatial analysis. Through a hands-on final project, students will learn how to apply more advanced forms of spatial analysis on real-world problems such as understanding the relationship of geographic distribution of population and health system clusters planning. In class discussions will be linked to the final project relating the use of geospatial to: The course is delivered as a combination of lectures and hands-on tutorials. Students will get to apply methods covered in the lectures during the tutorials and solve a geospatial problem through a final project. Instructors: Dr Jingya Yan and Mr Bayi Li Time: Wednesday (10AM-1PM) Venue: Think Tank 6 (1.408) Week 1: Introduction to GIS I Week 2: Introduction to GIS II Week 3: Cartographic Design I Week 4: Cartographic Design II Week 5: Advanced Spatial Data I: Spatial data management Week 6: Advanced Spatial Data II: Spatial Data Processing Week 7: Recess week Week 8: Spatial statistics and analysis of vector data Week 9: Spatial analysis of raster data Week 10: Advanced Spatial Data III: Spatial Network Analysis Week 11: Advanced Spatial Data IV: 3D Geospatial data in Urban studies Week 12: Advanced Spatial Data V: Urban Studies and Applied GIS Week 13: Final Project Tutorial Week 14: Final Presentation",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 1",
+    "Elective"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/02-528-spatial-analysis-of-urban-data/"
+}

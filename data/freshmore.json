@@ -1,0 +1,168 @@
+{
+  "source": "https://www.sutd.edu.sg/education/undergraduate/freshmore-subjects/ + official listing tags (Freshmore Core / Term N)",
+  "gathered": "2026-07-17",
+  "note": "Freshmore core per matriculation cohort. `fixed` pins a course to that term in the plan; a 99.999|Name entry is a course SUTD has named but not numbered. Cohort keys match Curriculum in frontend/src/types: ay2026, ay2025, classic (AY2024 and earlier). The labels shown on screen live in COHORTS in frontend/src/workbench/uiContext.ts.",
+  "curricula": {
+    "ay2026": {
+      "terms": {
+        "1": {
+          "fixed": [
+            "03.007A",
+            "99.999|Introduction to Programming",
+            "99.999|Calculus",
+            "99.999|Sustainability: Science and System Thinking"
+          ],
+          "choice": {
+            "label": "1 HASS",
+            "count": 1,
+            "anyOf": [
+              "02.001",
+              "02.003"
+            ]
+          }
+        },
+        "2": {
+          "fixed": [
+            "03.007B",
+            "99.999|Algorithmic Thinking & Object-Oriented Programming",
+            "99.999|Linear Algebra & Multivariable Calculus (E/S)",
+            "99.999|Physics Principles and Applications 1"
+          ],
+          "choice": {
+            "label": "1 HASS",
+            "count": 1,
+            "anyOf": [
+              "02.001",
+              "02.003"
+            ]
+          }
+        },
+        "3": {
+          "fixed": [
+            "99.999|Innovating with Design & AI 3",
+            "99.999|Introduction to Machine Learning",
+            "99.999|Introduction to Probability and Statistics (E/S)"
+          ],
+          "choice": {
+            "label": "2 freshmore electives",
+            "count": 2,
+            "anyOf": [
+              "10.026",
+              "02.005",
+              "99.999|Designing Sustainable Energy Solutions",
+              "99.999|Freshmore Design Studio",
+              "99.999|Introduction to Discrete Mathematics",
+              "99.999|Introduction to Healthcare Technology",
+              "99.999|Physics Principles and Applications 2",
+              "99.999|Qualitative & Quantitative Research Methods"
+            ]
+          }
+        }
+      }
+    },
+    "ay2025": {
+      "terms": {
+        "1": {
+          "fixed": [
+            "10.013",
+            "10.015",
+            "10.025",
+            "03.007A"
+          ],
+          "choice": {
+            "label": "1 HASS",
+            "count": 1,
+            "anyOf": [
+              "02.001",
+              "02.003"
+            ]
+          }
+        },
+        "2": {
+          "fixed": [
+            "10.016",
+            "10.017",
+            "10.018",
+            "10.026",
+            "03.007B"
+          ]
+        },
+        "3": {
+          "fixed": [
+            "10.022"
+          ],
+          "choices": [
+            {
+              "label": "2 freshmore electives",
+              "count": 2,
+              "anyOf": [
+                "10.019",
+                "10.020",
+                "10.023",
+                "10.024"
+              ]
+            },
+            {
+              "label": "1 HASS",
+              "count": 1,
+              "anyOf": [
+                "02.001",
+                "02.003"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "classic": {
+      "terms": {
+        "1": {
+          "fixed": [
+            "10.013",
+            "10.014",
+            "10.015"
+          ],
+          "choice": {
+            "label": "1 HASS",
+            "count": 1,
+            "anyOf": [
+              "02.001",
+              "02.003"
+            ]
+          }
+        },
+        "2": {
+          "fixed": [
+            "10.016",
+            "10.017",
+            "10.018"
+          ]
+        },
+        "3": {
+          "fixed": [],
+          "choices": [
+            {
+              "label": "2 freshmore electives",
+              "count": 2,
+              "anyOf": [
+                "10.019",
+                "10.020",
+                "10.022",
+                "10.023",
+                "10.024"
+              ]
+            },
+            {
+              "label": "1 HASS",
+              "count": 1,
+              "anyOf": [
+                "02.001",
+                "02.003"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

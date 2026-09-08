@@ -1,0 +1,21 @@
+{
+  "code": "40.323",
+  "name": "Equity Valuation",
+  "description": "Introduces two key tools used by professional investors. (1) Investment theses are frameworks that link potential future changes in the company structure, industry, and/or economy to changes in company profits. Students use causal modelling techniques to develop these frameworks and identify factors that drive company profits, applying them to real-world companies. (2) Equity valuation models operationalize investment theses to show the quantitative impact of the theses on stock prices. The course focuses on Damodaran's technique, one of the standard methodologies of intrinsic equity valuation. Together, students identify and validate investment theses and use the equity valuation models to identify potential investment opportunities, focusing primarily on the valuation of technology and engineering services firms.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "7",
+  "prerequisites": [
+    "40.017",
+    "40.240"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-323-equity-valuation/"
+}

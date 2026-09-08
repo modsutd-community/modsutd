@@ -1,0 +1,41 @@
+{
+  "code": "50.038",
+  "name": "Computational Data Science",
+  "description": "An undergraduate ISTD elective covering practical data science methods including data acquisition and cleaning, exploratory analysis, modelling and the communication of results from large datasets.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": [
+    "10.014",
+    "10.025"
+  ],
+  "prereqTree": {
+    "or": [
+      {
+        "code": "10.014",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "classic"
+        ]
+      },
+      {
+        "code": "10.025",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "ay2025",
+          "ay2026"
+        ]
+      }
+    ]
+  },
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-038-computational-data-science/"
+}

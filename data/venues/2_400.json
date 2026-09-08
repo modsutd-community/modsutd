@@ -1,0 +1,14 @@
+{
+  "code": "2.400",
+  "name": "Aerial Arena",
+  "building": "2",
+  "floor": 4,
+  "type": "Facility",
+  "mapName": "Aerial Arena @ SUTD - 2.400",
+  "panoScenes": [
+    {
+      "scene": "aerial_arena",
+      "title": "Aerial Arena"
+    }
+  ]
+}

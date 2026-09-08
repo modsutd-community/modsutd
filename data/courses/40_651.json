@@ -1,0 +1,17 @@
+{
+  "code": "40.651",
+  "name": "Algorithmic Game Theory",
+  "description": "This is a graduate level course in Algorithmic Game Theory which aims at providing the fundamental concepts of non-cooperative game theory, at exploring its connections to computational issues, and at showing a broad spectrum of applications in different fields. The topics to be covered in this course include strategic-form games, Nash equilibria (and variants), price of anarchy, auctions, and learning.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-651-algorithmic-game-theory/"
+}

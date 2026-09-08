@@ -1,0 +1,17 @@
+{
+  "code": "Stadium",
+  "name": "Stadium",
+  "building": "61",
+  "floor": 1,
+  "type": "Facility",
+  "facility": true,
+  "panoScenes": [
+    {
+      "scene": "track_and_field",
+      "title": "Track & Field"
+    }
+  ],
+  "altNames": [
+    "Track & Field"
+  ]
+}

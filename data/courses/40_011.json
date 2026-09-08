@@ -1,0 +1,21 @@
+{
+  "code": "40.011",
+  "name": "Data and Business Analytics",
+  "description": "Introduction to the ESD pillar through industrial or commercial data. Students execute a team-based, semester-long client project, building skills in data manipulation, visualisation, system modelling, financial analysis and value-proposition design.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "4",
+  "prerequisites": [
+    "10.014",
+    "10.022"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Core",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-011-data-and-business-analytics-for-esd-students-only/"
+}

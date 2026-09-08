@@ -1,0 +1,16 @@
+{
+  "code": "02.154",
+  "name": "Environmental Humanities",
+  "description": "The course seeks to help students develop an integrated understanding of environmental and ecological issues from the point of view of the humanities, broadly understood (incorporating literature, the arts, philosophy and cultural studies), in conjunction with technology. The course will consist of readings of excerpts from several imaginative works such as novels and stories, combined with some theoretical readings from non-fiction that help us engage with these texts. These readings will be combined with assignments involving both traditional essays and hands-on exploration of the students’ own geospatial environment in Singapore as case study, the latter to be documented with the help of user-centered digital mapping using tools and resources such as QGIS, GeoCommons and OpenStreetMaps.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "HASS"
+  ]
+}

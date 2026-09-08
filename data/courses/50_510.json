@@ -1,0 +1,19 @@
+{
+  "code": "50.510",
+  "name": "Computer Networks",
+  "description": "",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-510-computer-networks/"
+}

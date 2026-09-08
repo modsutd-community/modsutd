@@ -1,0 +1,20 @@
+{
+  "code": "01.019",
+  "name": "Design Thinking Project II",
+  "description": "Second of the Freshmore Design Thinking project sequence, in which student teams tackle a more complex design brief. Emphasises iterative prototyping, stakeholder engagement and integrated communication of design outcomes.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "2",
+  "prerequisites": [
+    "01.018"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 2",
+    "Freshmore Core",
+    "SMT"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/01-019-design-thinking-project-ii/"
+}

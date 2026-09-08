@@ -1,0 +1,17 @@
+{
+  "code": "10.002",
+  "name": "Physics I",
+  "description": "This course is the typical first year mechanics course for engineering students. It is basically based on the corresponding Physics I course offered at MIT. Topics include One Dimensional Motion, Two Dimensional Motion, Force and Newton’s Laws of Motion, Energy, Systems of Particles, Center of Mass, Momentum conservation, and Two Dimensional Rotational Motion kinematics and dynamics.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Freshmore Core",
+    "SMT"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-002-physics-i/"
+}

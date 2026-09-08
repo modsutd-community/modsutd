@@ -1,0 +1,21 @@
+{
+  "code": "40.008",
+  "name": "Quality and Reliability",
+  "description": "Covers methods for designing and operating systems for high quality and reliability: statistical process control, design of experiments, reliability modelling, accelerated life testing and Six Sigma practices.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "6",
+  "prerequisites": [
+    "40.004"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-008-quality-reliability/"
+}

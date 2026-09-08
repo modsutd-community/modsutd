@@ -1,0 +1,28 @@
+{
+  "code": "10.022",
+  "name": "Modelling Uncertainty",
+  "description": "Uncertainty appears everywhere in life, arising naturally in science, engineering, design, and humanities. Probability and statistics are two powerful and complementary ways to explain, forecast, and visualise uncertainty. Probability uses knowledge of a system’s behaviour to predict its future outcomes, while statistics analyses data from past outcomes to model a system’s behaviour. Probability and statistics are applied in virtually all industries that govern modern society; they are particularly important in disciplines including (but not limited to) finance, big data, artificial intelligence and machine learning. In this course, we will introduce the fundamentals of probability and statistics through real life problems and software. Students will complete projects related to applications such as climate adaptation, pharmaceutical testing, vaccine distribution, and product safety assurance.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "3",
+  "prerequisites": [
+    "10.018"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 3",
+    "Freshmore Core",
+    "ESD"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-022-modelling-uncertainty/"
+}

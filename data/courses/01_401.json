@@ -1,0 +1,23 @@
+{
+  "code": "01.401",
+  "name": "Capstone 2",
+  "description": "Continuation of the Capstone Programme. Students continue developing their multidisciplinary design project from Capstone 1, advancing through detailed design, fabrication, testing, and presentation phases as part of a cross-pillar team solving real-world design challenges.",
+  "credits": 12,
+  "department": "Capstone Programme",
+  "pillar": "EPD",
+  "term": "8",
+  "prerequisites": [
+    "01.400"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "CSD",
+    "Capstone",
+    "DAI",
+    "EPD",
+    "ESD"
+  ],
+  "noBatchChat": true,
+  "sourceUrl": "https://www.sutd.edu.sg/course/01-401-capstone/"
+}

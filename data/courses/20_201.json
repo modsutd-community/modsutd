@@ -1,0 +1,25 @@
+{
+  "code": "20.201",
+  "name": "Architecture Science & Technology",
+  "description": "An introductory course exploring the science and physics of building design and performance and an understanding of contemporary building construction methods. Topics include structural systems, enclosure and facade systems, environmental and energy systems, and circulation elements. The course emphasises understanding how materials, components, and assemblies respond to physical forces while examining the environmental impact of construction and building operations.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "5",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 5",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 4,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-201-architecture-science-technology/"
+}

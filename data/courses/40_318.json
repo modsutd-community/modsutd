@@ -1,0 +1,20 @@
+{
+  "code": "40.318",
+  "name": "Supply Chain Digitalisation and Design",
+  "description": "Successful orchestration of planning and execution processes across virtual and global supply chain networks is a critical success factor for today's businesses. This necessitates tight information integration across business functions and a strong alignment between the business and information technology functions. The first half studies supply chain operations of a global manufacturing and distribution company (NOVA Corporation) using an experiential simulation; common errors in the design of such systems are identified, and the impact of logistics policies, organizational design, performance measurement systems, information flows, and currency fluctuations on company performance is analysed. Course material is unified around the theme of applying five basic principles of supply chain management to global manufacturing and logistics. The second half develops a framework and process for discovering the value potential of digitalisation and ensuring value realization from investments in digital technologies.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "7",
+  "prerequisites": [
+    "40.260"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ESD",
+    "Term 7",
+    "Elective / Technical Elective"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-318-supply-chain-digitalisation-and-design/"
+}

@@ -1,0 +1,15 @@
+{
+  "code": "10.009",
+  "name": "The Digital World",
+  "description": "An introduction to digital systems, computation and the role of computers in modern society. Builds on Computational Thinking for Design with practical work in software, hardware abstractions and the design of digital artifacts.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "3",
+  "prerequisites": [
+    "10.014"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "retired": true
+}

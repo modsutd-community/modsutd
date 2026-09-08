@@ -1,0 +1,14 @@
+{
+  "code": "Antique House",
+  "name": "Antique House",
+  "building": "2",
+  "floor": 1,
+  "type": "Facility",
+  "facility": true,
+  "panoScenes": [
+    {
+      "scene": "antique_house",
+      "title": "Antique Houses"
+    }
+  ]
+}

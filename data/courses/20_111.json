@@ -1,0 +1,30 @@
+{
+  "code": "20.111",
+  "name": "Sustainable Design Option Studio 1",
+  "description": "This studio extends foundational urban design principles into international contexts, encouraging students to critically engage with urbanism beyond the local context. The course emphasises comparative analysis of global urban environments alongside Singapore's context, utilising mapping and diagrammatic studies to develop spatial-temporal interventions that respond to contemporary challenges in urban sustainability.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "7",
+  "prerequisites": [
+    "20.101",
+    "20.102",
+    "20.103"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 7",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 8,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 10,
+    "total": 18,
+    "source": "official"
+  },
+  "noBatchChat": true,
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-111-sustainable-design-option-studio-1/"
+}

@@ -1,0 +1,18 @@
+{
+  "code": "2.502",
+  "name": "Fablab Satellite 4",
+  "building": "2",
+  "floor": 5,
+  "type": "Seminar Room",
+  "capacity": 25,
+  "facilities": [
+    "U-Shaped Seating",
+    "Projector",
+    "Whiteboard",
+    "Air Conditioning"
+  ],
+  "altNames": [
+    "Seminar Room 2A"
+  ],
+  "mapName": "Fab Lab Satellite 4 - 2.502"
+}

@@ -1,0 +1,21 @@
+{
+  "code": "50.017",
+  "name": "Graphics and Visualisation",
+  "description": "Introduction to computer graphics algorithms, software and hardware. Topics include ray tracing, the graphics pipeline, transformations, texture mapping, shadows, sampling, global illumination, splines, animation, colour, and the fundamentals of virtual and augmented reality (VR and AR).",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": [
+    "50.003"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-017-graphics-and-visualisation/"
+}

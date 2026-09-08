@@ -1,0 +1,16 @@
+{
+  "code": "02.159",
+  "name": "Equitable Tech: Reimagining Our Digital Infrastructures",
+  "description": "The course invites students to investigate how geopolitical conditions shape our differing relations to the Internet and its promises of the wireless, borderless world. Starting with the Internet scavenger hunt in their local communities, students will explore how the Internet is not an entirely virtual space floating in the ether but is where idiosyncratic technologies converge, reflecting their various material, institutional, and historical conditions. Each week, students will learn about social aspects of the digital infrastructures such as undersea cable networks, DSL, WiFi, blockchain, and data centres. In particular, the course illuminates how the legacy of colonialism and other historical global power relations configure today’s wireless world. Questions students will probe into include: How does the legacy of colonialism in the Pacific Islands shape the labour conditions of undersea cable technicians, who maintain most of our transoceanic online communication? How does the relationship between Palestine and Israel define the cellular coverage of the region today, and what roles does geography play for the state government to control access to the Internet? How does the idea of connectivity shape the development project in Mali and in turn enrich the U.S. market? By examining global case studies, students will learn analytical frameworks to examine ethical implications of the technologies they help develop within a larger geopolitical context of the IT industries. Additionally, students will learn how to practice accountability as aspiring engineers and designers by learning communication strategies through midterm and final projects. Students will first analyse, for the midterm, critical artwork designed to enhance the digital literacy of the public audience. By examining how artists shine a light on what lies beyond the obvious-a hip domain name “.io” or the seemingly innocuous IP address-students will gain an appreciation for multimodal composition techniques. For the final project, students will identify and analyse the material and political configurations of Singaporean digital infrastructures. By expanding on the map from the initial Internet scavenger hunt with their own multimodal composition strategies, students will test how best to communicate their research findings as well as their visions for more equitable digital infrastructures in Singapore.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "HASS"
+  ]
+}

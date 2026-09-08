@@ -1,0 +1,138 @@
+# Drops expired batch-chat entries from the public registry.
+#
+# Every entry carries an `expires` taken from the contributed timetables for
+# that term, and the UI already hides an entry past it. What nothing did was
+# remove it, so each term's `linkEnc` stayed in a public file for good and the
+# only thing protecting every chat modSUTD ever made was TG_LINK_KEY never
+# leaking. Rotating that key by hand each term was the compensating control,
+# and a compensating control you have to remember is one you eventually forget.
+#
+# Deleting the ciphertext is the durable fix: there is nothing left to decrypt,
+# so rotation becomes optional hygiene rather than a deadline. Note this only
+# removes the invite link. The Telegram chat and its members are untouched.
+name: Prune expired batch chats
+
+on:
+    schedule:
+        # cron cannot say "first Saturday", so workaround:
+        - cron: "10 16 * * 5"
+    workflow_dispatch:
+        inputs:
+            dry_run:
+                description: "Report what would be pruned, change nothing"
+                type: boolean
+                default: false
+
+# The default GITHUB_TOKEN is enough: this rewrites a file in this repo and
+# talks to nothing else. Deliberately no PAT, no Telegram session, no
+# TG_LINK_KEY - a scheduled job that could rewrite secrets would be a worse
+# trade than the problem it solves.
+permissions:
+    contents: write
+
+concurrency:
+    group: telegram-prune
+    cancel-in-progress: false
+
+jobs:
+    prune:
+        runs-on: ubuntu-latest
+        steps:
+            # cron cannot say "first Saturday", so workaround:
+            - name: First Saturday of the month
+              id: when
+              run: |
+                  d=$(TZ=Asia/Singapore date +%d)
+                  if [ "$((10#$d))" -le 7 ]; then
+                    echo "go=true" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "go=false" >> "$GITHUB_OUTPUT"
+                    echo "Not the first Saturday in Singapore ($d) - nothing to do." >> "$GITHUB_STEP_SUMMARY"
+                  fi
+
+            - uses: actions/checkout@v4
+              if: steps.when.outputs.go == 'true'
+              with:
+                  # Pushes to main, so it must authenticate as the token's owner.
+                  # main's ruleset requires a reviewed pull request and its only
+                  # bypass actor is the admin repository role, which
+                  # github-actions[bot] does not hold and cannot be granted.
+                  # Without this the push is rejected GH013 after the work is done.
+                  token: ${{ secrets.MODSUTD_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+
+            - name: Drop entries past their term
+              id: prune
+              if: steps.when.outputs.go == 'true'
+              env:
+                  DRY_RUN: ${{ inputs.dry_run }}
+              run: |
+                  python3 - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+                  import datetime, json, os, pathlib
+
+                  # An entry with no expires cannot be judged against a term, so it is
+                  # held to a flat ceiling instead. Without one it would outlive every
+                  # entry that has a date, which is backwards.
+                  NO_EXPIRY_MAX_DAYS = 180
+
+                  p = pathlib.Path('data/telegram-groups.json')
+                  reg = json.loads(p.read_text() or '{}')
+                  today = datetime.date.today()
+
+                  # The daily sweep leaves each chat once its term is over and marks
+                  # the entry `left`. Dropping the entry before that loses the chatId
+                  # it needs, and the throwaway stays in the group for good. So an
+                  # expired entry waits - but not indefinitely: this file is public
+                  # and the ciphertext is the thing being removed, so after the grace
+                  # period the security win beats the tidiness one.
+                  LEAVE_GRACE_DAYS = 60
+
+                  def stale(entry):
+                      exp = str(entry.get('expires') or '')
+                      if exp:
+                          if exp >= today.isoformat():
+                              return False, f'term runs to {exp}'
+                          overdue = (today - datetime.date.fromisoformat(exp)).days
+                          if not entry.get('left') and overdue <= LEAVE_GRACE_DAYS:
+                              return False, f'term ended {exp}, waiting for the sweep to leave'
+                          return True, f'term ended {exp}'
+                      made = str(entry.get('createdDay') or '')
+                      if not made:
+                          return True, 'no expires and no createdDay'
+                      age = (today - datetime.date.fromisoformat(made)).days
+                      return age > NO_EXPIRY_MAX_DAYS, f'no expires, {age}d old'
+
+                  drop = {}
+                  for code, entry in reg.items():
+                      gone, why = stale(entry)
+                      if gone:
+                          drop[code] = why
+
+                  print('## Batch-chat registry prune\n')
+                  print(f'- entries: {len(reg)}')
+                  print(f'- expired: {len(drop)}\n')
+                  for code, why in sorted(drop.items()):
+                      print(f'  - `{code}` - {why}')
+                  if not drop:
+                      print('_nothing to prune_')
+
+                  if drop and os.environ.get('DRY_RUN') != 'true':
+                      for code in drop:
+                          del reg[code]
+                      p.write_text(json.dumps(reg, indent=2, sort_keys=True) + '\n')
+                      with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+                          fh.write(f'pruned={len(drop)}\n')
+                  PY
+
+            - name: Commit
+              if: steps.prune.outputs.pruned
+              run: |
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add data/telegram-groups.json
+                  git commit -m "data: prune ${{ steps.prune.outputs.pruned }} expired batch-chat entries"
+                  for i in 1 2 3; do
+                    git push origin HEAD:main && exit 0
+                    git pull --rebase origin main || exit 1
+                    sleep 3
+                  done
+                  exit 1

@@ -1,0 +1,22 @@
+{
+  "code": "40.003",
+  "name": "Operations Management",
+  "description": "Introduction to methods for managing manufacturing and service operations. Covers production planning and scheduling, inventory control, supply chain coordination, service system design and queuing theory, with emphasis on the link between operational issues and strategic objectives.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "5",
+  "prerequisites": [
+    "40.001",
+    "40.002"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-003-operations-management/"
+}

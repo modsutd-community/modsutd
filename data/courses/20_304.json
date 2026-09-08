@@ -1,0 +1,30 @@
+{
+  "code": "20.304",
+  "name": "Urban Housing Typologies",
+  "description": "The ‘Urban Housing Typology’ seminar will discuss the complex nature of urban contexts as places to formulate human habitation. Investigating the interdependencies evolving between a building’s entity and its urban territory students will speculate how strategies for urban building types have contributed in the past and can contribute in the future to urban development. Participants will understand the relevance of housing typology research and the potentials of designer’s repositories of known housing precedents as design expertise. Having gained a clear understanding of concepts like ‘type’ and ‘typology’ students will analyse both contemporary and historical housing precedents of building types like Block Enclosure, Urban Infill, Solitaire, Superblock, Apartment Tower, Residential Estate and Urban Row Houses. With these building types as typically evolving within and due to specific contextual conditions the investigations will make essential connections to a building’s territory, its urban type, its historical and economical context, its density and programs. Beyond discussing precedents as a typological knowledge on merely immutable built physical forms the course will also investigate the potential of operational building strategies like incrementalism, usage flexibility and neutrality, and user participation for sustainable urban communities. Both autochthonous building types and contemporary precedents with a particular focus on sustainable building performance will be another focus.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [
+    "20.101",
+    "20.102",
+    "20.221",
+    "20.222"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 4,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-304-urban-housing-typologies/"
+}

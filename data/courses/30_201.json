@@ -1,0 +1,18 @@
+{
+  "code": "30.201",
+  "name": "Wireless Communications and Internet of Things",
+  "description": "An introduction to the design and analysis of wireless communications systems and internet-of-things. Students will understand the basic fundamental challenges, and study state-of-the-art technologies, in terms of internet-of-things system architecture, signaling protocol, and wireless communications techniques. Students build a working cloud-connected wireless internet-of-things smart system in a group-based lab and project.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "8",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 8",
+    "Elective / Technical Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-201-wireless-communications-and-internet-of-things/"
+}

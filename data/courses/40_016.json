@@ -1,0 +1,21 @@
+{
+  "code": "40.016",
+  "name": "The Analytics Edge",
+  "description": "The increasing availability of data is changing the way organizations are thinking about themselves and the way they interact with the world. In this course you will learn how to use data and analytics to give you an edge. The course exposes students to real-world examples of how analytics is used (Moneyball, Watson, the Framingham Heart Study, and others). Through these examples, students learn to use tools of analytics such as linear regression, logistic regression, classification and regression trees, graphical models, visualization, text analytics, clustering and optimization in practice. The statistical software R and spreadsheets are used in the course.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "5",
+  "prerequisites": [
+    "40.017",
+    "10.022"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Core",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-016-the-analytics-edge/"
+}

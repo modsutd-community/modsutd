@@ -1,0 +1,27 @@
+{
+  "code": "10.014",
+  "name": "Computational Thinking for Design",
+  "description": "An introductory programming course combining design and computing contexts for novice programmers. Covers visual and Python programming, computational geometry concepts, and hands-on programming on the Raspberry Pi micro-controller.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  },
+  "tags": [
+    "Term 1",
+    "Freshmore Core",
+    "ASD",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-014-computational-thinking-for-design/"
+}

@@ -1,0 +1,31 @@
+{
+  "code": "Hostel",
+  "name": "Hostel",
+  "building": "55",
+  "floor": 1,
+  "type": "Facility",
+  "facility": true,
+  "panoScenes": [
+    {
+      "scene": "hostel_hostel_room",
+      "title": "Hostel Room"
+    },
+    {
+      "scene": "hostel_kitchen",
+      "title": "Communal Kitchen"
+    },
+    {
+      "scene": "hostel_meeting_room",
+      "title": "Meeting Room"
+    },
+    {
+      "scene": "hostel_recreation_room",
+      "title": "Recreation Room"
+    }
+  ],
+  "altNames": [
+    "Blk 55",
+    "Blk 57",
+    "Blk 59"
+  ]
+}

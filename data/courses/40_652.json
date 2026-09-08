@@ -1,0 +1,17 @@
+{
+  "code": "40.652",
+  "name": "Economics of Communication Networks",
+  "description": "This course aims at providing the basic microeconomic models for communication networks, describe the business models of the Internet value chain and analyze various pricing and competition issues. Topics covered can include",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-652-economics-of-communication-networks/"
+}

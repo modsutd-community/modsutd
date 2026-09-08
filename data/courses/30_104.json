@@ -1,0 +1,22 @@
+{
+  "code": "30.104",
+  "name": "Dynamics",
+  "description": "Particularly relevant for Mechanical, Aerospace and Robotics engineers, this course focuses on the dynamics of mechanical systems. Topics include kinematics, force-momentum formulation for systems of particles and rigid bodies, work-energy concepts, virtual displacements and virtual work, Lagrange's equations, linearization of equations of motion, linear stability analysis, and free and forced vibration of linear multi-degree-of-freedom models. Emphasis is on connecting these topics to realistic engineering problems via hands-on and numerical design projects.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "6",
+  "prerequisites": [
+    "10.004",
+    "10.002",
+    "30.101"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Core Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-104-dynamics/"
+}

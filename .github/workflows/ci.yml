@@ -1,0 +1,74 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run: { working-directory: frontend }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    defaults:
+      run: { working-directory: frontend }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontend/playwright-report/
+
+  scraper:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run: { working-directory: tools/scraper }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: tools/scraper/requirements.txt
+      - run: pip install -r requirements.txt
+      - run: python -m compileall .
+
+      # The home-screen icon is geometry, not taste: the maskable safe zone is
+      # a circle of radius 2/5 of the icon, and artwork past it is clipped by a
+      # launcher mask. It shipped over that line twice, because nothing here
+      # could see it - the unit suite reads the manifest, never the pixels.
+      # Checked in this job because it is the one with Python; Pillow is not in
+      # requirements.txt, so it is installed just for this step.
+      - name: PWA icons are inside the maskable safe zone
+        working-directory: .
+        run: |
+          pip install --quiet pillow
+          python tools/icons/make_icons.py --check

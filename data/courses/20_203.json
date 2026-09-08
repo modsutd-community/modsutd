@@ -1,0 +1,28 @@
+{
+  "code": "20.203",
+  "name": "Architectural Energy Systems",
+  "description": "Addresses energy systems in buildings and their contribution to sustainable development. Covers the needs of a variety of building types and the systems that distribute energy-based resources to their occupants through lectures, recitations, and assignments focused on building energy performance and thermal design.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "6",
+  "prerequisites": [
+    "20.201",
+    "20.202"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 6",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 4,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-203-architectural-energy-systems/"
+}

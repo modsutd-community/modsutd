@@ -1,0 +1,20 @@
+{
+  "code": "50.054",
+  "name": "Compiler Design and Program Analysis",
+  "description": "Introduces a new programming paradigm to learners - functional programming - and the suite of advanced language features and design patterns for software design and development. Building on these techniques, the course curates the process of designing a modern compiler, through syntax analysis, intermediate representation construction, semantic analysis, and code generation. More specifically, the course focuses on the application of program analysis in areas of software verification, program optimization, and software security analysis.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "50.004"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-054-compiler-design-and-program-analysis/"
+}

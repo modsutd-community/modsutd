@@ -1,0 +1,27 @@
+{
+  "code": "20.525",
+  "name": "Advanced Topics in Performative Design: Daylight and Electric Lighting",
+  "description": "This seminar course teaches natural and electric lighting in an architectural context. Students will learn the scientific basis of light and visual perception in order to apply them to the design of two course projects: the design and construction of an electric light fixture (luminaire) and the comprehensive lighting design of a large communal gathering space with integrated electric and daylight systems. Individual activities and lectures focus on lighting measures and metrics, calibrated high dynamic range photography, daylight simulations, material properties, visual comfort / perception, electric lighting design, lighting energy consumption, scale model building and human behavior.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "9",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 9",
+    "Term 10",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 4,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-525-advanced-topics-in-performative-design-daylight-and-electric-lighting/"
+}

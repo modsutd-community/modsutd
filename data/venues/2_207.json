@@ -1,0 +1,17 @@
+{
+  "code": "2.207",
+  "name": "SUTD Cleanroom",
+  "building": "2",
+  "floor": 2,
+  "type": "Lab",
+  "capacity": 30,
+  "facilities": [
+    "Class 1000 Cleanroom",
+    "Air Showers",
+    "Wet Bench Stations"
+  ],
+  "altNames": [
+    "Clean Room"
+  ],
+  "mapName": "Clean Room - 2.207"
+}

@@ -1,0 +1,9 @@
+{
+  "name": "modsutd",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "_note": "Exists so api/*.js parse as ESM. Vercel roots the project here (its Root Directory cannot reach above itself, and the build reads /data), so the relays sit at the root and this is the nearest package.json to them. The app is frontend/package.json."
+}

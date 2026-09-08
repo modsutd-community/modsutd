@@ -1,0 +1,17 @@
+{
+  "code": "10.004",
+  "name": "Advanced Mathematics II",
+  "description": "This subject provides an introduction to linear algebra and multivariable calculus. We cover topics in linear algebra including solving systems of linear equations, matrices, LU factorisation, determinants, vector spaces, linear independence, basis, fundamental spaces, projection, eigenvectors, and diagonalisation with a balanced emphasis on proofs and computation. Subsequently, this subject extends the notion of derivation and integration for multivariable functions by introducing the gradient, directional derivatives, implicit functions, maxima and minima, multivariable integration, curvilinear coordinates, and change of variables.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Freshmore Core",
+    "SMT"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-004-advanced-mathematics-ii/"
+}

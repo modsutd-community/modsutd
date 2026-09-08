@@ -1,0 +1,18 @@
+{
+  "code": "03.007",
+  "name": "Design Thinking and Innovation",
+  "description": "Foundational design course for SUTD freshmore students, introducing concepts of design at a variety of scales and through multiple perspectives. Covers core design themes, innovation methodologies, teamwork, communication and fabrication. Distinct from 03.007A and 03.007B (IDeA-1 and IDeA-2), which SUTD publishes separately.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "2",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 2",
+    "Freshmore Core"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/03-007-design-thinking-and-innovation/"
+}

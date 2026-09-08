@@ -1,0 +1,19 @@
+{
+  "code": "40.246",
+  "name": "Computational Methods in Finance",
+  "description": "",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-246-computational-methods-in-finance/"
+}

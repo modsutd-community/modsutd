@@ -1,0 +1,18 @@
+{
+  "code": "01.107",
+  "name": "Urban Transportation",
+  "description": "Provides students with an understanding of current challenges and opportunities in land transportation. Introduces road vehicle propulsion technologies and transportation systems modelling, including the tools and methods to assess technologies and system performance. Topics include conventional and alternative vehicle powertrains, intelligent transportation systems (ITS), transportation network modelling, traffic simulation, and travel demand modelling. Students complete a project on a subject of their choosing.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "7",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/01-107-urban-transportation/"
+}

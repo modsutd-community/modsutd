@@ -1,0 +1,46 @@
+{
+  "code": "50.043",
+  "name": "Database Systems",
+  "description": "Foundations and practice of database management: relational model, SQL, transaction management, indexing, query optimisation, and modern non-relational systems.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "5",
+  "prerequisites": [
+    "10.014",
+    "10.025",
+    "50.004"
+  ],
+  "prereqTree": {
+    "and": [
+      {
+        "or": [
+          {
+            "code": "10.014",
+            "name": "Computational Thinking for Design",
+            "cohort": [
+              "classic"
+            ]
+          },
+          {
+            "code": "10.025",
+            "name": "Computational Thinking for Design",
+            "cohort": [
+              "ay2025",
+              "ay2026"
+            ]
+          }
+        ]
+      },
+      "50.004"
+    ]
+  },
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-043-database-systems/"
+}

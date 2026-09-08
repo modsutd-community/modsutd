@@ -1,0 +1,51 @@
+{
+  "code": "50.057",
+  "name": "Modern Software Design Studio with Agentic AI",
+  "description": "This course is a studio-based elective that explores how modern software systems are specified, designed, built, verified, and continuously delivered using disciplined, specification-driven workflows. The course emphasises Behaviour-Driven Development and Spec-Driven design as foundations for software architecture, treating behavioural descriptions, executable specifications, and type systems as first-class design artefacts. Students learn to leverage agentic AI coding tools to support specification interpretation, code generation, refactoring, and CI/CD workflows, while maintaining human judgement, accountability, and design intent. Through hands-on studio projects, students design and implement production-style CRUD APIs for large-scale systems, establish automated testing and deployment pipelines, apply type-driven development for reliability and evolvability, and incorporate formal methods techniques to reason about correctness and software verification. The course focuses on end-to-end software design practice, integrating intelligent development tools with principled engineering workflows to prepare students for building robust, scalable, and verifiable software systems.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "50.003",
+    "10.014",
+    "10.025"
+  ],
+  "prereqTree": {
+    "and": [
+      "50.003",
+      {
+        "or": [
+          {
+            "code": "10.014",
+            "name": "Computational Thinking for Design",
+            "cohort": [
+              "classic"
+            ]
+          },
+          {
+            "code": "10.025",
+            "name": "Computational Thinking for Design",
+            "cohort": [
+              "ay2025"
+            ]
+          },
+          {
+            "name": "Algorithmic Thinking and Object-Based Abstraction",
+            "cohort": [
+              "ay2026"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-057-modern-software-design-studio-with-agentic-ai/"
+}

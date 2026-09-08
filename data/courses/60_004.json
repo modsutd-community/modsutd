@@ -1,0 +1,22 @@
+{
+  "code": "60.004",
+  "name": "Service Design Studio",
+  "description": "Students form teams to respond to a Service Design Challenge by conceptualising, designing and implementing an AI-based application. The course covers web technologies for deploying cross-platform service solutions to industry needs.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "5",
+  "prerequisites": [
+    "10.014",
+    "50.004"
+  ],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Core",
+    "Artificial Intelligence",
+    "DAI"
+  ],
+  "noBatchChat": true,
+  "sourceUrl": "https://www.sutd.edu.sg/course/60-004-service-design-studio/"
+}

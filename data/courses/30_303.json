@@ -1,0 +1,18 @@
+{
+  "code": "30.303",
+  "name": "Industry 4.0 & 3D Printing",
+  "description": "Industry 4.0 is defined as the combination of smart manufacturing systems and developed information technologies, enabled by tools such as cloud computing, machine learning, big data, internet of things, and cyber-physical systems. The course brings an overall understanding of Industry 4.0 and its revolutionary implications to smart manufacturing, smart products/services, and smart cities. As one of the important manufacturing methods of Industry 4.0, additive manufacturing (AM) or three-dimensional (3D) printing is introduced in the second part of the course. Provides a comprehensive study on the liquid, solid, and powder-based 3D printing methods, with insights on applications and future trends.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "7",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-303-industry-4-0-3d-printing/"
+}

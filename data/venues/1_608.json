@@ -1,0 +1,21 @@
+{
+  "code": "1.608",
+  "name": "Cohort Classroom 7",
+  "building": "1",
+  "floor": 6,
+  "type": "Cohort Classroom",
+  "mapName": "Cohort Classroom 7 - 1.608",
+  "capacity": 50,
+  "facilities": [
+    "Round Tables",
+    "Multiple Whiteboards",
+    "Projector",
+    "Air Conditioning"
+  ],
+  "panoScenes": [
+    {
+      "scene": "cohort_classroom",
+      "title": "Cohort Classroom"
+    }
+  ]
+}

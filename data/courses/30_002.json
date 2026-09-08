@@ -1,0 +1,22 @@
+{
+  "code": "30.002",
+  "name": "Circuits & Electronics",
+  "description": "Introduces fundamentals of lumped circuit abstraction. Topics include resistive elements and networks, independent and dependent sources, switches and MOS transistors, digital abstraction, operational amplifiers, energy storage elements, dynamics of first and second order networks, and design in time and frequency domains. Design and lab exercises are significant course components.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "4",
+  "prerequisites": [
+    "10.013",
+    "10.017",
+    "10.018"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Core",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-002-circuits-electronics/"
+}

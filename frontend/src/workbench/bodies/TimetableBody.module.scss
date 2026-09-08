@@ -1,0 +1,252 @@
+.wrap {
+    flex: 1;
+    padding: 12px;
+}
+
+.toolRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.saved {
+    font-size: 9.5px;
+    color: rgba(233, 234, 237, 0.55);
+    margin-left: auto;
+}
+
+.pasteBlock {
+    margin-bottom: 12px;
+}
+
+.howto {
+    font-size: 11px;
+    color: rgba(233, 234, 237, 0.5);
+    line-height: 1.5;
+    margin-bottom: 8px;
+
+    em {
+        color: var(--wb-amber-soft);
+        font-style: normal;
+    }
+}
+
+.dropzone {
+    position: relative;
+}
+
+.textarea {
+    width: 100%;
+    background: var(--wb-well);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--wb-ink);
+    font-family: inherit;
+    font-size: 11.5px;
+    line-height: 1.5;
+    padding: 10px;
+    resize: vertical;
+    caret-color: var(--wb-amber);
+
+    &:focus {
+        outline: none;
+        border-color: rgba(255, 176, 0, 0.5);
+    }
+    &:disabled {
+        opacity: 0.7;
+    }
+    &::placeholder {
+        color: rgba(233, 234, 237, 0.3);
+    }
+}
+
+// Green once the slots have actually reached the relay, red until then. The
+// line asks for something, so its colour should say whether the asking is
+// still open.
+.thanks {
+    font-size: 10.5px;
+    margin: 8px 0;
+}
+
+.thanksOn {
+    color: #7fe6a0;
+}
+
+.thanksOff {
+    color: #ff8f8f;
+}
+
+.gridScroller {
+    overflow: auto;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: var(--wb-well);
+    padding: 10px;
+}
+
+.gridHead {
+    display: grid;
+    grid-template-columns: 34px repeat(5, minmax(72px, 1fr));
+    gap: 3px;
+    min-width: 420px;
+}
+
+.dayHead {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: rgba(233, 234, 237, 0.6);
+    padding-bottom: 4px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 34px repeat(5, minmax(72px, 1fr));
+    gap: 3px;
+    min-width: 420px;
+}
+
+.timeCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.timeLabel {
+    font-size: 8.5px;
+    color: rgba(233, 234, 237, 0.6);
+    text-align: right;
+    padding-right: 4px;
+}
+
+.dayCol {
+    position: relative;
+}
+
+.hourLine {
+    background: rgba(255, 255, 255, 0.025);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.dayLane {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+}
+
+// `position` is set INLINE on the element, not here: every block carries
+// data-tip, and `[data-tip] { position: relative }` in global.scss ties with a
+// class and wins on load order. That made left/right inert, so the block shrank
+// to the width of its own text instead of filling the day, and stacked its
+// siblings instead of placing them by time.
+//
+// An element selector would have won too, but it would tie the layout to the
+// block still being a <button>.
+.event {
+    left: 1px;
+    right: 1px;
+    border: none;
+    border-left: 2px solid;
+    padding: 3px 5px;
+    overflow: hidden;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    color: inherit;
+    min-height: 14px;
+}
+
+.evCode {
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+}
+
+.evMeta {
+    font-size: 8px;
+    color: rgba(255, 255, 255, 0.65);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.timelineWrap {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 8px;
+    font-size: 12px;
+}
+
+// The one failure a student cannot diagnose: SAMS keeps the Weekly Calendar
+// View working and refuses List View, so the page looks healthy.
+.tip {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--wb-amber);
+    border-left: 2px solid var(--wb-amber);
+    padding: 4px 0 4px 8px;
+    margin: 6px 0 0;
+    opacity: 0.85;
+}
+
+// The two views sit side by side because a student who cannot use List View
+// needs to see the alternative in the same glance, not after a failed paste.
+.viewPick {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin: 6px 0 1px;
+}
+
+// Stacked tight under "Recommended!", because it is the next line of the same
+// thought: which view to copy, and what to do when the better one is missing.
+// flex-basis 100% is what puts it on its own row inside the option, the same
+// trick .viewNote uses, and the 18px clears the radio.
+.viewTip {
+    flex-basis: 100%;
+    padding-left: 18px;
+}
+
+.viewOpt {
+    display: flex;
+    align-items: center;
+    // Separate axes. The 5px is the space between the radio and its word; as a
+    // row gap it also pushed every wrapped line apart, which is where the gap
+    // under "Recommended!" was coming from - not from any margin.
+    column-gap: 5px;
+    row-gap: 1px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    cursor: pointer;
+
+    input {
+        accent-color: var(--wb-amber);
+        margin: 0;
+    }
+}
+
+.viewNote {
+    flex-basis: 100%;
+    padding-left: 18px;
+    // Its own space from the radio row, so tightening the row gap does not
+    // drag it up under "List view".
+    margin-top: 4px;
+    font-size: 10px;
+    line-height: 1.4;
+    opacity: 0.75;
+}
+
+// Inline, not an overlay. The panel scrolls, so an absolutely positioned
+// bubble is clipped by it no matter what z-index it carries - which is exactly
+// what happened to the old tooltip. A disclosure pushes the content instead,
+// and works on a touch screen, which a hover never did.
+
+.steps {
+    display: flex;
+    gap: 4px;
+    margin: 2px 0 6px;
+    font-size: 11px;
+    line-height: 1.6;
+    opacity: 0.8;
+}

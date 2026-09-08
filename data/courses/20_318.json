@@ -1,0 +1,25 @@
+{
+  "code": "20.318",
+  "name": "Creative Machine Learning",
+  "description": "Explores machine learning apparatus for generative design and how AI tools might transform architectural design processes. Students work in groups on data curation, model training, and design generation, delivering prototypes and written reports suitable for exhibition and publication.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "6",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 6",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 4,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-318-creative-machine-learning/"
+}

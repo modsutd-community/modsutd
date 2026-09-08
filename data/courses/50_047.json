@@ -1,0 +1,23 @@
+{
+  "code": "50.047",
+  "name": "Mobile Robotics",
+  "description": "Introductory course on intelligent robots and systems at the intersection of machine learning, artificial intelligence, computer vision and control theory. Introduces fundamentals of developing systems which can sense, plan and act in the world. Emphasis on algorithm design, probabilistic reasoning, decision making under uncertainty and learning to improve behaviours using data.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "10.020",
+    "10.022",
+    "50.001",
+    "50.004"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-047-mobile-robotics/"
+}

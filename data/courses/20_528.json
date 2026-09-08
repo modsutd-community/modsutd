@@ -1,0 +1,32 @@
+{
+  "code": "20.528",
+  "name": "Digital Biomimetics: Sustainable Materials and Manufacturing",
+  "description": "The course is a cross-disciplinary collaboration between Architecture and Sustainable Design and Engineering Product Development. It brings together material science and digital fabrication, fusing natural composites with industrial robotics, aiming to produce innovation in the realm of sustainable design and manufacturing. It suggests that designs inspired by biological processes found in nature, may assist in transforming society toward a more environmentally benign mode of production from the ground up. This process starts from the understanding of the principles behind structural biological systems and the development of tools embracing the paradigm imposed by nature instead of those predefined by the existing manufacturing technologies. As a research and design course, students are required to develop their own proposals, methods and artifact which may lead to publication of results in journals and conferences.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "9",
+  "prerequisites": [
+    "20.211",
+    "20.212",
+    "30.001",
+    "30.007"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 9",
+    "Term 10",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 1,
+    "tutorial": 0,
+    "project": 3,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-528-digital-biomimetics-sustainable-materials-and-manufacturing/"
+}

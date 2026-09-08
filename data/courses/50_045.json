@@ -1,0 +1,30 @@
+{
+  "code": "50.045",
+  "name": "Information Retrieval",
+  "description": "Automatic methods of Information Retrieval have gained greater significance due to increased web data. The course focuses on methodologies of indexing, processing, and querying of textual data, extended to video and image data. Topics include Boolean retrieval and VSM, word embeddings, probabilistic IR and relevance feedback, BM-25, neural networks, text processing and classification using neural networks, language modelling (Transformers, BERT, RoBERTa), IR using language modelling, question answering, personalisation, image retrieval, and large language models for information retrieval.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "50.007",
+    "50.021",
+    "50.038",
+    "50.039"
+  ],
+  "prereqTree": {
+    "or": [
+      "50.007",
+      "50.021",
+      "50.038",
+      "50.039"
+    ]
+  },
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-045-information-retrieval/"
+}

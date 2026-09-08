@@ -1,0 +1,19 @@
+{
+  "code": "20.223",
+  "name": "Contemporary Architecture: Between Technology, Science and Culture (HTC Elective)",
+  "description": "Far from isolated trajectories, new ideas, scientific discoveries, technology innovation, and aesthetic avant-gardes occur in a highly interconnected manner. Complex dynamics between architectural designs and their cultural and technological contexts attest that architecture is not fully autonomous as it serves, negates, distorts, questions and produces its context. The course analyses the development of contemporary architecture through its relationships with technological and scientific advances. The course is roughly organized in a chronological format, starting with a brief overview of the industrial revolution and the early 20th century, placing emphasis on the second half of the 20th century and the development of current digital culture in architecture. Students develop an understanding of the relationships between architectural design, technology innovation and scientific ideas that led to contemporary architectural practice and theory. In this course, architectural design is placed into a broader intellectual context, which helps students not only understand the “what and how” architects do but also build perspective and framework to reflect on the “whys”.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [
+    "20.222"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-223-contemporary-architecture-between-technology-science-and-culture-htc-elective-2/"
+}

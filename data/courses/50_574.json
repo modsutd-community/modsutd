@@ -1,0 +1,19 @@
+{
+  "code": "50.574",
+  "name": "Theory and Application of Software Security",
+  "description": "",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-574-theory-and-application-of-software-security/"
+}

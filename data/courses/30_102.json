@@ -1,0 +1,22 @@
+{
+  "code": "30.102",
+  "name": "Electromagnetics & Applications",
+  "description": "Focuses on electromagnetics (Maxwell equations), the theories and applications. Covers transmission line theory and circuit concepts of EM waves, resonators and waveguides, antennas, plane waves, and waves in different media and boundaries. Hands-on sections include MATLAB programming and commercial EM software (CST microwave studio). The 1D project is wireless power transfer; the 2D project applies EM to solve problems related to another discipline. Content from Physics 2 (10.005) is recapped.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "5",
+  "prerequisites": [
+    "10.001",
+    "10.004",
+    "10.005"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Core",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-102-electromagnetics-applications/"
+}

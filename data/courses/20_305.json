@@ -1,0 +1,27 @@
+{
+  "code": "20.305",
+  "name": "Conservation Theories and Approaches of Built Heritage",
+  "description": "This course will acquaint participants with the discipline of architectural conservation, its origins, developments and inherent contradictions. The course will cover the range of scales of conservation, from the smallest denominator of artefact conservation to large-scale urban conservation. Students will be better positioned to appreciate and approach the question of conservation/preservation versus development/demolition and better prepared to understand the process, techniques, standards, and other considerations that define a high quality conservation effort upon the completion of the course. Case-studies in Singapore and the region will be introduced. Throughout the elective, we will be discussing the following:",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "1",
+  "prerequisites": [
+    "20.222"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 3,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 9,
+    "total": 12,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-305-conservation-theories-and-approaches-of-built-heritage/"
+}

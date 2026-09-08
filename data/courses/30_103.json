@@ -1,0 +1,18 @@
+{
+  "code": "30.103",
+  "name": "Fluid Mechanics",
+  "description": "Provides an introduction to the fundamental principles upon which an understanding and working knowledge of the behavior of fluids can be built. Familiarizes students with important environmental and engineering challenges associated with fluid dynamics and introduces key elements: properties of fluids, hydrostatics, equations of motion, control volume analysis, inviscid and viscous flows, and dimensional analysis with the role of the Reynolds number. Emphasizes the role of fluid mechanics in design through in-class examples, a computational fluid dynamics (CFD) project, and a 2D project.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "5",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Core",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-103-fluid-mechanics/"
+}

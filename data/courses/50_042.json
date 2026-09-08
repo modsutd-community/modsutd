@@ -1,0 +1,20 @@
+{
+  "code": "50.042",
+  "name": "Foundations of Cybersecurity",
+  "description": "Provides students with a basic appreciation and understanding of the core concepts of information security. Topics include concepts for confidentiality, integrity and availability; introduction to cybercrimes and security issues; threats to information systems and devices; cryptographic primitives such as symmetric and asymmetric cryptography; core problems such as random number generation, entropy, and key distribution; and common topics such as security protocols and public-key infrastructures.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "5",
+  "prerequisites": [
+    "50.005"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-042-foundations-of-cybersecurity/"
+}

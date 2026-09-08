@@ -1,0 +1,28 @@
+{
+  "code": "20.301",
+  "name": "Material Computation: Advanced Topics in Geometry and Matter",
+  "description": "Students gain insight into synthetic design processes and develop skills in computational geometry, structural analysis, optimisation, and digital fabrication. The course culminates in a design project and report demonstrating understanding of geometry-matter relationships.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "7",
+  "prerequisites": [
+    "20.202",
+    "20.212",
+    "20.213"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 2,
+    "tutorial": 0,
+    "project": 2,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-301-material-computation-advanced-topics-in-geometry-and-matter/"
+}

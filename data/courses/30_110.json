@@ -1,0 +1,20 @@
+{
+  "code": "30.110",
+  "name": "Digital Systems Laboratory",
+  "description": "Lectures and labs cover digital logic, flip flops, FPGAs, counters, and finite state machines. Students design and implement a final project: games, music, digital filters, wireless communications, video, or graphics using Verilog. Group-based lab and project work familiarize students with digital circuit design.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "6",
+  "prerequisites": [
+    "30.002"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Core Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-110-digital-systems-laboratory/"
+}

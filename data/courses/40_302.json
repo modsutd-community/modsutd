@@ -1,0 +1,20 @@
+{
+  "code": "40.302",
+  "name": "Advanced Topics in Optimisation",
+  "description": "Introduces convex optimisation, a powerful optimisation model with effective algorithms and strong guarantees of finding the best solution. Convex optimisation is widely used in fields like engineering and machine learning, where making accurate decisions is important. Covers modelling techniques, explores duality, and learns about sensitivity analysis, which helps see how changes in parameters affect solutions. Also covers basic algorithms needed to solve convex optimisation problems.",
+  "credits": 6,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "7",
+  "prerequisites": [
+    "40.002"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-302-advanced-topics-in-optimisation/"
+}

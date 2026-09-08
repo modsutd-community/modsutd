@@ -1,0 +1,25 @@
+modSUTD
+Copyright 2026 modSUTD contributors
+
+Licensed under the Apache License, Version 2.0. See LICENSE.
+
+This project is not affiliated with, endorsed by, or operated by the
+Singapore University of Technology and Design.
+
+---
+
+The Apache 2.0 licence above covers this project's own code, and the data in
+/data that this project authored. It does not cover, and cannot relicense,
+the third-party material carried or referenced here:
+
+- SUTDCalendarConverter (https://github.com/Itsskiip/SUTDCalendarConverter)
+  and SUTD-Timetable-Extractor
+  (https://github.com/butter9fe/SUTD-Timetable-Extractor) were read while the
+  timetable parser was written, and both helped. Neither is a parent of it: no
+  code from either ships here, and the parser is not a derivative work.
+- Panoramas are served from virtualtour.sutd.edu.sg at runtime and are SUTD's.
+- Course descriptions, tags and prerequisites in /data are taken from SUTD's
+  published course listing and belong to SUTD.
+- Room geometry and campus map data come from OpenStreetMap, © OpenStreetMap
+  contributors, under the Open Database Licence (ODbL).
+- Map tiles are served by openstreetmap.org under their tile usage policy.

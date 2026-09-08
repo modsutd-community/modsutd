@@ -1,0 +1,26 @@
+{
+  "code": "20.511",
+  "name": "Thesis Preparation",
+  "description": "In the Thesis Preparation module, students research and formulate their individual thesis proposals within the context of their chosen topic, and with the input of the thesis advisors, related faculty members and/or industrial partners. The Thesis Preparation module represents an opportunity for students to frame a project of their passion; it is an exercise in autonomy yet there will be some guidance in the topic orientations; it will have as its ultimate goal to challenge and make an intellectual contribution to the future of the architectural and urban discipline, with all the tools, technologies, arts and sciences acquired during their entire studies at SUTD. During the Thesis Preparation module, students meet with the advisors according to a schedule established by the thesis advisors. In addition, students will be required, as part of the thesis preparation, to attend a “professional practice” lecture series organized by SUTD. This lecture series features talks by and discussions with professionals from the industry on selected professional practice topics. The lecture series provides a continuation of the involvement with industry, mirroring (and inversing) the relationship established in the Structured Internship.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "9",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 9",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-511-thesis-preparation/"
+}

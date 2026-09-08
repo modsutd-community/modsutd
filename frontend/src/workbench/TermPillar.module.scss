@@ -1,0 +1,15 @@
+.field {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  white-space: nowrap;
+
+  select {
+    padding: 3px 6px;
+    font-size: 10.5px;
+    cursor: pointer;
+
+    option { background: var(--wb-panel); color: var(--wb-ink); }
+  }
+}

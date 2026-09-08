@@ -1,0 +1,26 @@
+{
+  "code": "10.016",
+  "name": "Science for a Sustainable World",
+  "description": "Examines fundamental science underpinning sustainability challenges, blending chemistry, biology and environmental science. Topics include energy systems, materials cycles, ecosystems and the impact of human activity on the planet.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "2",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  },
+  "tags": [
+    "Term 2",
+    "Freshmore Core",
+    "SMT"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-016-science-for-a-sustainable-world/"
+}

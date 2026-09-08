@@ -1,0 +1,17 @@
+{
+  "code": "30.505",
+  "name": "Design Science",
+  "description": "Spring term 2021: Tuesday 11:30-1:30 and Friday 11:30-1:30, Venue TBD",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-505-design-science/"
+}

@@ -1,0 +1,17 @@
+{
+  "code": "30.502",
+  "name": "Research Methods",
+  "description": "For the most part 30.502 is dedicated to the provision of essential tools for the analysis of empirical data. The first time an experiment is conducted, the results often show little correspondence to the refined value or outcome. Errors need to be minimised through refined experiments and the uncertainties need to be estimated to add validity to the measurements. In this course you will learn to use statistics to design experiments, analyse errors and uncertainties, use probability distributions to describe uncertainties in data, and evaluate the statistical significance of experimental results. The course will also teach methods to smooth, fit, and filter data. In the final part of the course we will discuss the honest presentation of data, and ethics in research.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-502-research-methods/"
+}

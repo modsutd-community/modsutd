@@ -1,0 +1,26 @@
+{
+  "code": "20.515",
+  "name": "Professional Practice II",
+  "description": "This course is a continuation of the previous 20.514 Professional Practice I . It covers topics associated with architecture as a business and laws governing contracts and variations thereof. The course challenges the students to examine critically a broad range of professional, legal, ethical and business problems that they are likely to face in practice.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "10",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 10",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 3,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 9,
+    "total": 12,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-515-professional-practice-ii/"
+}

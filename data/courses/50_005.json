@@ -1,0 +1,20 @@
+{
+  "code": "50.005",
+  "name": "Computer System Engineering",
+  "description": "Covers engineering of computing and networking systems: design challenges, controlling complexity, operating systems, networking systems, performance, modularity, client-server, naming, security and concurrency. Includes case studies on DNS, HTTP and OpenSSL.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "5",
+  "prerequisites": [
+    "50.002"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Core",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-005-computer-system-engineering/"
+}

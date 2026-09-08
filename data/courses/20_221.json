@@ -1,0 +1,25 @@
+{
+  "code": "20.221",
+  "name": "Traditions: World History Connections to Vernacular Architecture (HTC)",
+  "description": "Surveys architectural history spanning early cultures to the present, encompassing both western and non-western traditions. Students analyse buildings and urban environments through their historical and technological contexts while developing critical analytical skills.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "5",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 5",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 3,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 6,
+    "total": 9,
+    "source": "official"
+  },
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-221-traditions-world-history-connections-to-vernacular-architecture-htc/"
+}

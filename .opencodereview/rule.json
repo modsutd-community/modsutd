@@ -1,0 +1,43 @@
+{
+  "_comment": [
+    "Project layer (priority 2 of 4) for open-code-review, read by",
+    ".github/workflows/code-review.yml. The action checks out the TRUSTED",
+    "BASE, so a pull request cannot widen its own excludes.",
+    "",
+    "`exclude` filters PER FILE, which the workflow's paths-ignore cannot:",
+    "paths-ignore skips a run only when EVERY changed file matches, so one",
+    "edited .txt beside 300 course records would send all 301 to the model.",
+    "That is what answered HTTP 413 and then retried into 429s. Both layers",
+    "stay: paths-ignore means a data-only pull request starts no runner at",
+    "all, and this means a MIXED one still reviews only the code.",
+    "",
+    "What is excluded is generated or record data, which is not what an LLM",
+    "reviewer is good for: a course record is checked against the source URL",
+    "cited in the pull request body, and sync-data.mjs fails the build on a",
+    "bad mapName or an unknown venue.",
+    "",
+    "Check any pattern with `ocr rules check <path>`, and check a whole diff",
+    "with `ocr review --preview --from main --to <branch>`, which prints the",
+    "verdict per file (user_exclude, unsupported_ext, ...) and calls no LLM."
+  ],
+  "exclude": [
+    "data/**",
+    "frontend/public/data/**",
+    "**/package-lock.json",
+    "**/*.geojson"
+  ],
+  "rules": [
+    {
+      "path": "tools/scraper/**/*.py",
+      "rule": "This code reads SUTD's HTML, which changes without notice. Flag any parser that would write a THIN or EMPTY result over good data rather than refusing: a source answering 200 with nothing must never wipe a file. Flag file reads and writes that omit encoding=\"utf-8\" - the repo's JSON is UTF-8 and the default on Windows is cp1252, which crashes before the scraper fetches anything."
+    },
+    {
+      "path": ".github/workflows/*.yml",
+      "rule": "Flag `continue-on-error` at JOB level where a later job gates on `needs.<job>.result`: it rewrites the result to 'success' on failure and silently disables the fallback. Step level plus a job output reading `steps.<id>.outcome` is the working form. Flag any push to main that does not authenticate as a token with the admin role, because main's ruleset requires a reviewed pull request and only that role bypasses it."
+    },
+    {
+      "path": "frontend/src/**/*.{ts,tsx}",
+      "rule": "TypeScript strict, no `any` (use `unknown`). Comments must say WHY or HOW, never restate WHAT the line does. Flag anything adding analytics, tracking, cookies, telemetry, or a runtime dependency: all four are architecture invariants in CLAUDE.md. Flag a callback prop reaching an effect's dependency array where the effect builds an iframe or a subscription - an inline arrow is a new function every render and rebuilds it in a loop."
+    }
+  ]
+}

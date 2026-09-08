@@ -1,0 +1,8 @@
+{
+  "_note": "Venues whose surveyed shapes carry a different name from the venue record. Only for cases a rule cannot reach: a venue is matched to a shape by door plate first, then by plate with a trailing letter dropped (1.404B is 1.404), then by exact name. Anything here is a deliberate exception, not a shortcut - a loose rule would have matched 'Hostel' to 'Hostel Lounge', which is a different venue with its own plate.",
+  "Hostel": [
+    "Hostel Blk 55 Lobby",
+    "Hostel Blk 57 Lobby",
+    "Hostel Blk 59 Lobby"
+  ]
+}

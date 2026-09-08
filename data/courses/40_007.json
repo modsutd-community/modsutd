@@ -1,0 +1,21 @@
+{
+  "code": "40.007",
+  "name": "Decision Analysis",
+  "description": "ESD core on quantitative decision analysis. Covers decision making under uncertainty, multi-criteria decision analysis, value of information, utility theory and risk analysis with engineering and business applications.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "5",
+  "prerequisites": [
+    "40.001"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-007-decision-analysis/"
+}

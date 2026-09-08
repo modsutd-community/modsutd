@@ -1,0 +1,22 @@
+{
+  "code": "40.018",
+  "name": "Heuristics and Systems Theory",
+  "description": "ESD elective on heuristic methods and systems theory. Covers metaheuristics for hard combinatorial problems including local search, genetic algorithms and simulated annealing, with a foundation in systems concepts.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "5",
+  "prerequisites": [
+    "10.018",
+    "40.002",
+    "40.017"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ESD",
+    "Term 5",
+    "Core"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-018-heuristics-and-systems-theory/"
+}

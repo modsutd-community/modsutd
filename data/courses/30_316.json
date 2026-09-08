@@ -1,0 +1,30 @@
+{
+  "code": "30.316",
+  "name": "Digital Biomimetics: Sustainable Materials and Manufacturing",
+  "description": "A cross-disciplinary collaboration between Architecture and Sustainable Design (ASD) and Engineering Product Development (EPD). Brings together material science and digital fabrication, fusing natural composites with industrial robotics, aiming to produce innovation in the realm of sustainable design and manufacturing. Designs inspired by biological processes found in nature may assist in transforming society toward a more environmentally benign mode of production from the ground up. Begins with understanding the principles behind structural biological systems and the development of tools embracing the paradigm imposed by nature instead of those predefined by existing manufacturing technologies.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "6",
+  "prerequisites": [
+    "20.211",
+    "20.212",
+    "30.001",
+    "30.007"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Core Elective",
+    "EPD"
+  ],
+  "workload": {
+    "lecture": 1,
+    "tutorial": 0,
+    "project": 3,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  }
+}

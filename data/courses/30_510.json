@@ -1,0 +1,17 @@
+{
+  "code": "30.510",
+  "name": "Quantum Computation and Quantum Information",
+  "description": "This subject will introduce students to the emerging field of quantum information processing, The course will introduce the basic theory underlying quantum computation and quantum cryptography and their implementation. The course will cover quantum models of information and computation, quantum algorithms, quantum information theory and the physics of systems capable of supporting quantum information processing. The course will begin with a self-contained introduction to quantum mechanics and so no prior knowledge of quantum mechanics is assumed.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-510-quantum-computation-and-quantum-information/"
+}
