@@ -1,0 +1,16 @@
+{
+  "code": "30.590",
+  "name": "Research Seminar",
+  "description": "The PhD research seminar series is intended to give PhD students the opportunity to prepare and present conference-style talks on the topics of their research. External speakers and faculty will also be invited to speak at this platform. These seminars are intended to foster a strong research culture at SUTD where the latest and greatest results are brought from the lab and communicated clearly to a broad audience. Held in a relaxed setting, these seminars are designed to invite active participation from all present to spark new ideas and learn beyond your individual research areas. As this will be the first year that the seminar will be offered, active participation from faculty members will be expected, while PhD students work towards getting their research started.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ]
+}

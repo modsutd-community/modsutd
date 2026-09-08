@@ -1,0 +1,18 @@
+{
+  "code": "61.103",
+  "name": "Fitness Centre",
+  "building": "61",
+  "floor": 1,
+  "type": "Facility",
+  "altNames": [
+    "Fitness Center",
+    "Gym"
+  ],
+  "panoScenes": [
+    {
+      "scene": "gym",
+      "title": "Fitness Centre"
+    }
+  ],
+  "mapName": "Fitness Centre Gym"
+}

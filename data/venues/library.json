@@ -1,0 +1,27 @@
+{
+  "code": "Library",
+  "name": "Library",
+  "building": "1",
+  "floor": 1,
+  "type": "Facility",
+  "facility": true,
+  "panoScenes": [
+    {
+      "scene": "library_level_1_lounge_area_near_lift",
+      "title": "Library L1 - Lounge"
+    },
+    {
+      "scene": "library_level_1_materials_collection",
+      "title": "Library L1 - Materials Collection"
+    },
+    {
+      "scene": "library_level_2_green_steps_area",
+      "title": "Library L2 - Parkscape"
+    },
+    {
+      "scene": "library_level_3_near_discussion_booths",
+      "title": "Library L3 - Discussion Booths"
+    }
+  ],
+  "mapName": "Library Lv 1 - 1.101"
+}

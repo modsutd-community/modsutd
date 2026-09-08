@@ -1,0 +1,555 @@
+.tree {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+// Controls on one wrapping row; badges always on their own full row -
+// the AY2026 toggle right-flushes against controls, never against badges.
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.currentTerm {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+
+  select {
+    padding: 3px 6px;
+    font-size: 10.5px;
+    cursor: pointer;
+
+    option { background: var(--wb-panel); color: var(--wb-ink); }
+  }
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.badge {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 3px 9px;
+  border: 1px solid rgba(233, 234, 237, 0.3);
+  color: rgba(233, 234, 237, 0.62);
+  white-space: nowrap;
+}
+
+.badgeOn {
+  border-color: var(--wb-amber);
+  color: var(--wb-amber);
+  background: rgba(255, 176, 0, 0.1);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+
+  input { accent-color: var(--wb-amber); cursor: pointer; margin: 0; }
+}
+
+.badgeDeclared {
+  border-style: solid;
+  border-width: 1.5px;
+}
+
+// Declared but the plan never gets there - worth shouting about.
+.badgeGap {
+  border-color: rgba(255, 93, 108, 0.6);
+  color: #ffb3bb;
+}
+
+.issues {
+  font-size: 12px;
+  color: var(--wb-red);
+  border: 1px solid rgba(255, 93, 108, 0.4);
+  background: rgba(255, 93, 108, 0.07);
+  padding: 8px 12px;
+  margin: 4px 0;
+}
+
+.levelRow {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 6px 0;
+}
+
+.levelFuture {
+  opacity: 0.45;
+}
+
+.levelDrop {
+  background: rgba(255, 176, 0, 0.06);
+  outline: 1px dashed rgba(255, 176, 0, 0.5);
+  outline-offset: -1px;
+  opacity: 1;
+}
+
+// While a row hosts the open hover card it must paint above its later
+// siblings (whose .levelFuture opacity makes them stacking contexts) AND
+// shed its own dimming - opacity is inherited multiplicatively, so a card
+// inside a 0.45 row can never render solid unless the row un-dims.
+.levelRaised {
+  position: relative;
+  z-index: 30;
+  opacity: 1;
+}
+
+.levelLabel {
+  flex: none;
+  width: 52px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-top: 4px;
+}
+
+.levelNum {
+  font-family: var(--wb-display);
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--wb-amber-soft);
+}
+
+.levelCredits {
+  font-size: 9px;
+  color: rgba(233, 234, 237, 0.62);
+}
+
+.levelMods {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 28px;
+}
+
+.levelEmpty {
+  color: rgba(233, 234, 237, 0.25);
+  font-size: 12px;
+  padding-top: 4px;
+}
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-left: 3px solid transparent;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px 6px 4px 8px;
+  font-size: 12px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+
+  &:active { cursor: grabbing; }
+}
+
+.chipBad {
+  border-color: rgba(255, 93, 108, 0.7);
+  border-left-color: var(--wb-red);
+  background: rgba(255, 93, 108, 0.12);
+
+  .chipCode { color: #ffb3bb; }
+}
+
+.chipDragging {
+  opacity: 0.45;
+}
+
+.chipCode {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--wb-ink);
+  cursor: inherit;
+  // 99.999 placeholders label by NAME - cap them so a long title can't
+  // blow a term row apart.
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &:hover { color: var(--wb-amber-soft); }
+}
+
+.chipRemove {
+  background: none;
+  border: none;
+  padding: 1px 3px;
+  font-family: inherit;
+  font-size: 10px;
+  color: rgba(233, 234, 237, 0.55);
+  cursor: pointer;
+
+  &:hover { color: #fff; }
+}
+
+.recordTools {
+  display: flex;
+  gap: 6px;
+}
+
+.exportWrap {
+  position: relative;
+}
+
+.exportMenu {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 3px);
+  z-index: 40;
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  background: var(--wb-titlebar);
+  border: 1px solid rgba(255, 176, 0, 0.35);
+
+  button {
+    background: none;
+    border: none;
+    color: var(--wb-ink);
+    font-family: inherit;
+    font-size: 10.5px;
+    text-align: left;
+    padding: 6px 10px;
+    cursor: pointer;
+
+    &:hover { background: rgba(255, 176, 0, 0.12); color: var(--wb-amber-soft); }
+  }
+}
+
+.ayToggle {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(233, 234, 237, 0.62);
+  cursor: pointer;
+  user-select: none;
+
+  input { accent-color: var(--wb-amber); cursor: pointer; }
+
+  // A native select, styled to sit in the header rather than replaced by a
+  // custom menu: it gets keyboard, screen-reader and touch behaviour free, and
+  // on a phone it opens the platform picker instead of a list that has to be
+  // scrolled inside an already-scrolling panel.
+  select {
+    appearance: none;
+    background: var(--wb-well);
+    border: 1px solid var(--wb-line);
+    border-radius: 3px;
+    color: var(--wb-amber);
+    font: inherit;
+    letter-spacing: inherit;
+    padding: 2px 18px 2px 6px;
+    cursor: pointer;
+    background-image: linear-gradient(45deg, transparent 50%, currentColor 50%),
+      linear-gradient(135deg, currentColor 50%, transparent 50%);
+    background-position: calc(100% - 10px) 52%, calc(100% - 6px) 52%;
+    background-size: 4px 4px, 4px 4px;
+    background-repeat: no-repeat;
+
+    &:hover, &:focus-visible { border-color: var(--wb-amber); }
+    option { background: var(--wb-panel); color: var(--wb-ink); }
+  }
+
+  &:hover { color: var(--wb-ink); }
+}
+
+.chipFixed {
+  background: rgba(91, 141, 239, 0.1);
+  border-style: solid;
+  border-color: rgba(91, 141, 239, 0.45);
+  cursor: default;
+}
+
+.choiceHint {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  padding: 4px 9px;
+  border: 1px dashed rgba(233, 234, 237, 0.3);
+  color: rgba(233, 234, 237, 0.62);
+  cursor: pointer;
+
+  &:hover { color: var(--wb-ink); border-color: rgba(255, 176, 0, 0.5); }
+}
+
+// The hover card - bridges the 4px gap with a ::before shim so the pointer
+// never leaves the hover area while traveling into it.
+.card {
+  // Positioned by useAnchoredCard in viewport coordinates. Fixed, not
+  // absolute, for two reasons: the panel's overflow would clip a card wider
+  // than it, and an absolute child still counts toward the panel's scrollable
+  // area, which is what put a horizontal scrollbar under the plan.
+  position: fixed;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 280px;
+  padding: 9px 10px;
+  background: var(--wb-titlebar);
+  border: 1px solid rgba(255, 176, 0, 0.4);
+  box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.7);
+  cursor: default;
+  font-weight: 400;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -6px;
+    height: 6px;
+  }
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardTitle {
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wb-amber-soft);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardClose {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  font-family: inherit;
+  font-size: 11px;
+  color: rgba(233, 234, 237, 0.55);
+  cursor: pointer;
+
+  &:hover { color: #fff; }
+}
+
+.compRow {
+  display: grid;
+  grid-template-columns: 1fr 44px 44px 18px;
+  gap: 4px;
+  align-items: center;
+}
+
+.compName { padding: 3px 6px; font-size: 10.5px; min-width: 0; }
+
+.compNum {
+  padding: 3px 4px;
+  font-size: 10.5px;
+  text-align: right;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+}
+
+.compDel {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 10px;
+  color: rgba(233, 234, 237, 0.45);
+  cursor: pointer;
+
+  &:hover { color: var(--wb-red); }
+}
+
+// Totals row - same grid as .compRow so each sum sits under its column.
+.compFoot {
+  display: grid;
+  grid-template-columns: 1fr 44px 44px 18px;
+  gap: 4px;
+  align-items: center;
+}
+
+.footCell {
+  font-size: 10.5px;
+  text-align: right;
+  padding-right: 4px;
+}
+
+.compAdd {
+  background: none;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  font-family: inherit;
+  font-size: 10px;
+  color: rgba(233, 234, 237, 0.62);
+  cursor: pointer;
+
+  &:hover { color: var(--wb-amber-soft); border-color: rgba(255, 176, 0, 0.5); }
+}
+
+.computed {
+  font-size: 11px;
+  color: var(--wb-amber-soft);
+}
+
+.wtOff {
+  color: var(--wb-red);
+}
+
+.cardNotes {
+  width: 100%;
+  background: var(--wb-well);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--wb-ink);
+  font-family: inherit;
+  font-size: 10.5px;
+  line-height: 1.45;
+  padding: 6px 8px;
+  resize: vertical;
+  caret-color: var(--wb-amber);
+
+  &:focus { outline: none; border-color: rgba(255, 176, 0, 0.5); }
+  &::placeholder { color: rgba(233, 234, 237, 0.3); }
+}
+
+.cardPrereqs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 7px;
+}
+
+.popTitle {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  color: rgba(233, 234, 237, 0.62);
+  text-transform: uppercase;
+}
+
+.popChip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border: 1px solid;
+  white-space: nowrap;
+}
+
+.popPlanned {
+  border-color: rgba(60, 168, 122, 0.5);
+  color: #7fe6a0;
+  cursor: default;
+}
+
+.popMissing {
+  border-color: rgba(255, 93, 108, 0.6);
+  color: #ffb3bb;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+
+  &:active { cursor: grabbing; }
+}
+
+.popTerm {
+  font-weight: 400;
+  font-size: 9px;
+  color: rgba(233, 234, 237, 0.62);
+}
+
+// Neutral - a choice slot isn't a problem, unlike .popMissing.
+.popOption {
+  border-color: rgba(255, 176, 0, 0.45);
+  color: var(--wb-amber-soft);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &:active { cursor: grabbing; }
+  &:hover { background: rgba(255, 176, 0, 0.08); }
+}
+
+// Sits in the export menu, under the two actions it qualifies.
+.autoToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-top: 1px solid var(--wb-line);
+  font-size: 10.5px;
+  color: var(--wb-text-dim);
+  cursor: pointer;
+  white-space: nowrap;
+
+  input { margin: 0; accent-color: var(--wb-accent); }
+}
+
+// An unanswered "one of": one dotted slot holding the alternatives, so the
+// reader sees a choice rather than several demands they can only ever
+// half-satisfy. Same dotted language as the freshmore choice slot.
+.pickSlot {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 3px 5px;
+  border: 1px dashed rgba(255, 176, 0, 0.5);
+  border-radius: 3px;
+}
+
+.pickLabel {
+  font-size: 8.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wb-amber);
+  padding-right: 1px;
+}
+
+// A requirement SUTD named but never numbered. Nothing to place, so it is
+// stated rather than offered - no +, no pointer, no red.
+.popStated {
+  border-style: dashed;
+  border-color: var(--wb-ink-faint);
+  color: var(--wb-ink-dim);
+  cursor: default;
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+}

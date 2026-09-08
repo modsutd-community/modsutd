@@ -1,0 +1,13 @@
+{
+  "code": "40.305",
+  "name": "Advanced Topics in Stochastic Modelling",
+  "description": "Follow-up to the introduction course on Stochastic Modelling. Students learn advanced methods in stochastic modelling with a focus on business, engineering and financial math applications. Topics include renewal theory and martingales (discrete time). Time permitting, other topics such as branching processes, spatial processes, or stochastic networks may be introduced.",
+  "credits": 6,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "7",
+  "prerequisites": ["40.017", "40.012"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "ESD"]
+}

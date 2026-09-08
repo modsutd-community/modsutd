@@ -1,0 +1,30 @@
+{
+  "code": "10.026",
+  "name": "Design Computation",
+  "description": "Introduces programming to students with minimal prior experience, emphasising design applications. Students explore both visual programming and Python programming and apply these skills to creative problem-solving and design exploration.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "2",
+  "prerequisites": [
+    "10.025",
+    "03.007A"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 2",
+    "Freshmore Core"
+  ],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  },
+  "corequisites": [
+    "03.007B"
+  ]
+}

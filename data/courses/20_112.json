@@ -1,0 +1,30 @@
+{
+  "code": "20.112",
+  "name": "Sustainable Design Option Studio 2",
+  "description": "This studio invites students to imagine alternative trajectories for Singapore by engaging deeply with speculative thinking. Students develop critically reasoned positions on possible futures through research, projection techniques, and narrative-building, ultimately creating architectural and urban spatial proposals that explore sustainable design possibilities.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "8",
+  "prerequisites": [
+    "20.101",
+    "20.102",
+    "20.103",
+    "20.111"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 8",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 8,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 10,
+    "total": 18,
+    "source": "official"
+  },
+  "noBatchChat": true
+}

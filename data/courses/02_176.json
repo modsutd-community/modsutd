@@ -1,0 +1,16 @@
+{
+  "code": "02.176",
+  "name": "Collective Behavior",
+  "description": "Collective systems function as more than the sum of their parts. From the origins of multicellular life to population coding in the brain, to human institutions like stock markets and shared narratives, we see the emergence of functional synergies across multiple scales or organization. While the psychological and behavioural sciences have traditionally focused on the individual, the unique achievements of humans among the animal kingdom derive primarily from our remarkable social organization. Converging evidence suggests that human individual intelligence is a by-product of our collective intelligence rather than vice versa, highlighting a qualitative gap between the foundations of human intelligence and artificial intelligence. In this course, we will adopt multiple analytical lenses – psychological, biological, computational, and cultural – to understand emergent collective behaviour. Along the way we will traverse such topics as social networks, self-organizing systems, economic games, animal sociality, human evolution, gene-culture co-evolution, global psychological variation, linguistic communication, and computational social cognition.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "HASS",
+    "Elective / Technical Elective"
+  ]
+}

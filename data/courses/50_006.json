@@ -1,0 +1,47 @@
+{
+  "code": "50.006",
+  "name": "User Interface Design and Implementation",
+  "description": "Introduces the field of Human-Computer Interaction (HCI), Interaction Design and Usability in the context of today's diverse interactive products. Covers usability principles, design guidelines and heuristics, user-centred design, usability engineering, user experience and evaluation techniques. Includes a series of mini design exercises and design-implementation projects. Students who successfully complete the course will be well-equipped with the concepts and language to argue and discuss how well a system's front-end (e.g. a website, mobile app, museum kiosk) is designed and be able to design usable, easy-to-use, intuitive, attractive user interfaces.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "10.009",
+    "10.014",
+    "10.025"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "prereqTree": {
+    "or": [
+      {
+        "code": "10.009",
+        "name": "The Digital World",
+        "cohort": [
+          "classic"
+        ]
+      },
+      {
+        "code": "10.014",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "classic"
+        ]
+      },
+      {
+        "code": "10.025",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "ay2025",
+          "ay2026"
+        ]
+      }
+    ]
+  }
+}

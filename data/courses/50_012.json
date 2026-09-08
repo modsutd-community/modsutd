@@ -1,0 +1,20 @@
+{
+  "code": "50.012",
+  "name": "Networks",
+  "description": "Principles and practice of computer networking with emphasis on the Internet. Covers packet switching, layered architectures, TCP/IP, physical layer, error and flow control, LANs, network layer, congestion control, multicast and networked applications.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": [
+    "50.005"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ]
+}

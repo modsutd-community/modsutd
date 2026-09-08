@@ -1,0 +1,54 @@
+{
+  "code": "01.101",
+  "name": "Technologies for Sustainable Global Health",
+  "description": "This course provides a multi-disciplinary approach to global health technology design using real world projects and partners. It explores the most important health challenges facing the world today, the global burden and distribution of disease and mortality across different countries, health disparities and inequalities, and how to design technologies (e.g., products, systems, apps etc.) to address these problems. The crucial link between global health and Sustainable Development Goals (SGDs) will be highlighted throughout the course. In their respective project groups, students will brainstorm and define current issues pertaining to community healthcare and homecare in Singapore and Southeast Asia. Guest lectures, panel discussions and a field trip will provide students with a first-hand perspective to global health issues and help students come up with better solutions. The Biodesign Innovation Process will be taught and applied in the student projects.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "7",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "SMT"
+  ],
+  "grading": {
+    "components": [
+      {
+        "name": "Class participation (attendance, worksheets, short in-class presentations, and guest speakers feedback etc.)",
+        "percentage": 10
+      },
+      {
+        "name": "Quiz-1",
+        "percentage": 20
+      },
+      {
+        "name": "Quiz-2",
+        "percentage": 20
+      },
+      {
+        "name": "Project deliverable I: Presentation of the need statement and possible solutions",
+        "percentage": 10
+      },
+      {
+        "name": "Project deliverable II: Presentation of prototype evolution and testing plan",
+        "percentage": 10
+      },
+      {
+        "name": "Project deliverable III: Poster and propotypes",
+        "percentage": 15
+      },
+      {
+        "name": "Project deliverable IV: Shark Tank Pitch with Video",
+        "percentage": 5
+      },
+      {
+        "name": "Peer review (Week 8 and 13)",
+        "percentage": 10
+      }
+    ],
+    "source": "official"
+  }
+}

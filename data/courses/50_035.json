@@ -1,0 +1,21 @@
+{
+  "code": "50.035",
+  "name": "Computer Vision",
+  "description": "Covers theory and practice of computer vision: image formation, filtering, feature detection, multi-view geometry, segmentation, object recognition and modern deep-learning approaches.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "50.007",
+    "50.034"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ]
+}

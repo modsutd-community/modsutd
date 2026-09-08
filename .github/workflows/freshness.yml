@@ -1,0 +1,80 @@
+name: freshness
+
+# Monthly data-freshness sentinel: compares repo data against upstream SUTD
+# pages and the deployed site, and opens/updates a single tracking issue
+# when anything drifts. Detection is automated; FIXING is human/agent work
+# via the .claude/skills procedures.
+
+on:
+    schedule:
+        # Fridays 16:00 UTC is Saturday 00:00 in Singapore; the job keeps only
+        # the first Saturday of the month.
+        - cron: "20 16 * * 5"
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    issues: write
+
+jobs:
+    freshness:
+        runs-on: ubuntu-latest
+        timeout-minutes: 10
+        steps:
+            # cron cannot say "first Saturday", so workaround:
+            - name: First Saturday of the month
+              id: when
+              run: |
+                  d=$(TZ=Asia/Singapore date +%d)
+                  if [ "$((10#$d))" -le 7 ]; then
+                    echo "go=true" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "go=false" >> "$GITHUB_OUTPUT"
+                    echo "Not the first Saturday in Singapore ($d) - nothing to do." >> "$GITHUB_STEP_SUMMARY"
+                  fi
+
+            - uses: actions/checkout@v4
+              if: steps.when.outputs.go == 'true'
+
+            - uses: actions/setup-python@v5
+              if: steps.when.outputs.go == 'true'
+              with:
+                  python-version: "3.12"
+                  cache: "pip"
+                  cache-dependency-path: tools/scraper/requirements.txt
+
+            - name: install deps
+              if: steps.when.outputs.go == 'true'
+              working-directory: tools/scraper
+              run: pip install -r requirements.txt
+
+            - name: run freshness checks
+              if: steps.when.outputs.go == 'true'
+              working-directory: tools/scraper
+              env:
+                  # Set a SITE_URL repository variable once the site is deployed to
+                  # enable repo-vs-deployed comparisons; skipped gracefully otherwise.
+                  SITE_URL: ${{ vars.SITE_URL }}
+              run: python freshness.py --out /tmp/freshness.md
+
+            - name: open or update the tracking issue on drift
+              if: steps.when.outputs.go == 'true'
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  if ! head -1 /tmp/freshness.md | grep -q 'DRIFT: yes'; then
+                    echo "no drift - nothing to file"
+                    exit 0
+                  fi
+                  tail -n +2 /tmp/freshness.md > /tmp/freshness-body.md
+                  gh label create freshness --repo "$GITHUB_REPOSITORY" --color FFB000 --description "automated data-freshness reports" 2>/dev/null || true
+                  gh label create data --repo "$GITHUB_REPOSITORY" --color 0E8A16 --description "catalogue data" 2>/dev/null || true
+                  existing="$(gh issue list --repo "$GITHUB_REPOSITORY" --label freshness --state open --json number --jq '.[0].number // empty')"
+                  if [ -n "$existing" ]; then
+                    gh issue comment "$existing" --repo "$GITHUB_REPOSITORY" --body-file /tmp/freshness-body.md
+                  else
+                    gh issue create --repo "$GITHUB_REPOSITORY" \
+                      --title "data freshness: drift detected" \
+                      --label "data" --label "freshness" \
+                      --body-file /tmp/freshness-body.md
+                  fi

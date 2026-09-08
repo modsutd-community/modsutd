@@ -1,0 +1,13 @@
+{
+  "code": "50.046",
+  "name": "Cloud Computing and Internet of Things",
+  "description": "The Internet of Things and its integration with cloud computing are transforming our world in a fundamental way. This course teaches some of the essential IoT and cloud computing technologies from the ground up. Specific topics covered include IoT devices programming (ESP32), sensing technologies, IoT protocols (MQTT and CoAP), accessing and using cloud-based services, and the virtualization technologies behind cloud computing (virtual machines and containers). Students learn how to design, develop, and deploy end-to-end cloud-based IoT applications, and to understand the fundamental technologies behind cloud computing.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": ["50.005"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "ISTD"]
+}

@@ -1,0 +1,16 @@
+{
+  "code": "02.563",
+  "name": "Master Research Project",
+  "description": "The final term is dedicated for students to complete a Masters Research Project. Students have a choice of two tracks: Students will have to declare their chosen track by the middle of Term 2. More details on the Master Research Project will be shared in Term 2.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "3",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 3",
+    "Core"
+  ]
+}

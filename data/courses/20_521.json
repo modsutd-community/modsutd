@@ -1,0 +1,18 @@
+{
+  "code": "20.521",
+  "name": "Architectural Robotics",
+  "description": "The course offers knowledge and skill on advanced topics in digital design and fabrication, namely additive manufacturing, architectural robotics and automation in construction. The course is in continuation of the undergraduate design computation courses and in alignment of the Master’s thesis research formation. As a graduate level course it is based on design research where students are required to develop their own proposals, methods and artifact which will lead to publication of results in journals or conferences.",
+  "credits": 9,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "9",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 9",
+    "Term 10",
+    "Elective / Technical Elective"
+  ]
+}

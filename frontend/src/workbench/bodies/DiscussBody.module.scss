@@ -1,0 +1,111 @@
+.wrap {
+  flex: 1;
+  padding: 16px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(233, 234, 237, 0.7);
+  margin: 12px 0 16px;
+
+  span {
+    display: inline-block;
+    width: 18px;
+  }
+}
+
+.rules ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  font-size: 11.5px;
+  line-height: 1.7;
+  color: rgba(233, 234, 237, 0.6);
+}
+
+.kinds {
+    display: flex;
+    gap: 6px;
+    margin: 6px 0 8px;
+}
+
+.kind {
+    flex: 1;
+    padding: 5px 8px;
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(233, 234, 237, 0.6);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+        color: var(--wb-amber-soft);
+        border-color: rgba(255, 176, 0, 0.4);
+    }
+}
+
+.kindOn {
+    color: var(--wb-amber);
+    border-color: var(--wb-amber);
+    background: rgba(255, 176, 0, 0.1);
+}
+
+// The comment box under this is giscus's own frame, cross-origin, so nothing
+// here can type into it. Showing the template and offering to copy it is the
+// most this side can do, and it beats sending people to a second page.
+
+.copy {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 7px 10px;
+    font: inherit;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--wb-amber);
+    background: rgba(255, 176, 0, 0.08);
+    border: 1px solid rgba(255, 176, 0, 0.35);
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 176, 0, 0.16);
+    }
+}
+
+.copyIcon {
+    flex: none;
+    width: 12px;
+    height: 12px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+
+
+.board {
+    position: relative;
+}
+
+// Laid out, so the browser fetches it, but neither seen nor clickable. An
+// iframe hidden with display:none and loading="lazy" is never fetched at all,
+// which is a refresh that never arrives.
+.offstage {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    overflow: hidden;
+}

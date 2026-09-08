@@ -1,0 +1,16 @@
+{
+  "code": "02.522",
+  "name": "Interpreting Urban Trends",
+  "description": "This course is Part 2 of the Urban Data & Methods module. The course builds on Term 1 by offering different and advanced methods, seeking to develop students’ hands-on experience in developing a research proposal to study an urban issue or phenomenon. This involves conducting literature review, identifying research gaps and constructing a theoretical contribution, designing data collection and analysis methods, and integrating this into a (mixed-methods) research proposal. Focusing on a specific urban issue, the course introduces and contextualises how different methodologies – quantitative, qualitative and mixed methods – can be used to conduct a study in the urban domain. It develops understanding and skill in the collection, analysis and interpretation of information relevant to urban phenomena and how these affect urban societies from different thematic points of view (e.g. transportation, housing, and the subjective experiences of research subjects). Students will also learn how to address research ethics requirements and craft a research design that takes ethical considerations into account. By the completion of this course students will be able to: Prerequisite 02.521 Analyzing Urban Futures Instructor: Dr Dinithi Jayasekara, Dr Thijs Willems Time: Thursday (10AM-1PM) Venue: Think Tank 13 (1.508) Week 1: Worldviews and You as a Researcher: Ontology, Epistemology, Positionality Week 2: Introduction to R for Statistical Analysis Week 3: Qualitative Research Design and Asking Questions Week 4: Talking, Listening, and Observing Urban Issues Week 5: Working With Communities: Participatory & Action-Oriented Methods Week 6: Doing Research Ethically (guest lecture by Jasmine Tan, Institutional Review Board) Week 7: Recess Week 8: From Field to Findings: Qualitative Analysis and Making Qualitative Claims Week 9: Exploring Correlation and Causation through R Week 10: Urban Inference I: Confidence Intervals, Hypothesis Testing Week 11: Urban Inference II: Comparing Groups Week 12: Regression Analysis I Week 13: Regression Analysis II Week 14: Presentations and Synthesis",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "2",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 2",
+    "Core"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "code": "20.213",
+  "name": "Building and Urban Analytics",
+  "description": "Provides students with fundamental knowledge and basic practical skills of the planning and execution of Building Information Models. Students learn to embed design and construction knowledge into computational tools, analyse building performance, and use visual programming for parametric design across multi-story and wide-span structures.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "5",
+  "prerequisites": [
+    "20.212"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 5",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 3,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 6,
+    "total": 9,
+    "source": "official"
+  }
+}

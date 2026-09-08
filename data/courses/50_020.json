@@ -1,0 +1,20 @@
+{
+  "code": "50.020",
+  "name": "Network Security",
+  "description": "Theory and practice of network security with a focus on Internet security. Covers attacks and countermeasures across the TCP/IP layers, firewalls, intrusion detection/prevention, wireless network security and IoT security.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "50.005",
+    "50.012"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ISTD"
+  ]
+}

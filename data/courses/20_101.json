@@ -1,0 +1,25 @@
+{
+  "code": "20.101",
+  "name": "Architecture Core Studio 1",
+  "description": "Establishes foundational architectural design through three progressive projects that build in scope and complexity. Students engage with 3-dimensional geometry and drawing, space and component aggregation, ordering systems, structure, circulation and narrative, and tectonics. The design process is presented as iterative research and experimentation, helping students develop architectural concepts and translate them into physical and material investigations. Students work with both physical and digital models, practicing analogue and digital drawing techniques.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "4",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 4",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 12,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 9,
+    "total": 21,
+    "source": "official"
+  },
+  "noBatchChat": true
+}

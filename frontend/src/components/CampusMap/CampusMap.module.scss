@@ -1,0 +1,219 @@
+.wrap {
+  position: relative;
+  // Fills whatever the panel is. It used to stop at 360px, so widening the
+  // room panel left the map marooned in the corner of it.
+  width: 100%;
+  margin: 0;
+  border: 1px solid var(--wb-ink-trace);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--wb-bg);
+
+  // Leaflet's own chrome, toned to the panel. Its controls are square boxes
+  // with a white ground by default, which reads as somebody else's widget
+  // dropped into the page.
+  :global(.leaflet-container) {
+    background: var(--wb-bg);
+    font-family: var(--wb-mono);
+  }
+  :global(.leaflet-control-zoom a) {
+    background: rgba(2, 1, 10, 0.82);
+    color: var(--wb-amber);
+    border-color: var(--wb-ink-trace);
+    &:hover { background: rgba(2, 1, 10, 0.95); }
+  }
+  // Leaflet ships this with a white ground at a specificity that beats a
+  // plain class, so it stayed white in the dark panel until this was forced.
+  :global(.leaflet-control-attribution.leaflet-control) {
+    background: rgba(2, 1, 10, 0.88) !important;
+    color: var(--wb-ink-dim, var(--wb-amber));
+    font-size: 9px;
+    padding: 1px 5px;
+    a { color: var(--wb-amber); }
+  }
+  // Room labels sit on the plan itself, so they carry no bubble.
+  :global(.wb-room-label) {
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    color: #12212f;
+    font-family: var(--wb-mono);
+    font-size: 8.5px;
+    line-height: 1.15;
+    letter-spacing: 0;
+    white-space: normal;
+    max-width: 76px;
+    text-align: center;
+    // Read against the room fill rather than the dark panel: the plan is a
+    // light shape, so a glow in the panel colour would erase the text.
+    text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+    &::before { display: none; }
+  }
+  :global(.wb-room-mine) {
+    color: #3a2400;
+    font-weight: 700;
+  }
+  // The lift, which is where directions on this campus end.
+  :global(.wb-lift) {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    font-family: var(--wb-mono);
+    font-size: 9px;
+    line-height: 1;
+    color: var(--wb-bg);
+    background: var(--wb-amber);
+    border-radius: 2px;
+    b { font-size: 9px; }
+  }
+}
+
+.full {
+  max-width: none;
+  border: 0;
+  border-radius: 0;
+
+  .canvas { height: 100vh; }
+}
+
+.canvas {
+  width: 100%;
+  // Leaflet lays tiles out past the viewport edge, so without this the canvas
+  // reports 150px of scrollable width and the panel grows a scrollbar for it.
+  overflow: hidden;
+  // Grows with the panel rather than staying a letterbox on a wide one.
+  height: clamp(240px, 34vh, 420px);
+}
+
+// Bottom-left, opposite the attribution, and clear of the zoom control above.
+.fs {
+  position: absolute;
+  left: 10px;
+  bottom: 34px;
+  z-index: 500;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  font-size: 12px;
+  line-height: 1;
+  color: var(--wb-amber);
+  background: rgba(2, 1, 10, 0.82);
+  border: 1px solid var(--wb-ink-trace);
+  border-radius: 3px;
+  cursor: pointer;
+
+  &:hover { background: rgba(2, 1, 10, 0.95); }
+  &:focus-visible { outline: 2px solid var(--wb-amber); outline-offset: 2px; }
+}
+
+// Only while the plan is showing, and only when there is more than one floor
+// to choose between.
+// Directly under the zoom control, same width, reading as one more of its
+// buttons - a readout of the floor you are on, not a switch.
+.levelBadge {
+  position: absolute;
+  left: 10px;
+  top: 74px;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 26px;
+  font-family: var(--wb-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--wb-bg);
+  background: var(--wb-amber);
+  border: 1px solid var(--wb-ink-trace);
+  border-radius: 3px;
+}
+
+// Over the map for a moment after a plain wheel. Not permanent furniture:
+// it answers a question that was just asked and then goes away.
+// Below the place, not appended to it.
+.capHint {
+  display: block;
+  opacity: 0.75;
+}
+
+.wheelHint {
+  position: absolute;
+  inset: 0;
+  z-index: 600;
+  display: grid;
+  place-items: center;
+  font-family: var(--wb-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: #fff;
+  background: rgba(2, 1, 10, 0.55);
+  pointer-events: none;
+}
+
+.cta {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 500;
+  font-family: var(--wb-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--wb-bg);
+  background: var(--wb-amber);
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 3px;
+
+  &:hover { filter: brightness(1.1); }
+  &:focus-visible { outline: 2px solid var(--wb-amber); outline-offset: 2px; }
+}
+
+.cap {
+  position: relative;
+  margin: 0;
+  font-family: var(--wb-mono);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  color: var(--wb-amber);
+  text-transform: uppercase;
+  background: rgba(2, 1, 10, 0.72);
+  padding: 5px 10px;
+  // One line's worth, always, and the line's height stated rather than left to
+  // the font: everything in here appears and disappears - "zoom in to see
+  // indoors" goes the moment you do - and without a reserved height the
+  // availability table below slid up as you zoomed. 1em is the FONT size, not
+  // the line box, which is why reserving that much still left a gap.
+  line-height: 14px;
+  min-height: 14px;
+  box-sizing: content-box;
+}
+
+// The three venues with no coordinate at all get a line, not a picture frame.
+.link {
+  display: inline-block;
+  font-family: var(--wb-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--wb-amber);
+  text-decoration: none;
+  border: 1px solid var(--wb-ink-trace);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+
+  &:hover { border-color: var(--wb-amber); }
+  &:focus-visible { outline: 2px solid var(--wb-amber); outline-offset: 2px; }
+}
+
+.none {
+  font-family: var(--wb-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--wb-ink-dim, var(--wb-amber));
+  margin: 0;
+
+  a { color: var(--wb-amber); }
+}

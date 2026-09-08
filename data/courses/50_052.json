@@ -1,0 +1,13 @@
+{
+  "code": "50.052",
+  "name": "Extended Reality",
+  "description": "Extended Reality (XR) encapsulates various immersive technologies that can merge the physical and virtual worlds, including virtual reality (VR), augmented reality (AR), and mixed reality (MR). This course is an introduction to the fundamental techniques and practical applications of Extended Reality. Topics covered include concepts in XR, human perception, immersion and presence, virtual world modelling, real-time simulation, input and output devices, 3D user interaction, design principles for XR, and case studies. These topics are explored via a combination of lectures, individual assignments, and a group project to develop an XR application. Students should be comfortable with programming for the front and back end and be familiar with Unity to complete the project and assignments.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": ["50.001"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "ISTD"]
+}

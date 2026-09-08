@@ -1,0 +1,13 @@
+{
+  "code": "50.055",
+  "name": "Special Topic: Machine Learning Operations",
+  "description": "Students learn the concepts and practice of machine learning operations (\"MLOps\"). The course does not teach the fundamentals of machine learning. Instead it focuses on building machine learning products. Students learn how to identify viable use cases for machine learning, how to develop, test, deploy and monitor machine learning applications, how to manage machine learning projects, and how to identify legal, ethical, and data protection risks. Hands-on experience covers the complete machine learning development process, from experiments to deployment, through course assignments and projects. The focus is on deep learning and generative AI.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "8",
+  "prerequisites": ["50.007", "50.039"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 8", "Elective / Technical Elective", "ISTD"]
+}

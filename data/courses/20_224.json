@@ -1,0 +1,24 @@
+{
+  "code": "20.224",
+  "name": "Artificial & Architectural Intelligences in Design (HTC)",
+  "description": "Examines how AI shapes design cognition and aesthetics, tracing AI and architectural intelligence from the 1960s onward. Topics include AI aesthetics, AI artists and other emerging AI design topics such as adversarial-based design algorithms. Students engage in critical analysis and develop speculative design projects addressing AI-related societal issues through mock-ups, diagrams, and written work.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "8",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 8",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 4,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  }
+}

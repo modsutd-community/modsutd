@@ -1,0 +1,16 @@
+{
+  "code": "30.508",
+  "name": "Optimization and Control",
+  "description": "Static and dynamic optimization. Constrained and unconstrained optimal control. Method of Lagrange Multipliers; minimization of a function subject to algebraic constraints. Calculus of Variations; minimization of a functional subject to differential, integral and terminal constraints. Pontryagin’s Maximum Principle; optimization under control constraints, locally optimal feed-forward controllers, bang-bang control, time-optimal control and singular optimal control. Bellman’s Dynamic Programming; Hamilton-Jacobi-Bellman equation and globally optimal feedback controllers. Linear Quadratic Regulators; Riccati equation for time-varying and time-invariant systems. Numerical methods for solving non-linear optimal control problems.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "code": "02.143",
+  "name": "Artificial Intelligence and Ethics",
+  "description": "The advances in the development of the so-called Artificial Intelligence (AI) have started to raise ethical problems. These problems are of different kinds: on the one hand philosophers and scientists have started asking whether computers, once they reach a certain level of intelligence comparable with human beings, should be granted certain rights. On the other hand, there is the question of how to regulate AI in such a way that, in the pursuits of its goals, it be harmful to human beings",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "1",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": ["Term 4", "Term 6", "Term 8", "Elective / Technical Elective", "HASS"]
+}

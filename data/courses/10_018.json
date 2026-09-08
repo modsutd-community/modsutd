@@ -1,0 +1,19 @@
+{
+  "code": "10.018",
+  "name": "Modelling Space and Systems",
+  "description": "Builds on Modelling and Analysis with multivariable calculus and linear algebra. Topics include differentiation and integration in multiple dimensions, optimisation, line integrals, linear maps, eigenvalues and eigenvectors, with applications via MATLAB.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "2",
+  "prerequisites": [
+    "10.013"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 2",
+    "Freshmore Core",
+    "SMT"
+  ]
+}

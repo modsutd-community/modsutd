@@ -1,0 +1,25 @@
+{
+  "code": "20.317",
+  "name": "Augmented Design",
+  "description": "Equips students with conceptual and technical knowledge to explore how augmented reality can be utilised throughout the design to production process in architecture. Builds upon topics in computation and fabrication, enabling students to become proficient AR users and contribute to the emerging discourse around this technology in the architectural domain.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "7",
+  "prerequisites": [
+    "20.212"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 2,
+    "tutorial": 0,
+    "project": 2,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  }
+}

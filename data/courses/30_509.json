@@ -1,0 +1,16 @@
+{
+  "code": "30.509",
+  "name": "Applied Thermodynamics",
+  "description": "No single event in the universe is proven violating thermodynamic laws. The potentials of applying these laws, however, have not been fully explored until later the last century when the governing mathematic equations can be readily solved by computers. This course aims to connect principles, concepts and thermodynamic laws to solutions of engineering problems through the use of computers. It covers classical and statistical thermodynamics, principles and concepts of multicomponent and multi-phase equilibria, diffusion and nucleation kinetics. Practical design studies are demonstrated for the growth of BiFeO3 nano-crystals, the synthesis of nano-NiAl2O4 via gas-liquid-solid reactions, and fast photo-electron transport of Zn-doped nano-TiO2 in solar cells, by using a commercial thermodynamics software tool (FactSage).",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ]
+}

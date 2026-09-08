@@ -1,0 +1,19 @@
+{
+  "code": "50.003",
+  "name": "Elements of Software Construction",
+  "description": "Covers principles of software design and construction, including specification, modular reasoning, testing, and design patterns. Students apply these principles to build non-trivial software systems in teams.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "5",
+  "prerequisites": [
+    "50.001"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Core",
+    "ISTD"
+  ]
+}

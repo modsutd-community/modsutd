@@ -1,0 +1,13 @@
+{
+  "code": "40.017",
+  "name": "Probability and Statistics",
+  "description": "Builds upon the material taught in Modelling Uncertainty. Provides students with the foundations of data analysis, and tools for analyzing situations that involve uncertainty and building statistical models. Develops critical thinking skills with applications and examples relevant to engineering systems. Topics include multivariate normal, Poisson process, limit theorems, regression, point and interval estimation, hypothesis testing, analysis of variance, and introductory Bayesian statistics.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "4",
+  "prerequisites": ["10.018", "10.022"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 4", "Core", "ESD"]
+}

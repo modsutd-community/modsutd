@@ -1,0 +1,16 @@
+{
+  "code": "30.504",
+  "name": "Computational Science & Engineering",
+  "description": "Computation and simulation now pervades most fields of science and are essential to the design, verification, validation and development of most engineering applications. This course is aimed at covering a wide range of topics-both theoretical and practical-related to numerical methods and programming required for research and industry. However, this course is not aimed at covering an exhaustive compendium of numerical methods, or teaching one or more programming languages. Instead, it will be focused on learning enough to feel comfortable starting to use them in your everyday research work.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "EPD"
+  ]
+}

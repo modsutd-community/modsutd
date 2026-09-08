@@ -1,0 +1,19 @@
+{
+  "code": "02.XFER",
+  "name": "HASS Elective (Summer/Winter)",
+  "description": "Placeholder for a HASS elective taken over the summer or winter break, usually transferred in from another institution - hence the XFER code. Pick the actual offering once it is known; this slot exists so plans and prerequisite checks can account for a break-term HASS.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "3",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "HASS",
+    "Summer",
+    "Winter",
+    "Transfer"
+  ],
+  "noBatchChat": true
+}

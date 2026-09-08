@@ -1,0 +1,17 @@
+{
+  "code": "40.011",
+  "name": "Data and Business Analytics",
+  "description": "Introduction to the ESD pillar through industrial or commercial data. Students execute a team-based, semester-long client project, building skills in data manipulation, visualisation, system modelling, financial analysis and value-proposition design.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "4",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Core",
+    "ESD"
+  ]
+}

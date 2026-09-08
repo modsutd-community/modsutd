@@ -1,0 +1,13 @@
+{
+  "code": "50.033",
+  "name": "Foundations of Game Design and Development",
+  "description": "An introductory course about the basics of game creation. Provides an overview of different aspects of game development. Students get in touch with C# programming (industry standard), starting with console applications, then GUI games on various platforms with graphics, dialog boxes, and user control. Topics include game architecture, interface design, graphics for games, audio for games, prototyping, and play testing. Students implement their creative gaming ideas using the latest gaming tools.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": ["50.001", "50.004"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "ISTD"]
+}

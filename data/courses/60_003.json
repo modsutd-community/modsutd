@@ -1,0 +1,17 @@
+{
+  "code": "60.003",
+  "name": "Product Design Studio",
+  "description": "Students organise into teams to tackle a Product Design Challenge by creating, testing, and presenting a product or business concept. The course introduces a phase-based design methodology with hands-on opportunities to develop competencies in recognising user requirements, brainstorming concepts, and fabricating models.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "4",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 4",
+    "Core",
+    "DAI"
+  ],
+  "noBatchChat": true
+}

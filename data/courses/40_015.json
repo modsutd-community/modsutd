@@ -1,0 +1,13 @@
+{
+  "code": "40.015",
+  "name": "Simulation Modelling and Analysis",
+  "description": "Introduces students to various aspects of analysing complex systems using simulation methodologies. Addresses three main forms of simulation of systems: (1) System dynamics to model feedback loops, stocks, and flows within complex systems; (2) Discrete event simulation to model queuing and inventory problems; (3) Agent-based simulation to model complex multi-agent systems. Various case studies in healthcare, urban planning, airport management, and logistics and inventory management are discussed. Implementation of simulation techniques, comparison of competing designs using Monte Carlo methods, and statistical analysis of outputs are conducted using a variety of programming tools, including MS Excel, InsightMaker, JaamSim, JavaScript, and Python.",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "6",
+  "prerequisites": ["40.017", "40.012"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 6", "Core", "ESD"]
+}

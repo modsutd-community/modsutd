@@ -1,0 +1,28 @@
+{
+  "code": "20.535",
+  "name": "Project Management in the Built Environment",
+  "description": "Project Management is a course set in the context of Singapore’s Building Construction industry. It covers management topics necessary to bring about the successful completion of building projects, including scheduling, resource allocation, risk assessment, budgeting, and cost planning, with emphasis on sustainable design and construction. Project management aims at understanding fundamental principles, modelling methods, and tools, as well as the best practices employed in the industry today. As a management course, students are required to work individually but also in groups to practice their management skills. The class is conducted as a project-based module and there will be no formal exams. Lectures are conducted weekly for students to understand the key principles and how to apply them practically, looking at different case studies. Assignments entail different project management knowledge areas that are eventually compiled into a group report to demonstrate the group’s ability to manage a building project comprehensively.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "10",
+  "prerequisites": [
+    "20.201",
+    "20.202"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 10",
+    "Elective / Technical Elective"
+  ],
+  "workload": {
+    "lecture": 2,
+    "tutorial": 0,
+    "project": 2,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  }
+}

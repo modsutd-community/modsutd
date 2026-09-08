@@ -1,0 +1,15 @@
+{
+  "code": "10.008",
+  "name": "Engineering in the Physical World",
+  "description": "Term 3 freshmore subject extending physics into engineering applications. Reinforces concepts of mechanics, electromagnetism and thermodynamics through engineering case studies and project-based work.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "3",
+  "prerequisites": [
+    "10.015",
+    "10.017"
+  ],
+  "corequisites": [],
+  "schedules": []
+}

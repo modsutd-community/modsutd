@@ -1,0 +1,49 @@
+{
+  "code": "50.021",
+  "name": "Artificial Intelligence",
+  "description": "Covers state-space search and constraint programming, knowledge representation via propositional and first-order logic, planning algorithms for optimisation, and probabilistic reasoning under uncertainty.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": [
+    "10.014",
+    "10.022",
+    "10.025"
+  ],
+  "corequisites": [
+    "50.007",
+    "40.319"
+  ],
+  "schedules": [],
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "prereqTree": {
+    "and": [
+      "10.022",
+      {
+        "or": [
+          {
+            "code": "10.014",
+            "name": "Computational Thinking for Design",
+            "cohort": [
+              "classic"
+            ]
+          },
+          {
+            "code": "10.025",
+            "name": "Computational Thinking for Design",
+            "cohort": [
+              "ay2025",
+              "ay2026"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

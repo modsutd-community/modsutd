@@ -1,0 +1,17 @@
+{
+  "code": "60.006",
+  "name": "Spatial Design Studio",
+  "description": "Students explore spatial computing themes in conceptualising, designing, developing, and presenting AI-based solutions. Topics encompass urban analytics, generative architecture, immersive environments, and emerging spatial technologies. The course introduces key concepts, methods, and tools for handling complex geometric problems across different spatial scales.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "7",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 7",
+    "Core",
+    "DAI"
+  ],
+  "noBatchChat": true
+}

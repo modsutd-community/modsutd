@@ -1,0 +1,27 @@
+{
+  "code": "10.017",
+  "name": "Technological World",
+  "description": "Provides a strong physics foundation for understanding current and emerging technologies. Covers electromagnetism, circuit analysis, and an introduction to quantum mechanics and quantum engineering applications.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "2",
+  "prerequisites": [
+    "10.015"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "workload": {
+    "lecture": 5,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 7,
+    "total": 12,
+    "source": "official"
+  },
+  "tags": [
+    "Term 2",
+    "Freshmore Core",
+    "SMT"
+  ]
+}

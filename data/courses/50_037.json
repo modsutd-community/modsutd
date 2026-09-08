@@ -1,0 +1,13 @@
+{
+  "code": "50.037",
+  "name": "Blockchain Technology",
+  "description": "Decentralized blockchain-based systems, such as Bitcoin and Ethereum, are successful beyond all expectations. Although still in their infancy, they promise to revolutionize how we think of financial, information, and other infrastructures. This course covers the technical aspects of public distributed ledgers, blockchain systems, cryptocurrencies, and smart contracts. Students learn how these systems are built, how to interact with them, and how to design and build secure distributed applications.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "7",
+  "prerequisites": ["50.004", "50.005"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "ISTD"]
+}

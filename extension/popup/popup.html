@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --abyss: #02010a;
+    --void: #0a0820;
+    --ghost: #e8f0f5;
+    --glow-cyan: #00f5d4;
+    --glow-amber: #ffbe0b;
+  }
+  body {
+    width: 280px;
+    margin: 0;
+    padding: 18px;
+    background: var(--abyss);
+    color: var(--ghost);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  h1 {
+    font-size: 18px;
+    margin: 0 0 4px;
+    color: var(--ghost);
+  }
+  h1 em {
+    color: var(--glow-cyan);
+    font-style: italic;
+    font-family: Georgia, serif;
+  }
+  p {
+    margin: 0 0 12px;
+    color: rgba(232, 240, 245, 0.7);
+  }
+  a.cta {
+    display: block;
+    background: var(--glow-cyan);
+    color: var(--abyss);
+    padding: 10px 14px;
+    border-radius: 999px;
+    text-align: center;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  a.secondary {
+    color: var(--glow-amber);
+    font-size: 11px;
+    display: block;
+    margin-top: 14px;
+    text-align: center;
+    text-decoration: none;
+  }
+</style>
+</head>
+<body>
+  <h1>mod<em>·</em>SUTD</h1>
+  <p>This extension watches for SUTD term-evaluation pages and offers a "share to modSUTD" button after you submit.</p>
+  <p>You can also just go straight to the share page and paste your review.</p>
+  <a id="open" class="cta" target="_blank">open share page</a>
+  <a id="settings" class="secondary" href="#">change site origin</a>
+  <script src="popup.js"></script>
+</body>
+</html>

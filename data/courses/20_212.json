@@ -1,0 +1,24 @@
+{
+  "code": "20.212",
+  "name": "Digital Design and Fabrication",
+  "description": "Investigates the transformation of conceptual design to production documentation and manufacturing within contemporary digital media. Covers design computation methods and material fabrication techniques, including CAD/CAM workflows and manufacturing technologies.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "4",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 4",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 4,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 5,
+    "total": 9,
+    "source": "official"
+  }
+}

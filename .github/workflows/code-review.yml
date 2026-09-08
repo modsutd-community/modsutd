@@ -1,0 +1,178 @@
+# LLM code review on contributor PRs, via alibaba/open-code-review.
+# Needs one of GEMINI_TOKEN, GROQ_TOKEN or OPENAI_TOKEN. Maintainers can
+# re-run a review by commenting /open-code-review.
+#
+# pull_request_target runs with base-repo secrets against untrusted PR
+# code - safe only because the action never executes PR code, it just
+# reads the diff. Do not add build/test steps to THIS workflow.
+name: OpenCodeReview PR Review
+
+concurrency:
+    group: >-
+        ${{
+          (
+            github.event_name == 'pull_request_target'
+            || (
+              github.event_name == 'issue_comment'
+              && github.event.issue.pull_request
+              && github.event.comment.user.type != 'Bot'
+              && (
+                github.event.comment.author_association == 'MEMBER'
+                || github.event.comment.author_association == 'OWNER'
+                || github.event.comment.author_association == 'COLLABORATOR'
+              )
+              && (
+                startsWith(github.event.comment.body, '/open-code-review')
+                || startsWith(github.event.comment.body, '@open-code-review')
+              )
+            )
+          )
+          && format('ocr-{0}', github.event.pull_request.number || github.event.issue.number)
+          || format('noop-{0}', github.run_id)
+        }}
+    cancel-in-progress: true
+
+on:
+    pull_request_target:
+        types: [opened, synchronize, reopened]
+    issue_comment:
+        types: [created]
+
+permissions:
+    contents: read
+    pull-requests: write
+
+jobs:
+    # Resolved once and shared, so the three provider jobs below differ only in
+    # which endpoint they call.
+    context:
+        runs-on: ubuntu-latest
+        if: |
+            github.event_name == 'pull_request_target'
+            || (
+              github.event_name == 'issue_comment'
+              && github.event.issue.pull_request
+              && github.event.comment.user.type != 'Bot'
+              && (
+                github.event.comment.author_association == 'MEMBER'
+                || github.event.comment.author_association == 'OWNER'
+                || github.event.comment.author_association == 'COLLABORATOR'
+              )
+              && (
+                startsWith(github.event.comment.body, '/open-code-review')
+                || startsWith(github.event.comment.body, '@open-code-review')
+              )
+            )
+        outputs:
+            base_ref: ${{ steps.pr.outputs.base_ref }}
+            head_sha: ${{ steps.pr.outputs.head_sha }}
+            has_gemini: ${{ steps.keys.outputs.gemini }}
+            has_groq: ${{ steps.keys.outputs.groq }}
+            has_openai: ${{ steps.keys.outputs.openai }}
+        steps:
+            # A job-level `if:` cannot read `secrets`, only `vars`. A run step can, so
+            # the token check happens here once and the provider jobs below read the
+            # answer. Without this, an unconfigured provider shows a red job on every
+            # PR instead of being skipped.
+            - name: Which providers have a token
+              id: keys
+              run: |
+                  echo "gemini=${{ secrets.GEMINI_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+                  echo "groq=${{ secrets.GROQ_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+                  echo "openai=${{ secrets.OPENAI_TOKEN != '' }}" >> "$GITHUB_OUTPUT"
+
+            - name: Get PR context
+              id: pr
+              if: github.event_name == 'issue_comment'
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      const { data: pullRequest } = await github.rest.pulls.get({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        pull_number: context.issue.number
+                      });
+                      core.setOutput('base_ref', pullRequest.base.ref);
+                      core.setOutput('head_sha', pullRequest.head.sha);
+
+    # Gemini first, then Groq, then OpenAI. Each falls through on failure OR on
+    # being unconfigured, so setting up any one of the three is enough.
+    gemini:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        # An attempt, not the verdict. The next provider takes over when this
+        # one is unreachable - Gemini answers 503 often enough - and a red
+        # check nobody can act on would block branch protection for no reason.
+        # Only the last in the chain reports failure.
+        continue-on-error: true
+        needs: context
+        if: needs.context.outputs.has_gemini == 'true'
+        steps:
+            - uses: alibaba/open-code-review@main
+              with:
+                  llm_url: https://generativelanguage.googleapis.com/v1beta/openai/chat/completions
+                  llm_auth_token: ${{ secrets.GEMINI_TOKEN }}
+                  llm_model: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
+                  llm_use_anthropic: "false"
+                  # The action defaults extra_body to {"thinking": ...}, which
+                  # none of these three accept: Gemini answers 400 "Unknown name
+                  # thinking" in under a second, and the run reads as "provider
+                  # or subtask request failed" with no clue which field did it.
+                  llm_extra_body: "{}"
+                  base_ref: ${{ needs.context.outputs.base_ref }}
+                  head_sha: ${{ needs.context.outputs.head_sha }}
+
+    groq:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        # An attempt, not the verdict. The next provider takes over when this
+        # one is unreachable - Gemini answers 503 often enough - and a red
+        # check nobody can act on would block branch protection for no reason.
+        # Only the last in the chain reports failure.
+        continue-on-error: true
+        needs: [context, gemini]
+        if: |
+            always()
+            && needs.context.result == 'success'
+            && needs.gemini.result != 'success'
+            && needs.context.outputs.has_groq == 'true'
+        steps:
+            - uses: alibaba/open-code-review@main
+              with:
+                  llm_url: https://api.groq.com/openai/v1/chat/completions
+                  llm_auth_token: ${{ secrets.GROQ_TOKEN }}
+                  # llm_model: ${{ vars.GROQ_MODEL || 'openai/gpt-oss-120b' }}
+                  llm_model: ${{ vars.GROQ_MODEL || 'openai/gpt-oss-20b' }}
+                  llm_use_anthropic: "false"
+                  # The action defaults extra_body to {"thinking": ...}, which
+                  # none of these three accept: Gemini answers 400 "Unknown name
+                  # thinking" in under a second, and the run reads as "provider
+                  # or subtask request failed" with no clue which field did it.
+                  llm_extra_body: "{}"
+                  base_ref: ${{ needs.context.outputs.base_ref }}
+                  head_sha: ${{ needs.context.outputs.head_sha }}
+
+    openai:
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        needs: [context, gemini, groq]
+        if: |
+            always()
+            && needs.context.result == 'success'
+            && needs.gemini.result != 'success'
+            && needs.groq.result != 'success'
+            && needs.context.outputs.has_openai == 'true'
+        steps:
+            - uses: alibaba/open-code-review@main
+              with:
+                  llm_url: https://api.openai.com/v1/chat/completions
+                  llm_auth_token: ${{ secrets.OPENAI_TOKEN }}
+                  llm_model: ${{ vars.OPENAI_MODEL || 'gpt-5.4-mini' }}
+                  llm_use_anthropic: "false"
+                  # The action defaults extra_body to {"thinking": ...}, which
+                  # none of these three accept: Gemini answers 400 "Unknown name
+                  # thinking" in under a second, and the run reads as "provider
+                  # or subtask request failed" with no clue which field did it.
+                  llm_extra_body: "{}"
+                  base_ref: ${{ needs.context.outputs.base_ref }}
+                  head_sha: ${{ needs.context.outputs.head_sha }}

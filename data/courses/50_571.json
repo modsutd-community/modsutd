@@ -1,0 +1,18 @@
+{
+  "code": "50.571",
+  "name": "Digital Signal Processing",
+  "description": "",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ]
+}

@@ -1,0 +1,78 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+*.log
+logs/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Testing
+coverage/
+*.test
+
+# Vercel
+.vercel
+
+# Scraper cache
+tools/scraper/.cache/
+tools/scraper/.venv/
+tools/scraper/__pycache__/
+
+# Data sync output (regenerated from /data/)
+frontend/public/data/
+
+# Temporary files
+*.tmp
+tmp/
+temp/
+
+
+# Playwright artifacts
+frontend/test-results/
+frontend/playwright-report/
+
+# Claude Code local permission allowlist - machine-specific, never shared.
+.claude/settings.local.json
+
+# Telethon file session - full Telegram
+# account access, kept in the working tree but never committed. Beware
+# `git clean -xfd`: it deletes ignored files, and re-creating this one costs
+# an SMS re-auth.
+*.session
+*.session-journal
+
+# Python bytecode, committed once by accident.
+__pycache__/
+*.pyc
+
+# Holds a MyPortal session open during parser work; local only.
+frontend/.keepalive.mjs
+
+# Local working notes for whoever is maintaining this. Not documentation -
+# anything a contributor needs is in CLAUDE.md, AGENTS.md or docs/.
+.claude/memory/

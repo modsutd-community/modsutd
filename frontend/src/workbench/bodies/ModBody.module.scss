@@ -1,0 +1,313 @@
+.wrap {
+  flex: 1;
+  padding: 16px;
+}
+
+.headRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.code {
+  font-family: var(--wb-display);
+  font-weight: 800;
+  font-size: 34px;
+  letter-spacing: -0.01em;
+  line-height: 0.95;
+  color: #fff;
+}
+
+.name {
+  font-size: 13px;
+  color: rgba(233, 234, 237, 0.7);
+  margin-top: 7px;
+  line-height: 1.35;
+}
+
+.pillarStack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+  flex: none;
+}
+
+.pillarBadge {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  border: 1px solid;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+.planBtn {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  padding: 8px 14px;
+  margin-top: 16px;
+  background: rgba(255, 176, 0, 0.1);
+  color: #ffce5a;
+  border: 1px solid rgba(255, 176, 0, 0.5);
+  font-family: inherit;
+
+  &[data-in-plan] {
+    background: rgba(60, 168, 122, 0.14);
+    color: #3ca87a;
+    border-color: rgba(60, 168, 122, 0.5);
+  }
+}
+
+.desc {
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(233, 234, 237, 0.62);
+  margin: 16px 0 0;
+}
+
+.dept {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  color: rgba(233, 234, 237, 0.55);
+  margin: 6px 0 0;
+}
+
+.workload {
+  display: flex;
+  gap: 2px;
+  height: 42px;
+}
+
+.workSeg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 176, 0, 0.08);
+  border: 1px solid rgba(255, 176, 0, 0.25);
+  font-size: 12px;
+  color: #ffce5a;
+  min-width: 0;
+}
+
+.workLabel {
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  color: rgba(233, 234, 237, 0.62);
+}
+
+.slot {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  gap: 8px;
+  font-size: 12px;
+  padding: 7px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  align-items: baseline;
+}
+
+.roomLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 12px;
+  color: rgba(233, 234, 237, 0.5);
+  cursor: pointer;
+  text-align: right;
+
+  &:hover { color: var(--wb-amber); }
+}
+
+.gradeRow { margin-bottom: 9px; }
+
+.gradeMeta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: rgba(233, 234, 237, 0.72);
+  margin-bottom: 3px;
+}
+
+.gradeBar {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.treeWrap {
+  font-size: 12px;
+}
+
+.modLink {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--wb-amber);
+  cursor: pointer;
+
+  &:hover { text-decoration: underline; }
+}
+
+.unlocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.unlockChip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  max-width: 100%;
+  padding: 7px 10px;
+  font-size: 11px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: inherit;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+
+  &:hover { border-color: rgba(255, 176, 0, 0.6); }
+
+  span:last-child {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 240px;
+  }
+}
+
+.notes {
+  width: 100%;
+  background: var(--wb-well);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--wb-ink);
+  font-family: inherit;
+  font-size: 11.5px;
+  line-height: 1.5;
+  padding: 8px 10px;
+  resize: vertical;
+  caret-color: var(--wb-amber);
+  margin-bottom: 8px;
+
+  &:focus { outline: none; border-color: rgba(255, 176, 0, 0.5); }
+  &::placeholder { color: rgba(233, 234, 237, 0.3); }
+}
+
+.scoreRow {
+  display: grid;
+  grid-template-columns: 1fr auto 64px;
+  gap: 8px;
+  align-items: center;
+  padding: 3px 0;
+  font-size: 11.5px;
+}
+
+.scoreName {
+  color: rgba(233, 234, 237, 0.72);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.scoreInput {
+  padding: 3px 6px;
+  font-size: 11px;
+  text-align: right;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+}
+
+.computed {
+  font-size: 11.5px;
+  color: var(--wb-amber-soft);
+  margin: 8px 0 0;
+}
+
+.recordTools {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.report {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 11px;
+  color: rgba(255, 93, 108, 0.8);
+  text-decoration: none;
+  border: 1px solid rgba(255, 93, 108, 0.3);
+  padding: 6px 10px;
+
+  &:hover { background: rgba(255, 93, 108, 0.08); }
+}
+
+.teleRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+// Telegram's own blue (#2AABEE -> #229ED9) so the CTA is recognisable at a
+// glance; sharp corners keep it in the workbench's language.
+.teleBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: inherit;
+  font-size: 11px;
+  padding: 6px 12px;
+  color: #fff;
+  background: linear-gradient(180deg, #2aabee 0%, #229ed9 100%);
+  border: 1px solid #1e91c7;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover { background: linear-gradient(180deg, #3cb8f7 0%, #29a9e4 100%); }
+  &:disabled { opacity: 0.6; cursor: default; }
+}
+
+// Waiting for the workflow. A dimmed solid button reads as broken; an outline
+// with a dotted edge reads as "not yet", which is what it is. The Telegram
+// blue stays so it is still recognisably the same control.
+.teleWaiting,
+.teleWaiting:disabled {
+  opacity: 1;
+  color: #7fc9ee;
+  background: none;
+  border: 1px dashed #2aabee;
+  cursor: help;
+
+  &:hover { background: rgba(42, 171, 238, 0.08); }
+}
+
+.teleIcon {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.teleCopy {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: 1px solid rgba(42, 171, 238, 0.5);
+  color: #2aabee;
+  font-family: inherit;
+  font-size: 11px;
+  padding: 5px 8px;
+  cursor: pointer;
+
+  &:hover { background: rgba(42, 171, 238, 0.14); }
+}

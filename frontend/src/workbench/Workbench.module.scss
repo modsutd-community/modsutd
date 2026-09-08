@@ -1,0 +1,812 @@
+// The rail's width: the frame, both left corners and the link banner all start
+// where it ends. "CONTRIBUTE" is the longest tool label and did not fit in 60.
+// RAIL_W in layout.ts is the same number, and panels clamp against it.
+.root {
+    --wb-rail: 76px;
+    position: fixed;
+    inset: 0;
+    background: var(--wb-bg);
+    color: var(--wb-ink);
+    font-family: var(--wb-mono);
+    overflow: hidden;
+
+    ::selection {
+        background: var(--wb-amber);
+        color: var(--wb-bg);
+    }
+}
+
+// ---------- desktop chrome ----------
+
+.frame {
+    position: absolute;
+    left: var(--wb-rail);
+    right: 14px;
+    top: 50px;
+    bottom: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+}
+
+.corner {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    pointer-events: none;
+    border-color: rgba(255, 176, 0, 0.55);
+    border-style: solid;
+    border-width: 0;
+}
+
+.cornerTL {
+    left: var(--wb-rail);
+    top: 50px;
+    border-left-width: 1.5px;
+    border-top-width: 1.5px;
+}
+.cornerTR {
+    right: 14px;
+    top: 50px;
+    border-right-width: 1.5px;
+    border-top-width: 1.5px;
+}
+.cornerBL {
+    left: var(--wb-rail);
+    bottom: 14px;
+    border-left-width: 1.5px;
+    border-bottom-width: 1.5px;
+}
+.cornerBR {
+    right: 14px;
+    bottom: 14px;
+    border-right-width: 1.5px;
+    border-bottom-width: 1.5px;
+}
+
+.topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--wb-bar);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    height: 100%;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes inkdrift {
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-4px) rotate(-2deg);
+    }
+}
+
+.octo {
+    display: inline-flex;
+    color: var(--wb-amber);
+    animation: inkdrift 6s ease-in-out infinite;
+    // Sized in em off the wordmark, not in pixels, so he scales with the type
+    // rather than needing a new number wherever the wordmark is set differently.
+    //
+    // 0.92em, not the x-height an m would take: his art fills only the middle
+    // ~87% of a square viewBox, so a box matched to the letters draws an animal
+    // noticeably smaller than them. The nudge puts his arm tips on the baseline -
+    // a flex row centres the BOX on the line, and the line's centre sits above
+    // the baseline, which is what left him floating over the o.
+    align-self: center;
+    margin: 0 0.01em 0 0;
+    transform: translateY(0.06em);
+
+    svg {
+        width: 1em;
+        height: 1em;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
+}
+
+.wordmark {
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--wb-display);
+    font-weight: 900;
+    font-size: 16px;
+    color: #fff;
+}
+
+.badge {
+    font-size: 9.5px;
+    letter-spacing: 0.28em;
+    color: var(--wb-amber);
+    border: 1px solid rgba(255, 176, 0, 0.4);
+    padding: 2px 7px;
+}
+
+.filterZone {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 16px;
+    height: 100%;
+}
+
+.slash {
+    color: var(--wb-amber);
+    font-size: 13px;
+}
+
+.filter {
+    flex: 1;
+    max-width: 560px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--wb-ink);
+    font-family: inherit;
+    font-size: 13px;
+    caret-color: var(--wb-amber);
+
+    &::placeholder {
+        color: rgba(233, 234, 237, 0.3);
+    }
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 16px;
+    height: 100%;
+    border: none;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    font-family: inherit;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: rgba(233, 234, 237, 0.62);
+    white-space: nowrap;
+    cursor: pointer;
+
+    strong {
+        color: #fff;
+        font-weight: 700;
+    }
+    &:hover {
+        background: rgba(255, 255, 255, 0.04);
+    }
+}
+
+.nowWrap {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.nowCard {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    align-self: center;
+    padding: 3px 12px;
+    margin-right: 6px;
+    min-width: 128px;
+    border: 1px solid;
+    background: transparent;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.nowFill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    transition: width 0.6s ease;
+    pointer-events: none;
+}
+
+.nowCurrent {
+    border-color: rgba(255, 176, 0, 0.55);
+    color: var(--wb-amber-soft);
+
+    .nowFill {
+        background: rgba(255, 176, 0, 0.18);
+    }
+}
+
+.nowUpcoming {
+    border-color: rgba(233, 234, 237, 0.3);
+    color: rgba(233, 234, 237, 0.62);
+
+    .nowFill {
+        background: rgba(233, 234, 237, 0.1);
+    }
+}
+
+.nowLines {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.3;
+    font-size: 10.5px;
+    white-space: nowrap;
+
+    span:first-child {
+        font-weight: 700;
+    }
+}
+
+.nowNextBtn {
+    align-self: center;
+    width: 22px;
+    height: 30px;
+    margin-right: 8px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    color: rgba(233, 234, 237, 0.62);
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+
+    &:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+}
+
+@keyframes blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .clash i,
+    .mclashDot {
+        animation: none !important;
+    }
+}
+
+.clash {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 16px;
+    height: 100%;
+    border: none;
+    border-left: 1px solid rgba(255, 93, 108, 0.3);
+    background: rgba(255, 93, 108, 0.08);
+    font-size: 11px;
+    color: var(--wb-red);
+    font-family: inherit;
+    cursor: pointer;
+
+    i {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--wb-red);
+        animation: blink 1.2s infinite;
+    }
+}
+
+.dataChip {
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: rgba(255, 176, 0, 0.75);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0 14px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover {
+        color: var(--wb-amber);
+    }
+}
+
+.rail {
+    position: absolute;
+    left: 0;
+    top: 50px;
+    bottom: 0;
+    width: var(--wb-rail);
+    z-index: 1500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 0;
+    border-right: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--wb-bar);
+}
+
+.tool {
+    cursor: pointer;
+    width: 58px;
+    height: 46px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    border-radius: 7px;
+    background: transparent;
+    color: rgba(233, 234, 237, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    font-family: inherit;
+
+    &:hover {
+        background: rgba(255, 176, 0, 0.14);
+        color: var(--wb-amber-soft);
+    }
+}
+
+.toolOn {
+    color: var(--wb-amber-soft);
+    border-color: rgba(255, 176, 0, 0.4);
+}
+
+.toolIcon {
+    font-size: 15px;
+    line-height: 1;
+}
+.toolLabel {
+    font-size: 7px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.toolReset {
+    margin-top: 8px;
+    width: 58px;
+    height: 30px;
+    border-radius: 7px;
+    color: rgba(233, 234, 237, 0.4);
+    border: 1px dashed rgba(255, 255, 255, 0.12);
+    font-size: 13px;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+
+    &:hover {
+        color: var(--wb-amber-soft);
+    }
+}
+
+.rev {
+    margin-top: auto;
+    font-size: 8px;
+    letter-spacing: 0.1em;
+    color: rgba(233, 234, 237, 0.25);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    padding-bottom: 6px;
+}
+
+// Full-viewport coordinate space so panel x/y match the clamp math in
+// layout.ts exactly; the top bar (z 2000) and rail (z 1500) sit above panels.
+.desk {
+    position: absolute;
+    inset: 0;
+}
+
+// ---------- mobile ----------
+
+.mroot {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--wb-bg);
+}
+
+.mbar {
+    flex: none;
+    padding: calc(env(safe-area-inset-top, 0px) + 11px) 16px 11px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--wb-bar);
+
+    .wordmark {
+        font-size: 17px;
+    }
+}
+
+.mstat {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    color: inherit;
+    cursor: pointer;
+    padding: 4px 0;
+    min-width: 0;
+
+    span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.mclashDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--wb-red);
+    box-shadow: 0 0 7px var(--wb-red);
+    animation: blink 1.2s infinite;
+}
+
+.mmain {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative; // anchors .mdragOverlay
+}
+
+.msearchRow {
+    flex: none;
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.msearchBox {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    background: #16181d;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 9px;
+    padding: 10px 12px;
+
+    input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--wb-ink);
+        font-family: inherit;
+        font-size: 15px;
+        caret-color: var(--wb-amber);
+        min-width: 0;
+
+        &::placeholder {
+            color: rgba(233, 234, 237, 0.3);
+        }
+    }
+}
+
+.mchips {
+    display: flex;
+    gap: 6px;
+    margin-top: 9px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        height: 0;
+    }
+}
+
+.mrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-left: 3px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+    text-align: left;
+}
+
+.mrowCode {
+    min-width: 62px;
+}
+
+.mrowName {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    color: rgba(233, 234, 237, 0.85);
+    line-height: 1.3;
+}
+
+.mnav {
+    flex: none;
+    display: flex;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    background: var(--wb-bar);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.mtab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 11px 0 12px;
+    min-height: 56px;
+    cursor: pointer;
+    color: rgba(233, 234, 237, 0.62);
+    border: none;
+    border-top: 2px solid transparent;
+    background: transparent;
+    font-family: inherit;
+}
+
+.mtabOn {
+    color: var(--wb-amber);
+    border-top-color: var(--wb-amber);
+}
+
+.mtabIcon {
+    font-size: 19px;
+    line-height: 1;
+}
+.mtabLabel {
+    font-size: 10px;
+    letter-spacing: 0.04em;
+}
+
+@keyframes sheetUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.sheetBackdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0, 0, 0, 0.6);
+    animation: fadeIn 0.2s ease;
+}
+
+.sheet {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    background: var(--wb-panel);
+    border-top: 1px solid rgba(255, 176, 0, 0.4);
+    border-radius: 18px 18px 0 0;
+    box-shadow: 0 -20px 50px -10px rgba(0, 0, 0, 0.7);
+    animation: sheetUp 0.26s cubic-bezier(0.2, 0.85, 0.25, 1);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.sheetHandle {
+    flex: none;
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    padding: 6px 8px 2px;
+
+    div {
+        grid-column: 2;
+        justify-self: center;
+        width: 38px;
+        height: 4px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.sheetClose {
+    grid-column: 3;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: rgba(233, 234, 237, 0.65);
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+.sheetBody {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.moreList {
+    display: flex;
+    flex-direction: column;
+    padding: 14px;
+    gap: 8px;
+}
+
+.moreBtn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 9px;
+    background: transparent;
+    color: var(--wb-ink);
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    text-align: left;
+
+    span:first-child {
+        font-size: 17px;
+    }
+    span:last-child {
+        margin-left: auto;
+        color: rgba(233, 234, 237, 0.3);
+    }
+}
+
+// The drag ghost - a chip pinned to the cursor while a mod is in flight.
+// pointer-events: none so elementFromPoint sees the real drop target.
+.dragGhost {
+    position: fixed;
+    z-index: 1000;
+    pointer-events: none;
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--wb-ink);
+    background: var(--wb-titlebar);
+    border: 1px solid var(--wb-amber);
+    box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.7);
+}
+
+// Mobile drag overlay: the plan surfaces over the mods list while a
+// long-pressed mod is in flight, without unmounting the touch target.
+.mdragOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background: var(--wb-bg);
+    padding: 10px 12px;
+    overflow: hidden;
+}
+
+.linkBanner {
+    position: absolute;
+    top: 50px;
+    left: var(--wb-rail);
+    right: 14px;
+    z-index: 1900;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 4px 12px;
+    font-size: 11px;
+    color: var(--wb-ink);
+    background: rgba(255, 176, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 176, 0, 0.35);
+
+    a {
+        color: var(--wb-amber-soft);
+    }
+}
+
+.linkNow {
+    background: none;
+    border: 1px solid rgba(255, 176, 0, 0.5);
+    color: var(--wb-amber);
+    font-family: inherit;
+    font-size: 10.5px;
+    padding: 2px 9px;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(255, 176, 0, 0.15);
+    }
+}
+
+.linkStatus {
+    color: var(--wb-red);
+}
+
+.linkDismiss {
+    background: none;
+    border: none;
+    color: var(--wb-ink-dim);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+
+    &:hover {
+        color: #fff;
+    }
+}
+
+// Mobile: same banner, in-flow under the top bar.
+.hotWarn {
+    background: rgba(224, 104, 60, 0.14);
+    border-bottom-color: rgba(224, 104, 60, 0.45);
+}
+
+.hotOk {
+    background: rgba(60, 168, 122, 0.14);
+    border-bottom-color: rgba(60, 168, 122, 0.45);
+}
+
+.mroot .linkBanner {
+    position: static;
+    flex: none;
+}

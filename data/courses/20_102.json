@@ -1,0 +1,27 @@
+{
+  "code": "20.102",
+  "name": "Architecture Core Studio 2",
+  "description": "Expands the scope of architectural problems to include the urban scale, complex building structures, as well as cultural and programmatic materials (inhabitation and human factors). Students engage in two subsequent and interrelated design problems focused on programmes of public institutions in the context of higher education in Singapore, developing comprehensive architectural proposals.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "5",
+  "prerequisites": [
+    "20.101"
+  ],
+  "schedules": [],
+  "tags": [
+    "ASD",
+    "Term 5",
+    "Core"
+  ],
+  "workload": {
+    "lecture": 12,
+    "tutorial": 0,
+    "project": 0,
+    "preparation": 9,
+    "total": 21,
+    "source": "official"
+  },
+  "noBatchChat": true
+}

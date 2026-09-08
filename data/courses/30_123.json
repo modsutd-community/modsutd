@@ -1,0 +1,13 @@
+{
+  "code": "30.123",
+  "name": "Healthcare Product Design",
+  "description": "A project-based design course teaching the fundamentals of designing biomedical and healthcare devices and diagnostics. Educates students to solve real-life clinical problems using their engineering knowledge by designing and developing biomedical products ranging from devices, in-vitro diagnostic kits, and instruments. Project teams (3-4 students) work on a clinical problem identified by healthcare professionals. Case studies, hands-on prototyping, guest lectures from clinicians and MedTech start-up experts, discussions, and design reviews are used extensively. Includes coverage of regulatory, safety, and testing requirements and design control guidance.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "7",
+  "prerequisites": ["03.007A", "03.007B", "30.001", "30.002", "30.007", "30.101"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 7", "Elective / Technical Elective", "EPD"]
+}

@@ -1,0 +1,13 @@
+{
+  "code": "30.007",
+  "name": "Engineering Design Innovation",
+  "description": "Students develop competency in engineering design and project management, working in teams on functional device projects. Focus is on design, analysis, prototyping, testing, and execution methodology emphasizing creativity and innovation. Outcomes include designing and executing a fully functional prototype, applying engineering analysis and models, managing a project from concept to prototype, validating design requirements, and completing reliability and risk analyses.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "5",
+  "prerequisites": ["03.007A", "03.007B", "10.015", "10.017"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 5", "Core", "EPD"]
+}

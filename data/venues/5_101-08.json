@@ -1,0 +1,33 @@
+{
+  "code": "5.101-08",
+  "name": "Fab Lab",
+  "building": "5",
+  "floor": 1,
+  "type": "Lab",
+  "panoScenes": [
+    {
+      "scene": "fab_lab_level_1_entrance",
+      "title": "Fab Lab entrance"
+    },
+    {
+      "scene": "fab_lab_level_1_3d_printers",
+      "title": "3D printers"
+    },
+    {
+      "scene": "fab_lab_level_1_assembly_space",
+      "title": "Assembly space"
+    },
+    {
+      "scene": "fab_lab_level_2_maker_space",
+      "title": "Maker space"
+    },
+    {
+      "scene": "fab_lab_level_2_electronics_lab",
+      "title": "Electronics lab"
+    },
+    {
+      "scene": "fab_lab_level_2_laser_cutting_room",
+      "title": "Laser cutting room"
+    }
+  ]
+}

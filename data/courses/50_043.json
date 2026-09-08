@@ -1,0 +1,19 @@
+{
+  "code": "50.043",
+  "name": "Database Systems",
+  "description": "Foundations and practice of database management: relational model, SQL, transaction management, indexing, query optimisation, and modern non-relational systems.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "5",
+  "prerequisites": [
+    "50.001"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Elective / Technical Elective",
+    "ISTD"
+  ]
+}

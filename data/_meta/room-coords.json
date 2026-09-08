@@ -1,0 +1,2627 @@
+{
+ "_note": "One coordinate per surveyed shape, the centroid of its way. A flat list, not a map: a door plate is not a unique key, and some shapes have a name and no plate.",
+ "_source": "openstreetmap.org, surveyed on foot 2026-08-22",
+ "shapes": [
+  {
+   "ref": "1.102",
+   "name": "Lecture Theatre 1 (Albert Hong)",
+   "lat": 1.340284,
+   "lng": 103.962149,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "1.202",
+   "name": "Design and Artificial Intelligence (DAI) office",
+   "lat": 1.340051,
+   "lng": 103.962755,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "1.203",
+   "name": "Lecture Theatre 2",
+   "lat": 1.340263,
+   "lng": 103.962433,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "1.302",
+   "name": "Engineering Product and Development (EPD) office",
+   "lat": 1.340036,
+   "lng": 103.962769,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.304",
+   "name": "Graduate Studies Cluster 1",
+   "lat": 1.34,
+   "lng": 103.962111,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.308",
+   "name": "Think Tank 1",
+   "lat": 1.340068,
+   "lng": 103.962269,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.309",
+   "name": "Think Tank 2 (Wee Hur)",
+   "lat": 1.340093,
+   "lng": 103.962154,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.310",
+   "name": "Think Tank 3",
+   "lat": 1.340095,
+   "lng": 103.962034,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.311",
+   "name": null,
+   "lat": 1.340092,
+   "lng": 103.961965,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.312",
+   "name": "Think Tank 4",
+   "lat": 1.340186,
+   "lng": 103.961911,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.313",
+   "name": "Think Tank 5",
+   "lat": 1.340263,
+   "lng": 103.961897,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.314",
+   "name": "Cohort Class 1",
+   "lat": 1.340368,
+   "lng": 103.961873,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.315",
+   "name": "Cohort Classroom 2",
+   "lat": 1.340385,
+   "lng": 103.962017,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.318",
+   "name": "Lecture Theatre 2",
+   "lat": 1.340305,
+   "lng": 103.962411,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "1.401",
+   "name": "42SG",
+   "lat": 1.340356,
+   "lng": 103.962813,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.402",
+   "name": "Humanities, Arts and Social Sciences (HASS) office",
+   "lat": 1.340033,
+   "lng": 103.962791,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.404B",
+   "name": "Sparks / Staff Lounge",
+   "lat": 1.340008,
+   "lng": 103.962112,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.407",
+   "name": "Capstone Conference Room 1",
+   "lat": 1.340075,
+   "lng": 103.962294,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.408",
+   "name": "Think Tank 6",
+   "lat": 1.340081,
+   "lng": 103.962229,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.409",
+   "name": "Think Tank 7",
+   "lat": 1.340106,
+   "lng": 103.962109,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.410",
+   "name": "Think Tank 8",
+   "lat": 1.340094,
+   "lng": 103.962004,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.410A",
+   "name": "Capstone 11",
+   "lat": 1.340121,
+   "lng": 103.961948,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.411",
+   "name": "Capstone 1",
+   "lat": 1.340206,
+   "lng": 103.961903,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.412",
+   "name": "Capstone 2",
+   "lat": 1.340262,
+   "lng": 103.961908,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.413",
+   "name": "Cohort Classroom 3",
+   "lat": 1.340402,
+   "lng": 103.961851,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.414",
+   "name": "Cohort Classroom 4",
+   "lat": 1.340434,
+   "lng": 103.962014,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.415",
+   "name": "Think Tank 9",
+   "lat": 1.340331,
+   "lng": 103.962382,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.416",
+   "name": "Think Tank 10",
+   "lat": 1.34033,
+   "lng": 103.962446,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.417",
+   "name": "Graduate Studies Centre 7",
+   "lat": 1.340211,
+   "lng": 103.9624,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "1.502",
+   "name": "Information Systems Technology and Design (ISTD) office",
+   "lat": 1.340065,
+   "lng": 103.962726,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.503",
+   "name": "Think Tank 11",
+   "lat": 1.340249,
+   "lng": 103.962461,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.504",
+   "name": "iDer Studio",
+   "lat": 1.340251,
+   "lng": 103.962376,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.505",
+   "name": "Pi lab",
+   "lat": 1.34032,
+   "lng": 103.962406,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.506",
+   "name": "Think Tank 12 (Sing Lun)",
+   "lat": 1.340169,
+   "lng": 103.962407,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.507",
+   "name": "Executive Conference Room",
+   "lat": 1.340075,
+   "lng": 103.962278,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.508",
+   "name": "Think Tank 13 (Yangzheng Foundation)",
+   "lat": 1.340101,
+   "lng": 103.96223,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.509",
+   "name": "Think Tank 14",
+   "lat": 1.340107,
+   "lng": 103.962112,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.510",
+   "name": "Think Tank 15",
+   "lat": 1.340108,
+   "lng": 103.962016,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.510A",
+   "name": "f\u00f8rm axioms",
+   "lat": 1.340113,
+   "lng": 103.961939,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.511",
+   "name": "Capstone 3",
+   "lat": 1.340199,
+   "lng": 103.961922,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.512",
+   "name": "Capstone 4",
+   "lat": 1.34026,
+   "lng": 103.961901,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.513",
+   "name": "Cohort Classroom 5",
+   "lat": 1.340401,
+   "lng": 103.961854,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.514",
+   "name": "Cohort Classroom 6",
+   "lat": 1.340421,
+   "lng": 103.962017,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.517",
+   "name": "Wellbeing Services",
+   "lat": 1.34042,
+   "lng": 103.962491,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.518",
+   "name": "Group Room",
+   "lat": 1.340475,
+   "lng": 103.962546,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.519",
+   "name": "Photo and Video Lab",
+   "lat": 1.340455,
+   "lng": 103.962643,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.521",
+   "name": "Studio 1",
+   "lat": 1.340398,
+   "lng": 103.962888,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "1.602",
+   "name": "Architecture and Sustainable Design (ASD) office",
+   "lat": 1.340053,
+   "lng": 103.962755,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.603",
+   "name": "Think Tank 27",
+   "lat": 1.340087,
+   "lng": 103.96225,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.604",
+   "name": "Think Tank 28",
+   "lat": 1.340102,
+   "lng": 103.962122,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.605",
+   "name": "Cyber5G Testbed",
+   "lat": 1.340101,
+   "lng": 103.962025,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.605A",
+   "name": "Incubation Room",
+   "lat": 1.340096,
+   "lng": 103.961925,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.606",
+   "name": "Capstone 5",
+   "lat": 1.340206,
+   "lng": 103.961924,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.607",
+   "name": "Capstone 6",
+   "lat": 1.340265,
+   "lng": 103.961901,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.608",
+   "name": "Cohort Classroom 7",
+   "lat": 1.340386,
+   "lng": 103.961858,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.609",
+   "name": "Cohort Classroom 8",
+   "lat": 1.340423,
+   "lng": 103.962016,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.610",
+   "name": "Data Analytics Lab",
+   "lat": 1.340346,
+   "lng": 103.962418,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.611",
+   "name": "Computer Lab",
+   "lat": 1.340265,
+   "lng": 103.962406,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.612",
+   "name": "Leet Lab",
+   "lat": 1.340185,
+   "lng": 103.962412,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.614",
+   "name": "SUTD-SMU Collaboration Office",
+   "lat": 1.340464,
+   "lng": 103.962513,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.615",
+   "name": "Systems Design Studio",
+   "lat": 1.340467,
+   "lng": 103.962602,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.616",
+   "name": "Architect-in-Residence (AiR)",
+   "lat": 1.34046,
+   "lng": 103.962695,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.617",
+   "name": "Studio 2",
+   "lat": 1.340372,
+   "lng": 103.962874,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "1.702",
+   "name": "Engineering Systems and Design (ESD) office",
+   "lat": 1.34005,
+   "lng": 103.962745,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.703",
+   "name": "Robotics Innovation Laboratory",
+   "lat": 1.340081,
+   "lng": 103.962254,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.704",
+   "name": "Robotics Innovation Laboratory",
+   "lat": 1.340109,
+   "lng": 103.962093,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.705",
+   "name": "Incubation Room",
+   "lat": 1.340123,
+   "lng": 103.961965,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.706",
+   "name": "Digital Manufacturing and Design (DManD) Centre",
+   "lat": 1.340245,
+   "lng": 103.961899,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.707",
+   "name": "Digital Manufacturing and Design (DManD) Research Studio",
+   "lat": 1.340426,
+   "lng": 103.961948,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.708",
+   "name": "Digital Manufacturing and Design",
+   "lat": 1.34018,
+   "lng": 103.962381,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.709",
+   "name": "Graduate Studies Cluster 2",
+   "lat": 1.340302,
+   "lng": 103.962373,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.710",
+   "name": "Graduate Studies Cluster 3",
+   "lat": 1.340305,
+   "lng": 103.962453,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.712",
+   "name": "ARMS SIX",
+   "lat": 1.340478,
+   "lng": 103.962519,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.713",
+   "name": "Power System and Electronics Lab",
+   "lat": 1.340461,
+   "lng": 103.962639,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.714",
+   "name": "Graduate Studies Cluster 4",
+   "lat": 1.340409,
+   "lng": 103.962758,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "1.715",
+   "name": "ESD Research Lab 1",
+   "lat": 1.340401,
+   "lng": 103.962917,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.101",
+   "name": "Auditorium",
+   "lat": 1.34099,
+   "lng": 103.962813,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "2.201",
+   "name": "Think Tank 16",
+   "lat": 1.340821,
+   "lng": 103.962748,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.202",
+   "name": "Think Tank 17",
+   "lat": 1.340829,
+   "lng": 103.962612,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.203",
+   "name": "Think Tank 18",
+   "lat": 1.340825,
+   "lng": 103.962516,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.204",
+   "name": "IT Care",
+   "lat": 1.340807,
+   "lng": 103.962188,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.204A",
+   "name": "SUTD Wireless Innovation Centre",
+   "lat": 1.340764,
+   "lng": 103.961878,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.205",
+   "name": "Office of Information Technology",
+   "lat": 1.340958,
+   "lng": 103.961917,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.206",
+   "name": "Office of Information Technology",
+   "lat": 1.341096,
+   "lng": 103.961987,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.207",
+   "name": "SUTD Cleanroom",
+   "lat": 1.341116,
+   "lng": 103.962277,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.208",
+   "name": "Metrology Lab",
+   "lat": 1.341179,
+   "lng": 103.962475,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.209",
+   "name": "Studio 7",
+   "lat": 1.341013,
+   "lng": 103.962427,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "2.301",
+   "name": "AI Mega Centre",
+   "lat": 1.341027,
+   "lng": 103.963003,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.301",
+   "name": "Asia & Pacific OTIC in Singapore",
+   "lat": 1.341251,
+   "lng": 103.962822,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.301.09",
+   "name": "MARVL",
+   "lat": 1.341186,
+   "lng": 103.962753,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.302",
+   "name": "Auditorium",
+   "lat": 1.340993,
+   "lng": 103.962845,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.303",
+   "name": "Hobby Shop",
+   "lat": 1.340778,
+   "lng": 103.962732,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.304",
+   "name": "Think Tank 19",
+   "lat": 1.340822,
+   "lng": 103.962584,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.305",
+   "name": "Think Tank 20",
+   "lat": 1.340802,
+   "lng": 103.962502,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.306",
+   "name": "Studio 7",
+   "lat": 1.34096,
+   "lng": 103.962429,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.307",
+   "name": "Cohort Classroom 9",
+   "lat": 1.34078,
+   "lng": 103.962027,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.308",
+   "name": "Cohort Classroom 10",
+   "lat": 1.340753,
+   "lng": 103.961873,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.310",
+   "name": "Think Tank 21 (Kwan Im Thong Hood Cho Temple)",
+   "lat": 1.340931,
+   "lng": 103.961915,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.311",
+   "name": "Think Tank 22",
+   "lat": 1.341002,
+   "lng": 103.961934,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.311A",
+   "name": "Root Cove",
+   "lat": 1.341093,
+   "lng": 103.961947,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.312",
+   "name": "Tech Office",
+   "lat": 1.341071,
+   "lng": 103.962169,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.313A",
+   "name": "DS-01",
+   "lat": 1.341121,
+   "lng": 103.962228,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.313B",
+   "name": "DS-02",
+   "lat": 1.341142,
+   "lng": 103.962336,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.314",
+   "name": "DS-03",
+   "lat": 1.341146,
+   "lng": 103.962488,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.316",
+   "name": null,
+   "lat": 1.341215,
+   "lng": 103.962846,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "2.400",
+   "name": "Aerial Arena",
+   "lat": 1.340969,
+   "lng": 103.962745,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.401",
+   "name": "SUTD Academy",
+   "lat": 1.340862,
+   "lng": 103.962978,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.402",
+   "name": "SUTD-CGH Joint Lab",
+   "lat": 1.340812,
+   "lng": 103.962663,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.403",
+   "name": "Lecture Theatre 3",
+   "lat": 1.340813,
+   "lng": 103.962537,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.404",
+   "name": "Lecture Theatre 4 (Hokkien Foundation)",
+   "lat": 1.340941,
+   "lng": 103.962403,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.405",
+   "name": "Cohort Classroom 11",
+   "lat": 1.340803,
+   "lng": 103.962041,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.405-01",
+   "name": "Mini Think Tank 11",
+   "lat": 1.340745,
+   "lng": 103.962103,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.406",
+   "name": "Cohort Classroom 12",
+   "lat": 1.340776,
+   "lng": 103.961854,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.408",
+   "name": "Capstone 7",
+   "lat": 1.340928,
+   "lng": 103.961915,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.409",
+   "name": "Capstone 8",
+   "lat": 1.341012,
+   "lng": 103.961937,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.409A",
+   "name": "Root Cove",
+   "lat": 1.341106,
+   "lng": 103.961953,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.410",
+   "name": "Tech Office",
+   "lat": 1.341075,
+   "lng": 103.962044,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.411",
+   "name": "Physics Lab",
+   "lat": 1.341121,
+   "lng": 103.962213,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.412",
+   "name": "Digital Systems Lab",
+   "lat": 1.341151,
+   "lng": 103.962343,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.413",
+   "name": "Think Tank 23",
+   "lat": 1.341054,
+   "lng": 103.962399,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.414",
+   "name": "The Writing Centre",
+   "lat": 1.341167,
+   "lng": 103.962442,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.415",
+   "name": "O Lab",
+   "lat": 1.341182,
+   "lng": 103.962511,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.417",
+   "name": "Aviation Studies Institute",
+   "lat": 1.341223,
+   "lng": 103.962865,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.417.13",
+   "name": "Meeting Room 14",
+   "lat": 1.341204,
+   "lng": 103.962813,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "2.501",
+   "name": "Office of Campus Infrastructure and Facilities",
+   "lat": 1.340798,
+   "lng": 103.962966,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.502",
+   "name": "Fablab Satellite 4",
+   "lat": 1.34081,
+   "lng": 103.962656,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.503",
+   "name": "Think Tank 24",
+   "lat": 1.340815,
+   "lng": 103.962576,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.504",
+   "name": "Think Tank 25 (AC Toh)",
+   "lat": 1.340807,
+   "lng": 103.962496,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.505",
+   "name": "Lecture Theatre 5",
+   "lat": 1.340929,
+   "lng": 103.9624,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.506",
+   "name": "Cohort Classroom 13",
+   "lat": 1.34078,
+   "lng": 103.962029,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.506-01",
+   "name": "Mini Think Tank 13",
+   "lat": 1.340733,
+   "lng": 103.96208,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.507",
+   "name": "Cohort Classroom 14",
+   "lat": 1.34077,
+   "lng": 103.961867,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.509",
+   "name": "Capstone 9",
+   "lat": 1.340942,
+   "lng": 103.961913,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.510",
+   "name": "Capstone 10",
+   "lat": 1.341002,
+   "lng": 103.961944,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.510A",
+   "name": "Capstone 12",
+   "lat": 1.34111,
+   "lng": 103.961968,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.511",
+   "name": "Tech Office",
+   "lat": 1.341091,
+   "lng": 103.962073,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.512",
+   "name": "Chemistry Biology Learning Lab",
+   "lat": 1.341137,
+   "lng": 103.962256,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.513",
+   "name": "Chemistry Biology Learning Lab",
+   "lat": 1.341142,
+   "lng": 103.962363,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.513.01",
+   "name": "Tissue Culture Room",
+   "lat": 1.341175,
+   "lng": 103.96242,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.514",
+   "name": "Think Tank 26",
+   "lat": 1.341053,
+   "lng": 103.962401,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.515",
+   "name": "Electronic Design Lab",
+   "lat": 1.341179,
+   "lng": 103.962513,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.518",
+   "name": "Studio 3",
+   "lat": 1.341237,
+   "lng": 103.962847,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.519",
+   "name": "Studio 4",
+   "lat": 1.341051,
+   "lng": 103.963014,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "ref": "2.601",
+   "name": "Urban Cluster",
+   "lat": 1.340777,
+   "lng": 103.962971,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.602",
+   "name": "FabLab Satellite 5",
+   "lat": 1.340804,
+   "lng": 103.962653,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.603",
+   "name": "Graduate Studies Cluster 2 / Skunkworks Lab",
+   "lat": 1.340814,
+   "lng": 103.962556,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.605",
+   "name": "iDia Lab",
+   "lat": 1.340929,
+   "lng": 103.962416,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.606",
+   "name": "Cohort Class 15",
+   "lat": 1.340797,
+   "lng": 103.962033,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.607",
+   "name": "Cohort Class 16",
+   "lat": 1.340795,
+   "lng": 103.961901,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.609",
+   "name": "TL/iTrust Lab 11",
+   "lat": 1.340926,
+   "lng": 103.961952,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.610",
+   "name": "Cognition Lab",
+   "lat": 1.341018,
+   "lng": 103.961964,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.611",
+   "name": "Nash Living Lab",
+   "lat": 1.341029,
+   "lng": 103.961901,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.612",
+   "name": "TL/iTrust Lab 12",
+   "lat": 1.340938,
+   "lng": 103.961888,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.612A",
+   "name": null,
+   "lat": 1.341119,
+   "lng": 103.96196,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.613",
+   "name": "Tech Office",
+   "lat": 1.341076,
+   "lng": 103.962125,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.614",
+   "name": "Characterization Lab",
+   "lat": 1.341132,
+   "lng": 103.96216,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.615",
+   "name": "Characterization Lab",
+   "lat": 1.341132,
+   "lng": 103.962257,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.616",
+   "name": "IDiA Lab Annex",
+   "lat": 1.341038,
+   "lng": 103.962406,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.617",
+   "name": "Measurement Technologies Lab",
+   "lat": 1.341179,
+   "lng": 103.962515,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.617A",
+   "name": "Think Tank 29",
+   "lat": 1.34116,
+   "lng": 103.962407,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.619",
+   "name": "Studio 5",
+   "lat": 1.341241,
+   "lng": 103.962887,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.620",
+   "name": "Studio 6",
+   "lat": 1.341051,
+   "lng": 103.962976,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "ref": "2.701",
+   "name": "Temasek Laboratories",
+   "lat": 1.340785,
+   "lng": 103.962955,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.702",
+   "name": "TL/iTrust Lab 2",
+   "lat": 1.340806,
+   "lng": 103.962617,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.703",
+   "name": "TL/iTrust Lab 2",
+   "lat": 1.340804,
+   "lng": 103.962492,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.704",
+   "name": "TL/iTrust Lab 3",
+   "lat": 1.340943,
+   "lng": 103.962452,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.705",
+   "name": "TL/iTrust Lab 4",
+   "lat": 1.340942,
+   "lng": 103.962373,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.706",
+   "name": "Materials Characterization Lab",
+   "lat": 1.340759,
+   "lng": 103.962113,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.707",
+   "name": "Furnace Lab",
+   "lat": 1.340816,
+   "lng": 103.962085,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.708",
+   "name": "Composite Fabrication Lab",
+   "lat": 1.340795,
+   "lng": 103.961957,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.709",
+   "name": "Integrated Materials and Devices Lab",
+   "lat": 1.340816,
+   "lng": 103.961852,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.710",
+   "name": "Academic Media Studio",
+   "lat": 1.340955,
+   "lng": 103.96192,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.710A",
+   "name": "Area 65",
+   "lat": 1.341116,
+   "lng": 103.961962,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.711",
+   "name": "Tech Office",
+   "lat": 1.341082,
+   "lng": 103.962126,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.712",
+   "name": "Beats Lab",
+   "lat": 1.341125,
+   "lng": 103.962253,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.714",
+   "name": "TL/iTrust Lab 5",
+   "lat": 1.341028,
+   "lng": 103.962418,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.715",
+   "name": "TL/iTrust Lab 10",
+   "lat": 1.341152,
+   "lng": 103.96248,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.716",
+   "name": "Graduate Studies Cluster 6",
+   "lat": 1.341244,
+   "lng": 103.962905,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.717",
+   "name": "TL/iTrust Lab 6",
+   "lat": 1.341196,
+   "lng": 103.962785,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.718",
+   "name": "TL/iTrust Lab 7",
+   "lat": 1.341222,
+   "lng": 103.962895,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.719",
+   "name": "TL/iTrust Lab 8",
+   "lat": 1.341104,
+   "lng": 103.963018,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "2.720",
+   "name": "TL/iTrust Lab 9",
+   "lat": 1.341021,
+   "lng": 103.963,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "ref": "3.201",
+   "name": "Office of Admissions / Office of Student Administration",
+   "lat": 1.340787,
+   "lng": 103.963549,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "3.202",
+   "name": "Lee Kuan Yew Centre for Innovative Cities",
+   "lat": 1.341035,
+   "lng": 103.963394,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "3.203",
+   "name": "Meeting Room 22",
+   "lat": 1.340914,
+   "lng": 103.963422,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "3.301",
+   "name": "Innovation and Enterprise",
+   "lat": 1.340787,
+   "lng": 103.963261,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "5.101",
+   "name": "Makerspace-One",
+   "lat": 1.341645,
+   "lng": 103.962967,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-0",
+   "name": "Scrapyard",
+   "lat": 1.341594,
+   "lng": 103.963142,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-0",
+   "name": "Wood Store",
+   "lat": 1.341657,
+   "lng": 103.963092,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-06",
+   "name": "Woodwork Section",
+   "lat": 1.341531,
+   "lng": 103.963038,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-07",
+   "name": "Assembly Space",
+   "lat": 1.341502,
+   "lng": 103.962867,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-08",
+   "name": "Fab Lab",
+   "lat": 1.341613,
+   "lng": 103.96275,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-09",
+   "name": "NightOwl Makerspace",
+   "lat": 1.341501,
+   "lng": 103.962704,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-14",
+   "name": "Air Compressor Room",
+   "lat": 1.34165,
+   "lng": 103.962763,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-15",
+   "name": "Composite Section",
+   "lat": 1.341636,
+   "lng": 103.96281,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.101-16",
+   "name": "Painting Preparation Section",
+   "lat": 1.341635,
+   "lng": 103.962872,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.103",
+   "name": "Machine / Sheet Metal Section",
+   "lat": 1.341595,
+   "lng": 103.96263,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.106",
+   "name": "Logistic Centre",
+   "lat": 1.341722,
+   "lng": 103.962761,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.108",
+   "name": "Fire Command Centre (FCC)",
+   "lat": 1.341776,
+   "lng": 103.962869,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.109",
+   "name": "Security Control Room",
+   "lat": 1.34171,
+   "lng": 103.96294,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.110",
+   "name": "FM Office",
+   "lat": 1.341732,
+   "lng": 103.963037,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "5.201",
+   "name": "Electronic Lab / Laser Cutting Section / Maker Space-Two",
+   "lat": 1.341573,
+   "lng": 103.962853,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "5.202",
+   "name": "Pantry Booth",
+   "lat": 1.341543,
+   "lng": 103.962674,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "5.301",
+   "name": "Alumini Office / Lounge",
+   "lat": 1.341472,
+   "lng": 103.962568,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "5.302",
+   "name": "Training Room",
+   "lat": 1.34153,
+   "lng": 103.962661,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "5.303",
+   "name": "Career Development Centre",
+   "lat": 1.341643,
+   "lng": 103.962752,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "5.303",
+   "name": "Office Undergraduate Studies",
+   "lat": 1.341726,
+   "lng": 103.962794,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": "5.401",
+   "name": "Student Activity Centre",
+   "lat": 1.341468,
+   "lng": 103.962581,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "ref": "55.222A-B",
+   "name": "Multipurpose Hall (MPH) 1",
+   "lat": 1.342181,
+   "lng": 103.964391,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "55.223A-B",
+   "name": "Multipurpose Hall (MPH) 2",
+   "lat": 1.342084,
+   "lng": 103.964495,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "57.151",
+   "name": "Hostel Lounge",
+   "lat": 1.341914,
+   "lng": 103.964392,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "57.251",
+   "name": "Hostel Lounge",
+   "lat": 1.341899,
+   "lng": 103.964427,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "61.101",
+   "name": "Dance Studio 1",
+   "lat": 1.341647,
+   "lng": 103.964621,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "61.102",
+   "name": "Dance Studio 2",
+   "lat": 1.341533,
+   "lng": 103.964522,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "61.103",
+   "name": "Fitness Centre",
+   "lat": 1.341911,
+   "lng": 103.96487,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "61.105",
+   "name": "Sports Hall 1",
+   "lat": 1.341713,
+   "lng": 103.965058,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "61.106",
+   "name": "Sports Hall 2",
+   "lat": 1.341411,
+   "lng": 103.964748,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": "61.201",
+   "name": "Dance Studio 3",
+   "lat": 1.341521,
+   "lng": 103.96453,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "61.202",
+   "name": "Dance Studio 4",
+   "lat": 1.341601,
+   "lng": 103.964609,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "61.203",
+   "name": "Dance Studio 5",
+   "lat": 1.341687,
+   "lng": 103.964685,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "61.204",
+   "name": "Dance Studio 6",
+   "lat": 1.341878,
+   "lng": 103.964853,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "61.205",
+   "name": "Dance Studio 7",
+   "lat": 1.341913,
+   "lng": 103.964909,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "61.206",
+   "name": "Dance Studio 8",
+   "lat": 1.341983,
+   "lng": 103.96496,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "61.208",
+   "name": "Office of Housing",
+   "lat": 1.341769,
+   "lng": 103.96495,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": "DT34",
+   "name": "Upper Changi",
+   "lat": 1.341692,
+   "lng": 103.961353,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": "K",
+   "name": "CAR PARK K",
+   "lat": 1.339267,
+   "lng": 103.963271,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Blk 51 Lobby (SUTD Staff Housing)",
+   "lat": 1.342276,
+   "lng": 103.963525,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Blk 53 Lobby (SUTD Staff Housing)",
+   "lat": 1.342878,
+   "lng": 103.964116,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Building 3",
+   "lat": 1.340926,
+   "lng": 103.963595,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Building 5",
+   "lat": 1.341607,
+   "lng": 103.962659,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Campus Centre",
+   "lat": 1.340836,
+   "lng": 103.963064,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Canteen",
+   "lat": 1.341071,
+   "lng": 103.962929,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": null,
+   "name": "Changi Bethany Church",
+   "lat": 1.341763,
+   "lng": 103.961945,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Business Park Bus Terminal",
+   "lat": 1.34173,
+   "lng": 103.966799,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Business Park Bus Terminal",
+   "lat": 1.34171,
+   "lng": 103.966958,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Business Park Bus Terminal",
+   "lat": 1.34181,
+   "lng": 103.966882,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Business Park Central1",
+   "lat": 1.339788,
+   "lng": 103.966299,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Business Park Central1",
+   "lat": 1.339471,
+   "lng": 103.966645,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Business Park Central1",
+   "lat": 1.339271,
+   "lng": 103.966957,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Business Park Central1",
+   "lat": 1.339846,
+   "lng": 103.966585,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Business Park Vista",
+   "lat": 1.338662,
+   "lng": 103.96566,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi Court",
+   "lat": 1.343272,
+   "lng": 103.962568,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi South Avenue 1",
+   "lat": 1.340398,
+   "lng": 103.96555,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi South Avenue 1",
+   "lat": 1.340919,
+   "lng": 103.966247,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Changi South Avenue 1",
+   "lat": 1.341389,
+   "lng": 103.96675,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Cheers",
+   "lat": 1.340762,
+   "lng": 103.962692,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "DBS Banking ATM",
+   "lat": 1.340504,
+   "lng": 103.962251,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "DR 2.1",
+   "lat": 1.340447,
+   "lng": 103.962542,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": null,
+   "name": "DR 2.2",
+   "lat": 1.340424,
+   "lng": 103.962535,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": null,
+   "name": "DR 2.3",
+   "lat": 1.340403,
+   "lng": 103.962531,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": null,
+   "name": "Design AI Fablab",
+   "lat": 1.339848,
+   "lng": 103.964868,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "East View Garden",
+   "lat": 1.343384,
+   "lng": 103.960619,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Gom Gom",
+   "lat": 1.340758,
+   "lng": 103.962506,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Hafu",
+   "lat": 1.340792,
+   "lng": 103.962188,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Hostel Blk 55 Lobby",
+   "lat": 1.342297,
+   "lng": 103.964465,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Hostel Blk 57 Lobby",
+   "lat": 1.342069,
+   "lng": 103.964276,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Hostel Blk 59 Lobby",
+   "lat": 1.341858,
+   "lng": 103.963973,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Jalan Pergam",
+   "lat": 1.342273,
+   "lng": 103.960881,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Jalan Pergam",
+   "lat": 1.343443,
+   "lng": 103.961181,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "MRT",
+   "lat": 1.340951,
+   "lng": 103.961932,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Maker Breaker Space",
+   "lat": 1.341974,
+   "lng": 103.964363,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": null,
+   "name": "Music Room 1",
+   "lat": 1.341665,
+   "lng": 103.965162,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": null,
+   "name": "Music Room 2",
+   "lat": 1.341627,
+   "lng": 103.965145,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": null,
+   "name": "Office of International Relations",
+   "lat": 1.340798,
+   "lng": 103.963424,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "ref": null,
+   "name": "One Stop Centre",
+   "lat": 1.34045,
+   "lng": 103.962197,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Open Plaza",
+   "lat": 1.340247,
+   "lng": 103.962367,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "ref": null,
+   "name": "SUTD Faculty Housing",
+   "lat": 1.342878,
+   "lng": 103.964114,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Faculty Housing",
+   "lat": 1.34227,
+   "lng": 103.963518,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Multifunction Sport Center",
+   "lat": 1.341579,
+   "lng": 103.964784,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Parcel D",
+   "lat": 1.342203,
+   "lng": 103.962346,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Parcel D Building",
+   "lat": 1.342083,
+   "lng": 103.962221,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Pool",
+   "lat": 1.342047,
+   "lng": 103.965239,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Sports Field",
+   "lat": 1.341082,
+   "lng": 103.965438,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Student Housing",
+   "lat": 1.342359,
+   "lng": 103.964405,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Student Housing",
+   "lat": 1.342137,
+   "lng": 103.96419,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "SUTD Student Housing",
+   "lat": 1.341904,
+   "lng": 103.963868,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.341587,
+   "lng": 103.964356,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.340271,
+   "lng": 103.963211,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.343486,
+   "lng": 103.964542,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.340129,
+   "lng": 103.965089,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.340192,
+   "lng": 103.965131,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.341581,
+   "lng": 103.96279,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.342807,
+   "lng": 103.963373,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.341116,
+   "lng": 103.964577,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.340596,
+   "lng": 103.964655,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.342408,
+   "lng": 103.96505,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.340069,
+   "lng": 103.963125,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design",
+   "lat": 1.339883,
+   "lng": 103.963171,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Singapore University of Technology and Design Campus",
+   "lat": 1.340655,
+   "lng": 103.963115,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Somapah Road",
+   "lat": 1.33962,
+   "lng": 103.963797,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Somapah Road",
+   "lat": 1.339666,
+   "lng": 103.964333,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Somapah Road",
+   "lat": 1.339731,
+   "lng": 103.961906,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Somapah Road",
+   "lat": 1.339571,
+   "lng": 103.962363,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Squash Courts",
+   "lat": 1.341344,
+   "lng": 103.964868,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Sungei Mata Ikan",
+   "lat": 1.343404,
+   "lng": 103.96508,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Swimming Pool",
+   "lat": 1.342004,
+   "lng": 103.965184,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "Tropicana Condominium",
+   "lat": 1.341538,
+   "lng": 103.960774,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Upper Changi Road East",
+   "lat": 1.342987,
+   "lng": 103.961925,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Upper Changi Road East",
+   "lat": 1.33967,
+   "lng": 103.960813,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Upper Changi Road East",
+   "lat": 1.340587,
+   "lng": 103.961063,
+   "level": null,
+   "levelRef": null
+  },
+  {
+   "ref": null,
+   "name": "Wok Paradise Foodcourt",
+   "lat": 1.341229,
+   "lng": 103.963012,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "ref": null,
+   "name": "iTrust Centre for Research in Cyber Security",
+   "lat": 1.340935,
+   "lng": 103.962997,
+   "level": "6",
+   "levelRef": "7"
+  }
+ ],
+ "lifts": [
+  {
+   "name": "Lift Lobby A",
+   "lat": 1.34021,
+   "lng": 103.962881,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "name": "Lift Lobby A",
+   "lat": 1.340208,
+   "lng": 103.962879,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "name": "Lift Lobby A",
+   "lat": 1.340215,
+   "lng": 103.962878,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "name": "Lift Lobby A",
+   "lat": 1.340208,
+   "lng": 103.962883,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "name": "Lift Lobby C",
+   "lat": 1.340459,
+   "lng": 103.962302,
+   "level": "-1",
+   "levelRef": "B1"
+  },
+  {
+   "name": "Lift Lobby C",
+   "lat": 1.340465,
+   "lng": 103.962305,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "name": "Lift Lobby C",
+   "lat": 1.340454,
+   "lng": 103.962305,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "name": "Lift Lobby C",
+   "lat": 1.340462,
+   "lng": 103.962311,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "name": "Lift Lobby C",
+   "lat": 1.340464,
+   "lng": 103.96231,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "name": "Lift Lobby C",
+   "lat": 1.340458,
+   "lng": 103.962308,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "name": "Lift Lobby C",
+   "lat": 1.340455,
+   "lng": 103.962307,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "name": "Lift Lobby C",
+   "lat": 1.340453,
+   "lng": 103.962308,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "name": "Lift Lobby E",
+   "lat": 1.340795,
+   "lng": 103.962831,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "name": "Lift Lobby E",
+   "lat": 1.340797,
+   "lng": 103.96284,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "name": "Lift Lobby E",
+   "lat": 1.340787,
+   "lng": 103.962835,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "name": "Lift Lobby E",
+   "lat": 1.340789,
+   "lng": 103.96284,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "name": "Lift Lobby E",
+   "lat": 1.340787,
+   "lng": 103.962838,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "name": "Lift Lobby E",
+   "lat": 1.340788,
+   "lng": 103.962839,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "name": "Lift Lobby E",
+   "lat": 1.340792,
+   "lng": 103.962834,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "name": "Lift Lobby F",
+   "lat": 1.340804,
+   "lng": 103.962268,
+   "level": "0",
+   "levelRef": "1"
+  },
+  {
+   "name": "Lift Lobby F",
+   "lat": 1.340796,
+   "lng": 103.962309,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "name": "Lift Lobby F",
+   "lat": 1.340803,
+   "lng": 103.962309,
+   "level": "2",
+   "levelRef": "3"
+  },
+  {
+   "name": "Lift Lobby F",
+   "lat": 1.340805,
+   "lng": 103.962304,
+   "level": "3",
+   "levelRef": "4"
+  },
+  {
+   "name": "Lift Lobby F",
+   "lat": 1.340805,
+   "lng": 103.962308,
+   "level": "4",
+   "levelRef": "5"
+  },
+  {
+   "name": "Lift Lobby F",
+   "lat": 1.340805,
+   "lng": 103.96231,
+   "level": "5",
+   "levelRef": "6"
+  },
+  {
+   "name": "Lift Lobby F",
+   "lat": 1.340808,
+   "lng": 103.962305,
+   "level": "6",
+   "levelRef": "7"
+  },
+  {
+   "name": "Lift Lobby J",
+   "lat": 1.340883,
+   "lng": 103.963389,
+   "level": "-1",
+   "levelRef": "B1"
+  },
+  {
+   "name": "Lift Lobby J",
+   "lat": 1.340881,
+   "lng": 103.963389,
+   "level": "1",
+   "levelRef": "2"
+  },
+  {
+   "name": "Lift Lobby J",
+   "lat": 1.340887,
+   "lng": 103.963394,
+   "level": "2",
+   "levelRef": "3"
+  }
+ ]
+}

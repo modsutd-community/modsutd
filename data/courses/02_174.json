@@ -1,0 +1,17 @@
+{
+  "code": "02.174",
+  "name": "The Design of Digital Platforms",
+  "description": "This course is dedicated to comprehending the intricacies of digital platform, focusing on the economics of multi-sided platforms as exemplified by industry giants such as Alibaba, Amazon, Apple, Google, Meta, Microsoft, and Tencent. In contrast to traditional businesses, these platforms operate on network effects and data-driven models, presenting distinctive economic and strategic challenges. The course will utilize basic game theory and industrial organization models to guide students through the entire lifecycle of digital platform design and operation. This module combines theoretical models and empirical applications to provide cutting-edge and application-oriented instruction.",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "5",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "HASS",
+    "Term 5",
+    "Elective / Technical Elective"
+  ]
+}

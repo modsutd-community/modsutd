@@ -1,0 +1,19 @@
+{
+  "code": "01.020",
+  "name": "Design Thinking Project III",
+  "description": "Concluding Freshmore Design Thinking project, in which teams take on an open-ended design brief and integrate skills from across the Freshmore curriculum. Culminates in a design exhibition showcasing prototypes and outcomes.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "3",
+  "prerequisites": [
+    "01.019"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 3",
+    "Freshmore Core",
+    "SMT"
+  ]
+}

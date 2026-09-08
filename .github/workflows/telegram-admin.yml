@@ -1,0 +1,86 @@
+# Daily handover sweep: in each live batch chat the throwaway is still
+# sitting in, promote the earliest human joiner (spam removal needs an
+# admin, and only the creator can appoint one in a basic group), pin the
+# handover note, and leave. Relies on TG_* secrets.
+name: Telegram admin sweep
+
+on:
+    # NOT monthly, unlike most scheduled jobs here. Until a human is promoted the
+    # chat has no admin, so nobody can remove anyone from it - and a month of that
+    # is a month of a group nobody can moderate. The first step exits without
+    # doing anything when the TG_* secrets are absent or no chat is waiting, so
+    # the daily run costs a few seconds while this is dormant.
+    schedule:
+        - cron: "30 22 * * *" # 06:30 SGT daily
+    workflow_dispatch:
+
+permissions:
+    contents: write
+
+concurrency:
+    group: telegram-groups
+    cancel-in-progress: false
+
+jobs:
+    sweep:
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: main
+
+            - name: Skip when unconfigured or nothing to do
+              id: check
+              env:
+                  HAS_SESSION: ${{ secrets.TG_SESSION != '' }}
+              run: |
+                  python3 - <<'PY' >> "$GITHUB_OUTPUT"
+                  import json, os, pathlib
+                  if os.environ.get("HAS_SESSION") != "true":
+                      print("run=no"); raise SystemExit
+                  import datetime
+                  reg = json.loads(pathlib.Path("data/telegram-groups.json").read_text() or "{}")
+                  today = datetime.date.today().isoformat()
+                  # Two jobs now: hand a chat over to its first human, and walk
+                  # out of one whose term is done. Gating on handover alone
+                  # meant the leaving half never ran.
+                  pending = any(not e.get("adminGranted") for e in reg.values())
+                  leaving = any(
+                      not e.get("left") and str(e.get("expires") or "") and str(e["expires"]) < today
+                      for e in reg.values()
+                  )
+                  print(f"run={'yes' if pending or leaving else 'no'}")
+                  PY
+
+            - name: Hand over to the first joiner
+              if: steps.check.outputs.run == 'yes'
+              env:
+                  TG_API_ID: ${{ secrets.TG_API_ID }}
+                  TG_API_HASH: ${{ secrets.TG_API_HASH }}
+                  TG_SESSION: ${{ secrets.TG_SESSION }}
+                  # Handover re-exports the invite link after migrating, so this
+                  # sweep now writes ciphertext into the registry and needs the
+                  # same key create_group.py uses.
+                  TG_LINK_KEY: ${{ secrets.TG_LINK_KEY }}
+              run: |
+                  pip install --quiet telethon cryptography
+                  python3 tools/telegram/grant_admin.py
+
+            - name: Commit registry updates
+              if: steps.check.outputs.run == 'yes'
+              run: |
+                  if git diff --quiet; then
+                    echo "no handovers today"
+                    exit 0
+                  fi
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  git add data/telegram-groups.json
+                  git commit -m "data: telegram handover sweep"
+                  for i in 1 2 3; do
+                    git push origin HEAD:main && exit 0
+                    git pull --rebase origin main || exit 1
+                    sleep 3
+                  done
+                  exit 1

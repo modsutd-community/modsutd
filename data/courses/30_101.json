@@ -1,0 +1,13 @@
+{
+  "code": "30.101",
+  "name": "Systems & Control",
+  "description": "Provides students with the framework to understand, and the methods to model, analyze and design physical and engineering control systems. Topics include lumped parameter mathematical modelling and analysis of continuous time systems and signals using state-space and transfer function approaches and the Laplace transform, and analysis of linear time-invariant (LTI) systems and signals in time and frequency domains for synthesis and design of automatic feedback controllers.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "5",
+  "prerequisites": ["10.018", "30.002"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 5", "Core", "EPD"]
+}

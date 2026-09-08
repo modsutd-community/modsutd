@@ -1,0 +1,37 @@
+{
+  "code": "50.007",
+  "name": "Machine Learning",
+  "description": "Study of algorithms that improve performance with experience. Covers a broad range of machine learning algorithms from basic to state-of-the-art including naive Bayes, logistic regression, neural networks, clustering, probabilistic graphical models, reinforcement learning and SVMs.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "6",
+  "prerequisites": [
+    "50.001",
+    "50.004"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 5",
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "prereqTree": {
+    "and": [
+      {
+        "code": "50.001",
+        "name": "Information Systems & Programming",
+        "cohort": [
+          "classic"
+        ],
+        "notFor": [
+          "DAI"
+        ]
+      },
+      "50.004"
+    ]
+  }
+}

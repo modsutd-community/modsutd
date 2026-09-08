@@ -1,0 +1,17 @@
+{
+  "code": "10.024",
+  "name": "Spatial Design World",
+  "description": "Spatial Design World integrates 3D scanning, parametric modelling, AI-driven design exploration, and digital fabrication in a hands-on curriculum that strengthens students’ abilities in both 2D and 3D representation. Emphasis is placed on developing high-quality drawing skills and workflows that leverage advanced software tools. By weaving together orthographic drawings, axonometric illustrations, and emerging AI solutions, students learn to document, analyse, and transform physical spaces with precision and creativity. Participants tackle progressively complex tasks, from conceptual planning to prototyping, while refining presentations through data-driven simulations and digital fabrication techniques such as 3D printing. They orchestrate efficient workflows that blend analog and digital methods, gaining technical fluency and a deep understanding of foundational design principles like scale, proportion, and spatial hierarchy. These experiences encourage holistic problem-solving, helping students confidently integrate state-of-the-art technologies into their spatial design processes.",
+  "credits": 12,
+  "department": "Architecture and Sustainable Design",
+  "pillar": "ASD",
+  "term": "3",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 3",
+    "Freshmore Elective",
+    "ASD"
+  ]
+}

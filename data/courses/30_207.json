@@ -1,0 +1,17 @@
+{
+  "code": "30.207",
+  "name": "Structural Mechanics and Design",
+  "description": "",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD"
+  ]
+}

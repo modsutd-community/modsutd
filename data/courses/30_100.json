@@ -1,0 +1,13 @@
+{
+  "code": "30.100",
+  "name": "Computational and Data-Driven Engineering",
+  "description": "Provides computational skills for modern engineers using statistical, numerical, and computational methods to design complex engineering systems, progressing beyond analytical models to real-world industry applications. Students learn to describe, plan, and program algorithms for physics and engineering problems; use statistical models to optimize designs; apply numerical methods for root-finding, integration, and solving differential equations; and use numerical and analytical methods to design complex engineering systems.",
+  "credits": 12,
+  "department": "Engineering Product Development",
+  "pillar": "EPD",
+  "term": "4",
+  "prerequisites": ["10.013", "10.015", "10.017", "10.018", "10.022"],
+  "corequisites": [],
+  "schedules": [],
+  "tags": ["Term 4", "Core", "EPD"]
+}

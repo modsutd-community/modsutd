@@ -1,0 +1,19 @@
+{
+  "code": "10.020",
+  "name": "Data Driven World",
+  "description": "Freshmore elective introducing core ideas in data and computation. Covers data representation, algorithmic thinking, and basic statistics with hands-on programming exercises.",
+  "credits": 12,
+  "department": "Information Systems Technology and Design",
+  "pillar": "CSD",
+  "term": "3",
+  "prerequisites": [
+    "10.014"
+  ],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Term 3",
+    "Freshmore Elective",
+    "ISTD"
+  ]
+}

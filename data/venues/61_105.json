@@ -1,0 +1,18 @@
+{
+  "code": "61.105",
+  "name": "Sports Hall 1",
+  "building": "61",
+  "floor": 1,
+  "type": "Facility",
+  "altNames": [
+    "Indoor Sports Hall",
+    "ISH",
+    "Sports Hall 2"
+  ],
+  "panoScenes": [
+    {
+      "scene": "indoor_sports_hall",
+      "title": "Indoor Sports Hall"
+    }
+  ]
+}

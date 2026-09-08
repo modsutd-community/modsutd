@@ -1,0 +1,12 @@
+{
+  "code": "02.221",
+  "name": "Making Maps I: Introduction to Spatial Analysis, Data Visualization and Map Design",
+  "description": "This subject introduces students to the basic aspects of spatial data analysis, visualization and map design using a variety of tools including Geographic Information Systems (GIS). It will guide students in how to use spatial data analysis and visualization to gain insight from (geographic) data and help understand complex social, urban or scientific questions",
+  "credits": 12,
+  "department": "Humanities, Arts and Social Sciences",
+  "pillar": "HASS",
+  "term": "1",
+  "prerequisites": [],
+  "schedules": [],
+  "tags": ["Elective / Technical Elective", "HASS"]
+}

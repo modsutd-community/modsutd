@@ -1,0 +1,18 @@
+{
+  "code": "40.322",
+  "name": "Airport Systems Operation and Management*",
+  "description": "",
+  "credits": 12,
+  "department": "Engineering Systems and Design",
+  "pillar": "ESD",
+  "term": "1",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "EPD",
+    "ISTD",
+    "ASD",
+    "ESD"
+  ]
+}
