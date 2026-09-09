@@ -7,6 +7,7 @@ import { useWorkbenchUi } from '../uiContext';
 import { normaliseHHMM, useNowInfo } from '../logic';
 import { codeMatches, looksLikeCode, queryVariants } from '@/utils/search';
 import wb from '../wb.module.scss';
+import { panoFor } from '@/utils/pano';
 import styles from './RoomsBody.module.scss';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as const;
@@ -16,6 +17,10 @@ function toMin(t: string): number {
   const [h, m] = t.split(':').map(Number);
   return h * 60 + (m || 0);
 }
+
+/** "09" + 30 -> "09:30", for a tooltip that names the real minutes. */
+const fmt = (h: number, m: number) =>
+  `${String(h + Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`;
 
 function occupant(av: VenueAvailability | undefined, day: string, time: string) {
   if (!av) return null;
@@ -27,15 +32,26 @@ function occupant(av: VenueAvailability | undefined, day: string, time: string) 
   return null;
 }
 
+interface Seg { from: number; to: number; mod?: string; type?: string }
+
 function Heatmap({ av }: { av?: VenueAvailability }) {
+  // Minutes, not whole hours. Rounding a class out to the hour said an 08:30
+  // start occupies 08:00, and a 11:30 class overwrote the 11:00 cell of the
+  // one before it - so a room read as busy when it was free, and two classes
+  // in one hour showed as one.
   const grid = useMemo(() => {
-    const g: Record<string, Record<number, { mod?: string; type?: string }>> = {};
+    const g: Record<string, Record<number, Seg[]>> = {};
     for (const d of DAYS) g[d] = {};
     for (const slot of av?.schedule ?? []) {
       if (!(DAYS as readonly string[]).includes(slot.day)) continue;
-      const start = Math.floor(toMin(slot.startTime) / 60);
-      const end = Math.ceil(toMin(slot.endTime) / 60);
-      for (let h = start; h < end; h++) g[slot.day][h] = { mod: slot.modCode, type: slot.type };
+      const s0 = toMin(slot.startTime);
+      const e0 = toMin(slot.endTime);
+      for (let h = Math.floor(s0 / 60); h < Math.ceil(e0 / 60); h++) {
+        const from = Math.max(0, s0 - h * 60);
+        const to = Math.min(60, e0 - h * 60);
+        if (to <= from) continue;
+        (g[slot.day][h] ??= []).push({ from, to, mod: slot.modCode, type: slot.type });
+      }
     }
     return g;
   }, [av]);
@@ -53,17 +69,30 @@ function Heatmap({ av }: { av?: VenueAvailability }) {
           <div key={day} className={styles.heatRow}>
             <div className={`${styles.heatCell} ${styles.heatDay}`}>{day.slice(0, 3).toUpperCase()}</div>
             {HOURS.map((h) => {
-              const c = grid[day]?.[h];
-              // Occupant is rendered as visible text - title tooltips never
-              // fire on touch, and screen readers skip empty divs.
+              const segs = grid[day]?.[h] ?? [];
+              const full = segs.length === 1 && segs[0].to - segs[0].from >= 59;
+              const label = segs.length
+                ? segs
+                    .map((x) => `${fmt(h, x.from)}-${fmt(h, x.to)} ${x.mod ?? 'occupied'}${x.type ? ` · ${x.type}` : ''}`)
+                    .join('\n')
+                : 'free';
               return (
                 <div
                   key={h}
-                  className={`${styles.heatCell} ${c ? styles.heatOcc : styles.heatFree}`}
-                  aria-label={c ? `${day} ${h}:00 - ${c.mod ?? 'occupied'}` : `${day} ${h}:00 - free`}
-                  data-tip={c ? `${c.mod ?? ''} · ${c.type ?? ''}` : 'free'}
+                  className={`${styles.heatCell} ${segs.length ? styles.heatOcc : styles.heatFree}`}
+                  aria-label={`${day} ${String(h).padStart(2, '0')}:00 - ${segs.length ? label.split('\n').join('; ') : 'free'}`}
+                  data-tip={label}
                 >
-                  {c?.mod ? <span className={styles.heatMod}>{c.mod}</span> : null}
+                  {segs.map((x, i) => (
+                    <i
+                      key={i}
+                      className={styles.heatFill}
+                      style={{ left: `${(x.from / 60) * 100}%`, width: `${((x.to - x.from) / 60) * 100}%` }}
+                    />
+                  ))}
+                  {/* The code only fits when the hour is essentially full; the
+                      tip carries it in every other case. */}
+                  {full && segs[0].mod ? <span className={styles.heatMod}>{segs[0].mod}</span> : null}
                 </div>
               );
             })}
@@ -147,6 +176,8 @@ export function RoomsBody() {
     return venues[hereNow]?.mapName ?? null;
   }, [hereNow, selectedRoom, venues]);
   const detailAv = selectedRoom ? availability[selectedRoom] : undefined;
+  // Its own 360, or a room of the same type standing in - see utils/pano.
+  const pano = useMemo(() => panoFor(detail, Object.values(venues)), [detail, venues]);
 
   return (
     <div className={`${styles.split} ${detail ? styles.hasDetail : ''}`}>
@@ -253,14 +284,27 @@ export function RoomsBody() {
             </div>
           )}
 
-          {detail.panoScenes && detail.panoScenes.length > 0 && (
+          {pano && (
             <div style={{ margin: '10px 0' }}>
               {showPano ? (
-                <Pano scenes={detail.panoScenes} label={`${detail.code} ${detail.name}`} />
+                <Pano
+                  scenes={pano.scenes}
+                  label={pano.representative
+                    ? `${pano.from} - a ${detail.type} like this one`
+                    : `${detail.code} ${detail.name}`}
+                />
               ) : (
                 <button type="button" className={styles.pano360} onClick={() => setShowPano(true)}>
                   view in 360 ↗
                 </button>
+              )}
+              {/* Never presented as this room. A tour of a different room shown
+                  as this one would make its furniture, its whiteboard and its
+                  door position read as facts about a room nobody photographed. */}
+              {pano.representative && (
+                <p className={styles.panoNote} data-act="pano-representative">
+                  no 360 of {detail.code} yet - this is {pano.from}, a {detail.type?.toLowerCase()} of the same type
+                </p>
               )}
             </div>
           )}

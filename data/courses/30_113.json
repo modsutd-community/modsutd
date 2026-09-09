@@ -6,8 +6,18 @@
   "department": "Engineering Product Development",
   "pillar": "EPD",
   "term": "8",
-  "prerequisites": ["03.007A", "03.007B", "30.001", "30.002"],
+  "prerequisites": [
+    "03.007A",
+    "03.007B",
+    "30.001",
+    "30.002"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 8", "Elective / Technical Elective", "EPD"]
+  "tags": [
+    "Term 8",
+    "Elective / Technical Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-113-design-and-fabrication-of-microelectromechanical-systems-mems/"
 }

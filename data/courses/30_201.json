@@ -9,5 +9,10 @@
   "prerequisites": [],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 8", "Elective / Technical Elective", "EPD"]
+  "tags": [
+    "Term 8",
+    "Elective / Technical Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-201-wireless-communications-and-internet-of-things/"
 }

@@ -13,5 +13,6 @@
     "Core",
     "DAI"
   ],
-  "noBatchChat": true
+  "noBatchChat": true,
+  "sourceUrl": "https://www.sutd.edu.sg/course/60-003-product-design-studio/"
 }

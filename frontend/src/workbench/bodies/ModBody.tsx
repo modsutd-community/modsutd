@@ -339,7 +339,26 @@ export function ModBody({code, onPick, onFocusRoom}: Props) {
                     <div className={styles.code} data-code={mod.code}>
                         {mod.code}
                     </div>
-                    <div className={styles.name}>{mod.name}</div>
+                    {/* The name links to the page this record was read from.
+                        Cross-checking should be one click: this app is not the
+                        source of truth, and a dead link here is how a
+                        maintainer learns a re-scrape is due. */}
+                    <div className={styles.name}>
+                        {mod.sourceUrl ? (
+                            <a
+                                className={styles.sourceLink}
+                                href={mod.sourceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                data-act="mod-source"
+                                data-tip="read this on sutd.edu.sg"
+                            >
+                                {mod.name}
+                            </a>
+                        ) : (
+                            mod.name
+                        )}
+                    </div>
                 </div>
                 <span className={styles.pillarStack}>
                     {modPillars(mod).map((p) => (

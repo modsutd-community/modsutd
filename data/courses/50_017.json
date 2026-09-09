@@ -6,8 +6,16 @@
   "department": "Information Systems Technology and Design",
   "pillar": "CSD",
   "term": "6",
-  "prerequisites": ["50.003"],
+  "prerequisites": [
+    "50.003"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 6", "Term 8", "Elective / Technical Elective", "ISTD"]
+  "tags": [
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-017-graphics-and-visualisation/"
 }

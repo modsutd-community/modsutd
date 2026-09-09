@@ -6,8 +6,16 @@
   "department": "Engineering Product Development",
   "pillar": "EPD",
   "term": "6",
-  "prerequisites": ["10.016", "30.001"],
+  "prerequisites": [
+    "10.016",
+    "30.001"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 6", "Core Elective", "EPD"]
+  "tags": [
+    "Term 6",
+    "Core Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-203-topics-in-biomedical-and-healthcare-engineering/"
 }

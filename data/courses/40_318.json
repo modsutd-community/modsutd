@@ -6,8 +6,15 @@
   "department": "Engineering Systems and Design",
   "pillar": "ESD",
   "term": "7",
-  "prerequisites": ["40.260"],
+  "prerequisites": [
+    "40.260"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["ESD", "Term 7", "Elective / Technical Elective"]
+  "tags": [
+    "ESD",
+    "Term 7",
+    "Elective / Technical Elective"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-318-supply-chain-digitalisation-and-design/"
 }

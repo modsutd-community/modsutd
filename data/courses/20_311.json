@@ -6,7 +6,14 @@
   "department": "Architecture and Sustainable Design",
   "pillar": "ASD",
   "term": "7",
-  "prerequisites": ["20.212", "20.213"],
+  "prerequisites": [
+    "20.212",
+    "20.213"
+  ],
   "schedules": [],
-  "tags": ["ASD", "Elective / Technical Elective"]
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-311-architectural-robotics/"
 }

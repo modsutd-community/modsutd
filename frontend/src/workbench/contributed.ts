@@ -30,7 +30,18 @@ const MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 /** Fires on this window whenever the store changes, so an open panel re-reads. */
 export const CONTRIBUTED_EVENT = 'modsutd:contributed';
 
-type Entry = { at: number; termEnd?: string; schedules?: Schedule[] };
+type Entry = {
+  at: number;
+  termEnd?: string;
+  schedules?: Schedule[];
+  /**
+   * The build this browser was running when it contributed. When a LATER build
+   * ships and the mod still has no schedules, the contribution did not make it
+   * - so the local copy stops pretending. Without this the app kept promising
+   * a chat that was never coming, and every browser told a different story.
+   */
+  builtAt?: string;
+};
 type Store = Record<string, Entry>;
 
 function read(): Store {
@@ -45,6 +56,7 @@ function read(): Store {
         const e: Entry = { at };
         if (typeof termEnd === 'string') e.termEnd = termEnd;
         if (Array.isArray((v as Entry).schedules)) e.schedules = (v as Entry).schedules;
+        if (typeof (v as Entry).builtAt === 'string') e.builtAt = (v as Entry).builtAt;
         out[code] = e;
       }
     }
@@ -73,11 +85,17 @@ function write(store: Store): void {
 export function rememberContributed(
   byMod: Record<string, Schedule[]>,
   termEnd?: string,
+  builtAt?: string,
 ): void {
   const store = read();
   const now = Date.now();
   for (const [code, schedules] of Object.entries(byMod)) {
-    store[code] = { at: now, ...(termEnd ? { termEnd } : {}), schedules };
+    store[code] = {
+      at: now,
+      ...(termEnd ? { termEnd } : {}),
+      ...(builtAt ? { builtAt } : {}),
+      schedules,
+    };
   }
   write(store);
 }
@@ -149,12 +167,23 @@ export function overlayLocal(courses: Mod[]): Mod[] {
  * Takes the settled catalogue, so "has schedules and none of them are ours" is
  * a fact about what shipped rather than about whichever fetch answered first.
  */
-export function pruneContributed(mods: Mod[]): void {
+export function pruneContributed(mods: Mod[], builtAt?: string): void {
   const store = read();
   if (!Object.keys(store).length) return;
   let changed = false;
   for (const m of mods) {
-    if (store[m.code] && m.schedules.length > 0 && !m.localSchedules) {
+    const entry = store[m.code];
+    if (!entry) continue;
+    // The build shipped it: nothing left to stand in for.
+    if (m.schedules.length > 0 && !m.localSchedules) {
+      delete store[m.code];
+      changed = true;
+      continue;
+    }
+    // A LATER build shipped and still has nothing for this mod. The
+    // contribution did not make it, so stop promising a chat that is not
+    // coming - every browser should be looking at the same truth.
+    if (builtAt && entry.builtAt && builtAt !== entry.builtAt) {
       delete store[m.code];
       changed = true;
     }

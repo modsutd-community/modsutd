@@ -6,8 +6,16 @@
   "department": "Information Systems Technology and Design",
   "pillar": "CSD",
   "term": "7",
-  "prerequisites": ["50.001", "50.004"],
+  "prerequisites": [
+    "50.001",
+    "50.004"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 7", "Elective / Technical Elective", "ISTD"]
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ISTD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-033-foundations-of-game-design-and-development/"
 }

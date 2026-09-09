@@ -6,8 +6,16 @@
   "department": "Engineering Systems and Design",
   "pillar": "ESD",
   "term": "7",
-  "prerequisites": ["40.017", "40.240"],
+  "prerequisites": [
+    "40.017",
+    "40.240"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 7", "Elective / Technical Elective", "ESD"]
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-323-equity-valuation/"
 }

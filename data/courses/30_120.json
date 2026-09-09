@@ -6,8 +6,15 @@
   "department": "Engineering Product Development",
   "pillar": "EPD",
   "term": "7",
-  "prerequisites": ["10.015"],
+  "prerequisites": [
+    "10.015"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 7", "Elective / Technical Elective", "EPD"]
+  "tags": [
+    "Term 7",
+    "Elective / Technical Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-120-design-manufacturing/"
 }

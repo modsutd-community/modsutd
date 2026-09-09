@@ -8,5 +8,10 @@
   "term": "6",
   "prerequisites": [],
   "schedules": [],
-  "tags": ["ASD", "Term 6", "Core"]
+  "tags": [
+    "ASD",
+    "Term 6",
+    "Core"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-319-architectural-theory-and-design-application-in-the-20th-21st-century/"
 }

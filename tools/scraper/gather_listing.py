@@ -344,8 +344,15 @@ def merge_existing(path: Path, parsed: dict, dry_run: bool) -> str:
     original = path.read_text()
     data = json.loads(original)
 
+    # The page this record was read from. Refreshed every run: a slug SUTD
+    # renames leaves a dead link, and a dead link is how a maintainer learns a
+    # re-scrape is due - so it must never go stale silently.
+    src_changed = parsed.get("sourceUrl") and data.get("sourceUrl") != parsed["sourceUrl"]
+    if src_changed:
+        data["sourceUrl"] = parsed["sourceUrl"]
+
     fill_desc = not data.get("description", "").strip() and parsed["description"]
-    same_tags = data.get("tags") == parsed["tags"]
+    same_tags = data.get("tags") == parsed["tags"] and not src_changed
     page_grading = parsed.get("grading")
     grading_changed = bool(page_grading) and data.get("grading") != page_grading
     page_workload = parsed.get("workload")
@@ -427,6 +434,9 @@ def main() -> int:
 
         try:
             parsed = parse_page(html, code, suffix)
+            # The page this record was read from, so the app can link a reader
+            # to the source and a maintainer can spot a dead link.
+            parsed["sourceUrl"] = url if url.endswith("/") else url + "/"
         except Exception as exc:  # noqa: BLE001
             print(f"[!] {code} parse failed: {exc}", file=sys.stderr)
             failed.append(code)

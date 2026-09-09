@@ -6,7 +6,14 @@
   "department": "Design and Artificial Intelligence",
   "pillar": "DAI",
   "term": "6",
-  "prerequisites": ["50.007"],
+  "prerequisites": [
+    "50.007"
+  ],
   "schedules": [],
-  "tags": ["Term 6", "Core", "DAI"]
+  "tags": [
+    "Term 6",
+    "Core",
+    "DAI"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/60-001-applied-deep-learning/"
 }

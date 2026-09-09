@@ -311,3 +311,18 @@
 
   &:hover { background: rgba(42, 171, 238, 0.14); }
 }
+
+// The mod name, linked to the SUTD page it came from. Underlined on hover
+// only: a permanently underlined heading reads as a mistake, and the tooltip
+// carries the destination.
+.sourceLink {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted rgba(233, 234, 237, 0.28);
+
+  &:hover,
+  &:focus-visible {
+    color: var(--wb-amber);
+    border-bottom-color: var(--wb-amber);
+  }
+}

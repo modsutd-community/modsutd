@@ -6,8 +6,16 @@
   "department": "Engineering Systems and Design",
   "pillar": "ESD",
   "term": "6",
-  "prerequisites": ["40.017", "40.012"],
+  "prerequisites": [
+    "40.017",
+    "40.012"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 6", "Core", "ESD"]
+  "tags": [
+    "Term 6",
+    "Core",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-015-simulation-modelling-and-analysis/"
 }

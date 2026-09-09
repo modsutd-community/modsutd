@@ -183,8 +183,17 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
     // calendar and its app cannot delete a calendar, so there is nothing to
     // delete wholesale. Constant on purpose - a student searching mid-panic
     // should not have to remember which term they imported.
+    // The name a person recognises, with the code they can act on: "Cohort
+    // Classroom 12 (2.406)" beats "2.406" in a calendar's one-line preview,
+    // where the location is often all that is shown.
+    const where = e.venueName || e.location;
     const desc = escapeText(
-      [e.instructors.join(', '), SIGNATURE].filter(Boolean).join('\n'),
+      [
+        [e.venueName, e.instructors.join(', ')].filter(Boolean).join(' | '),
+        SIGNATURE,
+      ]
+        .filter(Boolean)
+        .join('\n'),
     );
 
     const vevent = (date: string, rrule?: string) =>
@@ -197,7 +206,7 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
         `DTEND;TZID=Asia/Singapore:${localStamp(date, e.endTime)}`,
         ...(rrule ? [rrule] : []),
         `SUMMARY:${summary}`,
-        `LOCATION:${escapeText(e.location)}`,
+        `LOCATION:${escapeText(where)}`,
         `DESCRIPTION:${desc}`,
         'END:VEVENT',
       ].map(foldLine).join('\r\n');

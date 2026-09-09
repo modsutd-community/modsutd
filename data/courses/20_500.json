@@ -8,5 +8,9 @@
   "term": "9",
   "prerequisites": [],
   "schedules": [],
-  "tags": ["ASD", "Core"]
+  "tags": [
+    "ASD",
+    "Core"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-500-advanced-design-research-studio/"
 }

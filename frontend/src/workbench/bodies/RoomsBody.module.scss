@@ -229,6 +229,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  // The partial-hour fills inside are absolute; without this they would
+  // position against the panel and cover the whole grid.
+  position: relative;
+  overflow: hidden;
 }
 
 .heatDay {
@@ -237,7 +241,10 @@
 }
 
 .heatFree { background: rgba(60, 168, 122, 0.1); }
-.heatOcc { background: rgba(255, 93, 108, 0.35); }
+// Occupied is now painted by the .heatFill bars inside, one per class, so the
+// cell itself keeps the free ground. A whole-cell background would have said
+// "busy 08:00-09:00" for a class that starts at 08:30.
+.heatOcc { background: rgba(60, 168, 122, 0.1); }
 
 .directions {
   font-size: 11.5px;
@@ -290,4 +297,24 @@
   transition: opacity 0.12s ease;
 
   &:hover, &:focus-visible { opacity: 1; }
+}
+
+// A cell is an hour wide; a class fills only the minutes it actually takes.
+// Absolutely positioned so several classes can share one hour without either
+// of them lying about the other.
+.heatFill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--wb-red);
+  opacity: 0.8;
+}
+
+// Says the tour is of another room. Quiet, but never optional: without it the
+// stand-in reads as this room.
+.panoNote {
+  margin: 6px 0 0;
+  font-size: 10px;
+  line-height: 1.4;
+  color: var(--wb-ink-dim);
 }

@@ -150,15 +150,24 @@ export function parseTimetableText(input: string): TimetableEvent[] {
       const startTime = normaliseTime(row[2]);
       const endTime = normaliseTime(row[3]);
 
-      // A copied table arrives tab-separated, and the room name contains
-      // spaces ("Cohort Classroom 14 (2.507)"), so the lazy room capture stops
-      // at the first word and hands the rest to the instructor. When the row
-      // has real cell boundaries, count from the end instead: the date range
-      // is always last, the instructor before it, the room before that.
-      const cells = row[0].split('\t').map((c) => c.trim()).filter(Boolean);
-      const tabbed = cells.length >= 4;
-      const rawRoom = tabbed ? cells[cells.length - 3] : row[4];
-      const rawInstructors = tabbed ? cells[cells.length - 2] : row[5];
+      // A copied table arrives with real cell boundaries - tabs in some
+      // browsers, NEWLINES in others - and the room name contains spaces
+      // ("Cohort Classroom 14 (2.507)"), so the lazy capture stops at the
+      // first word and hands the rest to the instructor. That is how every
+      // room came out as "Cohort", "Lecture" or "Capstone", and how the room
+      // finder grew heatmaps for rooms that do not exist. Split on BOTH, then
+      // count from the end: dates last, instructor before, room before that.
+      const cells = row[0].split(/[\t\n]/).map((c) => c.trim()).filter(Boolean);
+      // Not a fixed offset from the end: a class can list two instructors on
+      // two lines, which pushed the room two cells further back and made the
+      // location a person's name. The room is the cell carrying a bracketed
+      // code; everything between it and the dates is the teaching staff.
+      const roomAt = cells.findIndex((c) => ROOM_CODE_RE.test(c));
+      const enough = cells.length >= 4 && roomAt > 0;
+      const rawRoom = enough ? cells[roomAt] : row[4];
+      const rawInstructors = enough
+        ? cells.slice(roomAt + 1, cells.length - 1).join(', ')
+        : row[5];
 
       const location = venueCode(rawRoom);
       const instructors = rawInstructors
@@ -176,6 +185,7 @@ export function parseTimetableText(input: string): TimetableEvent[] {
         startTime,
         endTime,
         location,
+        venueName: rawRoom.trim() || undefined,
         instructors,
         startDate,
         endDate,

@@ -6,8 +6,19 @@
   "department": "Engineering Product Development",
   "pillar": "EPD",
   "term": "8",
-  "prerequisites": ["10.013", "10.015", "10.017", "10.018", "30.002"],
+  "prerequisites": [
+    "10.013",
+    "10.015",
+    "10.017",
+    "10.018",
+    "30.002"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 8", "Elective / Technical Elective", "EPD"]
+  "tags": [
+    "Term 8",
+    "Elective / Technical Elective",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-117-electric-power-systems-analysis-and-design/"
 }

@@ -6,8 +6,16 @@
   "department": "Engineering Systems and Design",
   "pillar": "ESD",
   "term": "4",
-  "prerequisites": ["10.018", "10.022"],
+  "prerequisites": [
+    "10.018",
+    "10.022"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 4", "Core", "ESD"]
+  "tags": [
+    "Term 4",
+    "Core",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-017-probability-and-statistics/"
 }

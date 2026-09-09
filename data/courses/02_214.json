@@ -8,5 +8,13 @@
   "term": "1",
   "prerequisites": [],
   "schedules": [],
-  "tags": ["Elective / Technical Elective", "ISTD", "EPD", "HASS", "ESD", "ASD"]
+  "tags": [
+    "Elective / Technical Elective",
+    "ISTD",
+    "EPD",
+    "HASS",
+    "ESD",
+    "ASD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/02-214-magic-science-and-religion/"
 }

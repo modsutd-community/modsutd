@@ -21,5 +21,6 @@
     "total": 21,
     "source": "official"
   },
-  "noBatchChat": true
+  "noBatchChat": true,
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-101-architecture-core-studio-1/"
 }

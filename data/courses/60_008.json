@@ -15,5 +15,6 @@
     "Core",
     "DAI"
   ],
-  "noBatchChat": true
+  "noBatchChat": true,
+  "sourceUrl": "https://www.sutd.edu.sg/course/60-008-systems-design-studio/"
 }

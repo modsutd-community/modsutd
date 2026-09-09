@@ -8,5 +8,12 @@
   "term": "1",
   "prerequisites": [],
   "schedules": [],
-  "tags": ["Term 4", "Term 6", "Term 8", "Elective / Technical Elective", "HASS"]
+  "tags": [
+    "Term 4",
+    "Term 6",
+    "Term 8",
+    "Elective / Technical Elective",
+    "HASS"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/02-211-critical-management-skills/"
 }

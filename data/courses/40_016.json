@@ -6,8 +6,16 @@
   "department": "Engineering Systems and Design",
   "pillar": "ESD",
   "term": "5",
-  "prerequisites": ["40.017", "10.022"],
+  "prerequisites": [
+    "40.017",
+    "10.022"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 5", "Core", "ESD"]
+  "tags": [
+    "Term 5",
+    "Core",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-016-the-analytics-edge/"
 }

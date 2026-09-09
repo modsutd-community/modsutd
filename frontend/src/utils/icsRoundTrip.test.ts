@@ -36,7 +36,11 @@ describe('an independent parser reads our export', () => {
     const [first] = reparse(buildICS([ent]));
     expect(first.startDate.toString()).toContain('T18:00:00');
     expect(first.startDate.zone.tzid).toBe('Asia/Singapore');
-    expect(first.location).toBe('2.507');
+    // The printed name, not the bare code: a calendar's one-line preview often
+    // shows only the location, and "at 2.507" tells a reader less than the room
+    // name does. The code is still there, in brackets and in the description.
+    expect(first.location).toBe('Cohort Classroom 14 (2.507)');
+    expect(first.description).toContain('Cohort Classroom 14 (2.507)');
   });
 
   it('leaves recess week out, because the source did', () => {

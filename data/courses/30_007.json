@@ -6,8 +6,18 @@
   "department": "Engineering Product Development",
   "pillar": "EPD",
   "term": "5",
-  "prerequisites": ["03.007A", "03.007B", "10.015", "10.017"],
+  "prerequisites": [
+    "03.007A",
+    "03.007B",
+    "10.015",
+    "10.017"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 5", "Core", "EPD"]
+  "tags": [
+    "Term 5",
+    "Core",
+    "EPD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-007-engineering-design-innovation/"
 }

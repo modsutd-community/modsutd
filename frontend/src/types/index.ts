@@ -79,6 +79,11 @@ export interface Mod {
   // Data rather than a regex on the name: "capstone|thesis" could not express
   // 60.003 or 02.XFER, and a rule nobody can see is a rule nobody can edit.
   noBatchChat?: boolean;
+  // The SUTD page this record was read from. Linked from the mod name so a
+  // reader can check the source in one click rather than taking this app's
+  // word for it - and so a maintainer finding a dead link knows a re-scrape is
+  // due. Absent for the 99.999 placeholders, which have no page yet.
+  sourceUrl?: string;
   // App-side unique key, set at load: the code, except name-distinct
   // 99.999 placeholders which use 'code|name'. Not present in the JSON.
   key?: string;
@@ -180,6 +185,11 @@ export interface VenueAvailability {
 export interface TimetableEvent {
   modCode: string;
   modName: string;
+  // The room as MyPortal printed it, e.g. "Cohort Classroom 12 (2.406)".
+  // `location` is the code alone, because that is what /data/venues is keyed
+  // on and what a contributed slot carries; this is for the calendar export,
+  // where "at 2.406" tells a reader less than the name does.
+  venueName?: string;
   type: string;
   day: Schedule['day'];
   startTime: string;

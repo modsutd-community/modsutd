@@ -16,5 +16,6 @@
     "EPD",
     "ESD"
   ],
-  "noBatchChat": true
+  "noBatchChat": true,
+  "sourceUrl": "https://www.sutd.edu.sg/course/01-400-capstone/"
 }

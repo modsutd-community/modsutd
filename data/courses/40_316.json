@@ -6,8 +6,15 @@
   "department": "Engineering Systems and Design",
   "pillar": "ESD",
   "term": "8",
-  "prerequisites": ["10.022"],
+  "prerequisites": [
+    "10.022"
+  ],
   "corequisites": [],
   "schedules": [],
-  "tags": ["Term 8", "Elective / Technical Elective", "ESD"]
+  "tags": [
+    "Term 8",
+    "Elective / Technical Elective",
+    "ESD"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-316-game-theory/"
 }

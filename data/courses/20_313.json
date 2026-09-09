@@ -8,5 +8,9 @@
   "term": "7",
   "prerequisites": [],
   "schedules": [],
-  "tags": ["ASD", "Elective / Technical Elective"]
+  "tags": [
+    "ASD",
+    "Elective / Technical Elective"
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-313-advanced-topics-in-performative-design-urban-sustainability/"
 }

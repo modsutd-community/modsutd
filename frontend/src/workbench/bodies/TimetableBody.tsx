@@ -10,6 +10,7 @@ import {
 import {expandWeekToTerm, labelFor} from "@/utils/termCalendar";
 import type {TermCalendar, ExpandResult} from "@/utils/termCalendar";
 import {downloadICS} from "@/utils/icsGenerator";
+import {loadManifest} from "@/utils/loadData";
 import {buildTermReminderEvents} from "@/utils/termReminders";
 import {
     eventsToSlots,
@@ -174,6 +175,15 @@ export function TimetableBody({onPickMod}: Props) {
         return out;
     }, [events]);
 
+    // The build this browser is running, stamped onto anything it contributes -
+    // see pruneContributed. Read once; it cannot change without a reload.
+    const [manifestBuiltAt, setManifestBuiltAt] = useState<string | undefined>();
+    useEffect(() => {
+        loadManifest()
+            .then((m) => setManifestBuiltAt(m.coursesUpdatedAt ?? m.scrapedAt))
+            .catch(() => setManifestBuiltAt(undefined));
+    }, []);
+
     const onParse = () => {
         setError(null);
         setErrorKind(null);
@@ -272,7 +282,11 @@ export function TimetableBody({onPickMod}: Props) {
                                 instructors: [],
                             });
                         }
-                        rememberContributed(byMod, dates[dates.length - 1]);
+                        rememberContributed(
+                            byMod,
+                            dates[dates.length - 1],
+                            manifestBuiltAt,
+                        );
                         // On screen now, not after a reload or a poll.
                         void dispatch(fetchMods());
                         void dispatch(fetchVenues());
@@ -633,6 +647,29 @@ export function TimetableBody({onPickMod}: Props) {
                                                     const color = modColor(
                                                         ev.modCode,
                                                     );
+                                                    // A one-hour class cannot
+                                                    // hold four lines, so it
+                                                    // stops trying: the block
+                                                    // shows what fits and the
+                                                    // hover carries the rest.
+                                                    // Clipping instead made a
+                                                    // short class look broken.
+                                                    // Measured against the
+                                                    // real metrics: a code
+                                                    // line is ~11px and each
+                                                    // meta line ~10px, and an
+                                                    // hour is HOUR_PX (34), so
+                                                    // a one-hour class holds
+                                                    // two lines and a two-hour
+                                                    // one holds all four.
+                                                    const lines =
+                                                        height >= 46
+                                                            ? 4
+                                                            : height >= 36
+                                                              ? 3
+                                                              : height >= 24
+                                                                ? 2
+                                                                : 1;
                                                     return (
                                                         <button
                                                             key={ei}
@@ -667,9 +704,9 @@ export function TimetableBody({onPickMod}: Props) {
                                                                     color,
                                                                 background: `${color}26`,
                                                             }}
-                                                            data-tip={
-                                                                ev.modName
-                                                            }
+                                                            data-tip={`${ev.modName}
+${ev.type} · ${ev.venueName ?? ev.location}
+${ev.startTime}-${ev.endTime}`}
                                                             onClick={() =>
                                                                 onPickMod?.(
                                                                     ev.modCode,
@@ -683,28 +720,35 @@ export function TimetableBody({onPickMod}: Props) {
                                                             >
                                                                 {ev.modCode}
                                                             </span>
-                                                            <span
-                                                                className={
-                                                                    styles.evMeta
-                                                                }
-                                                            >
-                                                                {ev.type}
-                                                            </span>
-                                                            <span
-                                                                className={
-                                                                    styles.evMeta
-                                                                }
-                                                            >
-                                                                ▽ {ev.location}
-                                                            </span>
-                                                            <span
-                                                                className={
-                                                                    styles.evMeta
-                                                                }
-                                                            >
-                                                                {ev.startTime}–
-                                                                {ev.endTime}
-                                                            </span>
+                                                            {lines >= 3 && (
+                                                                <span
+                                                                    className={
+                                                                        styles.evMeta
+                                                                    }
+                                                                >
+                                                                    {ev.type}
+                                                                </span>
+                                                            )}
+                                                            {lines >= 2 && (
+                                                                <span
+                                                                    className={
+                                                                        styles.evMeta
+                                                                    }
+                                                                >
+                                                                    ▽{" "}
+                                                                    {ev.location}
+                                                                </span>
+                                                            )}
+                                                            {lines >= 4 && (
+                                                                <span
+                                                                    className={
+                                                                        styles.evMeta
+                                                                    }
+                                                                >
+                                                                    {ev.startTime}–
+                                                                    {ev.endTime}
+                                                                </span>
+                                                            )}
                                                         </button>
                                                     );
                                                 })}
