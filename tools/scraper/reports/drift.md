@@ -1,9 +1,47 @@
 # drift
 
 Written by `tools/scraper/mods_refresh.py`. Do not edit it by hand: the
-next refresh overwrites it, and deletes it when there is nothing to say.
-It carries no timestamp on purpose, so a month that finds the same drift
-as the last changes no file and opens no pull request.
+next refresh overwrites the sections it ran, and deletes the file when
+there is nothing left to say. It carries no timestamp on purpose, so a
+month that finds the same drift as the last changes no file and opens no
+pull request.
+
+## minors
+
+each minor against its own page. REPORTS ONLY - the requirements are prose, and the repo expands 'any HASS elective' into a real list
+
+```
+10 minors in the repo, gathered 2026-07-23
+
+SUTD lists 12 minor pages; the repo carries 10.
+  NOT IN THE REPO   Minor in Analytics
+                    https://www.sutd.edu.sg/esd/education/undergraduate/minors/analytics
+  NOT IN THE REPO   Minor in Engineering Systems (ES)
+                    https://www.sutd.edu.sg/esd/education/undergraduate/minors/engineering-systems
+
+  minor-aai      new codes            page names  21 codes  | page names, repo does not: 10.020
+  minor-ai       new codes            page names  29 codes  | page names, repo does not: 10.020, 30.106, 50.006, 50.017, 50.020, 50.037, 50.043, 50.044, 50.057
+                                    repo requires, page does not name: 02.143
+  minor-cs       ok                   page names  22 codes
+                                    repo requires, page does not name: 50.006, 50.007, 50.012, 50.016, 50.017, 50.020, 50.021, 50.033, 50.034, 50.035, 50.037, 50.038 (+27)
+  minor-dai      new codes            page names  34 codes  | page names, repo does not: 10.020, 50.057
+                                    repo requires, page does not name: 02.137, 02.140, 02.143, 02.147, 02.151, 02.159, 02.174, 02.201, 02.216, 02.228
+  minor-dts      ok                   page names   3 codes
+                                    repo requires, page does not name: 02.102, 02.140, 02.145, 02.147, 02.148, 02.151, 02.152, 02.153, 02.155, 02.159, 02.160, 02.164 (+17)
+  minor-dh       new codes            page names   3 codes  | page names, repo does not: 02.139
+                                    repo requires, page does not name: 02.102, 02.105, 02.108, 02.110, 02.120, 02.121, 02.124, 02.128, 02.135, 02.137, 02.143, 02.144 (+16)
+  minor-hi       ok                   page names   8 codes
+                                    repo requires, page does not name: 01.114, 02.230
+  minor-hcd      new codes            page names  15 codes  | page names, repo does not: 02.532, 02.533, 02.534, 02.535, 30.123, 40.230, 50.006, 60.005
+                                    repo requires, page does not name: 02.104, 02.145, 02.148, 02.164, 02.165, 02.166, 02.167, 02.173, 02.174, 02.180, 02.181, 02.182 (+5)
+  minor-pbm      ok                   page names  13 codes
+                                    repo requires, page does not name: 02.145, 02.148, 02.174, 02.182, 02.218, 02.230
+  minor-sbd      ok                   page names  11 codes
+                                    repo requires, page does not name: 02.104, 02.147, 02.153, 02.154, 02.155, 02.166, 02.167, 02.219, 02.222, 02.228, 02.231
+
+7 thing(s) need a look, across 10 records and 12 published pages.
+Read the page before editing data/minors.json. The requirements are prose, and a code appearing on a page is not always a requirement - it can be an example, or a prerequisite of one.
+```
 
 ## prereqs
 

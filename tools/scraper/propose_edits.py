@@ -291,6 +291,32 @@ def apply_minor(edit: dict, book: dict) -> str:
     return "not found"
 
 
+def load_record(code: str) -> dict:
+    path = COURSES / f"{code.replace('.', '_')}.json"
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def flatten_tree(node: object) -> list[object]:
+    """Every leaf of a prereqTree, keeping dict leaves as dicts.
+
+    A dict leaf is a leaf that says more than its code: a cohort, a name, an
+    nOf. Those are what a flat list of codes silently throws away.
+    """
+    if isinstance(node, list):
+        return [y for x in node for y in flatten_tree(x)]
+    if isinstance(node, dict):
+        for k in ("and", "or"):
+            if k in node:
+                return flatten_tree(node[k])
+        if "nOf" in node:
+            return [node]
+        return [node]
+    return [node] if node is not None else []
+
+
 def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[bool, str]:
     code = str(edit.get("code", ""))
     field = str(edit.get("field", ""))
@@ -308,6 +334,19 @@ def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[boo
         if not isinstance(value, dict) or len(value) != 1 or set(value) - {"and", "or"}:
             return False, "prereqTree must be a single {'and': [...]} or {'or': [...]}"
         items = next(iter(value.values()))
+        # A FLAT LIST OF CODES CANNOT SAY WHAT A SCOPED TREE SAYS. 50.001's tree
+        # is {"or": [{"code": "10.014", "cohort": ["ay2024"]},
+        #            {"code": "10.025", "cohort": ["ay2025", "ay2026"]}]},
+        # and accepting {"or": ["10.014", "10.025"]} over it deletes the cohort
+        # scoping: every student would then satisfy the prerequisite with either
+        # course, which is exactly what the scoping exists to prevent. 11 course
+        # records carry scoping like that. Nested groups have the same problem.
+        # Replacing one is a human's edit, so this refuses and says why.
+        current = load_record(code).get("prereqTree")
+        if any(isinstance(x, dict) for x in flatten_tree(current)):
+            return False, ("the existing prereqTree has scoped or nested leaves "
+                           "(cohort, nOf, a nested and/or); a flat code list would "
+                           "delete them")
     else:
         items = value
     if not isinstance(items, list) or not items or not all(isinstance(c, str) for c in items):
@@ -368,6 +407,9 @@ SELF_CHECK: list[tuple[dict, bool]] = [
       "quote": "These courses are helpful but not required"}, True),
     ({"code": "50.037", "field": "prereqTree", "value": {"or": ["50.004"], "and": ["50.005"]},
       "quote": "These courses are helpful but not required"}, False),
+    # 50.001's real tree is cohort-scoped, so a flat list may not replace it
+    ({"code": "50.001", "field": "prereqTree", "value": {"or": ["10.014", "10.025"]},
+      "quote": "These courses are helpful but not required"}, False),
     ({"code": "00.000", "field": "prerequisites", "value": ["50.004"],
       "quote": "These courses are helpful but not required"}, False),
 ]
@@ -395,7 +437,10 @@ def self_check() -> int:
     codes = known_codes()
     bad = 0
 
-    by_code = {"50.037": {"listed": "These courses are   HELPFUL but not required for 50.037."}}
+    by_code = {
+        "50.037": {"listed": "These courses are   HELPFUL but not required for 50.037."},
+        "50.001": {"listed": "These courses are   HELPFUL but not required for 50.001."},
+    }
     for edit, want in SELF_CHECK:
         got, why = validate(edit, by_code, codes)
         if got != want:

@@ -174,43 +174,75 @@ def timed(script: list[str], dry_run: bool) -> tuple[bool, str, float]:
 REPORTING = ("minors", "prereqs", "propose")
 
 
+def split_sections(text: str) -> dict[str, str]:
+    """A drift file back into {step: its whole section}, preamble under "".
+
+    Sections are `## <step>` headings, which is what write_drift emits. Anything
+    before the first heading is the header and is rebuilt rather than kept.
+    """
+    out: dict[str, str] = {}
+    key = ""
+    buf: list[str] = []
+    for line in text.split("\n"):
+        if line.startswith("## "):
+            out[key] = "\n".join(buf)
+            key = line[3:].strip()
+            buf = [line]
+        else:
+            buf.append(line)
+    out[key] = "\n".join(buf)
+    return out
+
+
 def write_drift(results: list[tuple[str, bool, str, float]], by_name: dict) -> None:
     """The tracked report, or nothing.
 
-    A run that changes no file opens no pull request, and the prereq and
-    minor reports change no file by design. Writing what they said into a
-    tracked path gives them a diff of their own, so a finding reaches a
-    reviewer instead of sitting on a run summary nobody opens.
+    A run that changes no file opens no pull request, and the prereq and minor
+    checks change no file by design. Writing what they said into a tracked path
+    gives them a diff of their own, so a finding reaches a reviewer instead of
+    sitting on a run summary nobody opens.
+
+    A RUN OWNS ONLY THE SECTIONS IT RAN. `--only propose` used to rewrite the
+    whole file from that one step, which deleted the prereq and minor findings
+    without looking at them - a green diff saying the drift went away, produced
+    by not checking. Sections for steps that did not run this time are carried
+    through from the file as they stand.
     """
     order = {n: i for i, n in enumerate(REPORTING)}
-    # Only a run that actually RAN a reporting step gets to speak for the file.
-    # Without this, `--only terms` deletes a standing report it never looked at,
-    # and the next full run recreates it: a PR of pure churn saying nothing
-    # changed.
     ran = [r for r in results if r[0] in order]
     if not ran:
         return
 
-    parts: list[str] = []
-    for name, ok, out, _ in sorted(ran, key=lambda r: order[r[0]]):
+    kept = split_sections(DRIFT.read_text(encoding="utf-8")) if DRIFT.exists() else {}
+    for name, ok, out, _ in ran:
         if not ok or not out.strip():
+            # A step that ran and found nothing retires its section. A step that
+            # FAILED keeps whatever it last said, because "the parser broke" is
+            # not evidence that the drift it reported is gone.
+            if ok:
+                kept.pop(name, None)
             continue
-        parts += [f"## {name}", "", by_name[name][1], "", "```", out.strip(), "```", ""]
+        kept[name] = "\n".join(
+            [f"## {name}", "", by_name[name][1], "", "```", out.strip(), "```", ""]
+        )
 
+    body = [kept[k] for k in sorted(kept, key=lambda k: order.get(k, 99)) if k and kept[k].strip()]
     DRIFT.parent.mkdir(parents=True, exist_ok=True)
-    if not parts:
+    if not body:
         DRIFT.unlink(missing_ok=True)
         return
     head = [
         "# drift",
         "",
         "Written by `tools/scraper/mods_refresh.py`. Do not edit it by hand: the",
-        "next refresh overwrites it, and deletes it when there is nothing to say.",
-        "It carries no timestamp on purpose, so a month that finds the same drift",
-        "as the last changes no file and opens no pull request.",
+        "next refresh overwrites the sections it ran, and deletes the file when",
+        "there is nothing left to say. It carries no timestamp on purpose, so a",
+        "month that finds the same drift as the last changes no file and opens no",
+        "pull request.",
         "",
     ]
-    DRIFT.write_text("\n".join(head + parts), encoding="utf-8")
+    DRIFT.write_text("\n".join(head + body), encoding="utf-8")
+
 
 
 def changed_files() -> list[str]:
