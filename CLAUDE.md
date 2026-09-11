@@ -94,6 +94,16 @@ GitHub Discussion (not a PR) if you want to revisit one.
   data notes and in the UI. Never present invented schedules as real, and
   never attach real people's names to synthetic data.
 
+- **The LLM reviewer is taught in `.opencodereview/rule.json`, and nowhere
+  else.** It sees the diff hunk and nothing else: not this file, not the rest of
+  the file it is commenting on. So it cannot tell a bug from a decision, and its
+  wrong findings all have one shape, which is proposing to revert something
+  deliberate in the same red badge as a real defect. When a review argues with a
+  decision the repo has already made, add a rule naming that decision rather
+  than explaining it in a PR comment nobody will read twice. The rules live on
+  the TRUSTED BASE: the action checks out `main`, so a change to them does
+  nothing until it is merged.
+
 - **Lint is ESLint 10 flat config**, `frontend/eslint.config.js`. `.eslintrc.cjs`
   is gone; ESLint 10 reads nothing else. Two things there are deliberate. The
   relays in `api/` are NOT linted - ESLint refuses a file above the config's own
