@@ -16,6 +16,15 @@
     "cited in the pull request body, and sync-data.mjs fails the build on a",
     "bad mapName or an unknown venue.",
     "",
+    "WHY THE `rules` BELOW READ AS A LIST OF THINGS NOT TO SAY. The reviewer",
+    "sees the diff hunk and nothing else: not CLAUDE.md, not the rest of the",
+    "file, not the commit message. So it cannot tell a bug from a decision,",
+    "and its wrong findings are all one shape - proposing to revert something",
+    "deliberate, in the same red badge as a real defect. A rule naming the",
+    "decision is the only channel there is for telling it. Add one whenever a",
+    "review argues with a decision the repo has already made, and keep the",
+    "reason in the rule so a reader knows why it is there.",
+    "",
     "Check any pattern with `ocr rules check <path>`, and check a whole diff",
     "with `ocr review --preview --from main --to <branch>`, which prints the",
     "verdict per file (user_exclude, unsupported_ext, ...) and calls no LLM."
@@ -28,16 +37,36 @@
   ],
   "rules": [
     {
+      "path": "**/*",
+      "rule": "HOW TO REPORT. You see the diff hunk only, so say nothing you cannot point at inside it. Never open a finding that asks the author to go and verify something, or that begins 'if X is ever', 'should this be reused', or 'in some environments': a hypothetical is not a defect and it costs the author the same read as a real one. One finding per root cause, not one per line it touches. Severity: high means data loss, a leaked credential, or a gate that no longer gates. Medium means a wrong result a user would see. Everything else is low, including style, naming, accessibility polish and portability. A correct low finding filed as high is worse than silence, because it teaches the author to skim the reds."
+    },
+    {
       "path": "tools/scraper/**/*.py",
       "rule": "This code reads SUTD's HTML, which changes without notice. Flag any parser that would write a THIN or EMPTY result over good data rather than refusing: a source answering 200 with nothing must never wipe a file. Flag file reads and writes that omit encoding=\"utf-8\" - the repo's JSON is UTF-8 and the default on Windows is cp1252, which crashes before the scraper fetches anything."
     },
     {
+      "path": "tools/scraper/**/*.py",
+      "rule": "DELIBERATE HERE, DO NOT FLAG. (1) Steps that report and never write. audit_prereqs.py and gather_minors.py are reconciliations a human applies, because a page can name a code and then disown it. (2) gather_minors.py not counting 'the repo requires a code the page does not name' as drift. Most minor pages say 'any HASS elective' and data/minors.json expands that into a real list, saying so in its own note, so counting it marks nearly every minor as drifting while nothing has changed. It is printed, not counted, on purpose. (3) sources/_http.py skipping the cache write when a response body is empty. The read path treats a zero-byte file as a miss; caching an empty 200 is what made pages report as unparseable for a whole TTL. (4) mods_refresh.py exiting 0 when some steps failed. Steps are isolated so one redesigned page cannot hold the others hostage, and the run says which failed in its status output."
+    },
+    {
       "path": ".github/workflows/*.yml",
-      "rule": "Flag `continue-on-error` at JOB level where a later job gates on `needs.<job>.result`: it rewrites the result to 'success' on failure and silently disables the fallback. Step level plus a job output reading `steps.<id>.outcome` is the working form. Flag any push to main that does not authenticate as a token with the admin role, because main's ruleset requires a reviewed pull request and only that role bypasses it."
+      "rule": "Flag `continue-on-error` at JOB level where a later job gates on `needs.<job>.result`: it rewrites the result to 'success' on failure and silently disables the fallback. Step level plus a job output reading `steps.<id>.outcome` is the working form. Flag any push to main that does not authenticate as a token with the admin role, because main's ruleset requires a reviewed pull request and only that role bypasses it. Flag a secret that is only checked after expensive work has already run."
     },
     {
       "path": "frontend/src/**/*.{ts,tsx}",
       "rule": "TypeScript strict, no `any` (use `unknown`). Comments must say WHY or HOW, never restate WHAT the line does. Flag anything adding analytics, tracking, cookies, telemetry, or a runtime dependency: all four are architecture invariants in CLAUDE.md. Flag a callback prop reaching an effect's dependency array where the effect builds an iframe or a subscription - an inline arrow is a new function every render and rebuilds it in a loop."
+    },
+    {
+      "path": "frontend/src/**/*.{ts,tsx}",
+      "rule": "THE SITE IS LIVE AND HAS NO BACKEND, so every plan, layout, consent flag and parsed timetable sits in a browser or a gist no deploy reaches. Flag a renamed or removed localStorage key, gist section, JSON field or export shape where nothing reads the old name: that silently drops a student's data. A one-way migration that reads the old name once and rewrites the new one is the correct shape, not a finding."
+    },
+    {
+      "path": "frontend/src/workbench/**",
+      "rule": "DELIBERATE HERE, DO NOT FLAG. (1) ExtLink is not label-safe and its own doc comment says so. stopPropagation cannot make it safe, because a label's activation is the browser's default rather than a React bubble, and preventDefault is what navigates. Its callers render it as a sibling of the label. (2) `.badgeWrap` being inline-flex. It is the unit that wraps; the badge and its icon staying on one line is the point. (3) Reading `track.url ?? track.source`. Specialisation tracks and minors are two different scrapes with two spellings and no record carries both. (4) giscus boards mounted once and hidden rather than unmounted, and rebuilt on a slow loop. CLAUDE.md says why each of those is load-bearing."
+    },
+    {
+      "path": "frontend/e2e/**",
+      "rule": "Find elements by a `data-act` hook or an accessible name, never by copy that gets reworded. Flag a test that cannot fail: a page.goto that remounts the component under test, a CSS assertion at a viewport where the cap never binds, a check below its own threshold."
     }
   ]
 }
