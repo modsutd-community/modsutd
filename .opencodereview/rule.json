@@ -2,7 +2,8 @@
   "_comment": [
     "Project layer (priority 2 of 4) for open-code-review, read by",
     ".github/workflows/code-review.yml. The action checks out the TRUSTED",
-    "BASE, so a pull request cannot widen its own excludes.",
+    "BASE, so a pull request cannot widen its own excludes, and an edit here",
+    "does nothing to any review until it is merged to main.",
     "",
     "`exclude` filters PER FILE, which the workflow's paths-ignore cannot:",
     "paths-ignore skips a run only when EVERY changed file matches, so one",
@@ -16,14 +17,31 @@
     "cited in the pull request body, and sync-data.mjs fails the build on a",
     "bad mapName or an unknown venue.",
     "",
-    "WHY THE `rules` BELOW READ AS A LIST OF THINGS NOT TO SAY. The reviewer",
-    "sees the diff hunk and nothing else: not CLAUDE.md, not the rest of the",
-    "file, not the commit message. So it cannot tell a bug from a decision,",
-    "and its wrong findings are all one shape - proposing to revert something",
-    "deliberate, in the same red badge as a real defect. A rule naming the",
-    "decision is the only channel there is for telling it. Add one whenever a",
-    "review argues with a decision the repo has already made, and keep the",
-    "reason in the rule so a reader knows why it is there.",
+    "ONE RULE MATCHES PER FILE. `ocr rules check <path>` prints a single",
+    "`Pattern:`, so these do not stack: the first entry whose glob matches is",
+    "the whole instruction that file's review gets. Two consequences, both of",
+    "which were live here until a review found them.",
+    "",
+    "  1. NO CATCH-ALL. A `**/*` entry matched every file and sat at index 0,",
+    "     so all seven specific rules below it were dead. That is why the",
+    "     reporting discipline is repeated in each entry rather than factored",
+    "     out. It reads as a violation of the say-a-thing-once rule in",
+    "     CLAUDE.md and it is not: the alternative was five rules that never",
+    "     ran.",
+    "  2. NO DUPLICATE PATHS, and most specific FIRST. Two entries shared",
+    "     `tools/scraper/**/*.py` and two shared `frontend/src/**`, so the",
+    "     second of each pair could never match. `frontend/src/workbench/**`",
+    "     precedes `frontend/src/**` for the same reason, and carries the",
+    "     TypeScript rules itself because it shadows them.",
+    "",
+    "WHY THESE READ AS A LIST OF THINGS NOT TO SAY. The reviewer sees the diff",
+    "hunk and nothing else: not CLAUDE.md, not the rest of the file, not the",
+    "commit message. So it cannot tell a bug from a decision, and its wrong",
+    "findings are all one shape - proposing to revert something deliberate, in",
+    "the same red badge as a real defect. A rule naming the decision is the",
+    "only channel there is for telling it. Add one whenever a review argues",
+    "with a decision the repo has already made, and keep the reason in the",
+    "rule so a reader knows why it is there.",
     "",
     "Check any pattern with `ocr rules check <path>`, and check a whole diff",
     "with `ocr review --preview --from main --to <branch>`, which prints the",
@@ -37,36 +55,24 @@
   ],
   "rules": [
     {
-      "path": "**/*",
-      "rule": "HOW TO REPORT. This governs the FORM of a finding and never whether a defect is worth reporting: nothing here is a reason to stay quiet about a real bug. You see the diff hunk only, so say nothing you cannot point at inside it. Never open a finding that asks the author to go and verify something, or that begins 'if X is ever', 'should this be reused', or 'in some environments': a hypothetical is not a defect and it costs the author the same read as a real one. One finding per root cause, not one per line it touches. Severity: high means data loss, a leaked credential, or a gate that no longer gates. Medium means a wrong result a user would see. Everything else is low, including style, naming, accessibility polish and portability. A correct low finding filed as high is worse than silence, because it teaches the author to skim the reds. EXAMPLE of the difference. Good: \"gather_minors.py:106 sets status 'ok' when `page` is non-empty and `extra` is empty, so a minor whose page dropped a code it still requires reports ok. Add `or missing` to the condition.\" That points at a line, states the input that reaches it, and names the change. Bad: \"If ExtIcon is introduced as a standalone component, it should preserve the accessibility contract. Please verify it forwards aria-hidden.\" That asks the author to go and read a file you did not read, and the answer was two lines above the hunk. If you find yourself writing 'please verify', 'should this', 'if it is ever' or 'in some environments', delete the finding."
-    },
-    {
-      "path": "tools/scraper/**/*.py",
-      "rule": "This code reads SUTD's HTML, which changes without notice. Flag any parser that would write a THIN or EMPTY result over good data rather than refusing: a source answering 200 with nothing must never wipe a file. Flag file reads and writes that omit encoding=\"utf-8\" - the repo's JSON is UTF-8 and the default on Windows is cp1252, which crashes before the scraper fetches anything."
-    },
-    {
-      "path": "tools/scraper/**/*.py",
-      "rule": "DELIBERATE HERE, DO NOT FLAG. (1) Steps that report and never write. audit_prereqs.py and gather_minors.py are reconciliations a human applies, because a page can name a code and then disown it. (2) gather_minors.py not counting 'the repo requires a code the page does not name' as drift. Most minor pages say 'any HASS elective' and data/minors.json expands that into a real list, saying so in its own note, so counting it marks nearly every minor as drifting while nothing has changed. It is printed, not counted, on purpose. (3) sources/_http.py skipping the cache write when a response body is empty. The read path treats a zero-byte file as a miss; caching an empty 200 is what made pages report as unparseable for a whole TTL. (4) mods_refresh.py exiting 0 when some steps failed. Steps are isolated so one redesigned page cannot hold the others hostage, and the run says which failed in its status output."
-    },
-    {
-      "path": ".github/workflows/*.yml",
-      "rule": "Flag `continue-on-error` at JOB level where a later job gates on `needs.<job>.result`: it rewrites the result to 'success' on failure and silently disables the fallback. Step level plus a job output reading `steps.<id>.outcome` is the working form. Flag any push to main that does not authenticate as a token with the admin role, because main's ruleset requires a reviewed pull request and only that role bypasses it. Flag a secret that is only checked after expensive work has already run."
-    },
-    {
-      "path": "frontend/src/**/*.{ts,tsx}",
-      "rule": "TypeScript strict, no `any` (use `unknown`). Comments must say WHY or HOW, never restate WHAT the line does. Flag anything adding analytics, tracking, cookies, telemetry, or a runtime dependency: all four are architecture invariants in CLAUDE.md. Flag a callback prop reaching an effect's dependency array where the effect builds an iframe or a subscription - an inline arrow is a new function every render and rebuilds it in a loop."
-    },
-    {
-      "path": "frontend/src/**/*.{ts,tsx}",
-      "rule": "THE SITE IS LIVE AND HAS NO BACKEND, so every plan, layout, consent flag and parsed timetable sits in a browser or a gist no deploy reaches. Flag a renamed or removed localStorage key, gist section, JSON field or export shape where nothing reads the old name: that silently drops a student's data. A one-way migration that reads the old name once and rewrites the new one is the correct shape, not a finding."
-    },
-    {
       "path": "frontend/src/workbench/**",
-      "rule": "DELIBERATE HERE, DO NOT FLAG. (1) ExtLink is not label-safe and its own doc comment says so. stopPropagation cannot make it safe, because a label's activation is the browser's default rather than a React bubble, and preventDefault is what navigates. Its callers render it as a sibling of the label. (2) `.badgeWrap` being inline-flex. It is the unit that wraps; the badge and its icon staying on one line is the point. (3) Reading `track.url ?? track.source`. Specialisation tracks and minors are two different scrapes with two spellings and no record carries both. (4) giscus boards mounted once and hidden rather than unmounted, and rebuilt on a slow loop. CLAUDE.md says why each of those is load-bearing."
+      "rule": "HOW TO REPORT, which governs the FORM of a finding and never whether a defect is worth reporting: nothing here is a reason to stay quiet about a real bug. Say nothing you cannot point at inside the diff. No finding that asks the author to go and verify something, and none opening 'if X is ever' or 'in some environments'. One finding per root cause, not one per line it touches. High means lost user data, a leaked credential, or a gate that stopped gating; medium means a wrong result a user would see; everything else is low, including style, naming and accessibility polish. EXAMPLE. Good: \"planFile.ts:130 falls back to Object.values(migrated)[0] when the file has no plan for the tab you are on, so importing an AY2025-only backup into the AY2026 tab silently installs the AY2025 plan.\" That points at a line, states the input and names the consequence. Bad: \"If ExtLink is ever nested in a label, clicking it would both navigate and toggle. Please verify.\" That asks the author to read a file you did not read, and the answer was two lines above the hunk.\n\nTypeScript strict, no `any` (use `unknown`). Comments say WHY or HOW, never restate WHAT. Flag anything adding analytics, tracking, cookies, telemetry or a runtime dependency: all four are architecture invariants in CLAUDE.md. Flag a callback prop reaching an effect's dependency array where the effect builds an iframe or a subscription: an inline arrow is a new function every render and rebuilds it in a loop.\n\nTHE SITE IS LIVE AND HAS NO BACKEND, so every plan, layout, consent flag and parsed timetable sits in a browser or a gist no deploy reaches. Flag a renamed or removed localStorage key, gist section, JSON field or export shape where nothing reads the old name: that silently drops a student's data. A one-way migration that reads the old name once and rewrites the new one is the correct shape, not a finding.\n\nDELIBERATE HERE, DO NOT FLAG. ExtLink is not label-safe and its own doc comment says so; stopPropagation cannot make it so, because a label's activation is the browser's default rather than a React bubble, and preventDefault is what navigates. `.badgeWrap` is inline-flex because it IS the unit that wraps. `track.url ?? track.source` reads two scrapes with two spellings, and no record carries both. giscus boards are mounted once and hidden rather than unmounted, and rebuilt on a slow loop; CLAUDE.md says why each of those is load-bearing."
     },
     {
       "path": "frontend/e2e/**",
-      "rule": "Find elements by a `data-act` hook or an accessible name, never by copy that gets reworded. Flag a test that cannot fail: a page.goto that remounts the component under test, a CSS assertion at a viewport where the cap never binds, a check below its own threshold."
+      "rule": "HOW TO REPORT, which governs the FORM of a finding and never whether a defect is worth reporting: nothing here is a reason to stay quiet about a real bug. Say nothing you cannot point at inside the diff. No finding that asks the author to go and verify something, and none opening 'if X is ever' or 'in some environments'. One finding per root cause, not one per line it touches. High means lost user data, a leaked credential, or a gate that stopped gating; medium means a wrong result a user would see; everything else is low, including style, naming and accessibility polish. EXAMPLE. Good: \"planFile.ts:130 falls back to Object.values(migrated)[0] when the file has no plan for the tab you are on, so importing an AY2025-only backup into the AY2026 tab silently installs the AY2025 plan.\" That points at a line, states the input and names the consequence. Bad: \"If ExtLink is ever nested in a label, clicking it would both navigate and toggle. Please verify.\" That asks the author to read a file you did not read, and the answer was two lines above the hunk.\n\nFind elements by a `data-act` hook or an accessible name, never by copy that gets reworded. Flag a test that cannot fail: a page.goto that remounts the component under test, a CSS assertion at a viewport where the cap never binds, a check below its own threshold, an assertion on a value the test itself set. Flag behaviour the diff changes that no test covers, when getting it wrong would show a student a wrong answer."
+    },
+    {
+      "path": "frontend/src/**/*.{ts,tsx}",
+      "rule": "HOW TO REPORT, which governs the FORM of a finding and never whether a defect is worth reporting: nothing here is a reason to stay quiet about a real bug. Say nothing you cannot point at inside the diff. No finding that asks the author to go and verify something, and none opening 'if X is ever' or 'in some environments'. One finding per root cause, not one per line it touches. High means lost user data, a leaked credential, or a gate that stopped gating; medium means a wrong result a user would see; everything else is low, including style, naming and accessibility polish. EXAMPLE. Good: \"planFile.ts:130 falls back to Object.values(migrated)[0] when the file has no plan for the tab you are on, so importing an AY2025-only backup into the AY2026 tab silently installs the AY2025 plan.\" That points at a line, states the input and names the consequence. Bad: \"If ExtLink is ever nested in a label, clicking it would both navigate and toggle. Please verify.\" That asks the author to read a file you did not read, and the answer was two lines above the hunk.\n\nTypeScript strict, no `any` (use `unknown`). Comments say WHY or HOW, never restate WHAT. Flag anything adding analytics, tracking, cookies, telemetry or a runtime dependency: all four are architecture invariants in CLAUDE.md. Flag a callback prop reaching an effect's dependency array where the effect builds an iframe or a subscription: an inline arrow is a new function every render and rebuilds it in a loop.\n\nTHE SITE IS LIVE AND HAS NO BACKEND, so every plan, layout, consent flag and parsed timetable sits in a browser or a gist no deploy reaches. Flag a renamed or removed localStorage key, gist section, JSON field or export shape where nothing reads the old name: that silently drops a student's data. A one-way migration that reads the old name once and rewrites the new one is the correct shape, not a finding."
+    },
+    {
+      "path": "tools/scraper/**/*.py",
+      "rule": "HOW TO REPORT, which governs the FORM of a finding and never whether a defect is worth reporting: nothing here is a reason to stay quiet about a real bug. Say nothing you cannot point at inside the diff. No finding that asks the author to go and verify something, and none opening 'if X is ever' or 'in some environments'. One finding per root cause, not one per line it touches. High means wrong data reaching /data, a leaked credential, or a gate that stopped gating; medium means a wrong result a user would see; everything else is low, including style, naming and portability. EXAMPLE. Good: \"planFile.ts:130 falls back to Object.values(migrated)[0] when the file has no plan for the tab you are on, so importing an AY2025-only backup into the AY2026 tab silently installs the AY2025 plan.\" That points at a line, states the input and names the consequence. Bad: \"If ExtLink is ever nested in a label, clicking it would both navigate and toggle. Please verify.\" That asks the author to read a file you did not read, and the answer was two lines above the hunk.\n\nThis code reads SUTD's HTML, which changes without notice. Flag any parser that would write a THIN or EMPTY result over good data rather than refusing: a source answering 200 with almost nothing must never wipe a file, and a generator with no floor at all is the same defect waiting to happen. Flag file reads and writes that omit encoding=\"utf-8\": the repo's JSON is UTF-8 and the default on Windows is cp1252, which crashes before the scraper fetches anything. Flag anything a model proposes that could reach /data without being checked against the page text it quotes.\n\nDELIBERATE HERE, DO NOT FLAG. audit_prereqs.py and gather_minors.py report and never write, because a page can name a code and then disown it. gather_minors.py does not count 'the repo requires a code the page does not name' as drift: most minor pages say 'any HASS elective' and data/minors.json expands that into a real list, saying so in its own note, so counting it marks nearly every minor as drifting. sources/_http.py skips the cache write when a body is empty, because the read path treats a zero-byte file as a miss. mods_refresh.py exits 0 when some steps failed: steps are isolated so one redesigned page cannot hold the others hostage, and the run says which failed."
+    },
+    {
+      "path": ".github/workflows/*.yml",
+      "rule": "HOW TO REPORT, which governs the FORM of a finding and never whether a defect is worth reporting: nothing here is a reason to stay quiet about a real bug. Say nothing you cannot point at inside the diff. No finding that asks the author to go and verify something, and none opening 'if X is ever' or 'in some environments'. One finding per root cause, not one per line it touches. High means wrong data reaching /data, a leaked credential, or a gate that stopped gating; medium means a wrong result a user would see; everything else is low, including style, naming and portability. EXAMPLE. Good: \"planFile.ts:130 falls back to Object.values(migrated)[0] when the file has no plan for the tab you are on, so importing an AY2025-only backup into the AY2026 tab silently installs the AY2025 plan.\" That points at a line, states the input and names the consequence. Bad: \"If ExtLink is ever nested in a label, clicking it would both navigate and toggle. Please verify.\" That asks the author to read a file you did not read, and the answer was two lines above the hunk.\n\nFlag `continue-on-error` at JOB level where a later job gates on `needs.<job>.result`: it rewrites the result to 'success' on failure and silently disables the fallback. Step level plus a job output reading `steps.<id>.outcome` is the working form. Flag a step whose exit code does not reflect what it actually did, and a fallback chain where a green check can be reached without the work happening. Flag any push to main that does not authenticate as a token with the admin role, because main's ruleset requires a reviewed pull request and only that role bypasses it. Flag a secret that is only checked after expensive work has already run. Flag a pull_request_target workflow that executes anything from the head ref, and permissions wider than the job needs."
     }
   ]
 }

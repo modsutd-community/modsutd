@@ -280,8 +280,12 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 30
         needs: [context, gemini, groq]
-        # Last in the chain, so this one has no continue-on-error: if every
-        # configured provider failed, the check goes red and says so.
+        # Last in the chain, so its verdict is the one that decides whether
+        # the check goes red. It still needs the verdict step: a green EXIT
+        # is not a completed review here either, and without it a run where
+        # every provider was rate-limited ends on a passing check with
+        # nothing on the pull request. continue-on-error lets the verdict
+        # step run at all; the fail step below is what turns the check red.
         if: |
             always()
             && needs.context.result == 'success'
@@ -289,7 +293,9 @@ jobs:
             && needs.groq.outputs.ok != 'true'
             && needs.context.outputs.has_openai == 'true'
         steps:
-            - uses: alibaba/open-code-review@main
+            - id: review
+              continue-on-error: true
+              uses: alibaba/open-code-review@main
               with:
                   llm_url: https://api.openai.com/v1/chat/completions
                   llm_auth_token: ${{ secrets.OPENAI_TOKEN }}
@@ -311,3 +317,39 @@ jobs:
                   review_concurrency: '2'
                   base_ref: ${{ needs.context.outputs.base_ref }}
                   head_sha: ${{ needs.context.outputs.head_sha }}
+
+            # Same reader as gemini and groq: the sticky summary comment is the
+            # only place that says whether items failed, and an unreadable
+            # summary counts as a failure.
+            - name: Did it actually review
+              id: verdict
+              if: always()
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  OUTCOME: ${{ steps.review.outcome }}
+                  PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+              run: |
+                  ok=true
+                  [ "$OUTCOME" = "success" ] || ok=false
+                  if [ "$ok" = true ]; then
+                    body="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" \
+                      --paginate \
+                      --jq '.[] | select(.body | contains("<!-- ocr-summary -->")) | .body' \
+                      2>/dev/null || echo '')"
+                    case "$body" in
+                      ''|null) ok=false ;;
+                      *'item(s) failed'*) ok=false ;;
+                    esac
+                  fi
+                  echo "ok=$ok" >> "$GITHUB_OUTPUT"
+                  echo "$OUTCOME / ok=$ok" >> "$GITHUB_STEP_SUMMARY"
+
+            # The whole chain has now been tried. A green check here would say a
+            # review happened, so say the opposite out loud instead.
+            - name: No provider completed a review
+              if: always() && steps.verdict.outputs.ok != 'true'
+              run: |
+                  echo "::error::Every configured provider failed or was rate-limited." \
+                       "The pull request has no review. Re-run with /open-code-review" \
+                       "once the limit resets."
+                  exit 1
