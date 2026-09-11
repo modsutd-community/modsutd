@@ -104,6 +104,9 @@ jobs:
                     echo '`tools/scraper/`. Two things are worth a closer look every time:'
                     echo
                     echo '- **Term dates.** They decide where a weekly-view paste puts a term of classes.'
+                    echo '- **Data changes.** The run output names the RECORD each change landed in'
+                    echo '  and the source URL that record carries. Open that URL, not the diff hunk:'
+                    echo '  a hunk in a 21-track JSON file does not say which track it belongs to.'
                     echo '- **Prerequisites.** Every proposed edit below quotes the page it came from.'
                     echo '  Read the quote. A page can name a code and then disown it.'
                     echo

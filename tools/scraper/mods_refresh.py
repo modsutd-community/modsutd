@@ -264,6 +264,17 @@ def main() -> int:
     if len(touched) > 25:
         print(f"  ... and {len(touched) - 25} more")
 
+    # Named by record, not by line. A diff hunk in a 21-track JSON file does
+    # not say which track it landed in, and the nearest "id" above a hunk is
+    # frequently a different record than the one that changed. Citing from the
+    # hunk alone is how a correct change got written up against the wrong
+    # track. what_changed.py reads both documents and prints the record and
+    # the source URL that record carries.
+    if touched:
+        print("\n## what changed, by record\n")
+        ok, out = run(["what_changed.py"], dry_run=False)
+        print(out or "(could not diff)")
+
     failed = [n for n, ok, _, _ in results if not ok]
     # Appended, because $GITHUB_OUTPUT is a shared file the job writes to.
     if args.status_out:

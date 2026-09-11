@@ -335,6 +335,15 @@ Two are deliberately not monthly, and say why in their own headers:
 - A review must be a **comment** on the mod's discussion, never the discussion
   body. giscus renders a discussion's comments and never its body, so a review
   written into the first post is invisible on the mod page forever.
+- **Cite a data change from the record, never from the diff hunk.** A hunk in
+  `data/specializations.json` reading `+ "50.057"` sits in one of 21 tracks and
+  the diff does not say which, and the nearest `"id"` line above it is
+  frequently a different record. `tools/scraper/what_changed.py` walks both
+  documents and prints each change with its record and the source URL that
+  record itself carries, which is the line a reviewer opens. `mods_refresh.py`
+  runs it on every refresh. Lists of records are matched on `id`/`code`/`name`
+  rather than index, because inserting one record makes every later index look
+  changed.
 - `tools/scraper/reports/drift.md` is **generated**, by `mods_refresh.py`, and
   is the only tracked thing the report-only steps produce. It exists so they can
   open a pull request: a run that changes no file opens none, and the prereq and
