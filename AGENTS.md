@@ -25,9 +25,16 @@ Quickest orientation, if you read nothing else:
 - **No `Co-Authored-By` trailers** on commits, and **no em dashes** in prose.
 
 - **Opening a PR?** `.github/pull_request_template.md` is the shape: cause,
-  fix, test, checklist. GitHub prefills it in the browser; `gh pr create`
-  does not, so paste it in with `--body-file .github/pull_request_template.md`
-  and fill it, or it lands blank.
+  fix, migration, test, checklist. GitHub prefills it in the browser; `gh pr
+  create` does not, so paste it in with
+  `--body-file .github/pull_request_template.md` and fill it, or it lands blank.
+  The comment at the top of that file says how to write the body, including the
+  two rules agents break most: no em dashes, and no count of how often something
+  went wrong before.
+- **Changing a stored shape?** A localStorage key, a gist section, an export
+  file or a JSON field name. The site is live and has no backend, so that data
+  is in browsers a deploy cannot reach. Read the old name or say whose data you
+  are dropping, and answer it in the PR's Migration section.
 
 Repeatable procedures are skills in `.claude/skills/`, and they are plain
 Markdown - readable by any agent, whatever runs them. `new-term`, `course-data`,

@@ -3,31 +3,39 @@
 
     python tools/scraper/mods_refresh.py              # refresh, then report
     python tools/scraper/mods_refresh.py --dry-run    # report, write nothing
-    python tools/scraper/mods_refresh.py --only listing,tracks
+    python tools/scraper/mods_refresh.py --only mods,tracks
 
 WHY THIS EXISTS
 The pieces of a mod are refreshed by separate scripts, and the monthly job
-called two of them. The catalogue walk over all 389 course pages, the one that
-finds new mods, tags, descriptions and source URLs, was a command a maintainer
-had to remember, and a scheduled job is the only thing here that gets
-remembered. One entry point, so "refresh the mods" is one thing to schedule.
+called two of them. The walk over all 389 course pages, the one that finds new
+mods, tags, descriptions and source URLs, was a command a maintainer had to
+remember, and a scheduled job is the only thing here that gets remembered. One
+entry point, so "refresh the mods" is one thing to schedule.
 
 It ORCHESTRATES rather than merges: each parser stays in its own file, because
 they break independently when SUTD redesigns one page and not another, and a
 single 2000-line script would make that one failure look like five.
 
-EVERY STEP IS ISOLATED. A pillar site going down must not stop the term
-calendar being read, so a step that raises is recorded and the rest continue.
+EVERY STEP IS ISOLATED. One SUTD page being redesigned must not stop the
+term dates being read, so a step that raises is recorded and the rest continue.
 The exit code is 1 only if EVERY step failed, which means the network or the
 environment rather than one page.
 
 WAVES, NOT A QUEUE. Most of the wall clock is waiting on sutd.edu.sg, so steps
 that touch different files run together. What forces an order is only ever a
 shared file:
-  wave 1  listing, tracks, minors, calendar   - four different outputs
-  wave 2  pillars                             - writes data/courses too, so it
-                                                must not race the listing
+  wave 1  mods, tracks, minors, terms         - four different outputs
+  wave 2  hass                                - writes data/courses too, so
+                                                it must not race mods
   wave 3  prereqs                             - reads what the two above wrote
+
+STEP NAMES. Five of the six steps read www.sutd.edu.sg, so a name after the
+host tells a reader nothing. They are named after what they produce instead,
+except `hass`, which is the one on another host.
+
+`mods` and `prereqs` read the SAME 389 course pages; the difference is that one
+writes records and the other reports on them. That pair is the reason the naming
+is worth caring about.
 """
 
 from __future__ import annotations
@@ -42,18 +50,30 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 
+# Machine-readable step output, gitignored. The reports write here so the
+# proposal step can read them without either one parsing the other's prose.
+SCRATCH = HERE / ".reports"
+
+# The one tracked artefact. Written only when a report has something to act on
+# and deleted when it does not, so its own diff is what opens the monthly pull
+# request: a month with the same drift as the last produces no file change and
+# no PR, which is the honest signal. A timestamp in here would open one every
+# month and teach the reviewer to skim.
+DRIFT = ROOT / "tools" / "scraper" / "reports" / "drift.md"
+
 # (name, argv, what it does). This list is not the order - WAVES is.
 STEPS: list[tuple[str, list[str], str]] = [
     (
-        "listing",
+        "mods",
         ["gather_listing.py"],
-        "the official course listing: new mods, tags, descriptions, source URLs, "
-        "grading and workload",
+        "every mod on sutd.edu.sg, walked from the two course sitemaps: new "
+        "mods, tags, descriptions, source URLs, grading and workload",
     ),
     (
-        "pillars",
+        "hass",
         ["scrape.py"],
-        "the HASS listing and the four pillar sites",
+        "hass.sutd.edu.sg's freshmore and elective subject listings. The only "
+        "step on a host other than www.sutd.edu.sg",
     ),
     (
         "tracks",
@@ -61,38 +81,95 @@ STEPS: list[tuple[str, list[str], str]] = [
         "specialisation-track criteria -> data/specializations.json",
     ),
     (
-        "calendar",
+        "terms",
         ["term_calendar.py"],
-        "term dates -> data/term-calendar.json",
+        "term dates from sutd.edu.sg's academic calendar, plus the Singapore "
+        "public holidays inside each term from data.gov.sg "
+        "-> data/term-calendar.json",
     ),
     (
         "minors",
-        ["gather_minors.py"],
+        ["gather_minors.py", "--json", str(SCRATCH / "minors.json")],
         "each minor against its own page. REPORTS ONLY - the requirements are "
         "prose, and the repo expands 'any HASS elective' into a real list",
     ),
     (
         "prereqs",
-        ["audit_prereqs.py"],
-        "prerequisites against each mod's own page. REPORTS ONLY - a page can "
-        "name a code and then disown it, so a human applies these",
+        ["audit_prereqs.py", "--json", str(SCRATCH / "prereqs.json")],
+        "prerequisites against each mod's own page. Reports; `propose` is what "
+        "acts on it",
+    ),
+    (
+        "propose",
+        [
+            "propose_edits.py",
+            "--prereqs", str(SCRATCH / "prereqs.json"),
+            "--minors", str(SCRATCH / "minors.json"),
+            "--report-out", str(SCRATCH / "proposed.md"),
+        ],
+        "reads the two reports with a model and edits data/courses where the "
+        "page supports it. Every proposal is validated against the quoted page "
+        "text before it is written",
     ),
 ]
 
 # Steps in the same wave run together; a wave finishes before the next starts.
 WAVES: list[list[str]] = [
-    ["listing", "tracks", "minors", "calendar"],
-    ["pillars"],
+    ["mods", "tracks", "minors", "terms"],
+    ["hass"],
     ["prereqs"],
+    ["propose"],
 ]
+
+
+# Every script here writes under /data. WRITERS is the subset that accepts
+# --dry-run, and the two lists being equal is what the run() check enforces.
+WRITES_DATA = {
+    "gather_listing.py",
+    "scrape.py",
+    "gather_specialisations.py",
+    "term_calendar.py",
+    "propose_edits.py",
+}
+
+
+def accepts_dry_run(script: str) -> bool:
+    """Whether the script really has a --dry-run, asked rather than assumed.
+
+    This used to be `WRITERS = WRITES_DATA`, which made the check below a
+    tautology: the same set on both sides of an if/elif means the elif can
+    never run, so the guard that was supposed to fail a run rather than write
+    could not fire. Reading --help costs one subprocess per writer and is the
+    only version that can observe a new writer arriving without the flag.
+    """
+    try:
+        out = subprocess.run(
+            [sys.executable, script, "--help"], cwd=HERE, capture_output=True,
+            text=True, encoding="utf-8", errors="replace", timeout=60,
+        )
+    except Exception:  # noqa: BLE001
+        return False
+    return "--dry-run" in (out.stdout or "")
 
 
 def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
     """Run one step. Returns (ok, last few lines of output)."""
     cmd = [sys.executable, *script]
-    # Only the writers understand --dry-run; the audit never writes at all.
-    if dry_run and script[0] in {"gather_listing.py", "scrape.py"}:
-        cmd.append("--dry-run")
+    # A WRITER THAT CANNOT BE TOLD "DRY" IS NOT RUN. This list used to name
+    # three scripts, and the two writers missing from it, term_calendar.py and
+    # gather_specialisations.py, rewrote data/term-calendar.json and
+    # data/specializations.json on a run documented as writing nothing. A flag
+    # that silently writes to the source of truth is worse than no flag.
+    #
+    # So membership is declared, not inferred: WRITERS is every step that
+    # touches /data, and every one of them has to accept --dry-run. Adding a
+    # writer without the flag fails the run instead of writing.
+    if dry_run:
+        if script[0] in WRITES_DATA and accepts_dry_run(script[0]):
+            cmd.append("--dry-run")
+        elif script[0] in WRITES_DATA:
+            return False, (f"{script[0]} writes to /data and has no --dry-run. "
+                           "Add one, or take it out of WRITES_DATA.")
     try:
         p = subprocess.run(
             cmd, cwd=HERE, capture_output=True, text=True,
@@ -100,14 +177,90 @@ def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
         )
     except subprocess.TimeoutExpired:
         return False, "timed out after 30 minutes"
-    tail = "\n".join((p.stdout or p.stderr or "").strip().splitlines()[-12:])
-    return p.returncode == 0, tail
+    out = (p.stdout or p.stderr or "").strip()
+    return p.returncode == 0, out
 
 
 def timed(script: list[str], dry_run: bool) -> tuple[bool, str, float]:
     t0 = time.time()
     ok, tail = run(script, dry_run)
     return ok, tail, time.time() - t0
+
+
+# Steps whose only product is prose. A change in what they say is the thing
+# worth a human reading, and nothing else in the run records it.
+REPORTING = ("minors", "prereqs", "propose")
+
+
+def split_sections(text: str) -> dict[str, str]:
+    """A drift file back into {step: its whole section}, preamble under "".
+
+    Sections are `## <step>` headings, which is what write_drift emits. Anything
+    before the first heading is the header and is rebuilt rather than kept.
+    """
+    out: dict[str, str] = {}
+    key = ""
+    buf: list[str] = []
+    for line in text.split("\n"):
+        if line.startswith("## "):
+            out[key] = "\n".join(buf)
+            key = line[3:].strip()
+            buf = [line]
+        else:
+            buf.append(line)
+    out[key] = "\n".join(buf)
+    return out
+
+
+def write_drift(results: list[tuple[str, bool, str, float]], by_name: dict) -> None:
+    """The tracked report, or nothing.
+
+    A run that changes no file opens no pull request, and the prereq and minor
+    checks change no file by design. Writing what they said into a tracked path
+    gives them a diff of their own, so a finding reaches a reviewer instead of
+    sitting on a run summary nobody opens.
+
+    A RUN OWNS ONLY THE SECTIONS IT RAN. `--only propose` used to rewrite the
+    whole file from that one step, which deleted the prereq and minor findings
+    without looking at them - a green diff saying the drift went away, produced
+    by not checking. Sections for steps that did not run this time are carried
+    through from the file as they stand.
+    """
+    order = {n: i for i, n in enumerate(REPORTING)}
+    ran = [r for r in results if r[0] in order]
+    if not ran:
+        return
+
+    kept = split_sections(DRIFT.read_text(encoding="utf-8")) if DRIFT.exists() else {}
+    for name, ok, out, _ in ran:
+        if not ok or not out.strip():
+            # A step that ran and found nothing retires its section. A step that
+            # FAILED keeps whatever it last said, because "the parser broke" is
+            # not evidence that the drift it reported is gone.
+            if ok:
+                kept.pop(name, None)
+            continue
+        kept[name] = "\n".join(
+            [f"## {name}", "", by_name[name][1], "", "```", out.strip(), "```", ""]
+        )
+
+    body = [kept[k] for k in sorted(kept, key=lambda k: order.get(k, 99)) if k and kept[k].strip()]
+    DRIFT.parent.mkdir(parents=True, exist_ok=True)
+    if not body:
+        DRIFT.unlink(missing_ok=True)
+        return
+    head = [
+        "# drift",
+        "",
+        "Written by `tools/scraper/mods_refresh.py`. Do not edit it by hand: the",
+        "next refresh overwrites the sections it ran, and deletes the file when",
+        "there is nothing left to say. It carries no timestamp on purpose, so a",
+        "month that finds the same drift as the last changes no file and opens no",
+        "pull request.",
+        "",
+    ]
+    DRIFT.write_text("\n".join(head + body), encoding="utf-8")
+
 
 
 def changed_files() -> list[str]:
@@ -123,11 +276,21 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dry-run", action="store_true", help="write nothing")
     ap.add_argument(
+        "--status-out",
+        default="",
+        help="append `failed=a,b` here. Point it at $GITHUB_OUTPUT and the job can say so on the PR, because a partial refresh still writes files and still opens one.",
+    )
+    ap.add_argument(
         "--only",
         default="",
         help="comma-separated step names: " + ", ".join(n for n, _, _ in STEPS),
     )
     args = ap.parse_args()
+
+    # The steps write their machine-readable output here and `propose`
+    # reads it, so it has to exist before the first wave, not on demand
+    # inside four scripts that would each have to remember.
+    SCRATCH.mkdir(parents=True, exist_ok=True)
 
     wanted = {s.strip() for s in args.only.split(",") if s.strip()}
     steps = [s for s in STEPS if not wanted or s[0] in wanted]
@@ -153,8 +316,13 @@ def main() -> int:
                 ok, tail, secs = fut.result()
                 results.append((name, ok, tail, secs))
                 print(f"## {name}\n{by_name[name][1]}\n")
-                print(tail or "(no output)")
+                # The summary shows a tail; the whole thing goes into the
+                # drift file, where a reviewer can read the sentence that
+                # decided a proposal.
+                print("\n".join(tail.splitlines()[-12:]) or "(no output)")
                 print(f"\n-> {'ok' if ok else 'FAILED'} in {secs:.0f}s\n", flush=True)
+
+    write_drift(results, by_name)
 
     wall = time.time() - started
     print("## summary\n")
@@ -170,7 +338,23 @@ def main() -> int:
     if len(touched) > 25:
         print(f"  ... and {len(touched) - 25} more")
 
+    # Named by record, not by line. A diff hunk in a 21-track JSON file does
+    # not say which track it landed in, and the nearest "id" above a hunk is
+    # frequently a different record than the one that changed. Citing from the
+    # hunk alone is how a correct change got written up against the wrong
+    # track. what_changed.py reads both documents and prints the record and
+    # the source URL that record carries.
+    if touched:
+        print("\n## what changed, by record\n")
+        ok, out = run(["what_changed.py"], dry_run=False)
+        print(out or "(could not diff)")
+
     failed = [n for n, ok, _, _ in results if not ok]
+    # Appended, because $GITHUB_OUTPUT is a shared file the job writes to.
+    if args.status_out:
+        with open(args.status_out, "a", encoding="utf-8") as fh:
+            print("failed=" + ",".join(failed), file=fh)
+
     if failed and len(failed) == len(results):
         print(f"\nEVERY step failed ({', '.join(failed)}) - this is the network "
               f"or the environment, not one page.", file=sys.stderr)

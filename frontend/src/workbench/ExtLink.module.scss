@@ -17,7 +17,7 @@
 .link {
   display: inline-flex;
   align-items: center;
-  margin-left: 4px;
+  margin-inline-start: 4px;
   color: inherit;
   opacity: 0.55;
 
@@ -25,5 +25,14 @@
   &:focus-visible {
     opacity: 1;
     color: var(--wb-amber);
+  }
+
+  // Opacity and colour alone are not a focus indicator: the icon is 10px of
+  // 1.5px stroke, and the hover state looks identical, so a keyboard user
+  // cannot tell where they are. The ring is what says it.
+  &:focus-visible {
+    outline: 1px solid var(--wb-amber);
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 }

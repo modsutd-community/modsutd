@@ -61,6 +61,16 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m compileall .
 
+      # compileall only proves the file parses. The validator in
+      # propose_edits.py is the only thing standing between a model's proposal
+      # and /data, and it had a case in its own table asserting the bug: a
+      # quote saying "helpful but not required" was pinned as VALID support for
+      # adding a prerequisite. Nothing ran the table, so nothing said so.
+      # It needs no network and no token.
+      - name: the propose_edits validator still refuses what it should
+        working-directory: tools/scraper
+        run: python propose_edits.py --self-check
+
       # The home-screen icon is geometry, not taste: the maskable safe zone is
       # a circle of radius 2/5 of the icon, and artwork past it is clipped by a
       # launcher mask. It shipped over that line twice, because nothing here
