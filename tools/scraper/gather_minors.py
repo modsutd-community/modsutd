@@ -24,6 +24,14 @@ So it flags the things that really do mean stale:
   - the page names a code this minor does not list, which is a new or changed
     requirement rather than an expansion the repo already made
 
+A DECISION ALREADY MADE IS NOT DRIFT. data/minors.json carries an `ignore` list
+of minor pages SUTD still publishes that this repo deliberately does not have,
+each with the reason. Two retired cohort minors live there: SUTD keeps the pages
+up for students already on them, and the earliest cohort the planner offers is
+AY2024, so nobody who can use the app can take either. Without the list they
+would be reported as missing every month forever, and a report with a permanent
+false positive in it is a report that stops being read.
+
 IT DISCOVERS, IT DOES NOT ONLY RE-CHECK. Walking only the URLs already in
 data/minors.json can never find a minor SUTD adds, which is the failure that
 matters most: a student reads a catalogue that silently lacks a programme. The
@@ -146,6 +154,10 @@ def main() -> int:
     # is the failure that matters most: a student reads a catalogue missing a
     # programme, and no amount of re-checking the ten we already have finds it.
     known = {norm_url(m.get("source") or m.get("url") or ""): m.get("id") for m in minors}
+    # Deliberately absent, with a reason each. Treated as known so they neither
+    # report as missing nor get counted toward the published total a human is
+    # asked to reconcile.
+    ignored = {norm_url(x.get("url") or ""): x for x in data.get("ignore") or []}
     try:
         pub = published()
     except Exception as exc:  # noqa: BLE001
@@ -155,9 +167,21 @@ def main() -> int:
         print("  Cannot tell whether SUTD added or dropped a minor this run.")
 
     if pub:
-        unknown = {u: t for u, t in pub.items() if u not in known}
+        unknown = {u: t for u, t in pub.items() if u not in known and u not in ignored}
         unlinked = [(u, i) for u, i in known.items() if u and u not in pub]
-        print(f"SUTD lists {len(pub)} minor pages; the repo carries {len(minors)}.")
+        seen_ignored = [u for u in pub if u in ignored]
+        print(f"SUTD lists {len(pub)} minor pages; the repo carries {len(minors)} "
+              f"and deliberately skips {len(seen_ignored)}.")
+        for u in sorted(seen_ignored):
+            print(f"  SKIPPED           {ignored[u].get('name') or u}")
+            print(f"                    {ignored[u].get('why', '')[:96]}")
+        # An ignore entry SUTD has stopped publishing is worth saying once: the
+        # reason to skip it was that the page exists, and now it does not.
+        for u, x in sorted(ignored.items()):
+            if u and u not in pub:
+                print(f"  IGNORED, NOW GONE {x.get('name') or u}")
+                print("                    SUTD no longer links it. The entry in "
+                      "data/minors.json `ignore` can go.")
         for url, title in sorted(unknown.items()):
             drift += 1
             print(f"  NOT IN THE REPO   {title or '(no link text)'}")
@@ -175,7 +199,9 @@ def main() -> int:
         "url": INDEX,
         "status": "index",
         "published": len(pub),
-        "unknown": [{"url": u, "title": t} for u, t in sorted(pub.items()) if u not in known],
+        "ignored": sorted(u for u in pub if u in ignored),
+        "unknown": [{"url": u, "title": t} for u, t in sorted(pub.items())
+                    if u not in known and u not in ignored],
         "unlinked": [i for u, i in sorted(known.items()) if u and u not in pub],
     })
     for m in minors:
