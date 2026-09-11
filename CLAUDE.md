@@ -70,6 +70,20 @@ GitHub Discussion (not a PR) if you want to revisit one.
 
 - Small PRs. One concern per PR. Prefix titles: `data:` / `frontend:` /
   `scraper:` / `docs:` / `chore:`.
+- **How to write the PR body is in `.github/pull_request_template.md`**, in the
+  comment at the top. That is where the rules live; everywhere else points at
+  it rather than restating them. It is not decoration: an agent
+  that writes its own shape produces marketing prose, em dashes, and a tally of
+  how long the bug went unnoticed. Open PRs with
+  `gh pr create --body-file .github/pull_request_template.md` and fill it in,
+  because `gh` does not prefill the template the way the browser does.
+- **A stored shape change needs a migration answer in the PR.** modsutd.tech is
+  live and has no backend, so every plan, layout, consent flag and parsed
+  timetable lives in someone's browser or their gist, where no deploy can reach
+  it. Renaming a localStorage key, a gist section, a JSON field or an export
+  format drops that data unless something reads the old name. Say in the PR what
+  a browser holding the old shape does on its first load, name the function that
+  decides, and cover it with a test.
 - Every UI change ships desktop **and** mobile in the same PR (bottom nav
   and heatmap scroll are the usual casualties).
 - Never find an element in a test by copy that gets reworded - use a
