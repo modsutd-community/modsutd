@@ -52,18 +52,26 @@ jobs:
             # the network rather than a page.
             - name: refresh the mods
               if: steps.when.outputs.go == 'true'
-              run: python tools/scraper/mods_refresh.py | tee -a "$GITHUB_STEP_SUMMARY"
+              run: |
+                  # pipefail, or the shell reports tee's status and a refresh
+                  # that failed every step still opens a PR looking healthy.
+                  set -o pipefail
+                  python tools/scraper/mods_refresh.py | tee -a "$GITHUB_STEP_SUMMARY"
 
             - name: open PR with diff
               if: steps.when.outputs.go == 'true'
               uses: peter-evans/create-pull-request@v6
               with:
-                  token: ${{ secrets.MODSUTD_BOT_TOKEN || secrets.GITHUB_TOKEN }}
+                  # No GITHUB_TOKEN fallback. main's ruleset only lets the
+                  # admin role bypass, so the default token cannot open this PR
+                  # and would fail after the refresh had already done its work.
+                  # Absent secret, this step fails loudly instead.
+                  token: ${{ secrets.MODSUTD_BOT_TOKEN }}
                   commit-message: "data: monthly mods refresh"
                   title: "data: monthly mods refresh"
                   body: |
                       `tools/scraper/mods_refresh.py`. The step summary on the run says which
-                      of its five steps passed and what changed.
+                      of its six steps passed and what changed.
 
                       Skim the diff. SUTD's HTML changes silently and a parser can pull in junk;
                       if something looks wrong, kick this back and patch the source under

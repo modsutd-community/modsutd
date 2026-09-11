@@ -6,14 +6,11 @@
     python tools/scraper/mods_refresh.py --only listing,tracks
 
 WHY THIS EXISTS
-The pieces of a mod were refreshed by four scripts that nobody ran together.
-The monthly job called two of them, so the catalogue walk that reads all 389
-course pages - the one that finds new mods, tags, descriptions and source URLs
-- was a command a maintainer had to remember. It was not run, and seventeen
-records had drifted by the time anyone checked.
-
-One entry point, so "refresh the mods" is one thing you can schedule and one
-thing you can forget to do.
+The pieces of a mod are refreshed by separate scripts, and the monthly job
+called two of them. The catalogue walk over all 389 course pages, the one that
+finds new mods, tags, descriptions and source URLs, was a command a maintainer
+had to remember, and a scheduled job is the only thing here that gets
+remembered. One entry point, so "refresh the mods" is one thing to schedule.
 
 It ORCHESTRATES rather than merges: each parser stays in its own file, because
 they break independently when SUTD redesigns one page and not another, and a
@@ -23,6 +20,14 @@ EVERY STEP IS ISOLATED. A pillar site going down must not stop the term
 calendar being read, so a step that raises is recorded and the rest continue.
 The exit code is 1 only if EVERY step failed, which means the network or the
 environment rather than one page.
+
+WAVES, NOT A QUEUE. Most of the wall clock is waiting on sutd.edu.sg, so steps
+that touch different files run together. What forces an order is only ever a
+shared file:
+  wave 1  listing, tracks, minors, calendar   - four different outputs
+  wave 2  pillars                             - writes data/courses too, so it
+                                                must not race the listing
+  wave 3  prereqs                             - reads what the two above wrote
 """
 
 from __future__ import annotations
@@ -31,14 +36,13 @@ import argparse
 import subprocess
 import sys
 import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 
-# Order matters. The catalogue walk comes first because it is the one that adds
-# NEW course files; everything after it wants those on disk. The prerequisite
-# reconciliation comes last, because it reads what the others just wrote.
+# (name, argv, what it does). This list is not the order - WAVES is.
 STEPS: list[tuple[str, list[str], str]] = [
     (
         "listing",
@@ -62,11 +66,24 @@ STEPS: list[tuple[str, list[str], str]] = [
         "term dates -> data/term-calendar.json",
     ),
     (
+        "minors",
+        ["gather_minors.py"],
+        "each minor against its own page. REPORTS ONLY - the requirements are "
+        "prose, and the repo expands 'any HASS elective' into a real list",
+    ),
+    (
         "prereqs",
         ["audit_prereqs.py"],
         "prerequisites against each mod's own page. REPORTS ONLY - a page can "
         "name a code and then disown it, so a human applies these",
     ),
+]
+
+# Steps in the same wave run together; a wave finishes before the next starts.
+WAVES: list[list[str]] = [
+    ["listing", "tracks", "minors", "calendar"],
+    ["pillars"],
+    ["prereqs"],
 ]
 
 
@@ -85,6 +102,12 @@ def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
         return False, "timed out after 30 minutes"
     tail = "\n".join((p.stdout or p.stderr or "").strip().splitlines()[-12:])
     return p.returncode == 0, tail
+
+
+def timed(script: list[str], dry_run: bool) -> tuple[bool, str, float]:
+    t0 = time.time()
+    ok, tail = run(script, dry_run)
+    return ok, tail, time.time() - t0
 
 
 def changed_files() -> list[str]:
@@ -112,19 +135,33 @@ def main() -> int:
         print(f"unknown step(s): {sorted(wanted - {n for n, _, _ in STEPS})}", file=sys.stderr)
         return 2
 
+    by_name = {n: (argv, what) for n, argv, what in steps}
     print(f"# mods refresh{' (dry run)' if args.dry_run else ''}\n")
-    results: list[tuple[str, bool, str, float]] = []
-    for name, script, what in steps:
-        print(f"## {name}\n{what}\n", flush=True)
-        t0 = time.time()
-        ok, tail = run(script, args.dry_run)
-        results.append((name, ok, tail, time.time() - t0))
-        print(tail or "(no output)")
-        print(f"\n-> {'ok' if ok else 'FAILED'} in {time.time() - t0:.0f}s\n", flush=True)
 
+    results: list[tuple[str, bool, str, float]] = []
+    started = time.time()
+    for wave in WAVES:
+        todo = [n for n in wave if n in by_name]
+        if not todo:
+            continue
+        # Threads rather than processes: each one only waits on a subprocess,
+        # so the GIL is never what holds them up.
+        with ThreadPoolExecutor(max_workers=len(todo)) as pool:
+            futures = {pool.submit(timed, by_name[n][0], args.dry_run): n for n in todo}
+            for fut in as_completed(futures):
+                name = futures[fut]
+                ok, tail, secs = fut.result()
+                results.append((name, ok, tail, secs))
+                print(f"## {name}\n{by_name[name][1]}\n")
+                print(tail or "(no output)")
+                print(f"\n-> {'ok' if ok else 'FAILED'} in {secs:.0f}s\n", flush=True)
+
+    wall = time.time() - started
     print("## summary\n")
-    for name, ok, _, secs in results:
+    for name, ok, _, secs in sorted(results, key=lambda r: -r[3]):
         print(f"  {'ok    ' if ok else 'FAILED'}  {name:<9} {secs:5.0f}s")
+    print(f"\n  wall {wall:.0f}s, against {sum(r[3] for r in results):.0f}s one after another")
+
 
     touched = changed_files()
     print(f"\n{len(touched)} file(s) in /data changed")
