@@ -179,7 +179,14 @@ jobs:
                   ok=true
                   [ "$OUTCOME" = "success" ] || ok=false
                   if [ "$ok" = true ]; then
-                    body="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments"                       --jq 'map(select(.body | contains("<!-- ocr-summary -->"))) | last | .body'                       2>/dev/null || echo '')"
+                    # --paginate, because gh returns 30 comments a page and
+                    # the summary is the newest thing on a pull request that has
+                    # been reviewed a few times. Without it a long thread reads
+                    # as no summary at all, which this step then treats as a
+                    # failure, so every provider falls through on a busy PR.
+                    # sticky_summary means exactly one comment matches, so the
+                    # concatenated per-page output is that one body.
+                    body="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments"                       --paginate                       --jq '.[] | select(.body | contains("<!-- ocr-summary -->")) | .body'                       2>/dev/null || echo '')"
                     case "$body" in
                       ''|null) ok=false ;;
                       *'item(s) failed'*) ok=false ;;
@@ -253,7 +260,14 @@ jobs:
                   ok=true
                   [ "$OUTCOME" = "success" ] || ok=false
                   if [ "$ok" = true ]; then
-                    body="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments"                       --jq 'map(select(.body | contains("<!-- ocr-summary -->"))) | last | .body'                       2>/dev/null || echo '')"
+                    # --paginate, because gh returns 30 comments a page and
+                    # the summary is the newest thing on a pull request that has
+                    # been reviewed a few times. Without it a long thread reads
+                    # as no summary at all, which this step then treats as a
+                    # failure, so every provider falls through on a busy PR.
+                    # sticky_summary means exactly one comment matches, so the
+                    # concatenated per-page output is that one body.
+                    body="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments"                       --paginate                       --jq '.[] | select(.body | contains("<!-- ocr-summary -->")) | .body'                       2>/dev/null || echo '')"
                     case "$body" in
                       ''|null) ok=false ;;
                       *'item(s) failed'*) ok=false ;;
