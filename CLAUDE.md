@@ -153,9 +153,15 @@ Two are deliberately not monthly, and say why in their own headers:
 ## Things that look like bugs but aren't
 
 - `frontend/public/data/` is generated (gitignored) - edit `/data` instead.
-- The scraper's pillar sources deliberately yield nothing (stubs awaiting a
-  stable source); the "never wipe on empty" rule in `scrape.py` is a safety
-  feature.
+- `scrape.py` reads **hass.sutd.edu.sg and nothing else**, which is why the step
+  is called `hass`. It used to also fetch epd/esd/istd/asd.sutd.edu.sg through
+  `sources/pillar.py`, whose selectors were a best-effort guess that returned
+  before yielding anything: four hosts fetched per run to produce nothing, under
+  a step named `pillars` that scraped no pillar. A real pillar parser is written
+  against whatever HTML SUTD serves that day, so the stub was not a head start
+  and it is gone. Everything else about a mod, in every pillar, comes from the
+  `mods` step, because sutd.edu.sg's own course sitemap covers all of them.
+  The "never wipe on empty" rule in `scrape.py` stays and is a safety feature.
 - `semanticSearch.ts` is a documented stub behind `ENABLED = false`.
 - Room search behaviour that looks like a bug - every think tank for `tt`, no
   fuzziness at four characters or less - is deliberate and explained once, in

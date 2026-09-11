@@ -3,38 +3,39 @@
 
     python tools/scraper/mods_refresh.py              # refresh, then report
     python tools/scraper/mods_refresh.py --dry-run    # report, write nothing
-    python tools/scraper/mods_refresh.py --only catalogue,tracks
+    python tools/scraper/mods_refresh.py --only mods,tracks
 
 WHY THIS EXISTS
 The pieces of a mod are refreshed by separate scripts, and the monthly job
-called two of them. The catalogue walk over all 389 course pages, the one that
-finds new mods, tags, descriptions and source URLs, was a command a maintainer
-had to remember, and a scheduled job is the only thing here that gets
-remembered. One entry point, so "refresh the mods" is one thing to schedule.
+called two of them. The walk over all 389 course pages, the one that finds new
+mods, tags, descriptions and source URLs, was a command a maintainer had to
+remember, and a scheduled job is the only thing here that gets remembered. One
+entry point, so "refresh the mods" is one thing to schedule.
 
 It ORCHESTRATES rather than merges: each parser stays in its own file, because
 they break independently when SUTD redesigns one page and not another, and a
 single 2000-line script would make that one failure look like five.
 
-EVERY STEP IS ISOLATED. A pillar site going down must not stop the term
-calendar being read, so a step that raises is recorded and the rest continue.
+EVERY STEP IS ISOLATED. One SUTD page being redesigned must not stop the
+term dates being read, so a step that raises is recorded and the rest continue.
 The exit code is 1 only if EVERY step failed, which means the network or the
 environment rather than one page.
 
 WAVES, NOT A QUEUE. Most of the wall clock is waiting on sutd.edu.sg, so steps
 that touch different files run together. What forces an order is only ever a
 shared file:
-  wave 1  catalogue, tracks, minors, calendar - four different outputs
+  wave 1  mods, tracks, minors, terms         - four different outputs
   wave 2  hass                                - writes data/courses too, so
-                                                it must not race the catalogue
+                                                it must not race mods
   wave 3  prereqs                             - reads what the two above wrote
 
-STEP NAMES SAY WHICH SITE. `catalogue` is sutd.edu.sg's own course sitemap,
-which is every undergraduate mod in every pillar. `hass` is hass.sutd.edu.sg,
-a different site with its own layout. They were called `listing` and `pillars`,
-which read as though the first were a subset and the second the four pillar
-sites. It is the other way round: the four pillar adapters in
-sources/pillar.py are stubs that yield nothing.
+STEP NAMES. Five of the six steps read www.sutd.edu.sg, so a name after the
+host tells a reader nothing. They are named after what they produce instead,
+except `hass`, which is the one on another host.
+
+`mods` and `prereqs` read the SAME 389 course pages; the difference is that one
+writes records and the other reports on them. That pair is the reason the naming
+is worth caring about.
 """
 
 from __future__ import annotations
@@ -63,16 +64,16 @@ DRIFT = ROOT / "tools" / "scraper" / "reports" / "drift.md"
 # (name, argv, what it does). This list is not the order - WAVES is.
 STEPS: list[tuple[str, list[str], str]] = [
     (
-        "catalogue",
+        "mods",
         ["gather_listing.py"],
-        "every mod on sutd.edu.sg, walked from the course sitemap: new mods, "
-        "tags, descriptions, source URLs, grading and workload",
+        "every mod on sutd.edu.sg, walked from the two course sitemaps: new "
+        "mods, tags, descriptions, source URLs, grading and workload",
     ),
     (
         "hass",
         ["scrape.py"],
-        "hass.sutd.edu.sg's own subject pages. It also asks the four pillar "
-        "sites, whose adapters are stubs and yield nothing",
+        "hass.sutd.edu.sg's freshmore and elective subject listings. The only "
+        "step on a host other than www.sutd.edu.sg",
     ),
     (
         "tracks",
@@ -80,9 +81,11 @@ STEPS: list[tuple[str, list[str], str]] = [
         "specialisation-track criteria -> data/specializations.json",
     ),
     (
-        "calendar",
+        "terms",
         ["term_calendar.py"],
-        "term dates -> data/term-calendar.json",
+        "term dates from sutd.edu.sg's academic calendar, plus the Singapore "
+        "public holidays inside each term from data.gov.sg "
+        "-> data/term-calendar.json",
     ),
     (
         "minors",
@@ -112,7 +115,7 @@ STEPS: list[tuple[str, list[str], str]] = [
 
 # Steps in the same wave run together; a wave finishes before the next starts.
 WAVES: list[list[str]] = [
-    ["catalogue", "tracks", "minors", "calendar"],
+    ["mods", "tracks", "minors", "terms"],
     ["hass"],
     ["prereqs"],
     ["propose"],
@@ -156,9 +159,17 @@ def write_drift(results: list[tuple[str, bool, str, float]], by_name: dict) -> N
     reviewer instead of sitting on a run summary nobody opens.
     """
     order = {n: i for i, n in enumerate(REPORTING)}
+    # Only a run that actually RAN a reporting step gets to speak for the file.
+    # Without this, `--only terms` deletes a standing report it never looked at,
+    # and the next full run recreates it: a PR of pure churn saying nothing
+    # changed.
+    ran = [r for r in results if r[0] in order]
+    if not ran:
+        return
+
     parts: list[str] = []
-    for name, ok, out, _ in sorted(results, key=lambda r: order.get(r[0], 99)):
-        if name not in order or not ok or not out.strip():
+    for name, ok, out, _ in sorted(ran, key=lambda r: order[r[0]]):
+        if not ok or not out.strip():
             continue
         parts += [f"## {name}", "", by_name[name][1], "", "```", out.strip(), "```", ""]
 
