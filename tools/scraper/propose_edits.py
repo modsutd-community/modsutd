@@ -31,9 +31,14 @@ commits both into a pull request. Nothing here pushes and nothing here writes to
 main: /data is human-reviewed, and a model proposing an edit does not change
 that.
 
-Minors are reported and never proposed. `data/minors.json` states requirements
-as prose the repo expands by hand, so there is no single field to replace and
-the report is the deliverable.
+BOTH REPORTS, not just prerequisites. `audit_prereqs.py` asks whether a course
+page means the codes it names; `gather_minors.py` asks the same question of a
+minor page. The judgement is identical and so is the gate, so both feed this.
+
+What it will NOT do for minors is add or remove a minor. Discovery reports that
+SUTD publishes a programme the repo has never heard of, and writing a whole
+record from a page of prose is not the same job as adding one code to a list a
+human already shaped. Those stay in the report.
 """
 
 from __future__ import annotations
@@ -51,6 +56,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 COURSES = ROOT / "data" / "courses"
 
 FIELDS = {"prerequisites", "corequisites", "prereqTree"}
+MINORS = ROOT / "data" / "minors.json"
 CODE_RE = re.compile(r"^\d{2}\.\d{3}[A-Za-z]?$")
 
 # Five, not one and not fifty. One per request is forty round trips for a
@@ -89,6 +95,35 @@ Rules you must follow:
 - Every code must look like NN.NNN.
 - Propose nothing when the page and the record already agree, or when the page
   is ambiguous. Skipping is the correct answer more often than editing."""
+
+
+MINOR_SYSTEM = """You reconcile a university's minor-programme records against its own web pages.
+
+You are given, per minor, the visible text of its page and the requirement groups
+the repository holds. Each group is "choose `count` from `anyOf`". Decide whether
+a code the page names should join one of those groups.
+
+A code appearing on a page is NOT automatically a requirement. These pages name
+codes inside prerequisites, inside examples, and inside sentences about other
+programmes. Several groups in the repo are a deliberate expansion of an
+open-ended phrase like "any HASS elective", so a code the repo lists that the
+page does not name is normal and is not your problem.
+
+Reply with JSON and nothing else, in exactly this shape:
+
+{"edits": [{"minor": "minor-ai", "requirement": 0, "add": ["50.057"],
+            "quote": "exact substring copied from the page text",
+            "why": "one sentence"}],
+ "skipped": [{"minor": "minor-dh", "why": "one sentence"}]}
+
+Rules you must follow:
+- `requirement` is the INDEX of the group to add to, from the list you were given.
+- `add` lists only codes to ADD. Never removes, never reorders.
+- `quote` MUST be copied character for character from the page text you were
+  given for that minor. If you cannot quote the page, skip the minor instead.
+- Every code must look like NN.NNN.
+- Propose nothing when the page is describing a prerequisite, an example, or
+  another programme. Skipping is the correct answer more often than editing."""
 
 
 def norm(s: str) -> str:
@@ -143,6 +178,84 @@ def payload(rows: list[dict]) -> str:
         )
         for r in rows
     )
+
+
+def minor_candidates(rows: list[dict]) -> list[dict]:
+    """Minors whose page names a code the record does not, with text to quote.
+
+    The `_index` row is discovery, not a minor. A minor SUTD added is reported
+    and never proposed: writing a whole record from prose is a different job
+    from adding one code to a list a human already shaped.
+    """
+    return [
+        r for r in rows
+        if r.get("id") != "_index" and r.get("extra")
+        and len(r.get("page_text") or "") >= MIN_PAGE_CHARS
+    ]
+
+
+def minor_payload(rows: list[dict], book: dict) -> str:
+    by_id = {m.get("id"): m for m in book.get("minors") or []}
+    out = []
+    for r in rows:
+        m = by_id.get(r["id"], {})
+        groups = [
+            {"index": i, "label": g.get("label", ""), "count": g.get("count"),
+             "anyOf": g.get("anyOf") or []}
+            for i, g in enumerate(m.get("requirements") or [])
+        ]
+        out.append(json.dumps({
+            "minor": r["id"],
+            "name": r.get("name"),
+            "page_text": r.get("page_text", ""),
+            "requirement_groups": groups,
+            "page_names_repo_does_not": r.get("extra", []),
+            "repo_note": m.get("note", ""),
+        }, ensure_ascii=False))
+    return "\n".join(out)
+
+
+def validate_minor(edit: dict, by_id: dict, book_ids: dict, codes: set[str]) -> tuple[bool, str]:
+    mid = str(edit.get("minor", ""))
+    add = edit.get("add")
+    quote = str(edit.get("quote", ""))
+
+    if mid not in book_ids:
+        return False, f"no minor {mid!r} in data/minors.json"
+    if mid not in by_id:
+        return False, f"{mid} was not one of the minors reported to the model"
+    reqs = book_ids[mid].get("requirements") or []
+    idx = edit.get("requirement")
+    if not isinstance(idx, int) or not 0 <= idx < len(reqs):
+        return False, f"requirement {idx!r} is not a group on {mid}"
+    if not isinstance(add, list) or not add or not all(isinstance(c, str) for c in add):
+        return False, "add must be a non-empty list of course codes"
+    for c in add:
+        if not CODE_RE.match(c):
+            return False, f"{c!r} is not a course code"
+        if c not in codes:
+            return False, f"{c} has no record in data/courses"
+        if c in (reqs[idx].get("anyOf") or []):
+            return False, f"{c} is already in that group"
+    if not quote:
+        return False, "no quote"
+    if norm(quote) not in norm(by_id[mid].get("page_text", "")):
+        return False, "quote is not in the page text this minor was reported with"
+    return True, ""
+
+
+def apply_minor(edit: dict, book: dict) -> str:
+    """Mutate the in-memory book. One write happens after every edit is applied.
+
+    data/minors.json is a single file holding all of them, so writing per edit
+    would reread a file the previous edit had already changed.
+    """
+    for m in book.get("minors") or []:
+        if m.get("id") == edit["minor"]:
+            group = m["requirements"][edit["requirement"]]
+            group["anyOf"] = list(group.get("anyOf") or []) + list(edit["add"])
+            return "staged"
+    return "not found"
 
 
 def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[bool, str]:
@@ -226,76 +339,66 @@ SELF_CHECK: list[tuple[dict, bool]] = [
 ]
 
 
+# The same, for minors. A group index is the part a model gets wrong quietly:
+# an off-by-one puts a core course into the electives list and the diff looks
+# plausible.
+SELF_CHECK_MINORS: list[tuple[dict, bool]] = [
+    ({"minor": "_m", "requirement": 0, "add": ["50.001"], "quote": "take 50.001"}, True),
+    ({"minor": "_m", "requirement": 0, "add": ["50.001"], "quote": "not on the page"}, False),
+    ({"minor": "_m", "requirement": 9, "add": ["50.001"], "quote": "take 50.001"}, False),
+    ({"minor": "_m", "requirement": 0, "add": ["50.002"], "quote": "take 50.001"}, False),
+    ({"minor": "_m", "requirement": 0, "add": ["99.123"], "quote": "take 50.001"}, False),
+    ({"minor": "_m", "requirement": 0, "add": [], "quote": "take 50.001"}, False),
+    ({"minor": "_nope", "requirement": 0, "add": ["50.001"], "quote": "take 50.001"}, False),
+]
+
+
 def self_check() -> int:
-    by_code = {"50.037": {"listed": "These courses are   HELPFUL but not required for 50.037."}}
     codes = known_codes()
     bad = 0
+
+    by_code = {"50.037": {"listed": "These courses are   HELPFUL but not required for 50.037."}}
     for edit, want in SELF_CHECK:
         got, why = validate(edit, by_code, codes)
         if got != want:
             bad += 1
             print(f"FAIL {edit} -> {got} ({why or 'accepted'}), wanted {want}")
-    print(f"{len(SELF_CHECK) - bad}/{len(SELF_CHECK)} validator cases ok")
+
+    # 50.002 is already in the group, which is why proposing it must be refused.
+    book_ids = {"_m": {"id": "_m", "requirements": [
+        {"label": "core", "count": 1, "anyOf": ["50.002"]},
+    ]}}
+    by_id = {"_m": {"id": "_m", "page_text": "Students   TAKE 50.001 in term 4."}}
+    for edit, want in SELF_CHECK_MINORS:
+        got, why = validate_minor(edit, by_id, book_ids, codes)
+        if got != want:
+            bad += 1
+            print(f"FAIL {edit} -> {got} ({why or 'accepted'}), wanted {want}")
+
+    total = len(SELF_CHECK) + len(SELF_CHECK_MINORS)
+    print(f"{total - bad}/{total} validator cases ok")
     return 1 if bad else 0
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--self-check", action="store_true",
-                    help="run the validator against known-good and known-bad edits")
-    ap.add_argument("--prereqs", help="audit_prereqs.py --json output")
-    ap.add_argument("--minors", help="gather_minors.py --json output, reported not proposed")
-    ap.add_argument("--report-out", default="")
-    ap.add_argument("--dry-run", action="store_true", help="decide, write nothing")
-    ap.add_argument("--limit", type=int, default=0, help="candidates, not requests")
-    args = ap.parse_args()
-
-    if args.self_check:
-        return self_check()
-
-    report = ["## proposed edits", ""]
-
-    if not llm.configured():
-        return emit(
-            report
-            + [
-                "No model token is set, so nothing was proposed. The drift reports "
-                "above still say what changed, and applying them stays a human job "
-                "until one of `GEMINI_TOKEN`, `GROQ_TOKEN` or `OPENAI_TOKEN` exists. "
-                "`.env.example` says where each goes.",
-                "",
-            ],
-            args.report_out,
-        )
-
-    rows: list[dict] = []
-    if args.prereqs and pathlib.Path(args.prereqs).exists():
-        rows = candidates(json.loads(pathlib.Path(args.prereqs).read_text(encoding="utf-8")))
+def run_prereqs(path, report, args, codes):
+    """Course records against their own pages. Returns (accepted, rejected, skipped, providers)."""
+    rows = candidates(json.loads(pathlib.Path(path).read_text(encoding="utf-8")))
     if args.limit:
         rows = rows[: args.limit]
     if not rows:
-        return emit(
-            report + ["Nothing to propose: no course record disagrees with its page.", ""],
-            args.report_out,
-        )
+        report += ["### prerequisites", "",
+                   "Nothing to propose: no course record disagrees with its page.", ""]
+        return [], [], [], set()
 
     by_code = {r["code"]: r for r in rows}
-    codes = known_codes()
-
-    accepted: list[tuple[dict, str]] = []
-    rejected: list[tuple[dict, str]] = []
-    skipped: list[dict] = []
-    providers: set[str] = set()
-
+    accepted, rejected, skipped, providers = [], [], [], set()
     for i in range(0, len(rows), BATCH):
         batch = rows[i : i + BATCH]
         answer = llm.chat(SYSTEM, payload(batch), timeout=120.0)
         if answer is None:
             # One batch failing is not the run failing. The others still have
             # their evidence, and a partial set of proposals is reviewable.
-            report.append(
-                f"- no provider answered for {', '.join(r['code'] for r in batch)}"
-            )
+            report.append(f"- no provider answered for {', '.join(r['code'] for r in batch)}")
             continue
         provider, parsed = answer
         providers.add(provider)
@@ -307,44 +410,130 @@ def main() -> int:
                 rejected.append((edit, why))
         skipped += parsed.get("skipped") or []
 
-    report[1:1] = [
-        "",
-        f"{len(rows)} course record(s) disagreed with their page. "
-        f"Read by {', '.join(sorted(providers)) or 'nothing'}.",
-    ]
-
-    if accepted:
-        report += ["", "### applied", ""]
-        for edit, outcome in accepted:
-            report += [
-                f"**{edit['code']}** `{edit['field']}` -> "
-                f"`{json.dumps(edit['value'], ensure_ascii=False)}` ({outcome})",
-                "",
-                f"> {str(edit.get('quote', '')).strip()}",
-                "",
-                str(edit.get("why", "")).strip(),
-                "",
-            ]
-    if rejected:
-        report += ["### dropped by validation", "", "| course | field | why |", "|---|---|---|"]
+    report += ["### prerequisites", "",
+               f"{len(rows)} course record(s) disagreed with their page.", ""]
+    for edit, outcome in accepted:
         report += [
-            f"| {e.get('code', '?')} | {e.get('field', '?')} | {why} |" for e, why in rejected
+            f"**{edit['code']}** `{edit['field']}` -> "
+            f"`{json.dumps(edit['value'], ensure_ascii=False)}` ({outcome})",
+            "", f"> {str(edit.get('quote', '')).strip()}",
+            "", str(edit.get("why", "")).strip(), "",
         ]
+    if rejected:
+        report += ["dropped by validation:", "", "| course | field | why |", "|---|---|---|"]
+        report += [f"| {e.get('code', '?')} | {e.get('field', '?')} | {why} |"
+                   for e, why in rejected]
         report.append("")
     if skipped:
-        report += ["### read and left alone", "", "| course | why |", "|---|---|"]
-        report += [f"| {s.get('code', '?')} | {str(s.get('why', '')).strip()} |" for s in skipped[:40]]
+        report += ["read and left alone:", "", "| course | why |", "|---|---|"]
+        report += [f"| {s.get('code', '?')} | {str(s.get('why', '')).strip()} |"
+                   for s in skipped[:40]]
         report.append("")
+    return accepted, rejected, skipped, providers
 
+
+def run_minors(path, report, args, codes):
+    """Minor requirement groups against their own pages."""
+    rows = minor_candidates(json.loads(pathlib.Path(path).read_text(encoding="utf-8")))
+    if args.limit:
+        rows = rows[: args.limit]
+    if not rows:
+        report += ["### minors", "",
+                   "Nothing to propose: no minor page names a code its record lacks.", ""]
+        return [], [], [], set()
+
+    book = json.loads(MINORS.read_text(encoding="utf-8"))
+    book_ids = {m.get("id"): m for m in book.get("minors") or []}
+    by_id = {r["id"]: r for r in rows}
+    accepted, rejected, skipped, providers = [], [], [], set()
+
+    for i in range(0, len(rows), BATCH):
+        batch = rows[i : i + BATCH]
+        answer = llm.chat(MINOR_SYSTEM, minor_payload(batch, book), timeout=120.0)
+        if answer is None:
+            report.append(f"- no provider answered for {', '.join(r['id'] for r in batch)}")
+            continue
+        provider, parsed = answer
+        providers.add(provider)
+        for edit in parsed.get("edits") or []:
+            ok, why = validate_minor(edit, by_id, book_ids, codes)
+            if ok:
+                accepted.append((edit, "would write" if args.dry_run else apply_minor(edit, book)))
+            else:
+                rejected.append((edit, why))
+        skipped += parsed.get("skipped") or []
+
+    # One write, after every edit. data/minors.json holds all of them, so a
+    # write per edit would reread a file the previous edit had already changed.
+    if accepted and not args.dry_run:
+        MINORS.write_text(json.dumps(book, indent=2, ensure_ascii=False) + "\n",
+                          encoding="utf-8")
+
+    report += ["### minors", "",
+               f"{len(rows)} minor page(s) name a code their record lacks.", ""]
+    for edit, outcome in accepted:
+        group = (book_ids.get(edit["minor"], {}).get("requirements") or [{}])[edit["requirement"]]
+        report += [
+            f"**{edit['minor']}** + `{', '.join(edit['add'])}` "
+            f"to \"{group.get('label', edit['requirement'])}\" ({outcome})",
+            "", f"> {str(edit.get('quote', '')).strip()}",
+            "", str(edit.get("why", "")).strip(), "",
+        ]
+    if rejected:
+        report += ["dropped by validation:", "", "| minor | add | why |", "|---|---|---|"]
+        report += [f"| {e.get('minor', '?')} | {', '.join(e.get('add') or []) or '?'} | {why} |"
+                   for e, why in rejected]
+        report.append("")
+    if skipped:
+        report += ["read and left alone:", "", "| minor | why |", "|---|---|"]
+        report += [f"| {s.get('minor', '?')} | {str(s.get('why', '')).strip()} |"
+                   for s in skipped[:40]]
+        report.append("")
+    return accepted, rejected, skipped, providers
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--self-check", action="store_true",
+                    help="run the validators against known-good and known-bad edits")
+    ap.add_argument("--prereqs", help="audit_prereqs.py --json output")
+    ap.add_argument("--minors", help="gather_minors.py --json output")
+    ap.add_argument("--report-out", default="")
+    ap.add_argument("--dry-run", action="store_true", help="decide, write nothing")
+    ap.add_argument("--limit", type=int, default=0, help="candidates per report, not requests")
+    args = ap.parse_args()
+
+    if args.self_check:
+        return self_check()
+
+    report = ["## proposed edits", ""]
+
+    if not llm.configured():
+        return emit(report + [
+            "No model token is set, so nothing was proposed. The drift reports "
+            "above still say what changed, and applying them stays a human job "
+            "until one of `GEMINI_TOKEN`, `GROQ_TOKEN` or `OPENAI_TOKEN` exists. "
+            "`.env.example` says where each goes.", "",
+        ], args.report_out)
+
+    codes = known_codes()
+    accepted, providers = [], set()
+    for flag, runner in ((args.prereqs, run_prereqs), (args.minors, run_minors)):
+        if flag and pathlib.Path(flag).exists():
+            a, _r, _s, pv = runner(flag, report, args, codes)
+            accepted += a
+            providers |= pv
+
+    report[1:1] = ["", f"Read by {', '.join(sorted(providers)) or 'nothing'}."]
     if accepted:
         report += [
             "Each edit above is a proposal a model made from the page text, checked "
             "against that text before it was written. Read the quote before merging: "
             "it is copied from the page, and the page is what the record has to "
-            "match.",
-            "",
+            "match.", "",
         ]
     return emit(report, args.report_out)
+
 
 
 if __name__ == "__main__":

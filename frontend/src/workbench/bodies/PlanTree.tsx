@@ -365,10 +365,9 @@ export function PlanTree({ onPick }: Props) {
                 ? `${track.pillar} · achieved by T${earliest}`
                 : `${track.pillar} · plan doesn't reach it`;
               const tip = isDeclared ? base : `declared? ${base}`;
-              // Tracks carry `url`, minors carry `source` - two scrapes, two
+              // Tracks carry `url`, minors carry `source`: two scrapes, two
               // spellings, and no reason to make a reader care which.
-              const src = (track as { url?: string; source?: string }).url
-                ?? (track as { source?: string }).source;
+              const src = track.url ?? track.source;
               return (
                 <span key={track.id} className={styles.badgeWrap}>
                 <label
