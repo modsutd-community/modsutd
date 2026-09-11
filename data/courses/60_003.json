@@ -7,24 +7,7 @@
   "pillar": "DAI",
   "term": "4",
   "prerequisites": [],
-  "schedules": [
-    {
-      "type": "Cohort",
-      "day": "Thursday",
-      "startTime": "16:00",
-      "endTime": "19:00",
-      "location": "2.306",
-      "instructors": []
-    },
-    {
-      "type": "Cohort",
-      "day": "Tuesday",
-      "startTime": "16:00",
-      "endTime": "19:00",
-      "location": "2.406",
-      "instructors": []
-    }
-  ],
+  "schedules": [],
   "tags": [
     "Term 4",
     "Core",
