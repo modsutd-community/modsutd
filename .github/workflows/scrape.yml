@@ -57,23 +57,64 @@ jobs:
               working-directory: tools/scraper
               run: pip install -r requirements.txt
 
-            # One command for everything a mod record is made of: the course
-            # listing, the pillar sites, specialisation tracks, term dates, and
-            # a prerequisite reconciliation. It isolates its own steps - one
-            # SUTD page being redesigned must not hold the other four hostage -
-            # so it is not marked continue-on-error here; it already is
-            # internally, and a non-zero exit means EVERY step failed, which is
-            # the network rather than a page.
+            # One command for everything a mod record is made of: the
+            # catalogue, hass.sutd.edu.sg, specialisation tracks, term dates,
+            # a prerequisite reconciliation and a minor check, then a model
+            # reading the last two into proposed edits. It isolates its own
+            # steps, so it is not marked continue-on-error here: it already is
+            # internally, and a non-zero exit means EVERY step failed, which
+            # is the network rather than a page.
+            #
+            # The model tokens are optional. Without them the `propose` step
+            # says so and the drift report is still committed, so the PR opens
+            # either way.
             - name: refresh the mods
               id: refresh
               if: steps.when.outputs.go == 'true'
-              # Named, not inherited. `shell: bash` is `bash -eo pipefail`, so
-              # the pipe below reports the scraper's status and not tee's; a
-              # refresh that failed every step would otherwise open a PR
-              # looking healthy. Do not drop this to rely on the default.
-              shell: bash
+              # Redirected, not piped. `cmd | tee` reports tee's status, so a
+              # refresh that failed every step used to open a PR looking
+              # healthy. With a plain redirect the step's exit code is the
+              # scraper's, and there is no shell setting to get wrong.
+              env:
+                  # Optional. `propose` says so in its own report when none
+                  # is set, and the rest of the refresh is unaffected.
+                  GEMINI_TOKEN: ${{ secrets.GEMINI_TOKEN }}
+                  GROQ_TOKEN: ${{ secrets.GROQ_TOKEN }}
+                  OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
               run: |
-                  python tools/scraper/mods_refresh.py --status-out "$GITHUB_OUTPUT" \n                    | tee -a "$GITHUB_STEP_SUMMARY"
+                  python tools/scraper/mods_refresh.py --status-out "$GITHUB_OUTPUT" > /tmp/refresh.md
+                  cat /tmp/refresh.md >> "$GITHUB_STEP_SUMMARY"
+
+            # The PR body IS the report. Pointing a reviewer at a run summary
+            # they have to go and open is how the prereq and minor findings came
+            # to sit unread: the diff is in front of them and the reasoning was
+            # somewhere else.
+            - name: assemble the PR body
+              if: steps.when.outputs.go == 'true'
+              run: |
+                  {
+                    if [ -n "${{ steps.refresh.outputs.failed }}" ]; then
+                      echo "> PARTIAL REFRESH. These steps failed and their part of the data is unchanged: ${{ steps.refresh.outputs.failed }}."
+                      echo
+                    fi
+                    echo 'Opened by `tools/scraper/mods_refresh.py`.'
+                    echo
+                    echo 'Skim the diff. SUTD HTML changes silently and a parser can pull in junk;'
+                    echo 'if something looks wrong, kick this back and patch the source under'
+                    echo '`tools/scraper/`. Two things are worth a closer look every time:'
+                    echo
+                    echo '- **Term dates.** They decide where a weekly-view paste puts a term of classes.'
+                    echo '- **Prerequisites.** Every proposed edit below quotes the page it came from.'
+                    echo '  Read the quote. A page can name a code and then disown it.'
+                    echo
+                    cat tools/scraper/.reports/proposed.md 2>/dev/null || true
+                    echo
+                    echo '<details><summary>full run output</summary>'
+                    echo
+                    cat /tmp/refresh.md
+                    echo
+                    echo '</details>'
+                  } > /tmp/pr-body.md
 
             - name: open PR with diff
               if: steps.when.outputs.go == 'true'
@@ -86,25 +127,7 @@ jobs:
                   token: ${{ secrets.MODSUTD_BOT_TOKEN }}
                   commit-message: "data: monthly mods refresh"
                   title: "data: monthly mods refresh"
-                  # A step that fails is isolated, so the others still write files
-                  # and this PR still opens. Say so at the top, or the diff reads
-                  # as a complete refresh that simply found less.
-                  body: |
-                      ${{ steps.refresh.outputs.failed != '' && format('> PARTIAL REFRESH. These steps failed and their part of the data is unchanged: {0}. Read the run summary before merging.', steps.refresh.outputs.failed) || '' }}
-
-                      `tools/scraper/mods_refresh.py`. The step summary on the run says which
-                      of its six steps passed and what changed.
-
-                      Skim the diff. SUTD's HTML changes silently and a parser can pull in junk;
-                      if something looks wrong, kick this back and patch the source under
-                      `tools/scraper/`.
-
-                      Two things worth a closer look:
-
-                      - **Term dates.** They decide where a weekly-view paste puts a term of classes.
-                      - **Prerequisites.** The refresh REPORTS drift and never applies it - a page
-                        can name a code and then disown it ("helpful but not required"). Read the
-                        sentence before editing a record.
+                  body-path: /tmp/pr-body.md
                   branch: chore/mods-refresh-${{ github.run_id }}
                   base: main
                   delete-branch: true

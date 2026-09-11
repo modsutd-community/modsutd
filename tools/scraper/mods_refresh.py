@@ -3,7 +3,7 @@
 
     python tools/scraper/mods_refresh.py              # refresh, then report
     python tools/scraper/mods_refresh.py --dry-run    # report, write nothing
-    python tools/scraper/mods_refresh.py --only listing,tracks
+    python tools/scraper/mods_refresh.py --only catalogue,tracks
 
 WHY THIS EXISTS
 The pieces of a mod are refreshed by separate scripts, and the monthly job
@@ -24,10 +24,17 @@ environment rather than one page.
 WAVES, NOT A QUEUE. Most of the wall clock is waiting on sutd.edu.sg, so steps
 that touch different files run together. What forces an order is only ever a
 shared file:
-  wave 1  listing, tracks, minors, calendar   - four different outputs
-  wave 2  pillars                             - writes data/courses too, so it
-                                                must not race the listing
+  wave 1  catalogue, tracks, minors, calendar - four different outputs
+  wave 2  hass                                - writes data/courses too, so
+                                                it must not race the catalogue
   wave 3  prereqs                             - reads what the two above wrote
+
+STEP NAMES SAY WHICH SITE. `catalogue` is sutd.edu.sg's own course sitemap,
+which is every undergraduate mod in every pillar. `hass` is hass.sutd.edu.sg,
+a different site with its own layout. They were called `listing` and `pillars`,
+which read as though the first were a subset and the second the four pillar
+sites. It is the other way round: the four pillar adapters in
+sources/pillar.py are stubs that yield nothing.
 """
 
 from __future__ import annotations
@@ -42,18 +49,30 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 
+# Machine-readable step output, gitignored. The reports write here so the
+# proposal step can read them without either one parsing the other's prose.
+SCRATCH = HERE / ".reports"
+
+# The one tracked artefact. Written only when a report has something to act on
+# and deleted when it does not, so its own diff is what opens the monthly pull
+# request: a month with the same drift as the last produces no file change and
+# no PR, which is the honest signal. A timestamp in here would open one every
+# month and teach the reviewer to skim.
+DRIFT = ROOT / "tools" / "scraper" / "reports" / "drift.md"
+
 # (name, argv, what it does). This list is not the order - WAVES is.
 STEPS: list[tuple[str, list[str], str]] = [
     (
-        "listing",
+        "catalogue",
         ["gather_listing.py"],
-        "the official course listing: new mods, tags, descriptions, source URLs, "
-        "grading and workload",
+        "every mod on sutd.edu.sg, walked from the course sitemap: new mods, "
+        "tags, descriptions, source URLs, grading and workload",
     ),
     (
-        "pillars",
+        "hass",
         ["scrape.py"],
-        "the HASS listing and the four pillar sites",
+        "hass.sutd.edu.sg's own subject pages. It also asks the four pillar "
+        "sites, whose adapters are stubs and yield nothing",
     ),
     (
         "tracks",
@@ -67,23 +86,36 @@ STEPS: list[tuple[str, list[str], str]] = [
     ),
     (
         "minors",
-        ["gather_minors.py"],
+        ["gather_minors.py", "--json", str(SCRATCH / "minors.json")],
         "each minor against its own page. REPORTS ONLY - the requirements are "
         "prose, and the repo expands 'any HASS elective' into a real list",
     ),
     (
         "prereqs",
-        ["audit_prereqs.py"],
-        "prerequisites against each mod's own page. REPORTS ONLY - a page can "
-        "name a code and then disown it, so a human applies these",
+        ["audit_prereqs.py", "--json", str(SCRATCH / "prereqs.json")],
+        "prerequisites against each mod's own page. Reports; `propose` is what "
+        "acts on it",
+    ),
+    (
+        "propose",
+        [
+            "propose_edits.py",
+            "--prereqs", str(SCRATCH / "prereqs.json"),
+            "--minors", str(SCRATCH / "minors.json"),
+            "--report-out", str(SCRATCH / "proposed.md"),
+        ],
+        "reads the two reports with a model and edits data/courses where the "
+        "page supports it. Every proposal is validated against the quoted page "
+        "text before it is written",
     ),
 ]
 
 # Steps in the same wave run together; a wave finishes before the next starts.
 WAVES: list[list[str]] = [
-    ["listing", "tracks", "minors", "calendar"],
-    ["pillars"],
+    ["catalogue", "tracks", "minors", "calendar"],
+    ["hass"],
     ["prereqs"],
+    ["propose"],
 ]
 
 
@@ -91,7 +123,7 @@ def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
     """Run one step. Returns (ok, last few lines of output)."""
     cmd = [sys.executable, *script]
     # Only the writers understand --dry-run; the audit never writes at all.
-    if dry_run and script[0] in {"gather_listing.py", "scrape.py"}:
+    if dry_run and script[0] in {"gather_listing.py", "scrape.py", "propose_edits.py"}:
         cmd.append("--dry-run")
     try:
         p = subprocess.run(
@@ -100,14 +132,50 @@ def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
         )
     except subprocess.TimeoutExpired:
         return False, "timed out after 30 minutes"
-    tail = "\n".join((p.stdout or p.stderr or "").strip().splitlines()[-12:])
-    return p.returncode == 0, tail
+    out = (p.stdout or p.stderr or "").strip()
+    return p.returncode == 0, out
 
 
 def timed(script: list[str], dry_run: bool) -> tuple[bool, str, float]:
     t0 = time.time()
     ok, tail = run(script, dry_run)
     return ok, tail, time.time() - t0
+
+
+# Steps whose only product is prose. A change in what they say is the thing
+# worth a human reading, and nothing else in the run records it.
+REPORTING = ("minors", "prereqs", "propose")
+
+
+def write_drift(results: list[tuple[str, bool, str, float]], by_name: dict) -> None:
+    """The tracked report, or nothing.
+
+    A run that changes no file opens no pull request, and the prereq and
+    minor reports change no file by design. Writing what they said into a
+    tracked path gives them a diff of their own, so a finding reaches a
+    reviewer instead of sitting on a run summary nobody opens.
+    """
+    order = {n: i for i, n in enumerate(REPORTING)}
+    parts: list[str] = []
+    for name, ok, out, _ in sorted(results, key=lambda r: order.get(r[0], 99)):
+        if name not in order or not ok or not out.strip():
+            continue
+        parts += [f"## {name}", "", by_name[name][1], "", "```", out.strip(), "```", ""]
+
+    DRIFT.parent.mkdir(parents=True, exist_ok=True)
+    if not parts:
+        DRIFT.unlink(missing_ok=True)
+        return
+    head = [
+        "# drift",
+        "",
+        "Written by `tools/scraper/mods_refresh.py`. Do not edit it by hand: the",
+        "next refresh overwrites it, and deletes it when there is nothing to say.",
+        "It carries no timestamp on purpose, so a month that finds the same drift",
+        "as the last changes no file and opens no pull request.",
+        "",
+    ]
+    DRIFT.write_text("\n".join(head + parts), encoding="utf-8")
 
 
 def changed_files() -> list[str]:
@@ -134,6 +202,11 @@ def main() -> int:
     )
     args = ap.parse_args()
 
+    # The steps write their machine-readable output here and `propose`
+    # reads it, so it has to exist before the first wave, not on demand
+    # inside four scripts that would each have to remember.
+    SCRATCH.mkdir(parents=True, exist_ok=True)
+
     wanted = {s.strip() for s in args.only.split(",") if s.strip()}
     steps = [s for s in STEPS if not wanted or s[0] in wanted]
     if wanted - {n for n, _, _ in STEPS}:
@@ -158,8 +231,13 @@ def main() -> int:
                 ok, tail, secs = fut.result()
                 results.append((name, ok, tail, secs))
                 print(f"## {name}\n{by_name[name][1]}\n")
-                print(tail or "(no output)")
+                # The summary shows a tail; the whole thing goes into the
+                # drift file, where a reviewer can read the sentence that
+                # decided a proposal.
+                print("\n".join(tail.splitlines()[-12:]) or "(no output)")
                 print(f"\n-> {'ok' if ok else 'FAILED'} in {secs:.0f}s\n", flush=True)
+
+    write_drift(results, by_name)
 
     wall = time.time() - started
     print("## summary\n")

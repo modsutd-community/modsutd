@@ -329,6 +329,22 @@ Two are deliberately not monthly, and say why in their own headers:
 - A review must be a **comment** on the mod's discussion, never the discussion
   body. giscus renders a discussion's comments and never its body, so a review
   written into the first post is invisible on the mod page forever.
+- `tools/scraper/reports/drift.md` is **generated**, by `mods_refresh.py`, and
+  is the only tracked thing the report-only steps produce. It exists so they can
+  open a pull request: a run that changes no file opens none, and the prereq and
+  minor checks change no file by design, so their findings used to reach a run
+  summary and stop there. It carries no timestamp, so a month that finds the same
+  drift as the last changes nothing and opens nothing. Deleted when there is
+  nothing to say. Do not hand-edit it.
+- **A model proposes prerequisite edits; it never writes one.**
+  `tools/scraper/propose_edits.py` reads `audit_prereqs.py`'s JSON, asks a model
+  whether the page MEANT the codes it names, and validates every proposal before
+  touching a file: the record has to exist, the field has to be one of three, every
+  code has to have a file, and the `quote` has to appear in the page text that
+  course was reported with. A proposal that fails is listed as dropped, never
+  applied. `--self-check` runs the validator against known-good and known-bad
+  edits without a network call. Which providers exist and in what order is
+  `tools/scraper/agents/llm.py`, and nowhere else.
 - `data/term-calendar.json` is **generated**, by
   `tools/scraper/term_calendar.py`, in the monthly `scrape` job. Do not
   hand-edit it, and do not add a rollover step that does: a file a human has to
