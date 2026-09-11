@@ -123,6 +123,11 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dry-run", action="store_true", help="write nothing")
     ap.add_argument(
+        "--status-out",
+        default="",
+        help="append `failed=a,b` here. Point it at $GITHUB_OUTPUT and the job can say so on the PR, because a partial refresh still writes files and still opens one.",
+    )
+    ap.add_argument(
         "--only",
         default="",
         help="comma-separated step names: " + ", ".join(n for n, _, _ in STEPS),
@@ -171,6 +176,11 @@ def main() -> int:
         print(f"  ... and {len(touched) - 25} more")
 
     failed = [n for n, ok, _, _ in results if not ok]
+    # Appended, because $GITHUB_OUTPUT is a shared file the job writes to.
+    if args.status_out:
+        with open(args.status_out, "a", encoding="utf-8") as fh:
+            print("failed=" + ",".join(failed), file=fh)
+
     if failed and len(failed) == len(results):
         print(f"\nEVERY step failed ({', '.join(failed)}) - this is the network "
               f"or the environment, not one page.", file=sys.stderr)

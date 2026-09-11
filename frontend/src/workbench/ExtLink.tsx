@@ -35,11 +35,28 @@ export function ExtIcon({ className }: { className?: string }) {
  * checkbox. preventDefault is not the answer either, since that is what
  * navigates. Render it as a sibling of the label.
  */
+/**
+ * http(s) only. Every href here comes out of `/data/*.json`, which a scraper
+ * writes and a human reviews, so a `javascript:` URL would have to survive both
+ * - but a link that renders nothing is a cheaper guarantee than a review that
+ * has to keep noticing.
+ */
+function safeHref(href: string): string | null {
+  try {
+    const u = new URL(href, window.location.origin);
+    return u.protocol === 'https:' || u.protocol === 'http:' ? u.href : null;
+  } catch {
+    return null;
+  }
+}
+
 export function ExtLink({ href, what }: { href: string; what: string }) {
+  const safe = safeHref(href);
+  if (!safe) return null;
   return (
     <a
       className={styles.link}
-      href={href}
+      href={safe}
       target="_blank"
       rel="noopener noreferrer"
       data-act="source-link"

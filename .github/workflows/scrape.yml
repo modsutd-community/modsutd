@@ -65,6 +65,7 @@ jobs:
             # internally, and a non-zero exit means EVERY step failed, which is
             # the network rather than a page.
             - name: refresh the mods
+              id: refresh
               if: steps.when.outputs.go == 'true'
               # Named, not inherited. `shell: bash` is `bash -eo pipefail`, so
               # the pipe below reports the scraper's status and not tee's; a
@@ -72,7 +73,7 @@ jobs:
               # looking healthy. Do not drop this to rely on the default.
               shell: bash
               run: |
-                  python tools/scraper/mods_refresh.py | tee -a "$GITHUB_STEP_SUMMARY"
+                  python tools/scraper/mods_refresh.py --status-out "$GITHUB_OUTPUT" \n                    | tee -a "$GITHUB_STEP_SUMMARY"
 
             - name: open PR with diff
               if: steps.when.outputs.go == 'true'
@@ -85,7 +86,12 @@ jobs:
                   token: ${{ secrets.MODSUTD_BOT_TOKEN }}
                   commit-message: "data: monthly mods refresh"
                   title: "data: monthly mods refresh"
+                  # A step that fails is isolated, so the others still write files
+                  # and this PR still opens. Say so at the top, or the diff reads
+                  # as a complete refresh that simply found less.
                   body: |
+                      ${{ steps.refresh.outputs.failed != '' && format('> PARTIAL REFRESH. These steps failed and their part of the data is unchanged: {0}. Read the run summary before merging.', steps.refresh.outputs.failed) || '' }}
+
                       `tools/scraper/mods_refresh.py`. The step summary on the run says which
                       of its six steps passed and what changed.
 
