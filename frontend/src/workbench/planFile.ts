@@ -127,8 +127,12 @@ export function readPlanFile(raw: unknown, into: Curriculum): ReadPlan | null {
   const plans = o.plans as Record<string, PlanState> | undefined;
   if (plans && typeof plans === 'object') {
     const migrated = migratePlans(plans);
-    const plan = migrated[into] ?? Object.values(migrated)[0];
-    if (!plan) return null;
+    // EMPTY, never another cohort's. `Object.values(migrated)[0]` was here, so
+    // a backup holding only an AY2025 plan, imported on the AY2026 tab, quietly
+    // installed the AY2025 plan as though it were yours. Whichever key happened
+    // to be first in the file decided it. A cohort you have no plan for
+    // imports as no plan.
+    const plan = migrated[into] ?? { selectedMods: [], planLevels: {} };
     return {
       curriculum: into,
       plan,

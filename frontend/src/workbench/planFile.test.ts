@@ -101,3 +101,45 @@ describe('records for the pinned freshmore core', () => {
     expect(f.records).not.toHaveProperty('99.999');
   });
 });
+
+// A whole-browser backup that has no plan for the tab you are on used to fall
+// back to Object.values(migrated)[0], so whichever cohort happened to be first
+// in the file was installed as yours.
+describe('a backup with no plan for this tab', () => {
+  const onlyAy2025 = {
+    records,
+    declared: [],
+    plans: { ay2025: plan(['50.007']) },
+  };
+
+  it('imports empty rather than borrowing another cohort', () => {
+    const read = readPlanFile(onlyAy2025, 'ay2026')!;
+    expect(read.legacy).toBe(true);
+    expect(read.curriculum).toBe('ay2026');
+    expect(read.plan.selectedMods).toEqual([]);
+  });
+
+  it('still finds the plan when the tab does have one', () => {
+    const read = readPlanFile(onlyAy2025, 'ay2025')!;
+    expect(read.plan.selectedMods).toEqual(['50.007']);
+  });
+});
+
+// The import handler needs to know which tab a file came from, so the mismatch
+// it warns about has to survive readPlanFile.
+describe('a plan file says which tab it was exported from', () => {
+  it('keeps the exporting cohort when it differs from the tab you are on', () => {
+    const f = buildPlanFile('ay2025', plan(['50.007']), [], records, []);
+    const read = readPlanFile(JSON.parse(JSON.stringify(f)), 'ay2026')!;
+    expect(read.curriculum).toBe('ay2025');
+    expect(read.legacy).toBe(false);
+  });
+
+  it('a whole-browser backup names no cohort, so it takes the tab you are on', () => {
+    const read = readPlanFile(onlyPlans, 'ay2026')!;
+    expect(read.curriculum).toBe('ay2026');
+    expect(read.legacy).toBe(true);
+  });
+});
+
+const onlyPlans = { records, declared: [], plans: { ay2026: plan(['50.001']) } };
