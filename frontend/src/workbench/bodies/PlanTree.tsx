@@ -36,9 +36,6 @@ const keyOf = (m: Mod) => m.key ?? m.code;
 // Terms 1–3 pin the fixed Freshmore core automatically; the AY2026? toggle
 // switches to a fully SEPARATE plan - the two curricula never bleed into
 // each other.
-// The dropdown's own wording, so a confirm box and the tab it names agree.
-const labelFor = (c: string) => COHORTS.find((x) => x.value === c)?.label ?? c;
-
 export function PlanTree({ onPick }: Props) {
   const dispatch = useAppDispatch();
   const mods = useAppSelector((s) => s.mods.data);
@@ -345,6 +342,7 @@ export function PlanTree({ onPick }: Props) {
           <input
             ref={importRef}
             type="file"
+            data-act="import-json"
             accept="application/json"
             hidden
             onChange={async (e) => {
@@ -354,33 +352,32 @@ export function PlanTree({ onPick }: Props) {
                 const parsed = JSON.parse(await f.text()) as unknown;
                 const read = readPlanFile(parsed, freshmoreMode);
                 if (read) {
-                  // A file written from ANOTHER cohort's tab is the one case
-                  // worth stopping for. readPlanFile already knows which tab it
-                  // came from and the answer was being thrown away, so an
-                  // AY2025 file dropped on the AY2026 tab overwrote the AY2026
-                  // plan without a word. `legacy` is exempt: a whole-browser
-                  // backup names no single cohort, so there is nothing to
-                  // disagree with.
-                  if (!read.legacy && read.curriculum !== freshmoreMode
-                      && !window.confirm(
-                        `That file is an ${labelFor(read.curriculum)} plan and you are on `
-                        + `${labelFor(freshmoreMode)}. Import it into ${labelFor(freshmoreMode)} `
-                        + 'anyway? Your current plan for this year will be replaced.',
-                      )) {
-                    e.target.value = '';
-                    return;
-                  }
-                  // Into the tab you are on, and only that one. A whole-browser
-                  // backup from the old button still reads - people have those
-                  // files - but it lands here rather than replacing every
-                  // curriculum's plan.
-                  dispatch(importPlans({ ...plans, [freshmoreMode]: read.plan }));
+                  // THE FILE DECIDES THE TAB. A plan file records the
+                  // matriculation year it was exported from, so an AY2025 file
+                  // is an AY2025 plan wherever you happen to be standing, and
+                  // it goes back to the AY2025 tab. Nothing is asked and no
+                  // other year is touched.
+                  //
+                  // Two earlier shapes were both worse. Writing it into the
+                  // tab you are on replaced a plan that had nothing to do with
+                  // the file. Asking first made the reader answer a question
+                  // whose right answer is always the same one.
+                  //
+                  // A whole-browser backup names no single cohort, so
+                  // readPlanFile hands back the tab you are on and this lands
+                  // exactly where it used to.
+                  const into = read.curriculum;
+                  dispatch(importPlans({ ...plans, [into]: read.plan }));
                   dispatch(importRecords({ ...records, ...read.records }));
                   // Unconditional. `if (read.declared.length)` meant a file
                   // that honestly declares no tracks could not clear the ones
                   // this browser has, so importing a plan left the old badges
                   // claiming tracks the imported plan never declared.
                   replaceDeclared(read.declared);
+                  // Follow it, or the import is invisible: the panel would go
+                  // on showing the year you were already on while the plan
+                  // landed in another.
+                  if (into !== freshmoreMode) setFreshmoreMode(into);
                 } else {
                   // Older still: a bare RecordsState, no plans at all.
                   dispatch(importRecords(parsed as RecordsState));

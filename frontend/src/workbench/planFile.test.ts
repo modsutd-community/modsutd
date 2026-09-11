@@ -143,3 +143,28 @@ describe('a plan file says which tab it was exported from', () => {
 });
 
 const onlyPlans = { records, declared: [], plans: { ay2026: plan(['50.001']) } };
+
+// The file decides which tab an import lands on, so a cohort key off a
+// stranger's disk decides which tab the app switches to. An unknown one used to
+// be cast straight through, reach setFreshmoreMode, and leave the panel reading
+// plans[thatKey].selectedMods on every render - persisted, so a reload did not
+// clear it.
+describe('a cohort key this app does not have', () => {
+  it('falls back to the tab you are on rather than being cast through', () => {
+    const f = {
+      kind: PLAN_FILE_KIND, version: 1, curriculum: 'ay2099',
+      exportedAt: '', plan: plan(['50.001']), declared: [], records: {},
+    };
+    const read = readPlanFile(f, 'ay2026')!;
+    expect(read.curriculum).toBe('ay2026');
+    expect(read.plan.selectedMods).toEqual(['50.001']);
+  });
+
+  it('rejects it from migrateCurriculum directly, and keeps the real ones', () => {
+    expect(migrateCurriculum('ay2099')).toBeUndefined();
+    expect(migrateCurriculum('')).toBeUndefined();
+    expect(migrateCurriculum(undefined)).toBeUndefined();
+    expect(migrateCurriculum('classic')).toBe('ay2024');
+    expect(migrateCurriculum('ay2026')).toBe('ay2026');
+  });
+});

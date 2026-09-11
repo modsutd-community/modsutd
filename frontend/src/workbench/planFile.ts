@@ -13,7 +13,11 @@ export const PLAN_FILE_VERSION = 1;
 export interface PlanFile {
   kind: typeof PLAN_FILE_KIND;
   version: number;
-  /** The tab this came from. An import lands here, not wherever you happen to be. */
+  /**
+   * The matriculation year this was exported from, and the year an import
+   * writes back to. A plan is that year's plan wherever the reader happens to
+   * be standing, so the file decides the tab rather than the other way round.
+   */
   curriculum: Curriculum;
   exportedAt: string;
   plan: PlanState;
@@ -43,8 +47,27 @@ export interface PlanFile {
 export const LEGACY_CURRICULUM = 'classic';
 export const CURRENT_FOR_LEGACY: Curriculum = 'ay2024';
 
-export function migrateCurriculum(c: string | undefined): Curriculum {
-  return (c === LEGACY_CURRICULUM ? CURRENT_FOR_LEGACY : c) as Curriculum;
+/**
+ * Every cohort key the app knows. Kept here beside the migration rather than
+ * imported from `uiContext`, because this module is what decides whether a
+ * string off a stranger's disk is allowed to become one.
+ */
+const KNOWN: readonly string[] = ['ay2024', 'ay2025', 'ay2026'];
+
+/**
+ * A cohort key, or undefined when the file names one this app does not have.
+ *
+ * This used to be a bare `as Curriculum` cast, which is fine while the caller
+ * only ever writes into the tab you are already on. It stopped being fine when
+ * the file started deciding the tab: a hand-edited `"curriculum": "ay2099"`
+ * reached `setFreshmoreMode`, `importPlans` dropped the key it did not
+ * recognise, and the next render read `plans['ay2099'].selectedMods` and threw.
+ * `freshmoreMode` is persisted, so the crash came back on reload and the panel
+ * stayed dead.
+ */
+export function migrateCurriculum(c: string | undefined): Curriculum | undefined {
+  if (c === LEGACY_CURRICULUM) return CURRENT_FOR_LEGACY;
+  return c !== undefined && KNOWN.includes(c) ? (c as Curriculum) : undefined;
 }
 
 /** Rename the `classic` key in a plans map, leaving everything else alone. */

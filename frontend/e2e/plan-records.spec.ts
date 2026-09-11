@@ -188,6 +188,44 @@ test.describe('plan + records', () => {
     expect(file).not.toHaveProperty('contributed');
   });
 
+  // A plan file records the year it came from, so importing one is not a
+  // question: an AY2024 file is an AY2024 plan wherever the reader is standing.
+  test('import goes to the year the file came from, not the tab you are on', async ({ page, isMobile }) => {
+    test.skip(!!isMobile, 'the export and import controls live in the desktop tt panel');
+
+    const cat = page.locator('[data-panel="cat"]');
+    const ins = page.locator('[data-panel="mod"]');
+    const tt = page.locator('[data-panel="tt"]');
+
+    await page.locator('button[aria-label="Timetable"]').click();
+    await tt.getByRole('button', { name: 'plan', exact: true }).click();
+    const pick = tt.locator('[data-act="cohort"]');
+    await pick.selectOption('ay2024');
+
+    await cat.getByRole('button', { name: /50\.001/ }).click();
+    await ins.getByRole('button', { name: '+ ADD TO PLAN' }).click();
+    await cat.getByRole('button', { name: /50\.001/ }).click();
+    await expect(ins).toHaveCount(0);
+
+    await tt.locator('[data-act="export-menu"]').click();
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      tt.locator('[data-act="export-json"]').click(),
+    ]);
+    const file = (await download.path())!;
+
+    // Stand somewhere else, and clear AY2024 so the import has to bring it back.
+    await pick.selectOption('ay2026');
+    await expect(tt.locator('[data-level="4"]').getByText('50.001')).toHaveCount(0);
+
+    await tt.locator('[data-act="import-json"]').setInputFiles(file);
+
+    // The panel follows the file: back on AY2024, with the plan restored, and
+    // no dialog in between.
+    await expect(pick).toHaveValue('ay2024');
+    await expect(tt.locator('[data-level="4"]').getByText('50.001')).toBeVisible();
+  });
+
   test('a chip with unmet prereqs shows only the prereqs - no record form', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'hover cards are the desktop affordance; mobile long-presses');
 

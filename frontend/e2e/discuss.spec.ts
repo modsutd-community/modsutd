@@ -70,19 +70,32 @@ test.describe('discuss panel', () => {
     const feature = page.locator('[data-act="board-feature"] iframe[title="Comments"]');
     await expect(feature).toBeVisible();
 
-    // Wait for the first load to land before counting, or the count catches it
-    // rather than a rebuild. giscus sets the frame's height once it is up.
-    await expect.poll(
-      () => feature.evaluate((el) => el.style.height),
-      { timeout: 20_000 },
-    ).not.toBe('');
-
-    // A rebuilt frame is a new src and a new load; a frame merely hidden and
-    // shown again is neither.
+    // Attach the counter, let startup settle, THEN zero it. The assertion
+    // window starts at the reset, so nothing that happens while the board is
+    // coming up can land inside it.
+    //
+    // Two shapes failed before this one. Waiting on the frame's HEIGHT and
+    // attaching the counter after: giscus resizes the frame while it is still
+    // loading, so on a slow runner the poll passed before the real load event
+    // and the genuine first load counted as 1 - read as the rebuild this test
+    // exists to catch, which is how it went red on main while the five runs
+    // before it passed. Then waiting for the counter to reach 1: locally the
+    // frame is already up before the listener attaches, so that load never
+    // comes and the poll times out. A settle-then-reset needs neither event to
+    // arrive in any particular order.
     await feature.evaluate((el) => {
       (window as unknown as {loads: number}).loads = 0;
       el.addEventListener('load', () => { (window as unknown as {loads: number}).loads += 1; });
     });
+    await expect.poll(
+      () => feature.evaluate((el) => el.style.height),
+      { timeout: 20_000 },
+    ).not.toBe('');
+    await page.waitForTimeout(2000);
+    await page.evaluate(() => { (window as unknown as {loads: number}).loads = 0; });
+
+    // A rebuilt frame is a new src and a new load; a frame merely hidden and
+    // shown again is neither.
     const loads = () => page.evaluate(() => (window as unknown as {loads: number}).loads);
     const src = await feature.getAttribute('src');
 
