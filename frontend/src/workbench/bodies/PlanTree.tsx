@@ -5,7 +5,7 @@ import {
   setNotes, initComponents, setComponent, addComponent, removeComponent, importRecords,
 } from '@/reducers/recordsReducer';
 import { importPlans } from '@/reducers/timetableReducer';
-import { isBundle } from '../backup';
+import { buildPlanFile, readPlanFile } from '../planFile';
 import type { Curriculum, Mod, RecordsState } from '@/types';
 import { pillarColor } from '../pillars';
 import { unmet, requirementsOf, treeOf } from '@/utils/prereq';
@@ -13,6 +13,7 @@ import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFresh
 import { beginModDrag, chipLabel } from '../modDrag';
 import { useGithubLink, startDeviceFlow, pollForToken, pushBackup, DeviceStart } from '../sync';
 import { useAutoState, useAutoSaveSetting, setAutoSave } from '../autoBackup';
+import { ExtLink } from '../ExtLink';
 import { exportContributed } from '../contributed';
 import { useWorkbenchUi, COHORTS } from '../uiContext';
 import { useAnchoredCard, anchoredStyle } from '../anchored';
@@ -216,13 +217,21 @@ export function PlanTree({ onPick }: Props) {
     });
   };
 
+  // This button sits on one matriculation year's tab, so that is what it
+  // writes. It used to hand over the whole browser - every curriculum, the
+  // parsed timetable, the contributed slots - which is not what "export" on
+  // this tab means, and made the file useless for moving one plan anywhere.
   const exportRecords = () => {
-    const bundle = { records, plans, declared, timetable: events, contributed: exportContributed() };
-    const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
+    // [...fixed.keys()] is the freshmore core pinned into terms 1 to 3. Its
+    // chips carry records like any other and it is never in selectedMods.
+    const file = buildPlanFile(
+      freshmoreMode, plans[freshmoreMode], declared, records, [...fixed.keys()],
+    );
+    const blob = new Blob([JSON.stringify(file, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'modsutd-backup.json';
+    a.download = `modsutd-plan-${freshmoreMode}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -269,12 +278,12 @@ export function PlanTree({ onPick }: Props) {
         <div className={styles.headerRow}>
         <div className={styles.recordTools}>
           <span className={styles.exportWrap}>
-            <button type="button" className={wb.btnQuiet} aria-expanded={exportOpen} onClick={() => setExportOpen((v) => !v)}>
+            <button type="button" data-act="export-menu" className={wb.btnQuiet} aria-expanded={exportOpen} onClick={() => setExportOpen((v) => !v)}>
               ⇣ export ▾
             </button>
             {exportOpen && (
               <span className={styles.exportMenu}>
-                <button type="button" onClick={() => { exportRecords(); setExportOpen(false); }}>
+                <button type="button" data-act="export-json" onClick={() => { exportRecords(); setExportOpen(false); }}>
                   download .json
                 </button>
                 {linked ? (
@@ -333,6 +342,7 @@ export function PlanTree({ onPick }: Props) {
           <input
             ref={importRef}
             type="file"
+            data-act="import-json"
             accept="application/json"
             hidden
             onChange={async (e) => {
@@ -340,11 +350,36 @@ export function PlanTree({ onPick }: Props) {
               if (!f) return;
               try {
                 const parsed = JSON.parse(await f.text()) as unknown;
-                if (isBundle(parsed)) {
-                  dispatch(importRecords(parsed.records));
-                  dispatch(importPlans(parsed.plans));
-                  replaceDeclared(parsed.declared ?? []);
+                const read = readPlanFile(parsed, freshmoreMode);
+                if (read) {
+                  // THE FILE DECIDES THE TAB. A plan file records the
+                  // matriculation year it was exported from, so an AY2025 file
+                  // is an AY2025 plan wherever you happen to be standing, and
+                  // it goes back to the AY2025 tab. Nothing is asked and no
+                  // other year is touched.
+                  //
+                  // Two earlier shapes were both worse. Writing it into the
+                  // tab you are on replaced a plan that had nothing to do with
+                  // the file. Asking first made the reader answer a question
+                  // whose right answer is always the same one.
+                  //
+                  // A whole-browser backup names no single cohort, so
+                  // readPlanFile hands back the tab you are on and this lands
+                  // exactly where it used to.
+                  const into = read.curriculum;
+                  dispatch(importPlans({ ...plans, [into]: read.plan }));
+                  dispatch(importRecords({ ...records, ...read.records }));
+                  // Unconditional. `if (read.declared.length)` meant a file
+                  // that honestly declares no tracks could not clear the ones
+                  // this browser has, so importing a plan left the old badges
+                  // claiming tracks the imported plan never declared.
+                  replaceDeclared(read.declared);
+                  // Follow it, or the import is invisible: the panel would go
+                  // on showing the year you were already on while the plan
+                  // landed in another.
+                  if (into !== freshmoreMode) setFreshmoreMode(into);
                 } else {
+                  // Older still: a bare RecordsState, no plans at all.
                   dispatch(importRecords(parsed as RecordsState));
                 }
               } catch {
@@ -364,9 +399,12 @@ export function PlanTree({ onPick }: Props) {
                 ? `${track.pillar} · achieved by T${earliest}`
                 : `${track.pillar} · plan doesn't reach it`;
               const tip = isDeclared ? base : `declared? ${base}`;
+              // Tracks carry `url`, minors carry `source`: two scrapes, two
+              // spellings, and no reason to make a reader care which.
+              const src = track.url ?? track.source;
               return (
+                <span key={track.id} className={styles.badgeWrap}>
                 <label
-                  key={track.id}
                   className={[
                     styles.badge,
                     status === 'achieved' ? styles.badgeOn : '',
@@ -384,6 +422,10 @@ export function PlanTree({ onPick }: Props) {
                   {status === 'achieved' ? '◆' : status === 'planned' ? '◇' : '◌'}{' '}
                   ({track.pillar === 'Minor' ? 'M' : 'S'}) {track.name}
                 </label>
+                {/* Outside the label on purpose: a link nested in one toggles
+                    the checkbox on the way through. */}
+                {src ? <ExtLink href={src} what={track.name} /> : null}
+                </span>
               );
             })}
           </div>

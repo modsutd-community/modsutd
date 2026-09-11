@@ -60,7 +60,7 @@ describe('a requirement SUTD named but did not number', () => {
     and: [
       '50.003',
       { or: [
-        { code: '10.014', name: 'Computational Thinking for Design', cohort: ['classic'] },
+        { code: '10.014', name: 'Computational Thinking for Design', cohort: ['ay2024'] },
         { code: '10.025', name: 'Computational Thinking for Design', cohort: ['ay2025'] },
         { name: 'Algorithmic Thinking and Object-Based Abstraction', cohort: ['ay2026'] },
       ] },
@@ -70,7 +70,7 @@ describe('a requirement SUTD named but did not number', () => {
   const has = (...codes: string[]) => (c: string) => codes.includes(c);
 
   it('asks an AY2024 student for 10.014 and never 10.025', () => {
-    expect(unmet(tree, has('50.003'), 'classic')).toEqual(['10.014']);
+    expect(unmet(tree, has('50.003'), 'ay2024')).toEqual(['10.014']);
   });
 
   it('asks an AY2025 student for 10.025 instead', () => {
@@ -92,7 +92,7 @@ describe('a requirement SUTD named but did not number', () => {
   it('still reports the unnumbered requirement for display', () => {
     expect(requirements(tree, 'ay2026'))
       .toEqual(['50.003', 'Algorithmic Thinking and Object-Based Abstraction']);
-    expect(requirements(tree, 'classic'))
+    expect(requirements(tree, 'ay2024'))
       .toEqual(['50.003', '10.014 Computational Thinking for Design']);
   });
 
@@ -113,17 +113,17 @@ describe('50.057 as it actually ships', () => {
   const has = (...codes: string[]) => (c: string) => codes.includes(c);
 
   it('still demands the coded half from the cohorts that have one', () => {
-    expect(unmet(tree, has('50.003'), 'classic')).toEqual(['10.014']);
+    expect(unmet(tree, has('50.003'), 'ay2024')).toEqual(['10.014']);
     expect(unmet(tree, has('50.003'), 'ay2025')).toEqual(['10.025']);
   });
 
   it('is satisfied once that cohort has taken it', () => {
-    expect(unmet(tree, has('50.003', '10.014'), 'classic')).toEqual([]);
+    expect(unmet(tree, has('50.003', '10.014'), 'ay2024')).toEqual([]);
     expect(unmet(tree, has('50.003', '10.025'), 'ay2025')).toEqual([]);
   });
 
   it("never accepts another cohort's course", () => {
-    expect(unmet(tree, has('50.003', '10.025'), 'classic')).toEqual(['10.014']);
+    expect(unmet(tree, has('50.003', '10.025'), 'ay2024')).toEqual(['10.014']);
     expect(unmet(tree, has('50.003', '10.014'), 'ay2025')).toEqual(['10.025']);
   });
 });
@@ -136,7 +136,7 @@ describe('what a chip should show', () => {
   const has = (...codes: string[]) => (c: string) => codes.includes(c);
 
   it('groups an unanswered "or" into one pick, not two demands', () => {
-    const reqs = requirementsOf(tree, has('50.003'), 'classic');
+    const reqs = requirementsOf(tree, has('50.003'), 'ay2024');
     expect(reqs.filter((r) => r.kind === 'oneOf')).toHaveLength(1);
     const pick = reqs.find((r) => r.kind === 'oneOf')!;
     expect(pick.met).toBe(false);
@@ -153,14 +153,14 @@ describe('what a chip should show', () => {
 
   // The bug the picker exists to fix: one option placed answers the group.
   it('says the group is answered, and by which one', () => {
-    const pick = requirementsOf(tree, has('50.003', '10.014'), 'classic')
+    const pick = requirementsOf(tree, has('50.003', '10.014'), 'ay2024')
       .find((r) => r.kind === 'oneOf')!;
     expect(pick.met).toBe(true);
     expect(pick.metBy).toBe('10.014');
   });
 
   it('reopens the pick when that mod is taken back out', () => {
-    const pick = requirementsOf(tree, has('50.003'), 'classic')
+    const pick = requirementsOf(tree, has('50.003'), 'ay2024')
       .find((r) => r.kind === 'oneOf')!;
     expect(pick.met).toBe(false);
   });
@@ -186,16 +186,16 @@ describe('a prerequisite that one pillar does not have', () => {
   const has = (...c: string[]) => (x: string) => c.includes(x);
 
   it('still asks every other pillar for it', () => {
-    expect(unmet(tree, has('50.004'), 'classic', 'CSD')).toEqual(['50.001']);
-    expect(unmet(tree, has('50.004'), 'classic', 'EPD')).toEqual(['50.001']);
+    expect(unmet(tree, has('50.004'), 'ay2024', 'CSD')).toEqual(['50.001']);
+    expect(unmet(tree, has('50.004'), 'ay2024', 'EPD')).toEqual(['50.001']);
   });
 
   it('does not ask DAI on that cohort', () => {
-    expect(unmet(tree, has('50.004'), 'classic', 'DAI')).toEqual([]);
+    expect(unmet(tree, has('50.004'), 'ay2024', 'DAI')).toEqual([]);
   });
 
   it('leaves the rest of the tree alone', () => {
-    expect(unmet(tree, has(), 'classic', 'DAI')).toEqual(['50.004']);
+    expect(unmet(tree, has(), 'ay2024', 'DAI')).toEqual(['50.004']);
   });
 });
 });

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Curriculum, PlanState, TimetableEvent, TimetableState } from '@/types';
+import { LEGACY_CURRICULUM } from '@/workbench/planFile';
 
 const STORAGE_KEY = 'modsutd.timetable.v1';
 
@@ -9,7 +10,7 @@ const emptyPlan = (): PlanState => ({ selectedMods: [], planLevels: {} });
 // than four that can disagree. A plan saved before a cohort existed simply
 // arrives empty.
 const emptyPlans = (): Record<Curriculum, PlanState> => ({
-  classic: emptyPlan(),
+  ay2024: emptyPlan(),
   ay2025: emptyPlan(),
   ay2026: emptyPlan(),
 });
@@ -26,18 +27,34 @@ function loadFromStorage(): TimetableState {
         planLevels: cand?.planLevels && typeof cand.planLevels === 'object' ? cand.planLevels : {},
       };
     };
-    return {
+    const stale = !!parsed.plans && LEGACY_CURRICULUM in parsed.plans;
+    const state: TimetableState = {
       events: Array.isArray(parsed.events) ? parsed.events : [],
       plans: parsed.plans
         ? {
-            classic: plan(parsed.plans.classic),
+            // `classic` is what this cohort was called. A plan saved under it
+            // is read once, here, and then written back under the new name.
+            ay2024: plan(parsed.plans.ay2024 ?? parsed.plans[LEGACY_CURRICULUM]),
             ay2025: plan(parsed.plans.ay2025),
             ay2026: plan(parsed.plans.ay2026),
           }
-        // pre-split shape: the single plan was built against the classic core
-        : { ...emptyPlans(), classic: plan(parsed) },
+        // pre-split shape: the single plan was built against the oldest core
+        : { ...emptyPlans(), ay2024: plan(parsed) },
       savedAt: parsed.savedAt,
     };
+    // Rewritten now rather than on the next edit. A browser that opens the app
+    // and changes nothing would otherwise keep `classic` in storage forever,
+    // and one spelling is the entire point of the rename. savedAt is left as
+    // it was: nothing the student did happened just now.
+    if (stale) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {
+        // private window or quota: the migration is on read, so the next load
+        // does it again and nothing is lost by failing here
+      }
+    }
+    return state;
   } catch {
     return { events: [], plans: emptyPlans() };
   }
@@ -101,7 +118,12 @@ const slice = createSlice({
         };
       };
       state.plans = {
-        classic: plan(payload?.classic),
+        // `classic` again: an imported file or a gist written by a browser
+        // that has not loaded since the rename still carries the old key. What
+        // this browser pushes back has only the new one.
+        ay2024: plan(
+          payload?.ay2024 ?? (payload as Record<string, unknown>)?.[LEGACY_CURRICULUM] as PlanState | undefined,
+        ),
         ay2025: plan(payload?.ay2025),
         ay2026: plan(payload?.ay2026),
       };

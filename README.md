@@ -24,7 +24,7 @@ One workbench of draggable panels (desktop) / four tabs (mobile):
 
 - **Mods** - all 386 undergraduate mods from the official listing: description, credits, prerequisites (as a navigable tree), official tags, multi-pillar badges, plus workload and grading wherever SUTD actually publishes them. Filter by pillar or term; Start by typing `/` to search for mods and rooms from anywhere.
 - **Timetable** - paste your MyPortal "List View" and get a weekly grid, clash detection, and a real `.ics` for Apple/Google/Outlook. Parsing happens entirely in your browser.
-- **Plan** - up to a 10-term degree plan with the freshmore core pinned (classic and AY2026 curricula, kept separate), drag-and-drop placement, automatic prerequisite checks, choice slots that count down, specialisation-track badges, and per-mod records (your own scores, computed grade, notes - stored locally, optional private-gist backup on Github).
+- **Plan** - up to a 10-term degree plan with the freshmore core pinned (one plan per matriculation cohort, kept separate), drag-and-drop placement, automatic prerequisite checks, choice slots that count down, specialisation-track badges, and per-mod records (your own scores, computed grade, notes - stored locally, optional private-gist backup on Github).
 - **Navigation** - all 225 rooms with a weekly availability heatmap, probe-a-time search, and a map that goes indoors and names the lift lobby to use. Availability comes from crowdsourced timetable contributions.
 - **Reviews & suggestions** - honest module reviews and feature suggestions via GitHub Discussions (Giscus). Every engineering SUTDent would need to have one sooner or later.
 

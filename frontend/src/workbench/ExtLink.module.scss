@@ -1,0 +1,38 @@
+.icon {
+  // inline-block, not flex: it sits after text that wraps, and a flex child
+  // would drop onto a line of its own under the last word.
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  // The glyph's ink sits high in its box, so the baseline puts it above the
+  // x-height. Nudging it down lines it up with the lowercase letters.
+  vertical-align: -1px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: 4px;
+  color: inherit;
+  opacity: 0.55;
+
+  &:hover,
+  &:focus-visible {
+    opacity: 1;
+    color: var(--wb-amber);
+  }
+
+  // Opacity and colour alone are not a focus indicator: the icon is 10px of
+  // 1.5px stroke, and the hover state looks identical, so a keyboard user
+  // cannot tell where they are. The ring is what says it.
+  &:focus-visible {
+    outline: 1px solid var(--wb-amber);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}

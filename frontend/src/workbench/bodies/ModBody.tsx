@@ -25,6 +25,7 @@ import {ReviewForm} from "../ReviewForm";
 import {defaultLevel, useFreshmore, freshmoreFixedSet} from "../logic";
 import {useWorkbenchUi} from "../uiContext";
 import {Otto} from "../Otto";
+import {ExtIcon} from "../ExtLink";
 import wb from "../wb.module.scss";
 import styles from "./ModBody.module.scss";
 
@@ -421,16 +422,7 @@ export function ModBody({code, onPick, onFocusRoom}: Props) {
                                     somewhere else". Without it a dotted
                                     underline is indistinguishable from the
                                     in-app links everywhere else in the panel. */}
-                                <svg
-                                    className={styles.extIcon}
-                                    viewBox="0 0 16 16"
-                                    aria-hidden="true"
-                                    focusable="false"
-                                >
-                                    <path d="M12.5 9.5v3a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1h3" />
-                                    <path d="M9.5 2.5h4v4" />
-                                    <path d="M13.5 2.5 7.5 8.5" />
-                                </svg>
+                                <ExtIcon className={styles.extIcon} />
                             </a>
                         ) : (
                             mod.name

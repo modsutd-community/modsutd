@@ -1,7 +1,7 @@
 {
   "source": "https://www.sutd.edu.sg/education/undergraduate/freshmore-subjects/ + official listing tags (Freshmore Core / Term N)",
   "gathered": "2026-07-17",
-  "note": "Freshmore core per matriculation cohort. `fixed` pins a course to that term in the plan; a 99.999|Name entry is a course SUTD has named but not numbered. Cohort keys match Curriculum in frontend/src/types: ay2026, ay2025, classic (AY2024 and earlier). The labels shown on screen live in COHORTS in frontend/src/workbench/uiContext.ts.",
+  "note": "Freshmore core per matriculation cohort. `fixed` pins a course to that term in the plan; a 99.999|Name entry is a course SUTD has named but not numbered. Cohort keys match Curriculum in frontend/src/types: ay2026, ay2025, ay2024 (AY2024 and earlier; it was spelled `classic` until every cohort key became ay<year>). The labels shown on screen live in COHORTS in frontend/src/workbench/uiContext.ts.",
   "curricula": {
     "ay2026": {
       "terms": {
@@ -114,7 +114,7 @@
         }
       }
     },
-    "classic": {
+    "ay2024": {
       "terms": {
         "1": {
           "fixed": [

@@ -68,9 +68,34 @@ export function importPrefs(prefs: unknown): boolean {
 }
 
 
+/**
+ * A stored `freshmoreMode` from before the cohorts were all spelled `ay<year>`.
+ *
+ * Read here and written straight back, so the old spelling leaves this browser
+ * on the first load rather than living on until the student happens to change
+ * cohort. The same value also arrives from a gist written by a device that has
+ * not loaded since, which is why the read has to keep working after the store
+ * is clean.
+ */
+export function migrateMode(m: unknown): FreshmoreMode | undefined {
+  if (m === 'classic') return 'ay2024';
+  return m as FreshmoreMode | undefined;
+}
+
 export function loadUi(): PersistedUi {
   try {
-    return (JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as PersistedUi) ?? {};
+    const ui = (JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as PersistedUi) ?? {};
+    const mode = migrateMode(ui.freshmoreMode);
+    if (ui.freshmoreMode && mode !== ui.freshmoreMode) {
+      ui.freshmoreMode = mode;
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(ui));
+      } catch {
+        // private window or quota: the read above already migrated this
+        // session, so nothing is lost by failing to write
+      }
+    }
+    return ui;
   } catch {
     return {};
   }
