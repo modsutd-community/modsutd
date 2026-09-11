@@ -49,6 +49,10 @@ on:
 permissions:
     contents: read
     pull-requests: write
+    # Read-only, and only so the verdict step can read back the sticky summary
+    # comment the action just posted. A PR's top-level comments live under the
+    # issues API, which pull-requests: write does not reach.
+    issues: read
 
 jobs:
     # Resolved once and shared, so the three provider jobs below differ only in
@@ -115,14 +119,15 @@ jobs:
         # check nobody can act on would block branch protection for no reason.
         # Only the last in the chain reports failure.
         #
-        # continue-on-error is on the STEP, not the job, and the job publishes
-        # what really happened. At job level it rewrites `needs.gemini.result`
-        # to 'success' on a failure, so the `!= 'success'` guards below never
-        # fired and the fallback chain was dead: groq failed on a 413 and
-        # openai was skipped rather than taking over. `outcome` is the step's
-        # result BEFORE continue-on-error is applied, which is the honest one.
+        # continue-on-error is on the STEP, not the job. At job level it
+        # rewrites `needs.gemini.result` to 'success' on a failure, so the
+        # `!= 'success'` guards below never fire and the fallback chain is dead.
+        # `outcome` is the step's result BEFORE continue-on-error is applied,
+        # which is the honest one - as far as the process goes. Whether a
+        # review happened is a different question, and the verdict step answers
+        # it.
         outputs:
-            ok: ${{ steps.review.outcome == 'success' }}
+            ok: ${{ steps.verdict.outputs.ok }}
         steps:
             - id: review
               continue-on-error: true
@@ -149,6 +154,40 @@ jobs:
                   base_ref: ${{ needs.context.outputs.base_ref }}
                   head_sha: ${{ needs.context.outputs.head_sha }}
 
+            # A GREEN STEP IS NOT A COMPLETED REVIEW, and this is the step that
+            # tells the difference. When every subtask is rate-limited the
+            # action publishes what it has, which is nothing, and exits 0. So
+            # `outcome` said success, `ok` said true, and the next provider was
+            # skipped: groq answered 429 on six of eight items with a
+            # retry-after of an hour, and the check went green with no review on
+            # the pull request at all.
+            #
+            # The truth is written in the sticky summary comment, which says
+            # "Review partially complete: 0 finding(s); 6 of 8 selected item(s)
+            # failed". That string is the signal. It is a string match, so if the
+            # action rewords it this goes back to trusting every run: the guard
+            # is that an unreadable summary counts as a failure, and the chain
+            # falls through rather than believing a review it cannot see.
+            - name: Did it actually review
+              id: verdict
+              if: always()
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  OUTCOME: ${{ steps.review.outcome }}
+                  PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+              run: |
+                  ok=true
+                  [ "$OUTCOME" = "success" ] || ok=false
+                  if [ "$ok" = true ]; then
+                    body="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments"                       --jq 'map(select(.body | contains("<!-- ocr-summary -->"))) | last | .body'                       2>/dev/null || echo '')"
+                    case "$body" in
+                      ''|null) ok=false ;;
+                      *'item(s) failed'*) ok=false ;;
+                    esac
+                  fi
+                  echo "ok=$ok" >> "$GITHUB_OUTPUT"
+                  echo "$OUTCOME / ok=$ok" >> "$GITHUB_STEP_SUMMARY"
+
     groq:
         runs-on: ubuntu-latest
         timeout-minutes: 30
@@ -158,9 +197,10 @@ jobs:
             && needs.context.result == 'success'
             && needs.gemini.outputs.ok != 'true'
             && needs.context.outputs.has_groq == 'true'
-        # As above: step-level, with the real outcome published for openai.
+        # As above: step-level, and the verdict step decides what gets
+        # published for openai.
         outputs:
-            ok: ${{ steps.review.outcome == 'success' }}
+            ok: ${{ steps.verdict.outputs.ok }}
         steps:
             - id: review
               continue-on-error: true
@@ -187,6 +227,40 @@ jobs:
                   review_concurrency: '2'
                   base_ref: ${{ needs.context.outputs.base_ref }}
                   head_sha: ${{ needs.context.outputs.head_sha }}
+
+            # A GREEN STEP IS NOT A COMPLETED REVIEW, and this is the step that
+            # tells the difference. When every subtask is rate-limited the
+            # action publishes what it has, which is nothing, and exits 0. So
+            # `outcome` said success, `ok` said true, and the next provider was
+            # skipped: groq answered 429 on six of eight items with a
+            # retry-after of an hour, and the check went green with no review on
+            # the pull request at all.
+            #
+            # The truth is written in the sticky summary comment, which says
+            # "Review partially complete: 0 finding(s); 6 of 8 selected item(s)
+            # failed". That string is the signal. It is a string match, so if the
+            # action rewords it this goes back to trusting every run: the guard
+            # is that an unreadable summary counts as a failure, and the chain
+            # falls through rather than believing a review it cannot see.
+            - name: Did it actually review
+              id: verdict
+              if: always()
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  OUTCOME: ${{ steps.review.outcome }}
+                  PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+              run: |
+                  ok=true
+                  [ "$OUTCOME" = "success" ] || ok=false
+                  if [ "$ok" = true ]; then
+                    body="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments"                       --jq 'map(select(.body | contains("<!-- ocr-summary -->"))) | last | .body'                       2>/dev/null || echo '')"
+                    case "$body" in
+                      ''|null) ok=false ;;
+                      *'item(s) failed'*) ok=false ;;
+                    esac
+                  fi
+                  echo "ok=$ok" >> "$GITHUB_OUTPUT"
+                  echo "$OUTCOME / ok=$ok" >> "$GITHUB_STEP_SUMMARY"
 
     openai:
         runs-on: ubuntu-latest
