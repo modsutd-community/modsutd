@@ -1,0 +1,6426 @@
+[
+ {
+  "code": "01.018",
+  "name": "Design Thinking Project I",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-018-design-thinking-project-i/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "01.019",
+  "name": "Design Thinking Project II",
+  "repo": [
+   "01.018"
+  ],
+  "prerequisites": [
+   "01.018"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-019-design-thinking-project-ii/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "01.020",
+  "name": "Design Thinking Project III",
+  "repo": [
+   "01.019"
+  ],
+  "prerequisites": [
+   "01.019"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-020-design-thinking-project-iii/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "01.101",
+  "name": "Technologies for Sustainable Global Health",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-101-technologies-for-sustainable-global-health/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "01.102",
+  "name": "Energy Systems and Management",
+  "repo": [
+   "10.018",
+   "10.022"
+  ],
+  "prerequisites": [
+   "10.018",
+   "10.022"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-102-energy-systems-and-management/",
+  "joiner": "and",
+  "listed": "10.018 Modelling Space and Systems 10.022 Modelling Uncertainty Number of credits: 12",
+  "page": [
+   "10.018",
+   "10.022"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "01.104",
+  "name": "Networked Life",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-104-networked-life/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "01.106",
+  "name": "Engineering Management",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-106-engineering-management/",
+  "joiner": "and",
+  "listed": "No prerequisites, but this course requires that you do the assigned readings and prepare for case studies before attending class. A sizeable part of your grade comes from class participation, and interactive discussions during class are expected. Analyses of case studies are usually due at the start of class on the day the case study is discussed. Doing the assigned reading is expected to facilitate meaningful discussions during class.",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "01.107",
+  "name": "Urban Transportation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-107-urban-transportation/",
+  "joiner": "",
+  "listed": "– Number of credits: 12",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "01.115",
+  "name": "Science of Sound: Acoustics, Audio & Music",
+  "repo": [
+   "03.007A",
+   "03.007B",
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "03.007A",
+   "03.007B"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-115-science-of-sound-acoustics-audio-music/",
+  "joiner": "and",
+  "listed": "10.013 Modelling & Analysis 10.015 Physical World 10.017 Technological World 10.018 Modelling Space and Systems 03.007A Innovating with Design and AI-1 (IDeA-1) 03.007B Innovating with Design and AI-2 (IDeA-2)",
+  "page": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "03.007A",
+   "03.007B"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "01.116",
+  "name": "AI for Healthcare",
+  "repo": [
+   "40.319",
+   "50.007"
+  ],
+  "prerequisites": [
+   "50.007",
+   "40.319"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/01-116-ai-for-healthcare/",
+  "joiner": "or",
+  "listed": "50.007 Machine Learning or 40.319 Statistical Machine Learning (ESD)",
+  "page": [
+   "50.007",
+   "40.319"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "01.117",
+  "name": "Brain-inspired Computing and its Applications",
+  "repo": [
+   "10.013",
+   "10.015"
+  ],
+  "prerequisites": [
+   "10.015",
+   "10.013"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-117-brain-inspired-computing-and-its-applications/",
+  "joiner": "and",
+  "listed": "10.015 Physical World 10.013 Modelling and Analysis",
+  "page": [
+   "10.015",
+   "10.013"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "01.119",
+  "name": "Nanoelectronics and Technology",
+  "repo": [
+   "30.002"
+  ],
+  "prerequisites": [
+   "30.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-119-nanoelectronics-and-technology/",
+  "joiner": "and",
+  "listed": "30.002 Circuits and Electronics",
+  "page": [
+   "30.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "01.400",
+  "name": "Capstone 1",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-400-capstone/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "01.401",
+  "name": "Capstone 2",
+  "repo": [
+   "01.400"
+  ],
+  "prerequisites": [
+   "01.400"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/01-401-capstone/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "02.001",
+  "name": "Global Humanities: Literature, Philosophy, and Ethics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-001-global-humanities-literature-philosophy-and-ethics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.002",
+  "name": "Critique and Composition",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.003",
+  "name": "Social Science: Understanding Behaviour, Culture & Society",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-003-social-science-understanding-behaviour-culture-society/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.005",
+  "name": "Introduction to Human-Centred Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-005-introduction-to-human-centred-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.101",
+  "name": "Darwin and Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.102",
+  "name": "The World Since 1400",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-102-ht-the-world-since-1400/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.103",
+  "name": "Film Studies: History, Theory and Practice",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.104",
+  "name": "The History of International Development in Asia: The Role of Engineers and Designers",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.105",
+  "name": "Sages Through The Ages: Readings in Early Indian and Chinese Religion and Philosophy",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.106",
+  "name": "Crime & Punishment: Introduction to Law & Literature",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.107",
+  "name": "History of Chinese Urban Development",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.108",
+  "name": "Modern China: Pluralism, and Beyond Territoriality",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.109",
+  "name": "Ethics of Leadership",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.110",
+  "name": "The Chinese Lyrical Tradition: Arts, Literature and Landscape Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.111",
+  "name": "Photography in Modern Southeast Asia History",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.112",
+  "name": "Space and Power",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.113",
+  "name": "The Laboratory of the Mind",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.114",
+  "name": "The Multicultural Archipelago in History and Story",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.115",
+  "name": "Global Shakespeares",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.116",
+  "name": "The Word and the World: Introducing Literary Theory",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.118",
+  "name": "Film Studies II: Production",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.119",
+  "name": "Introduction to Political Philosophy",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.120",
+  "name": "History of Traditional Chinese Short Fiction",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.121",
+  "name": "The Question of Being",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.122",
+  "name": "The Day After Tomorrow: Environmental Apocalypse and Political Mobilization",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.123",
+  "name": "Questioning Modernity in Europe and Asia",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.124",
+  "name": "The Modern East Asian Nexus – A History",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.125",
+  "name": "Normalcy and Deviance: Philosophical Approaches to Sexuality",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.126",
+  "name": "Southeast Asia Under Japan: Motives, Memoirs, and Media",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.127",
+  "name": "Satan and His Afterlives in Literature and Film",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.128",
+  "name": "Classical South and Southeast Asian Literature and Art",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.129",
+  "name": "Shakespeare, Race, and Religion in the Renaissance World",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.130",
+  "name": "Slums, Squatters, and Smart Cities: History and Theory of Urban Planning",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.131",
+  "name": "Non‐Fiction and Ethnographic Film: Theory and Practice",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.132",
+  "name": "Being and Time",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.133",
+  "name": "Ideal Innovations? Science Fiction & the Ethics of Technology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.134",
+  "name": "Asia Rising: Japanese and Chinese Quests for Hegemony in Global Contexts",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-134-asia-rising-japanese-and-chinese-quests-for-hegemony-in-global-contexts/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.135",
+  "name": "The Question of Technology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.136",
+  "name": "Lyric Poetry",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.137",
+  "name": "Introduction to Digital Humanities",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.138",
+  "name": "On Genre and Judgement: Cultures of Appraisal",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-138-on-genre-and-judgement-cultures-of-appraisal/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.139",
+  "name": "Form and Content in Arts, Science and Society",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.140",
+  "name": "Shaping Futures: Innovation, Work and Society",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.141",
+  "name": "Cultures and Politics: Liberal, Confucian, Islamic",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-141-cultures-and-politics-liberal-confucian-islamic/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.142",
+  "name": "History through Literature: Rebellion in Late Colonial Southeast Asia",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.143",
+  "name": "Artificial Intelligence and Ethics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-143-artificial-intelligence-and-ethics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.144",
+  "name": "Being in the World: from Homer and Heidegger to A.I",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.145",
+  "name": "Surveys and Experiments in the Social Sciences",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.146",
+  "name": "Financing Cities of the Future: Theory and Practice",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-146-financing-cities-of-the-future-theory-and-practice/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.147",
+  "name": "Interventions in Design, Technology, and Society",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.148",
+  "name": "Geographies of Money and Finance",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.149",
+  "name": "Designing Better Humans: The Ethics of Engineering Humanity",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.150",
+  "name": "Cultures and Histories of the Digital",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.151",
+  "name": "Digital Worlds, Space and Spatialities: Geographical Perspectives on Digitalisation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.152",
+  "name": "Urban Theory",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.153",
+  "name": "A History of Nuclear Strategy, Design, Technology and Society",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.154",
+  "name": "Environmental Humanities",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.156",
+  "name": "Games of Histories",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.157",
+  "name": "Histories on Screen: Framing Modern Southeast Asia",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.158",
+  "name": "Kings, monks, and merchants: A history of Asia before 1750",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.159",
+  "name": "Equitable Tech: Reimagining Our Digital Infrastructures",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.161",
+  "name": "Moral Questions and the Contemporary Novel",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.162",
+  "name": "Asian American Literature: from the food memoir to the graphic novel",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.163",
+  "name": "International Trade: Free Trade, Governance and Technology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-163-international-trade-free-trade-governance-and-technology/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.164",
+  "name": "Performance: Design, Dramaturgy, and Interpretation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.165",
+  "name": "Empathy: An interdisciplinary concept (Special Topics)",
+  "repo": [
+   "02.003"
+  ],
+  "prerequisites": [
+   "02.003"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.166",
+  "name": "Urban Southeast Asia: Diversity, Sustainability and Change",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.167",
+  "name": "Fashion: East and West (Special Topics)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.168",
+  "name": "International Business",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-168-international-business/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.169",
+  "name": "Leadership and Organization Management",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-169-leadership-and-organization-management/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.170",
+  "name": "History of Surveillance in Modern Asia",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.171",
+  "name": "Religion and Society in Southeast Asia (Special Topics)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.172",
+  "name": "Imagine Dragons: Monsters in Literature and Visual Media",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.173",
+  "name": "The Medium and the Message: An Introduction to Media Theory",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.174",
+  "name": "The Design of Digital Platforms",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.175",
+  "name": "Global Film: Art and Technology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.176",
+  "name": "Collective Behavior",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-176-collective-behavior/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.177",
+  "name": "On Wind and Water: Metaphysics, Design, and Technology (Special Topics)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.178",
+  "name": "Human Existence and Technology: A Historical and Philosophical Inquiry (Special Topics)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.179",
+  "name": "Fashion, Technology, and Innovation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.180",
+  "name": "Worldbuilding: Critical and Creative Practices",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.181",
+  "name": "AI & Society",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.182",
+  "name": "Attention Economies: Media, Design, Capital",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.183",
+  "name": "Philosophy of Artificial Intelligence",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.201",
+  "name": "Digital Sociology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.202",
+  "name": "Organizational Processes",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-202-organizational-processes/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.203",
+  "name": "Psychological Approaches to Bilingualism",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-203-psychological-approaches-to-bilingualism/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.204",
+  "name": "Technology and the Self",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-204-technology-and-the-self/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.205",
+  "name": "Human Development: Theory and Practice",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-205-human-development-theory-and-practice/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.206",
+  "name": "Ethics and Social Responsibility",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-206-ethics-and-social-responsibility/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.207",
+  "name": "Organizations and People",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-207-organizations-and-people/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.208",
+  "name": "Microeconomics",
+  "repo": [
+   "10.018"
+  ],
+  "prerequisites": [
+   "10.018"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-208-microeconomics/",
+  "joiner": "and",
+  "listed": "10.018 Modelling Space and Systems 12 credits",
+  "page": [
+   "10.018"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "02.209",
+  "name": "Social Theories of Urban Life",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-209-social-theories-of-urban-life/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.210",
+  "name": "Who Gets Ahead? Sociology of Social Networks and Social Capital",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.211",
+  "name": "Critical Management Skills",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-211-critical-management-skills/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.212",
+  "name": "The Visual Culture of Science and Technology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.213",
+  "name": "How Culture Works",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-213-how-culture-works/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.214",
+  "name": "Magic, Science and Religion",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-214-magic-science-and-religion/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.215",
+  "name": "Political Economy",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-215-political-economy/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.216",
+  "name": "Human Behaviour, Technology and Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.217",
+  "name": "Gender, Sexuality and Society",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-217-gender-sexuality-and-society/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.218",
+  "name": "Introduction to Psychology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-218-introduction-to-psychology/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.219",
+  "name": "Rice Cultures: Technology, Society and Environment in Asia",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.220",
+  "name": "“How the Things People Make, Make People”: Material Things in Social Life",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-220-how-the-things-people-make-make-people-material-things-in-social-life/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.221",
+  "name": "Making Maps I: Introduction to Spatial Analysis, Data Visualization and Map Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-221-making-maps-i-introduction-to-spatial-analysis-data-visualization-and-map-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.222",
+  "name": "Unnatural Disasters",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.223",
+  "name": "Business Ethics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.224",
+  "name": "Sociology of Deviance and Social Control",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-224-sociology-of-deviance-and-social-control/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.225",
+  "name": "Building, Dwelling, Belonging: An Anthropology of Domestic and Vernacular Architecture",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.226",
+  "name": "Leaders & Followers",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-226-leaders-followers/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.227",
+  "name": "Maps and Politics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-227-maps-and-politics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.228",
+  "name": "Design in the Anthropocene",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.229",
+  "name": "Decision Theory and Practice",
+  "repo": [
+   "10.004"
+  ],
+  "prerequisites": [
+   "10.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-229-decision-theory-and-practice/",
+  "joiner": "",
+  "listed": "10.004 Advanced Math II Access to Course Syllabus (Please ensure that you login to the eDimension portal before clicking the link)",
+  "page": [
+   "10.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "02.230",
+  "name": "Health Communication and Behavior Change",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.231",
+  "name": "Transportation Technology and Policy in Urban Progress",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.302",
+  "name": "Business Culture and Entrepreneurship in China",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-302-business-culture-and-entrepreneurship-in-china/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.303",
+  "name": "The Role of Technology and Design on Growth in China",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "02.501",
+  "name": "Theory and Dynamics of Urban Social Processes",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-501-theory-and-dynamics-of-urban-social-processes/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.502",
+  "name": "Imagining Resilient Cities",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-502-imagining-resilient-cities/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.521",
+  "name": "Analyzing Urban Futures",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-521-urban-data-and-methods-i-data-inference-and-modelling-for-urban-systems-quantitative/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.522",
+  "name": "Interpreting Urban Trends",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-522-urban-data-methods-ii-data-interpretation-and-sense-making-for-urban-futures-qualitative/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.528",
+  "name": "Spatial Analysis of Urban Data",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-528-spatial-analysis-of-urban-data/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.541",
+  "name": "Urban Planning and Socio-Spatial Thinking",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-541-urban-planning-and-socio-spatial-thinking/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.542",
+  "name": "Urban Symposium: Leadership and Planning in Singapore",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-542-urban-policy-and-planning-in-practice-singapore-as-a-living-laboratory/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.546",
+  "name": "Creating the Frontiers of the No-Code Smart City",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-546-creating-the-frontiers-of-the-no-code-smart-city/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.548",
+  "name": "Advanced Urban Analysis – Environmental Sustainability",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-548-advanced-urban-analysis-urban-economics-and-city-systems/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.563",
+  "name": "Master Research Project",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-563-master-research-project/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.565",
+  "name": "Urban Psychology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/02-565-urban-psychology/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "02.XFER",
+  "name": "HASS Elective (Summer/Winter)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "03.007",
+  "name": "Design Thinking and Innovation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/03-007-design-thinking-and-innovation/",
+  "joiner": "",
+  "listed": "Number of credits: 12",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "03.007A",
+  "name": "Innovating with Design and AI-1 (IDeA-1)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/03-007a-innovating-with-design-and-ai-1/",
+  "joiner": "",
+  "listed": "—",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "03.007B",
+  "name": "Innovating with Design and AI-2 (IDeA-2)",
+  "repo": [
+   "03.007A"
+  ],
+  "prerequisites": [
+   "03.007A"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/03-007b-innovating-with-design-and-ai-2/",
+  "joiner": "or",
+  "listed": "03.007A Innovating with Design and AI-1 (IDeA-1) Workload : 5-0-7 *The first number represents the number of hours per week assigned for lectures, recitations and cohort classroom study. The second number represents the number of hours per week assigned for labs, design, or field work. The third number represents the number of hours per week assigned for independent study.",
+  "page": [
+   "03.007A"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "10.001",
+  "name": "Advanced Mathematics I",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-001-advanced-mathematics-i/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.002",
+  "name": "Physics I",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-002-physics-i/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.004",
+  "name": "Advanced Mathematics II",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-004-advanced-mathematics-ii/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.005",
+  "name": "Physics II",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-005-physics-ii/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.007",
+  "name": "Modelling the Systems World",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-007-modelling-the-systems-world/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.008",
+  "name": "Engineering in the Physical World",
+  "repo": [
+   "10.015",
+   "10.017"
+  ],
+  "prerequisites": [
+   "10.015",
+   "10.017"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "10.009",
+  "name": "The Digital World",
+  "repo": [
+   "10.014"
+  ],
+  "prerequisites": [
+   "10.014"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "10.010",
+  "name": "Introduction To Biology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-010-introduction-to-biology-2/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.013",
+  "name": "Modelling and Analysis",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-013-modelling-and-analysis/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.014",
+  "name": "Computational Thinking for Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-014-computational-thinking-for-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.015",
+  "name": "Physical World",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-015-physical-world/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.016",
+  "name": "Science for a Sustainable World",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-016-science-for-a-sustainable-world/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.017",
+  "name": "Technological World",
+  "repo": [
+   "10.015"
+  ],
+  "prerequisites": [
+   "10.015"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-017-technological-world/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "10.018",
+  "name": "Modelling Space and Systems",
+  "repo": [
+   "10.013"
+  ],
+  "prerequisites": [
+   "10.013"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-018-modelling-space-and-systems/",
+  "joiner": "and",
+  "listed": "10.013 Modelling and Analysis",
+  "page": [
+   "10.013"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "10.019",
+  "name": "Science and Technology for Healthcare",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-019-science-and-technology-for-healthcare-elective/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.020",
+  "name": "Data Driven World",
+  "repo": [
+   "10.014"
+  ],
+  "prerequisites": [
+   "10.014"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-020-data-driven-world-elective/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "10.022",
+  "name": "Modelling Uncertainty",
+  "repo": [
+   "10.018"
+  ],
+  "prerequisites": [
+   "10.018"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-022-modelling-uncertainty/",
+  "joiner": "or",
+  "listed": "10.018 Modelling Space and Systems Workload: 5-0-7 *The first number represents the number of hours per week assigned for lectures, recitations and cohort classroom study. The second number represents the number of hours per week assigned for labs, design, or field work. The third number represents the number of hours per week assigned for independent study. Prior to AY2020, it was 10.007 Modelling the Systems World",
+  "page": [
+   "10.018",
+   "10.007"
+  ],
+  "status": "differs",
+  "extra": [],
+  "gap": [
+   "10.007"
+  ]
+ },
+ {
+  "code": "10.023",
+  "name": "Designing Energy Systems",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-023-designing-energy-systems-elective/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.024",
+  "name": "Spatial Design World",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-024-spatial-design-world/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.025",
+  "name": "Computational Thinking for Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-025-computational-thinking-for-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "10.026",
+  "name": "Design Computation",
+  "repo": [
+   "03.007A",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.025",
+   "03.007A"
+  ],
+  "corequisites": [
+   "03.007B"
+  ],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/10-026-design-computation/",
+  "joiner": "and",
+  "listed": "10.025 Computational Thinking for Design 03.007A Innovating with Design and AI-1 (IDeA-1) 03.007B Innovating with Design and AI-2 (IDeA-2)",
+  "page": [
+   "10.025",
+   "03.007A",
+   "03.007B"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": [
+   "03.007B"
+  ]
+ },
+ {
+  "code": "20.013",
+  "name": "Integrated Building Systems",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-013-integrated-building-systems/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.099",
+  "name": "Urban Sketching",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-099-urban-sketching/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.101",
+  "name": "Architecture Core Studio 1",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-101-architecture-core-studio-1/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.102",
+  "name": "Architecture Core Studio 2",
+  "repo": [
+   "20.101"
+  ],
+  "prerequisites": [
+   "20.101"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-102-architecture-core-studio-2/",
+  "joiner": "",
+  "listed": "20.101 Architecture Core Studio 1",
+  "page": [
+   "20.101"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.103",
+  "name": "Architecture Core Studio 3",
+  "repo": [
+   "20.101",
+   "20.102"
+  ],
+  "prerequisites": [
+   "20.101",
+   "20.102"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-103-architecture-core-studio-3/",
+  "joiner": "",
+  "listed": "20.101 Architecture Core Studio 1 20.102 Architecture Core Studio 2",
+  "page": [
+   "20.101",
+   "20.102"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.111",
+  "name": "Sustainable Design Option Studio 1",
+  "repo": [
+   "20.101",
+   "20.102",
+   "20.103"
+  ],
+  "prerequisites": [
+   "20.101",
+   "20.102",
+   "20.103"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-111-sustainable-design-option-studio-1/",
+  "joiner": "",
+  "listed": "20.101 Architectural Core Studio 1 20.102 Architectural Core Studio 2 20.103 Architectural Core Studio 3",
+  "page": [
+   "20.101",
+   "20.102",
+   "20.103"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.112",
+  "name": "Sustainable Design Option Studio 2",
+  "repo": [
+   "20.101",
+   "20.102",
+   "20.103",
+   "20.111"
+  ],
+  "prerequisites": [
+   "20.101",
+   "20.102",
+   "20.103",
+   "20.111"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-112-sustainable-design-option-studio-2/",
+  "joiner": "",
+  "listed": "20.101 Architectural Core Studio 1 20.102 Architectural Core Studio 2 20.103 Architectural Core Studio 3 20.111 Sustainable Design Option Studio 1",
+  "page": [
+   "20.101",
+   "20.102",
+   "20.103",
+   "20.111"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.201",
+  "name": "Architecture Science & Technology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-201-architecture-science-technology/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.202",
+  "name": "Architectural Structure & Enclosure Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-202-architectural-structure-enclosure-design/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.203",
+  "name": "Architectural Energy Systems",
+  "repo": [
+   "20.201",
+   "20.202"
+  ],
+  "prerequisites": [
+   "20.201",
+   "20.202"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-203-architectural-energy-systems/",
+  "joiner": "or",
+  "listed": "Students wishing to enrol in the course must have completed 20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design or speak with the professor.",
+  "page": [
+   "20.201",
+   "20.202"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.211",
+  "name": "Introduction to Design Computation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "20.212",
+  "name": "Digital Design and Fabrication",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-212-digital-design-and-fabrication/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.213",
+  "name": "Building and Urban Analytics",
+  "repo": [
+   "20.212"
+  ],
+  "prerequisites": [
+   "20.212"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-213-building-and-urban-analytics/",
+  "joiner": "and",
+  "listed": "20.212 Digital Design and Fabrication",
+  "page": [
+   "20.212"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.221",
+  "name": "Traditions: World History Connections to Vernacular Architecture (HTC)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-221-traditions-world-history-connections-to-vernacular-architecture-htc/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.222",
+  "name": "Modernism: Technology and Society in Architecture (HTC)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-222-modernism-technology-and-society-in-architecture-htc/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.223",
+  "name": "Contemporary Architecture: Between Technology, Science and Culture (HTC Elective)",
+  "repo": [
+   "20.222"
+  ],
+  "prerequisites": [
+   "20.222"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-223-contemporary-architecture-between-technology-science-and-culture-htc-elective-2/",
+  "joiner": "and",
+  "listed": "Students must successfully passed their previous term’s History, Theory and Culture course ( 20.222 Modernism: Technology and Society in Architecture (HTC) ). Number of credits: 9",
+  "page": [
+   "20.222"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.224",
+  "name": "Artificial & Architectural Intelligences in Design (HTC)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-224-artificial-architectural-intelligences-in-design-htc-2/",
+  "joiner": "and",
+  "listed": "None but preferably 20.221 Traditions: World history connections to vernacular architecture (HTC) 20.222 Modernism: Technology and Society in Architecture (HTC)",
+  "page": [
+   "20.221",
+   "20.222"
+  ],
+  "status": "differs",
+  "extra": [],
+  "gap": [
+   "20.221",
+   "20.222"
+  ]
+ },
+ {
+  "code": "20.301",
+  "name": "Material Computation: Advanced Topics in Geometry and Matter",
+  "repo": [
+   "20.202",
+   "20.212",
+   "20.213"
+  ],
+  "prerequisites": [
+   "20.202",
+   "20.212",
+   "20.213"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-301-material-computation-advanced-topics-in-geometry-and-matter/",
+  "joiner": "and",
+  "listed": "20.202 Architectural Structure and Enclosure Design 20.212 Digital Design and Fabrication 20.213 Building and Urban Analytics",
+  "page": [
+   "20.202",
+   "20.212",
+   "20.213"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.302",
+  "name": "Advanced Topics in Performative Design: Daylight and Electric Lighting",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-302-advanced-topics-in-performative-design-daylight-and-electric-lighting/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.303",
+  "name": "Urban Analysis",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-303-urban-analysis/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.304",
+  "name": "Urban Housing Typologies",
+  "repo": [
+   "20.101",
+   "20.102",
+   "20.221",
+   "20.222"
+  ],
+  "prerequisites": [
+   "20.101",
+   "20.102",
+   "20.221",
+   "20.222"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-304-urban-housing-typologies/",
+  "joiner": "or",
+  "listed": "20.101 Architecture Core Studio 1 20.102 Architecture Core Studio 2 20.221 Traditions: World History Connections to Vernacular Architecture (HTC) 20.222 Modernism: Technology and Society in Architecture (HTC) Number of credits: 9 Workload: 4-0-5* *The first number represents the number of hours per week assigned for lectures, recitations and cohort classroom study. The second number represents the number of hours per week assigned for labs, design, or field work. The third number represents the number of hours per week assigned for independent study.",
+  "page": [
+   "20.101",
+   "20.102",
+   "20.221",
+   "20.222"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.305",
+  "name": "Conservation Theories and Approaches of Built Heritage",
+  "repo": [
+   "20.222"
+  ],
+  "prerequisites": [
+   "20.222"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-305-conservation-theories-and-approaches-of-built-heritage/",
+  "joiner": "and",
+  "listed": "20.222 Modernism: Technology and Society in Architecture (HTC)",
+  "page": [
+   "20.222"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.306",
+  "name": "Integrated Building Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-306-integrated-building-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.307",
+  "name": "Toward Carbon-Neutral Architecture and Urban Design",
+  "repo": [
+   "20.203"
+  ],
+  "prerequisites": [
+   "20.203"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-307-toward-carbon-neutral-architecture-and-urban-design/",
+  "joiner": "",
+  "listed": "20.203 Architectural Energy Systems",
+  "page": [
+   "20.203"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.309",
+  "name": "Sustainability of Ancient Chinese Architecture Design in the Modern World",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-309-sustainability-of-ancient-chinese-architecture-design-in-the-modern-world/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.311",
+  "name": "Architectural Robotics",
+  "repo": [
+   "20.212",
+   "20.213"
+  ],
+  "prerequisites": [
+   "20.212",
+   "20.213"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-311-architectural-robotics/",
+  "joiner": "and",
+  "listed": "20.212 Digital Design & Fabrication 20.213 Building and Urban Analytics",
+  "page": [
+   "20.212",
+   "20.213"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.312",
+  "name": "Social Architecture: Theory and Practice",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-312-social-architecture-theory-and-practice/",
+  "joiner": "and",
+  "listed": "Capstone program and taking the respective course during the same term.",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.313",
+  "name": "Advanced Topics in Performative Design: Urban Sustainability",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-313-advanced-topics-in-performative-design-urban-sustainability/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.314",
+  "name": "Paradigms of Adaptation",
+  "repo": [
+   "20.222"
+  ],
+  "prerequisites": [
+   "20.222"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-314-paradigms-of-adaptation/",
+  "joiner": "and",
+  "listed": "20.222 Modernism: Technology and Society in Architecture (HTC)",
+  "page": [
+   "20.222"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.316",
+  "name": "Digital Biomimetics: Sustainable Materials and Manufacturing",
+  "repo": [
+   "20.212",
+   "30.001",
+   "30.007"
+  ],
+  "prerequisites": [
+   "20.212",
+   "30.001",
+   "30.007"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-316-digital-biomimetics-sustainable-materials-and-manufacturing/",
+  "joiner": "and",
+  "listed": "ASD 20.212 Digital Design and Fabrication EPD 30.001 Structures & Materials 30.007 Engineering Design Innovation",
+  "page": [
+   "20.212",
+   "30.001",
+   "30.007"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.317",
+  "name": "Augmented Design",
+  "repo": [
+   "20.212"
+  ],
+  "prerequisites": [
+   "20.212"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-317-augmented-design/",
+  "joiner": "and",
+  "listed": "20.212 Digital Design and Fabrication",
+  "page": [
+   "20.212"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.318",
+  "name": "Creative Machine Learning",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-318-creative-machine-learning/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.319",
+  "name": "Architectural Theory and Design Application in the 20th-21st Century",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-319-architectural-theory-and-design-application-in-the-20th-21st-century/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.320",
+  "name": "Project Management in the Built Environment",
+  "repo": [
+   "20.201",
+   "20.202"
+  ],
+  "prerequisites": [
+   "20.201",
+   "20.202"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-320-project-management-in-the-built-environment/",
+  "joiner": "or",
+  "listed": "20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design or speak with the professor.",
+  "page": [
+   "20.201",
+   "20.202"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.321",
+  "name": "Architecture Acoustics",
+  "repo": [
+   "20.201",
+   "20.202"
+  ],
+  "prerequisites": [
+   "20.201",
+   "20.202"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-321-architecture-acoustics/",
+  "joiner": "or",
+  "listed": "20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design Number of credits: 9 Workload: 3-0-9* *The first number represents the number of hours per week assigned for lectures, recitations and cohort classroom study. The second number represents the number of hours per week assigned for labs, design, or field work. The third number represents the number of hours per week assigned for independent study.",
+  "page": [
+   "20.201",
+   "20.202"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.322",
+  "name": "Net Zero Design: Case Studies for Whole Life Decarbonisation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-322-net-zero-design-case-studies-for-whole-life-decarbonisation/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.323",
+  "name": "Forms and Types of Media Representation",
+  "repo": [
+   "20.102"
+  ],
+  "prerequisites": [
+   "20.102"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-323-forms-and-types-of-media-representation/",
+  "joiner": "",
+  "listed": "20.102 Architecture Core Studio 2",
+  "page": [
+   "20.102"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.500",
+  "name": "Advanced Design & Research Studio",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-500-advanced-design-research-studio/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.501",
+  "name": "Graduate Studio",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-501-graduate-studio/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.502",
+  "name": "Design Computation in Architecture (Design Exploration)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-502-design-computation-in-architecture-design-exploration/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.511",
+  "name": "Thesis Preparation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-511-thesis-preparation/",
+  "joiner": "or",
+  "listed": "Bachelor of Science (Architecture and Sustainable Design) degree or equivalent Successful completion of Structured Internship Number of credits: 9 Workload: 5-0-7* *The first number represents the number of hours per week assigned for lectures, recitations and cohort classroom study. The second number represents the number of hours per week assigned for labs, design, or field work. The third number represents the number of hours per week assigned for independent study.",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.512",
+  "name": "Thesis",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-512-thesis/",
+  "joiner": "or",
+  "listed": "Bachelor of Science (Architecture and Sustainable Design) degree or equivalent Successful completion of Structured Internship and Satisfactory performance in T9",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.514",
+  "name": "Professional Practice I",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-514-professional-practice-i/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.515",
+  "name": "Professional Practice II",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-515-professional-practice-ii/",
+  "joiner": "or",
+  "listed": "A student should be admitted to the M.Arch programme. This course is required for M.Arch accreditation Number of credits: 9 Workload: 3-0- 9 *The first number represents the number of hours per week assigned for lectures, recitations and cohort classroom study. The second number represents the number of hours per week assigned for labs, design, or field work. The third number represents the number of hours per week assigned for independent study.",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.521",
+  "name": "Architectural Robotics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-521-architectural-robotics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.522",
+  "name": "Social Architecture: Theory and Practice",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-522-social-architecture-theory-and-practice/",
+  "joiner": "",
+  "listed": "– Number of credits: 9",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.524",
+  "name": "Paradigms of Adaptation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-524-paradigms-of-adaptation/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.525",
+  "name": "Advanced Topics in Performative Design: Daylight and Electric Lighting",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-525-advanced-topics-in-performative-design-daylight-and-electric-lighting/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.527",
+  "name": "Material Computation: Advanced Topics in Geometry and Matter",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-527-material-computation-advanced-topics-in-geometry-and-matter/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.528",
+  "name": "Digital Biomimetics: Sustainable Materials and Manufacturing",
+  "repo": [
+   "20.211",
+   "20.212",
+   "30.001",
+   "30.007"
+  ],
+  "prerequisites": [
+   "20.211",
+   "20.212",
+   "30.001",
+   "30.007"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-528-digital-biomimetics-sustainable-materials-and-manufacturing/",
+  "joiner": "and",
+  "listed": "ASD 20.211 Introduction to Design Computation 20.212 Digital Design and Fabrication EPD 30.001 Structures & Materials 30.007 Engineering Design Innovation",
+  "page": [
+   "20.211",
+   "20.212",
+   "30.001",
+   "30.007"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.529",
+  "name": "Conservation Theories and Approaches of Built Heritage",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-529-conservation-theories-and-approaches-of-built-heritage/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.530",
+  "name": "Toward Carbon-Neutral Architecture and Urban Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-530-toward-carbon-neutral-architecture-and-urban-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.533",
+  "name": "Net Zero Design: Case Studies for Whole Life Decarbonisation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-533-net-zero-design-case-studies-for-whole-life-decarbonisation/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.534",
+  "name": "Forms and Types of Media Representation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-534-forms-and-types-of-media-representation/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "20.535",
+  "name": "Project Management in the Built Environment",
+  "repo": [
+   "20.201",
+   "20.202"
+  ],
+  "prerequisites": [
+   "20.201",
+   "20.202"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-535-project-management-in-the-built-environment/",
+  "joiner": "or",
+  "listed": "20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design or speak with the professor.",
+  "page": [
+   "20.201",
+   "20.202"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "20.590",
+  "name": "Phd Pro-Seminar In Architecture And Sustainable Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/20-590-phd-pro-seminar-in-architecture-and-sustainable-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.001",
+  "name": "Structures & Materials",
+  "repo": [
+   "10.013",
+   "10.015",
+   "10.016"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.015",
+   "10.016"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-001-structures-materials/",
+  "joiner": "and",
+  "listed": "10.013 Modelling and Analysis 10.015 Physical World 10.016 Science for a Sustainable World",
+  "page": [
+   "10.013",
+   "10.015",
+   "10.016"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.002",
+  "name": "Circuits & Electronics",
+  "repo": [
+   "10.013",
+   "10.017",
+   "10.018"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.017",
+   "10.018"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-002-circuits-electronics/",
+  "joiner": "and",
+  "listed": "10.013 Modelling and Analysis 10.017 Technological World 10.018 Modelling Space and Systems",
+  "page": [
+   "10.013",
+   "10.017",
+   "10.018"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.007",
+  "name": "Engineering Design Innovation",
+  "repo": [
+   "03.007A",
+   "03.007B",
+   "10.015",
+   "10.017"
+  ],
+  "prerequisites": [
+   "03.007A",
+   "03.007B",
+   "10.015",
+   "10.017"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-007-engineering-design-innovation/",
+  "joiner": "and",
+  "listed": "03.007A Innovating with Design and AI-1 (IDeA-1) 03.007B Innovating with Design and AI-2 (IDeA-2) 10.015 Physical World 10.017 Technological World",
+  "page": [
+   "03.007A",
+   "03.007B",
+   "10.015",
+   "10.017"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.100",
+  "name": "Computational and Data-Driven Engineering",
+  "repo": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "10.022"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "10.022"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-100-computational-and-data-driven-engineering/",
+  "joiner": "and",
+  "listed": "10.017 Technological World 10.015 Physical World 10.013 Modelling and Analysis 10.018 Modelling Space and Systems 10.022 Modelling Uncertainty",
+  "page": [
+   "10.017",
+   "10.015",
+   "10.013",
+   "10.018",
+   "10.022"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.101",
+  "name": "Systems & Control",
+  "repo": [
+   "10.018",
+   "30.002"
+  ],
+  "prerequisites": [
+   "10.018",
+   "30.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-101-systems-control/",
+  "joiner": "and",
+  "listed": "10.018 Modelling Space and Systems 30.002 Circuits & Electronics",
+  "page": [
+   "10.018",
+   "30.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.102",
+  "name": "Electromagnetics & Applications",
+  "repo": [
+   "10.001",
+   "10.004",
+   "10.005"
+  ],
+  "prerequisites": [
+   "10.001",
+   "10.004",
+   "10.005"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-102-electromagnetics-applications/",
+  "joiner": "",
+  "listed": "10.001 Advanced Mathematics 1 10.004 Advanced Mathematics 2 10.005 Physics 2",
+  "page": [
+   "10.001",
+   "10.004",
+   "10.005"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.103",
+  "name": "Fluid Mechanics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-103-fluid-mechanics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.104",
+  "name": "Dynamics",
+  "repo": [
+   "10.002",
+   "10.004",
+   "30.101"
+  ],
+  "prerequisites": [
+   "10.004",
+   "10.002",
+   "30.101"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-104-dynamics/",
+  "joiner": "",
+  "listed": "10.004 Advanced Math II 10.002 Physics I 30.101 Systems & Control",
+  "page": [
+   "10.004",
+   "10.002",
+   "30.101"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.105",
+  "name": "Machine Element Design",
+  "repo": [
+   "30.001"
+  ],
+  "prerequisites": [
+   "30.001"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-105-machine-element-design/",
+  "joiner": "and",
+  "listed": "30.001 Structures and Materials",
+  "page": [
+   "30.001"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.106",
+  "name": "Microelectronics Circuits and Devices",
+  "repo": [
+   "10.005",
+   "30.002"
+  ],
+  "prerequisites": [
+   "10.005",
+   "30.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-106-microelectronics-circuits-and-devices/",
+  "joiner": "",
+  "listed": "10.005 Physics II 30.002 Circuits & Electronics",
+  "page": [
+   "10.005",
+   "30.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.107",
+  "name": "Power Electronics",
+  "repo": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.002"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-107-power-electronics/",
+  "joiner": "and",
+  "listed": "10.013 Modelling and Analysis 10.015 Physical World 10.017 Technological World 10.018 Modelling Space and Systems 30.002 Circuits & Electronics Prerequisites will be strictly enforced with a grade of at least a Pass.",
+  "page": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.108",
+  "name": "Material Science",
+  "repo": [
+   "30.001"
+  ],
+  "prerequisites": [
+   "30.001"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-108-material-science/",
+  "joiner": "and",
+  "listed": "30.001 Structures and Materials",
+  "page": [
+   "30.001"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.109",
+  "name": "Thermal Systems For Power & Environment",
+  "repo": [
+   "10.015"
+  ],
+  "prerequisites": [
+   "10.015"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-109-thermal-systems-for-power-environment/",
+  "joiner": "",
+  "listed": "10.015 Physical World",
+  "page": [
+   "10.015"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.110",
+  "name": "Digital Systems Laboratory",
+  "repo": [
+   "30.002"
+  ],
+  "prerequisites": [
+   "30.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-110-digital-systems-laboratory/",
+  "joiner": "",
+  "listed": "30.002 Circuits & Electronics",
+  "page": [
+   "30.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.111",
+  "name": "Entrepreneurship",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-111-entrepreneurship/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.113",
+  "name": "Design and Fabrication of Microelectromechanical Systems (MEMS)",
+  "repo": [
+   "03.007A",
+   "03.007B",
+   "30.001",
+   "30.002"
+  ],
+  "prerequisites": [
+   "03.007A",
+   "03.007B",
+   "30.001",
+   "30.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-113-design-and-fabrication-of-microelectromechanical-systems-mems/",
+  "joiner": "and",
+  "listed": "03.007A Innovating with Design and AI-1 (IDeA-1) 03.007B Innovating with Design and AI-2 (IDeA-2) 30.001 Structure & Materials 30.002 Circuit & Electronics",
+  "page": [
+   "03.007A",
+   "03.007B",
+   "30.001",
+   "30.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.114",
+  "name": "Advanced Feedback and Control",
+  "repo": [
+   "30.101"
+  ],
+  "prerequisites": [
+   "30.101"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-114-advanced-feedback-and-control/",
+  "joiner": "",
+  "listed": "30.101 Systems & Control",
+  "page": [
+   "30.101"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.115",
+  "name": "Digital Signal Processing",
+  "repo": [
+   "10.018"
+  ],
+  "prerequisites": [
+   "10.018"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-115-digital-signal-processing/",
+  "joiner": "and",
+  "listed": "10.018 Modelling Space and Systems",
+  "page": [
+   "10.018"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.117",
+  "name": "Electric Power Systems Analysis and Design",
+  "repo": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.002"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-117-electric-power-systems-analysis-and-design/",
+  "joiner": "and",
+  "listed": "10.013 Modelling and Analysis 10.015 Physical World 10.017 Technological World 10.018 Modelling Space and Systems 30.002 Circuits & Electronics",
+  "page": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.119",
+  "name": "Intelligent Robotics",
+  "repo": [
+   "30.002",
+   "30.101"
+  ],
+  "prerequisites": [
+   "30.002",
+   "30.101"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-119-intelligent-robotics/",
+  "joiner": "",
+  "listed": "30.002 Circuits & Electronics 30.101 Systems & Control",
+  "page": [
+   "30.002",
+   "30.101"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.120",
+  "name": "Design & Manufacturing",
+  "repo": [
+   "10.015"
+  ],
+  "prerequisites": [
+   "10.015"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-120-design-manufacturing/",
+  "joiner": "",
+  "listed": "10.015 Physical World",
+  "page": [
+   "10.015"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.123",
+  "name": "Healthcare Product Design",
+  "repo": [
+   "03.007A",
+   "03.007B",
+   "30.001",
+   "30.002",
+   "30.007",
+   "30.101"
+  ],
+  "prerequisites": [
+   "03.007A",
+   "03.007B",
+   "30.001",
+   "30.002",
+   "30.007",
+   "30.101"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-123-healthcare-product-design/",
+  "joiner": "and",
+  "listed": "03.007A Innovating with Design and AI-1 (IDeA-1) 03.007B Innovating with Design and AI-2 (IDeA-2) 30.001 Structures & Materials 30.002 Circuits & Electronics 30.007 Engineering Design Innovation 30.101 Systems and Control",
+  "page": [
+   "03.007A",
+   "03.007B",
+   "30.001",
+   "30.002",
+   "30.007",
+   "30.101"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.200",
+  "name": "Micro-Nano Projects Laboratory",
+  "repo": [
+   "30.103",
+   "30.108"
+  ],
+  "prerequisites": [
+   "30.103",
+   "30.108"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-200-micro-nano-projects-laboratory/",
+  "joiner": "",
+  "listed": "30.103 Fluid Mechanics 30.108 Material Science",
+  "page": [
+   "30.103",
+   "30.108"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.201",
+  "name": "Wireless Communications and Internet of Things",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-201-wireless-communications-and-internet-of-things/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.202",
+  "name": "Design of Intelligent Digital Integrated Circuits and Systems",
+  "repo": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.002",
+   "30.101"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.101",
+   "30.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-202-design-of-intelligent-digital-integrated-circuits-and-systems/",
+  "joiner": "and",
+  "listed": "10.013 Modelling and Analysis 10.015 Physical World 10.017 Technological World 10.018 Modelling Space and Systems 30.101 Systems & Control 30.002 Circuits & Electronics Prerequisites will be strictly enforced with a grade of at least a Pass.",
+  "page": [
+   "10.013",
+   "10.015",
+   "10.017",
+   "10.018",
+   "30.101",
+   "30.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.203",
+  "name": "Topics in Biomedical and Healthcare Engineering",
+  "repo": [
+   "10.016",
+   "30.001"
+  ],
+  "prerequisites": [
+   "10.016",
+   "30.001"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-203-topics-in-biomedical-and-healthcare-engineering/",
+  "joiner": "",
+  "listed": "10.016 Science for a Sustainable World 30.001 Structures & Materials",
+  "page": [
+   "10.016",
+   "30.001"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "30.204",
+  "name": "Propulsion",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-204-propulsion/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.205",
+  "name": "Aerodynamics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-205-aerodynamics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.206",
+  "name": "SMU Design Management",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-206-smu-design-management/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.207",
+  "name": "Structural Mechanics and Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-207-structural-mechanics-and-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.208",
+  "name": "Mechanical Projects Laboratory",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-208-mechanical-projects-laboratory/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.303",
+  "name": "Industry 4.0 & 3D Printing",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-303-industry-4-0-3d-printing/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.316",
+  "name": "Digital Biomimetics: Sustainable Materials and Manufacturing",
+  "repo": [
+   "20.211",
+   "20.212",
+   "30.001",
+   "30.007"
+  ],
+  "prerequisites": [
+   "20.211",
+   "20.212",
+   "30.001",
+   "30.007"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "30.501",
+  "name": "Modeling Multi-Energy Systems",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-501-modeling-multi-energy-systems/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.502",
+  "name": "Research Methods",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-502-research-methods/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.504",
+  "name": "Computational Science & Engineering",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-504-computational-science-engineering/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.505",
+  "name": "Design Science",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-505-design-science/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.506",
+  "name": "Data Structure & Algorithms",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-506-data-structure-algorithms/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.508",
+  "name": "Optimization and Control",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-508-optimization-and-control/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.509",
+  "name": "Applied Thermodynamics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-509-applied-thermodynamics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.510",
+  "name": "Quantum Computation and Quantum Information",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-510-quantum-computation-and-quantum-information/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.580",
+  "name": "Research Projects",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-580-research-projects/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.590",
+  "name": "Research Seminar",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-590-research-seminar/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.591",
+  "name": "Research Seminar II",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-591-research-seminar-ii/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.801",
+  "name": "Industry Design Project",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-801-industry-design-project/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "30.901",
+  "name": "Graduate Project Seminar I",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/30-901-graduate-project-seminar-i/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.000",
+  "name": "Engineering Systems Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-000-engineering-systems-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.001",
+  "name": "Probability",
+  "repo": [
+   "10.004",
+   "10.013"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.004"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/40-001-probability/",
+  "joiner": "",
+  "listed": "10.004 Advanced Math II Prerequisites (for Exchange Students): Multivariable Calculus",
+  "page": [
+   "10.004"
+  ],
+  "status": "differs",
+  "extra": [
+   "10.013"
+  ],
+  "gap": []
+ },
+ {
+  "code": "40.002",
+  "name": "Optimisation",
+  "repo": [
+   "10.018"
+  ],
+  "prerequisites": [
+   "10.018"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-002-optimisation/",
+  "joiner": "and",
+  "listed": "10.018 Modelling Space and Systems Prerequisites (for Exchange Students): Multivariable Calculus and Linear Algebra Number of credits: 12",
+  "page": [
+   "10.018"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.003",
+  "name": "Operations Management",
+  "repo": [
+   "40.001",
+   "40.002"
+  ],
+  "prerequisites": [
+   "40.001",
+   "40.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-003-operations-management/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "40.004",
+  "name": "Statistics",
+  "repo": [
+   "40.001",
+   "50.034"
+  ],
+  "prerequisites": [
+   "40.001",
+   "50.034"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/40-004-statistics/",
+  "joiner": "or",
+  "listed": "40.001 Probability (or 30.3003/50.034 Introduction to Probability and Statistics)",
+  "page": [
+   "40.001",
+   "50.034"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.005",
+  "name": "Stochastic Modelling",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-005-stochastic-modelling/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.006",
+  "name": "Network Modelling",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-006-network-modelling/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.007",
+  "name": "Decision Analysis",
+  "repo": [
+   "40.001"
+  ],
+  "prerequisites": [
+   "40.001"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-007-decision-analysis/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "40.008",
+  "name": "Quality and Reliability",
+  "repo": [
+   "40.004"
+  ],
+  "prerequisites": [
+   "40.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-008-quality-reliability/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "40.009",
+  "name": "Simulation",
+  "repo": [
+   "40.001",
+   "40.004"
+  ],
+  "prerequisites": [
+   "40.001",
+   "40.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-009-simulation/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "40.011",
+  "name": "Data and Business Analytics",
+  "repo": [
+   "10.014",
+   "10.022"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.022"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-011-data-and-business-analytics-for-esd-students-only/",
+  "joiner": "",
+  "listed": "10.014 Computational Thinking for Design 10.022 Modelling Uncertainty Number of credits: 12",
+  "page": [
+   "10.014",
+   "10.022"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.012",
+  "name": "Manufacturing and Service Operations",
+  "repo": [
+   "40.002",
+   "40.017"
+  ],
+  "prerequisites": [
+   "40.002",
+   "40.017"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-012-manufacturing-and-service-operations/",
+  "joiner": "",
+  "listed": "40.002 Optimisation 40.017 Probability & Statistics Number of credits: 12",
+  "page": [
+   "40.002",
+   "40.017"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.014",
+  "name": "Engineering Systems Architecture",
+  "repo": [
+   "40.011"
+  ],
+  "prerequisites": [
+   "40.011"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "40.015",
+  "name": "Simulation Modelling and Analysis",
+  "repo": [
+   "40.012",
+   "40.017"
+  ],
+  "prerequisites": [
+   "40.017",
+   "40.012"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-015-simulation-modelling-and-analysis/",
+  "joiner": "and",
+  "listed": "40.017 Probability and Statistics 40.012 Manufacturing and Service Operations",
+  "page": [
+   "40.017",
+   "40.012"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.016",
+  "name": "The Analytics Edge",
+  "repo": [
+   "10.022",
+   "40.017"
+  ],
+  "prerequisites": [
+   "40.017",
+   "10.022"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-016-the-analytics-edge/",
+  "joiner": "and",
+  "listed": "40.017 Probability and Statistics (for ESD students) 10.022 Modelling Uncertainty (for non-ESD students) Number of credits: 12",
+  "page": [
+   "40.017",
+   "10.022"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.017",
+  "name": "Probability and Statistics",
+  "repo": [
+   "10.018",
+   "10.022"
+  ],
+  "prerequisites": [
+   "10.018",
+   "10.022"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-017-probability-and-statistics/",
+  "joiner": "and",
+  "listed": "10.018 Modelling Space and Systems 10.022 Modelling Uncertainty Number of credits: 12",
+  "page": [
+   "10.018",
+   "10.022"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.018",
+  "name": "Heuristics and Systems Theory",
+  "repo": [
+   "10.018",
+   "40.002",
+   "40.017"
+  ],
+  "prerequisites": [
+   "10.018",
+   "40.002",
+   "40.017"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-018-heuristics-and-systems-theory/",
+  "joiner": "and",
+  "listed": "10.018 Modelling Space and Systems 40.002 Optimisation 40.017 Probability and Statistics Number of credits: 12",
+  "page": [
+   "10.018",
+   "40.002",
+   "40.017"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.230",
+  "name": "Design for Sustainability",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-230-design-for-sustainability/",
+  "joiner": "",
+  "listed": "–",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.240",
+  "name": "Investment Science",
+  "repo": [
+   "40.011",
+   "40.017"
+  ],
+  "prerequisites": [
+   "40.011",
+   "40.017"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-240-investment-science-for-esd-students-only/",
+  "joiner": "and",
+  "listed": "40.017 Probability and Statistics 40.011 Data and Business Analytics",
+  "page": [
+   "40.017",
+   "40.011"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.242",
+  "name": "Derivative Pricing and Risk Management",
+  "repo": [
+   "40.240",
+   "40.324"
+  ],
+  "prerequisites": [
+   "40.240",
+   "40.324"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/40-242-derivative-pricing-and-risk-management/",
+  "joiner": "or",
+  "listed": "40.240 Investment Science or 40.324 Fundamentals of Investing",
+  "page": [
+   "40.240",
+   "40.324"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.244",
+  "name": "Stochastic Calculus for Finance",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-244-stochastic-calculus-for-finance/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.246",
+  "name": "Computational Methods in Finance",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-246-computational-methods-in-finance/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.250",
+  "name": "Quality Analytics and Management",
+  "repo": [
+   "10.022"
+  ],
+  "prerequisites": [
+   "10.022"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-250-quality-analytics-and-management/",
+  "joiner": "",
+  "listed": "10.022 Modelling Uncertainty Number of credits: 12",
+  "page": [
+   "10.022"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.252",
+  "name": "Service Operations",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-252-service-operations/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.260",
+  "name": "Supply Chain Management",
+  "repo": [
+   "40.012",
+   "40.017"
+  ],
+  "prerequisites": [
+   "40.017",
+   "40.012"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-260-supply-chain-management/",
+  "joiner": "and",
+  "listed": "40.017 Probability and Statistics 40.012 Manufacturing and Service Operations",
+  "page": [
+   "40.017",
+   "40.012"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.270",
+  "name": "Network Economics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-270-network-economics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.280",
+  "name": "Transportation Systems",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-280-transportation-systems/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.302",
+  "name": "Advanced Topics in Optimisation",
+  "repo": [
+   "40.002"
+  ],
+  "prerequisites": [
+   "40.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-302-advanced-topics-in-optimisation/",
+  "joiner": "",
+  "listed": "40.002 Optimisation",
+  "page": [
+   "40.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.305",
+  "name": "Advanced Topics in Stochastic Modelling",
+  "repo": [
+   "40.012",
+   "40.017"
+  ],
+  "prerequisites": [
+   "40.017",
+   "40.012"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-305-advanced-topics-in-stochastic-modelling/",
+  "joiner": "and",
+  "listed": "40.017 Probability and Statistics 40.012 Manufacturing and Service Operations Pre-Requisites (for Exchange Students) : Markov chains and queuing theory Number of credits: 6",
+  "page": [
+   "40.017",
+   "40.012"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.316",
+  "name": "Game Theory",
+  "repo": [
+   "10.022"
+  ],
+  "prerequisites": [
+   "10.022"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-316-game-theory/",
+  "joiner": "or",
+  "listed": "10.022 Modelling Uncertainty (or equivalent) Number of credits: 12",
+  "page": [
+   "10.022"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.317",
+  "name": "Financial Systems Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-317-financial-systems-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.318",
+  "name": "Supply Chain Digitalisation and Design",
+  "repo": [
+   "40.260"
+  ],
+  "prerequisites": [
+   "40.260"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-318-supply-chain-digitalisation-and-design/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "40.319",
+  "name": "Statistical and Machine Learning",
+  "repo": [
+   "40.004"
+  ],
+  "prerequisites": [
+   "40.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-319-statistical-and-machine-learning/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "40.320",
+  "name": "Airport Systems Planning and Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-320-airport-systems-planning-and-design/",
+  "joiner": "",
+  "listed": "– Number of credits: 12",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.321",
+  "name": "Airport Systems Modelling and Simulation",
+  "repo": [
+   "40.002",
+   "60.008"
+  ],
+  "prerequisites": [
+   "40.002",
+   "60.008"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/40-321-airport-systems-modelling-and-simulation/",
+  "joiner": "or",
+  "listed": "40.002 Optimisation or 60.008 Systems Design Studio",
+  "page": [
+   "40.002",
+   "60.008"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.322",
+  "name": "Airport Systems Operation and Management*",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-322-airport-systems-operation-and-management/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.323",
+  "name": "Equity Valuation",
+  "repo": [
+   "40.017",
+   "40.240"
+  ],
+  "prerequisites": [
+   "40.017",
+   "40.240"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-323-equity-valuation/",
+  "joiner": "and",
+  "listed": "40.017 Probability and Statistics 40.240 Investment Science",
+  "page": [
+   "40.017",
+   "40.240"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.324",
+  "name": "Fundamentals of Investing",
+  "repo": [
+   "10.013",
+   "10.018",
+   "10.022"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.018",
+   "10.022"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-324-fundamentals-of-investing/",
+  "joiner": "and",
+  "listed": "10.013 Modelling and Analysis 10.018 Modelling Space and Systems 10.022 Modelling Uncertainty",
+  "page": [
+   "10.013",
+   "10.018",
+   "10.022"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "40.510",
+  "name": "Linear Optimisation",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-510-linear-optimisation/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.520",
+  "name": "Stochastic Models",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-520-stochastic-models/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.530",
+  "name": "Statistics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-530-statistics/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.540",
+  "name": "Operations Management",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-540-operations-management/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.590",
+  "name": "Research Seminar",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-590-research-seminar/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.612",
+  "name": "Distributionally Robust Optimization",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-612-distributionally-robust-optimization/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.651",
+  "name": "Algorithmic Game Theory",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-651-algorithmic-game-theory/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.652",
+  "name": "Economics of Communication Networks",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-652-economics-of-communication-networks/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.720",
+  "name": "Queueing Theory",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-720-queueing-theory/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.721",
+  "name": "Financial Engineering",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-721-financial-engineering/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.751",
+  "name": "Economics of Information",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-751-economics-of-information/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.752",
+  "name": "Economics of Communication Networks (ESD)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-752-economics-of-communication-networks-esd/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "40.840",
+  "name": "Special Topics in Operations Management",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/40-840-special-topics-in-operations-management/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.001",
+  "name": "Information Systems & Programming",
+  "repo": [
+   "10.014",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.025"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-001-information-systems-programming/",
+  "joiner": "or",
+  "listed": "10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches)",
+  "page": [
+   "10.014",
+   "10.025"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.002",
+  "name": "Computation Structures",
+  "repo": [
+   "10.014",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.025"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-002-computation-structures/",
+  "joiner": "or",
+  "listed": "10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches)",
+  "page": [
+   "10.014",
+   "10.025"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.003",
+  "name": "Elements of Software Construction",
+  "repo": [
+   "50.001"
+  ],
+  "prerequisites": [
+   "50.001"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-003-elements-of-software-construction/",
+  "joiner": "",
+  "listed": "50.001 Information Systems & Programming",
+  "page": [
+   "50.001"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.004",
+  "name": "Algorithms",
+  "repo": [
+   "10.014",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.025"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-004-algorithms/",
+  "joiner": "or",
+  "listed": "10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches)",
+  "page": [
+   "10.014",
+   "10.025"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.005",
+  "name": "Computer System Engineering",
+  "repo": [
+   "50.002"
+  ],
+  "prerequisites": [
+   "50.002"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-005-computer-system-engineering/",
+  "joiner": "",
+  "listed": "50.002 Computation Structures",
+  "page": [
+   "50.002"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.006",
+  "name": "User Interface Design and Implementation",
+  "repo": [
+   "10.009",
+   "10.014",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.009",
+   "10.014",
+   "10.025"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-006-user-interface-design-and-implementation/",
+  "joiner": "or",
+  "listed": "10.009 The Digital World (For AY2019) or 10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches)",
+  "page": [
+   "10.009",
+   "10.014",
+   "10.025"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.007",
+  "name": "Machine Learning",
+  "repo": [
+   "50.001",
+   "50.004"
+  ],
+  "prerequisites": [
+   "50.001",
+   "50.004"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-007-machine-learning/",
+  "joiner": "or",
+  "listed": "50.001 Information Systems & Programming 50.004 Algorithms ; or A working knowledge of programming in Python or Java and a strong foundation in probability and statistics, and optimisation (topics such as dynamic programming)",
+  "page": [
+   "50.001",
+   "50.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.012",
+  "name": "Networks",
+  "repo": [
+   "50.005"
+  ],
+  "prerequisites": [
+   "50.005"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-012-networks/",
+  "joiner": "or",
+  "listed": "50.005 Computer System Engineering or A working knowledge of programming in Python and a strong foundation in computer systems",
+  "page": [
+   "50.005"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.016",
+  "name": "Digital Communication Systems",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-016-digital-communication-systems/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.017",
+  "name": "Graphics and Visualisation",
+  "repo": [
+   "50.003"
+  ],
+  "prerequisites": [
+   "50.003"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-017-graphics-and-visualisation/",
+  "joiner": "or",
+  "listed": "50.003 Elements of Software Construction or knowledge of the following. C/C++: All assignments are in C/C++ Calculus, Linear Algebra: Solving equations, derivatives, integral; vectors, matrices, basis, solving systems of equations. C/C++: All assignments are in C/C++ Calculus, Linear Algebra: Solving equations, derivatives, integral; vectors, matrices, basis, solving systems of equations.",
+  "page": [
+   "50.003"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.020",
+  "name": "Network Security",
+  "repo": [
+   "50.042"
+  ],
+  "prerequisites": [
+   "50.042"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-020-network-security/",
+  "joiner": "",
+  "listed": "50.042 Foundations of Cybersecurity",
+  "page": [
+   "50.042"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.021",
+  "name": "Artificial Intelligence",
+  "repo": [
+   "10.014",
+   "10.022",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.022",
+   "10.025"
+  ],
+  "corequisites": [
+   "50.007",
+   "40.319"
+  ],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-021-artificial-intelligence/",
+  "joiner": "or",
+  "listed": "50.007 Machine Learning or 40.319 Statistical & Machine Learning 10.022 Modelling Uncertainty (For AY2020 and subsequent batches) 10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches) *50.007 Machine Learning / 40.319 Statistical & Machine Learning is also recognised as a co-requisite for 50.021 Artificial Intelligence.",
+  "page": [
+   "50.007",
+   "40.319",
+   "10.022",
+   "10.014",
+   "10.025",
+   "50.007",
+   "40.319"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": [
+   "40.319",
+   "50.007"
+  ]
+ },
+ {
+  "code": "50.033",
+  "name": "Foundations of Game Design and Development",
+  "repo": [
+   "50.001",
+   "50.004"
+  ],
+  "prerequisites": [
+   "50.001",
+   "50.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-033-foundations-of-game-design-and-development/",
+  "joiner": "",
+  "listed": "50.001 Information Systems & Programming 50.004 Algorithms",
+  "page": [
+   "50.001",
+   "50.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.034",
+  "name": "Introduction to Probability and Statistics",
+  "repo": [
+   "10.013",
+   "10.018"
+  ],
+  "prerequisites": [
+   "10.013",
+   "10.018"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "50.035",
+  "name": "Computer Vision",
+  "repo": [
+   "40.319",
+   "50.007"
+  ],
+  "prerequisites": [
+   "50.007",
+   "40.319"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-035-computer-vision/",
+  "joiner": "or",
+  "listed": "50.007 Machine Learning or 40.319 Statistical & Machine Learning (ESD)",
+  "page": [
+   "50.007",
+   "40.319"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.037",
+  "name": "Blockchain Technology",
+  "repo": [
+   "50.004",
+   "50.005"
+  ],
+  "prerequisites": [
+   "50.004",
+   "50.005"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-037-blockchain-technology/",
+  "joiner": "and",
+  "listed": "The course assumes a basic familiarity with computer programming and knowledge of the Python language. 50.004 Algorithms 50.005 Computer System Engineering 50.012 Networks , 50.020 Security , and 50.043 Database Systems are helpful but not required. Needed concepts will be introduced during the class",
+  "page": [
+   "50.004",
+   "50.005",
+   "50.012",
+   "50.020",
+   "50.043"
+  ],
+  "status": "differs",
+  "extra": [],
+  "gap": [
+   "50.012",
+   "50.020",
+   "50.043"
+  ]
+ },
+ {
+  "code": "50.038",
+  "name": "Computational Data Science",
+  "repo": [
+   "10.014",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.025"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-038-computational-data-science/",
+  "joiner": "or",
+  "listed": "10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches)",
+  "page": [
+   "10.014",
+   "10.025"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.039",
+  "name": "Theory and Practice of Deep Learning",
+  "repo": [
+   "50.007"
+  ],
+  "prerequisites": [
+   "50.007"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-039-theory-and-practice-of-deep-learning/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "50.040",
+  "name": "Natural Language Processing",
+  "repo": [
+   "40.319",
+   "50.007"
+  ],
+  "prerequisites": [
+   "50.007",
+   "40.319"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-040-natural-language-processing/",
+  "joiner": "and",
+  "listed": "50.007 Machine Learning / 40.319 Statistical & Machine Learning and A good foundation in: 1) programming, 2) design and analysis of algorithms, 3) mathematics including linear algebra, calculus, optimization, probability, and statistics.",
+  "page": [
+   "50.007",
+   "40.319"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.041",
+  "name": "Distributed Systems and Computing",
+  "repo": [
+   "50.004"
+  ],
+  "prerequisites": [
+   "50.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-041-distributed-systems-and-computing/",
+  "joiner": "or",
+  "listed": "50.004 Algorithms or consultation with the instructor",
+  "page": [
+   "50.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.042",
+  "name": "Foundations of Cybersecurity",
+  "repo": [
+   "50.005"
+  ],
+  "prerequisites": [
+   "50.005"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-042-foundations-of-cybersecurity/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "record adds"
+ },
+ {
+  "code": "50.043",
+  "name": "Database Systems",
+  "repo": [
+   "10.014",
+   "10.025",
+   "50.004"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.025",
+   "50.004"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-043-database-systems/",
+  "joiner": "or",
+  "listed": "10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches) 50.004 Algorithms",
+  "page": [
+   "10.014",
+   "10.025",
+   "50.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.044",
+  "name": "System Security",
+  "repo": [
+   "50.042"
+  ],
+  "prerequisites": [
+   "50.042"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-044-system-security/",
+  "joiner": "",
+  "listed": "50.042 Foundations of Cybersecurity",
+  "page": [
+   "50.042"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.045",
+  "name": "Information Retrieval",
+  "repo": [
+   "50.007",
+   "50.021",
+   "50.038",
+   "50.039"
+  ],
+  "prerequisites": [
+   "50.007",
+   "50.021",
+   "50.038",
+   "50.039"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-045-information-retrieval/",
+  "joiner": "or",
+  "listed": "50.007 Machine Learning or 50.021 Artificial Intelligence or 50.038 Computational Data Science or 50.039 Theory and Practice of Deep Learning",
+  "page": [
+   "50.007",
+   "50.021",
+   "50.038",
+   "50.039"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.046",
+  "name": "Cloud Computing and Internet of Things",
+  "repo": [
+   "50.005"
+  ],
+  "prerequisites": [
+   "50.005"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-046-cloud-computing-and-internet-of-things/",
+  "joiner": "or",
+  "listed": "50.005 Computer System Engineering (recommended) or a strong foundation in computer systems",
+  "page": [
+   "50.005"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.047",
+  "name": "Mobile Robotics",
+  "repo": [
+   "10.020",
+   "10.022",
+   "50.001",
+   "50.004"
+  ],
+  "prerequisites": [
+   "10.020",
+   "10.022",
+   "50.001",
+   "50.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-047-mobile-robotics/",
+  "joiner": "and",
+  "listed": "Basic knowledge of Linear Algebra and Calculus CSD students 10.020 Data Driven World , and 10.022 Modelling Uncertainty , and 50.001 Information Systems and Programming , and 50.004 Algorithms 10.020 Data Driven World , and 10.022 Modelling Uncertainty , and 50.001 Information Systems and Programming , and 50.004 Algorithms Non-CSD students 10.020 Data Driven World , and 10.022 Modelling Uncertainty , and 50.004 Algorithms 10.020 Data Driven World , and 10.022 Modelling Uncertainty , and 50.004 Algorithms Python/C++ Programming Linux OS (optional)",
+  "page": [
+   "10.020",
+   "10.022",
+   "50.001",
+   "50.004",
+   "10.020",
+   "10.022",
+   "50.001",
+   "50.004",
+   "10.020",
+   "10.022",
+   "50.004",
+   "10.020",
+   "10.022",
+   "50.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.050",
+  "name": "Advanced Algorithms",
+  "repo": [
+   "10.018",
+   "50.004"
+  ],
+  "prerequisites": [
+   "50.004",
+   "10.018"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-050-advanced-algorithms/",
+  "joiner": "and",
+  "listed": "50.004 Algorithms (can be taken as co-requisite) 10.018 Modelling Space and Systems (for Intake Y2020 and subsequent batches)",
+  "page": [
+   "50.004",
+   "10.018"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.051",
+  "name": "Programming Language Concepts",
+  "repo": [
+   "10.014",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.025"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-051-programming-language-concepts/",
+  "joiner": "or",
+  "listed": "10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches)",
+  "page": [
+   "10.014",
+   "10.025"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.052",
+  "name": "Extended Reality",
+  "repo": [
+   "50.001"
+  ],
+  "prerequisites": [
+   "50.001"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-052-extended-reality/",
+  "joiner": "or",
+  "listed": "50.001 Information Systems & Programming or demonstrable experience and knowledge in object-oriented programming.",
+  "page": [
+   "50.001"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.053",
+  "name": "Software Testing and Verification",
+  "repo": [
+   "50.003"
+  ],
+  "prerequisites": [
+   "50.003"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-053-software-testing-and-verification/",
+  "joiner": "or",
+  "listed": "50.003 Elements of Software Construction or good knowledge in JAVA programming or by consultation with the instructor.",
+  "page": [
+   "50.003"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.054",
+  "name": "Compiler Design and Program Analysis",
+  "repo": [
+   "50.004"
+  ],
+  "prerequisites": [
+   "50.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-054-compiler-design-and-program-analysis/",
+  "joiner": "",
+  "listed": "50.004 Algorithms",
+  "page": [
+   "50.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.055",
+  "name": "Special Topic: Machine Learning Operations",
+  "repo": [
+   "50.007",
+   "50.039",
+   "60.001"
+  ],
+  "prerequisites": [
+   "50.007",
+   "50.039",
+   "60.001"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-055-special-topic-machine-learning-operations/",
+  "joiner": "or",
+  "listed": "50.007 Machine Learning 50.039 Theory and Practice of Deep Learning or 60.001 Applied Deep Learning (can also be treated as co-requisite) Or equivalent course on machine learning and deep learning",
+  "page": [
+   "50.007",
+   "50.039",
+   "60.001"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.056",
+  "name": "Software Abstraction Functional Programming",
+  "repo": [
+   "10.014",
+   "10.025"
+  ],
+  "prerequisites": [
+   "10.014",
+   "10.025"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-056-software-abstraction-functional-programming/",
+  "joiner": "or",
+  "listed": "10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025 and subsequent batches)",
+  "page": [
+   "10.014",
+   "10.025"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.057",
+  "name": "Modern Software Design Studio with Agentic AI",
+  "repo": [
+   "10.014",
+   "10.025",
+   "50.003"
+  ],
+  "prerequisites": [
+   "50.003",
+   "10.014",
+   "10.025"
+  ],
+  "corequisites": [],
+  "tree": "yes",
+  "url": "https://www.sutd.edu.sg/course/50-057-modern-software-design-studio-with-agentic-ai/",
+  "joiner": "or",
+  "listed": "50.003 Elements of Software Construction And one of the courses listed below: 10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025) or Algorithmic Thinking and Object-Based Abstraction (For AY2026 onwards)",
+  "page": [
+   "50.003",
+   "10.014",
+   "10.025"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "50.500",
+  "name": "Analysis of Algorithms",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-500-analysis-of-algorithms/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.510",
+  "name": "Computer Networks",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-510-computer-networks/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.511",
+  "name": "Wireless Communication and Networking",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-511-wireless-communication-and-networking/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.530",
+  "name": "Software Engineering",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-530-software-engineering/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.570",
+  "name": "Machine Learning",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-570-machine-learning/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.571",
+  "name": "Digital Signal Processing",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-571-digital-signal-processing/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.572",
+  "name": "Graphics & Visualization",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-572-graphics-visualization/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.573",
+  "name": "Database Systems",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-573-database-systems/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.574",
+  "name": "Theory and Application of Software Security",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-574-theory-and-application-of-software-security/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "50.590",
+  "name": "ISTD Seminar Series",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/50-590-istd-seminar-series/",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "none listed"
+ },
+ {
+  "code": "60.001",
+  "name": "Applied Deep Learning",
+  "repo": [
+   "50.007"
+  ],
+  "prerequisites": [
+   "50.007"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/60-001-applied-deep-learning/",
+  "joiner": "",
+  "listed": "50.007 Machine Learning",
+  "page": [
+   "50.007"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "60.002",
+  "name": "AI Applications in Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/60-002-ai-applications-in-design/",
+  "joiner": "",
+  "listed": "Nil",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "60.003",
+  "name": "Product Design Studio",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/60-003-product-design-studio/",
+  "joiner": "",
+  "listed": "Nil",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "60.004",
+  "name": "Service Design Studio",
+  "repo": [
+   "10.014",
+   "50.004"
+  ],
+  "prerequisites": [
+   "10.014",
+   "50.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/60-004-service-design-studio/",
+  "joiner": "",
+  "listed": "10.014 Computational Thinking for Design 50.004 Introduction to Algorithm",
+  "page": [
+   "10.014",
+   "50.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "60.005",
+  "name": "Human Computer Interaction and AI",
+  "repo": [
+   "10.014"
+  ],
+  "prerequisites": [
+   "10.014"
+  ],
+  "corequisites": [
+   "60.004"
+  ],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/60-005-hci-and-ai/",
+  "joiner": "",
+  "listed": "10.014 Computational Thinking for Design",
+  "page": [
+   "10.014"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "60.006",
+  "name": "Spatial Design Studio",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/60-006-spatial-design-studio/",
+  "joiner": "",
+  "listed": "Nil",
+  "page": [],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "60.008",
+  "name": "Systems Design Studio",
+  "repo": [
+   "50.004"
+  ],
+  "prerequisites": [
+   "50.004"
+  ],
+  "corequisites": [],
+  "tree": "",
+  "url": "https://www.sutd.edu.sg/course/60-008-systems-design-studio/",
+  "joiner": "",
+  "listed": "50.004 Algorithms",
+  "page": [
+   "50.004"
+  ],
+  "status": "agrees",
+  "extra": [],
+  "gap": []
+ },
+ {
+  "code": "60.009",
+  "name": "Data and Design",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Algorithmic Thinking & Object-Oriented Programming",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Calculus",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Design Studio 1",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Design Studio 2",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Designing Sustainable Energy Solutions",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Freshmore Design Studio",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Innovating with Design & AI 3",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Introduction to Discrete Mathematics",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Introduction to Healthcare Technology",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Introduction to Machine Learning",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Introduction to Probability and Statistics (E/S)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Introduction to Programming",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Linear Algebra & Multivariable Calculus (E/S)",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Physics Principles and Applications 1",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Physics Principles and Applications 2",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Qualitative & Quantitative Research Methods",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ },
+ {
+  "code": "99.999",
+  "name": "Sustainability: Science and System Thinking",
+  "repo": [],
+  "prerequisites": [],
+  "corequisites": [],
+  "tree": "",
+  "url": "",
+  "joiner": "",
+  "listed": "",
+  "page": [],
+  "status": "no page"
+ }
+]

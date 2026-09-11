@@ -1,8 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 import {
-  buildPlanFile, readPlanFile, migratePlans, migrateCurriculum, withLegacyAlias,
-  PLAN_FILE_KIND,
+  buildPlanFile, readPlanFile, migratePlans, migrateCurriculum, PLAN_FILE_KIND,
 } from './planFile';
 import type { PlanState, RecordsState } from '@/types';
 
@@ -78,33 +77,5 @@ describe('files written before this format', () => {
   it('refuses something that is not a plan at all', () => {
     expect(readPlanFile({ nope: true }, 'ay2025')).toBeNull();
     expect(readPlanFile(null, 'ay2025')).toBeNull();
-  });
-});
-
-// A tab open since before the rename is still running a bundle that knows
-// `classic` and not `ay2024`. It reads the same localStorage and pulls the same
-// gist, so anything written for it has to carry both names.
-describe('what gets written out for a browser that has not reloaded', () => {
-  it('writes classic alongside ay2024, pointing at the same plan', () => {
-    const p = plan(['10.013']);
-    const out = withLegacyAlias({ ay2024: p, ay2025: plan([]) });
-    expect(out.classic).toBe(out.ay2024);
-    expect(out.ay2024).toBe(p);
-    expect(out.ay2025).toBeDefined();
-  });
-
-  it('adds nothing when there is no ay2024 plan to alias', () => {
-    const out = withLegacyAlias({ ay2025: plan([]) });
-    expect(out).not.toHaveProperty('classic');
-  });
-
-  // The round trip the alias exists for: new browser writes, old browser
-  // reads, old browser writes back, new browser reads. The plan survives.
-  it('survives a round trip through a pre-rename browser', () => {
-    const written = withLegacyAlias({ ay2024: plan(['10.013']) });
-    // What the old bundle keeps: only the three keys it knows.
-    const oldKept = { classic: written.classic, ay2025: plan([]), ay2026: plan([]) };
-    const backIn = migratePlans(oldKept as Record<string, unknown>) as Record<string, typeof written.ay2024>;
-    expect(backIn.ay2024.selectedMods).toEqual(['10.013']);
   });
 });

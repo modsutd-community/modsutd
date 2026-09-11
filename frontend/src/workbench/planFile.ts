@@ -24,8 +24,18 @@ export interface PlanFile {
 
 /**
  * `classic` was the name for AY2024 and earlier before the cohorts were all
- * spelled `ay<year>`. Files and stored plans written under the old name still
- * exist in people's browsers and in their gists, so every read maps it.
+ * spelled `ay<year>`.
+ *
+ * READ ONLY, and one-way. Nothing writes this name any more: a browser that
+ * loads the app rewrites its storage and its gist under `ay2024` on the way in,
+ * so the old spelling leaves as people arrive rather than being carried
+ * forever. What still has to be read is what is already out there: a plan in a
+ * gist last written before the rename, and a `.json` a student exported and
+ * kept.
+ *
+ * Deletable when neither of those can exist, which is a judgement about how
+ * long an unopened gist and a file on disk stay interesting, not a release
+ * date. Everything that reads it is named here and in `migrateMode`.
  */
 export const LEGACY_CURRICULUM = 'classic';
 export const CURRENT_FOR_LEGACY: Curriculum = 'ay2024';
@@ -40,23 +50,6 @@ export function migratePlans<T>(plans: Record<string, T>): Record<string, T> {
   const { [LEGACY_CURRICULUM]: legacy, ...rest } = plans;
   // A plan already under the new name wins: it is the one being edited.
   return { [CURRENT_FOR_LEGACY]: legacy, ...rest } as Record<string, T>;
-}
-
-/**
- * The plans map with the retired `classic` key written alongside `ay2024`.
- *
- * Applied on the way OUT only, never kept in state. A tab that has not been
- * reloaded is still running the bundle that knows `classic` and nothing else,
- * and it reads the same localStorage and pulls the same gist. Without the
- * alias it finds an empty AY2024 plan, drops the `ay2024` key it does not
- * recognise, and pushes that back over the real one.
- *
- * Deletable once no browser can still be running a pre-rename bundle. It costs
- * one duplicated plan in the gist until then.
- */
-export function withLegacyAlias<T>(plans: Record<string, T>): Record<string, T> {
-  if (!plans || !(CURRENT_FOR_LEGACY in plans)) return plans;
-  return { ...plans, [LEGACY_CURRICULUM]: plans[CURRENT_FOR_LEGACY] };
 }
 
 function recordsFor(records: RecordsState, codes: string[]): RecordsState {

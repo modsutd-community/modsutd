@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Curriculum, PlanState, TimetableEvent, TimetableState } from '@/types';
-import { withLegacyAlias } from '@/workbench/planFile';
+import { LEGACY_CURRICULUM } from '@/workbench/planFile';
 
 const STORAGE_KEY = 'modsutd.timetable.v1';
 
@@ -27,14 +27,14 @@ function loadFromStorage(): TimetableState {
         planLevels: cand?.planLevels && typeof cand.planLevels === 'object' ? cand.planLevels : {},
       };
     };
-    return {
+    const stale = !!parsed.plans && LEGACY_CURRICULUM in parsed.plans;
+    const state: TimetableState = {
       events: Array.isArray(parsed.events) ? parsed.events : [],
       plans: parsed.plans
         ? {
-            // `classic` is the old name for this cohort. Plans under it are
-            // in people's browsers and in their gists right now, so it is read
-            // for as long as anyone might still have one.
-            ay2024: plan(parsed.plans.ay2024 ?? parsed.plans.classic),
+            // `classic` is what this cohort was called. A plan saved under it
+            // is read once, here, and then written back under the new name.
+            ay2024: plan(parsed.plans.ay2024 ?? parsed.plans[LEGACY_CURRICULUM]),
             ay2025: plan(parsed.plans.ay2025),
             ay2026: plan(parsed.plans.ay2026),
           }
@@ -42,6 +42,19 @@ function loadFromStorage(): TimetableState {
         : { ...emptyPlans(), ay2024: plan(parsed) },
       savedAt: parsed.savedAt,
     };
+    // Rewritten now rather than on the next edit. A browser that opens the app
+    // and changes nothing would otherwise keep `classic` in storage forever,
+    // and one spelling is the entire point of the rename. savedAt is left as
+    // it was: nothing the student did happened just now.
+    if (stale) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch {
+        // private window or quota: the migration is on read, so the next load
+        // does it again and nothing is lost by failing here
+      }
+    }
+    return state;
   } catch {
     return { events: [], plans: emptyPlans() };
   }
@@ -50,12 +63,7 @@ function loadFromStorage(): TimetableState {
 function persist(state: TimetableState) {
   try {
     state.savedAt = new Date().toISOString();
-    localStorage.setItem(
-      STORAGE_KEY,
-      // withLegacyAlias, not a plain stringify: a tab open on the pre-rename
-      // bundle reads this same key and would otherwise find no plan at all.
-      JSON.stringify({ ...state, plans: withLegacyAlias(state.plans) }),
-    );
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch {
     // ignore quota errors
   }
@@ -110,10 +118,11 @@ const slice = createSlice({
         };
       };
       state.plans = {
-        // `classic` again: an imported file or a pulled gist can still be
-        // carrying the old key.
+        // `classic` again: an imported file or a gist written by a browser
+        // that has not loaded since the rename still carries the old key. What
+        // this browser pushes back has only the new one.
         ay2024: plan(
-          payload?.ay2024 ?? (payload as Record<string, unknown>)?.classic as PlanState | undefined,
+          payload?.ay2024 ?? (payload as Record<string, unknown>)?.[LEGACY_CURRICULUM] as PlanState | undefined,
         ),
         ay2025: plan(payload?.ay2025),
         ay2026: plan(payload?.ay2026),
