@@ -131,7 +131,25 @@ WRITES_DATA = {
     "term_calendar.py",
     "propose_edits.py",
 }
-WRITERS = WRITES_DATA
+
+
+def accepts_dry_run(script: str) -> bool:
+    """Whether the script really has a --dry-run, asked rather than assumed.
+
+    This used to be `WRITERS = WRITES_DATA`, which made the check below a
+    tautology: the same set on both sides of an if/elif means the elif can
+    never run, so the guard that was supposed to fail a run rather than write
+    could not fire. Reading --help costs one subprocess per writer and is the
+    only version that can observe a new writer arriving without the flag.
+    """
+    try:
+        out = subprocess.run(
+            [sys.executable, script, "--help"], cwd=HERE, capture_output=True,
+            text=True, encoding="utf-8", errors="replace", timeout=60,
+        )
+    except Exception:  # noqa: BLE001
+        return False
+    return "--dry-run" in (out.stdout or "")
 
 
 def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
@@ -147,7 +165,7 @@ def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
     # touches /data, and every one of them has to accept --dry-run. Adding a
     # writer without the flag fails the run instead of writing.
     if dry_run:
-        if script[0] in WRITERS:
+        if script[0] in WRITES_DATA and accepts_dry_run(script[0]):
             cmd.append("--dry-run")
         elif script[0] in WRITES_DATA:
             return False, (f"{script[0]} writes to /data and has no --dry-run. "

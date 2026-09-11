@@ -134,6 +134,23 @@ Rules you must follow:
 QUOTE_MIN_CHARS = 25
 QUOTE_MIN_WORDS = 5
 
+# The phrases a SUTD page uses to name a course and then disown it. A quote
+# carrying one of these is evidence AGAINST a requirement, so accepting it as
+# support for adding a prerequisite gets the answer exactly backwards. 50.037's
+# block is the worked example: it names 50.012, 50.020 and 50.043 and then says
+# they are helpful but not required.
+HEDGES = (
+    "helpful but not required",
+    "not required",
+    "not a prerequisite",
+    "recommended",
+    "optional",
+    "preferably",
+    "or equivalent",
+    "assumed knowledge",
+    "nice to have",
+)
+
 
 def quote_is_substantial(quote: str) -> str:
     """Empty when the quote will do, otherwise the reason it will not."""
@@ -142,6 +159,31 @@ def quote_is_substantial(quote: str) -> str:
         return f"quote is {len(q)} chars, needs {QUOTE_MIN_CHARS}: a code is not a sentence"
     if len(q.split()) < QUOTE_MIN_WORDS:
         return f"quote is {len(q.split())} words, needs {QUOTE_MIN_WORDS}"
+    return ""
+
+
+def quote_supports(quote: str, codes: list[str]) -> str:
+    """Empty when the quote actually argues FOR requiring `codes`.
+
+    Length alone was the whole gate, and length is satisfied by any run of
+    words. Two things were getting through:
+
+    - a bare enumeration lifted out of a sentence whose verdict is the opposite,
+      "50.012 Networks , 50.020 Security , and 50.0", which is 44 characters of
+      nothing;
+    - the disowning sentence itself, quoted as support for adding the very
+      courses it disowns.
+
+    So the quote has to name every code being added, and must not be one of the
+    sentences that take a requirement away.
+    """
+    q = " ".join((quote or "").split()).lower()
+    for h in HEDGES:
+        if h in q:
+            return f"quote says {h!r}, which is evidence against a requirement"
+    missing = [c for c in codes if c.lower() not in q]
+    if missing:
+        return f"quote does not name {', '.join(missing)}"
     return ""
 
 
@@ -269,7 +311,7 @@ def validate_minor(edit: dict, by_id: dict, book_ids: dict, codes: set[str]) -> 
             return False, f"{c} has no record in data/courses"
         if c in (reqs[idx].get("anyOf") or []):
             return False, f"{c} is already in that group"
-    thin = quote_is_substantial(quote)
+    thin = quote_is_substantial(quote) or quote_supports(quote, list(add))
     if thin:
         return False, thin
     if norm(quote) not in norm(by_id[mid].get("page_text", "")):
@@ -297,6 +339,22 @@ def load_record(code: str) -> dict:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception:  # noqa: BLE001
         return {}
+
+
+def top_level(node: object) -> list[object]:
+    """The items directly under the outermost and/or, not recursed.
+
+    A nested group has to stay a dict here, which is exactly what recursion
+    destroys.
+    """
+    if isinstance(node, dict):
+        for k in ("and", "or"):
+            if k in node and isinstance(node[k], list):
+                return list(node[k])
+        return [node]
+    if isinstance(node, list):
+        return list(node)
+    return [node] if node is not None else []
 
 
 def flatten_tree(node: object) -> list[object]:
@@ -342,8 +400,15 @@ def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[boo
         # course, which is exactly what the scoping exists to prevent. 11 course
         # records carry scoping like that. Nested groups have the same problem.
         # Replacing one is a human's edit, so this refuses and says why.
+        # TOP LEVEL ONLY, deliberately. flatten_tree recurses through and/or,
+        # so a nested group was unwrapped into its plain string leaves and the
+        # guard saw no dicts at all: 50.055's {"and": ["50.007", {"or":
+        # ["50.039", "60.001"]}]} flattened to three strings, and a flat
+        # {"or": [...]} over it would have deleted the AND, letting 50.039
+        # alone satisfy a prerequisite that also needs 50.007. Unwrapping one
+        # level keeps a nested group visible AS a dict.
         current = load_record(code).get("prereqTree")
-        if any(isinstance(x, dict) for x in flatten_tree(current)):
+        if any(isinstance(x, dict) for x in top_level(current)):
             return False, ("the existing prereqTree has scoped or nested leaves "
                            "(cohort, nOf, a nested and/or); a flat code list would "
                            "delete them")
@@ -359,7 +424,7 @@ def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[boo
     if code in items:
         return False, "a course cannot be its own prerequisite"
 
-    thin = quote_is_substantial(quote)
+    thin = quote_is_substantial(quote) or quote_supports(quote, list(items))
     if thin:
         return False, thin
     if norm(quote) not in norm(by_code[code].get("listed", "")):
@@ -391,8 +456,23 @@ def emit(report: list[str], out: str) -> int:
 # and /data, so it gets checked without a network call or a test framework:
 # `python propose_edits.py --self-check`.
 SELF_CHECK: list[tuple[dict, bool]] = [
+    # WAS True. A quote saying "helpful but not required" is evidence AGAINST
+    # the edit, and this table asserting otherwise is how the hole stayed open.
     ({"code": "50.037", "field": "prerequisites", "value": ["50.004"],
-      "quote": "These courses are helpful but not required"}, True),
+      "quote": "These courses are helpful but not required"}, False),
+    ({"code": "50.037", "field": "prerequisites", "value": ["50.004"],
+      "quote": "Students must have completed 50.004 before taking this"}, True),
+    # Names the code AND hedges. Without this the HEDGES list has no case of
+    # its own: the quote-names-its-codes check happens to catch the shorter
+    # hedge quotes, so removing HEDGES left the table still green.
+    ({"code": "50.037", "field": "prerequisites", "value": ["50.012"],
+      "quote": "50.012 Networks is helpful but not required for this"}, False),
+    # a run of words lifted out of a sentence, naming nothing it adds
+    ({"code": "50.037", "field": "prerequisites", "value": ["50.005"],
+      "quote": "50.012 Networks , 50.020 Security , and more"}, False),
+    # 50.055's tree nests a group; a flat list would delete the AND
+    ({"code": "50.055", "field": "prereqTree", "value": {"or": ["50.007", "50.039"]},
+      "quote": "Students must have completed 50.007 and 50.039 first"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": ["50.004"],
       "quote": "this whole sentence is nowhere on the page"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": ["99.123"],
@@ -404,12 +484,12 @@ SELF_CHECK: list[tuple[dict, bool]] = [
     ({"code": "50.037", "field": "prerequisites", "value": [],
       "quote": "These courses are helpful but not required"}, False),
     ({"code": "50.037", "field": "prereqTree", "value": {"or": ["50.004"]},
-      "quote": "These courses are helpful but not required"}, True),
+      "quote": "Students must have completed 50.004 before taking this"}, True),
     ({"code": "50.037", "field": "prereqTree", "value": {"or": ["50.004"], "and": ["50.005"]},
       "quote": "These courses are helpful but not required"}, False),
     # 50.001's real tree is cohort-scoped, so a flat list may not replace it
     ({"code": "50.001", "field": "prereqTree", "value": {"or": ["10.014", "10.025"]},
-      "quote": "These courses are helpful but not required"}, False),
+      "quote": "Students must have completed 10.014 or 10.025 first"}, False),
     ({"code": "00.000", "field": "prerequisites", "value": ["50.004"],
       "quote": "These courses are helpful but not required"}, False),
 ]
@@ -438,8 +518,9 @@ def self_check() -> int:
     bad = 0
 
     by_code = {
-        "50.037": {"listed": "These courses are   HELPFUL but not required for 50.037."},
-        "50.001": {"listed": "These courses are   HELPFUL but not required for 50.001."},
+        "50.037": {"listed": "Students must have completed 50.004 before taking this. 50.012 Networks is helpful but not required for this. 50.012 Networks , 50.020 Security , and more. These courses are   HELPFUL but not required for 50.037."},
+        "50.001": {"listed": "Students must have completed 10.014 or 10.025 first."},
+        "50.055": {"listed": "Students must have completed 50.007 and 50.039 first."},
     }
     for edit, want in SELF_CHECK:
         got, why = validate(edit, by_code, codes)
