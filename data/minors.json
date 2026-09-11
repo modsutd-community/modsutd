@@ -2,6 +2,19 @@
   "source": "https://www.sutd.edu.sg/education/undergraduate/minors/ + each minor page",
   "gathered": "2026-07-23",
   "note": "codes with letter suffixes (02.143DH) are stored as their base code; a few lists are approximations - see per-minor notes; notFor = degree pillars barred from the minor (its offering pillar's own students; dai assumed closed to DAI majors too)",
+  "ignoreNote": "Minor pages SUTD still publishes that this repo deliberately does not carry. gather_minors.py reads this so a decision already made stops being reported as drift every month.",
+  "ignore": [
+    {
+      "url": "https://www.sutd.edu.sg/esd/education/undergraduate/minors/analytics",
+      "name": "Minor in Analytics",
+      "why": "Retired. SUTD's own index labels it 'For students enrolled in AY2022', and keeps the page up for students already on it. The earliest cohort the planner offers is AY2024, so nobody who can use this app can take it."
+    },
+    {
+      "url": "https://www.sutd.edu.sg/esd/education/undergraduate/minors/engineering-systems",
+      "name": "Minor in Engineering Systems (ES)",
+      "why": "Retired. SUTD's index labels it 'For students enrolled before AY2022'. Same reason as Minor in Analytics: no cohort the planner offers can take it."
+    }
+  ],
   "minors": [
     {
       "id": "minor-aai",
