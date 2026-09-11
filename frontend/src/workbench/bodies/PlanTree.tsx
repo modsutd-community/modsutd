@@ -13,6 +13,7 @@ import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFresh
 import { beginModDrag, chipLabel } from '../modDrag';
 import { useGithubLink, startDeviceFlow, pollForToken, pushBackup, DeviceStart } from '../sync';
 import { useAutoState, useAutoSaveSetting, setAutoSave } from '../autoBackup';
+import { ExtLink } from '../ExtLink';
 import { exportContributed } from '../contributed';
 import { useWorkbenchUi, COHORTS } from '../uiContext';
 import { useAnchoredCard, anchoredStyle } from '../anchored';
@@ -364,9 +365,13 @@ export function PlanTree({ onPick }: Props) {
                 ? `${track.pillar} · achieved by T${earliest}`
                 : `${track.pillar} · plan doesn't reach it`;
               const tip = isDeclared ? base : `declared? ${base}`;
+              // Tracks carry `url`, minors carry `source` - two scrapes, two
+              // spellings, and no reason to make a reader care which.
+              const src = (track as { url?: string; source?: string }).url
+                ?? (track as { source?: string }).source;
               return (
+                <span key={track.id} className={styles.badgeWrap}>
                 <label
-                  key={track.id}
                   className={[
                     styles.badge,
                     status === 'achieved' ? styles.badgeOn : '',
@@ -384,6 +389,10 @@ export function PlanTree({ onPick }: Props) {
                   {status === 'achieved' ? '◆' : status === 'planned' ? '◇' : '◌'}{' '}
                   ({track.pillar === 'Minor' ? 'M' : 'S'}) {track.name}
                 </label>
+                {/* Outside the label on purpose: a link nested in one toggles
+                    the checkbox on the way through. */}
+                {src ? <ExtLink href={src} what={track.name} /> : null}
+                </span>
               );
             })}
           </div>
