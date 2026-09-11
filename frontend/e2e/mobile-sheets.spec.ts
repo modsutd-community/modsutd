@@ -15,6 +15,8 @@ test.describe('mobile · sheets', () => {
     await page.addInitScript(() => {
       localStorage.setItem(
         'modsutd.workbench.ui.v1',
+        // Deliberately the OLD key. A returning student has this in their
+        // browser right now, and it has to keep selecting the same cohort.
         JSON.stringify({ freshmoreMode: 'classic' }),
       );
     });
@@ -23,7 +25,7 @@ test.describe('mobile · sheets', () => {
 
     const sheet = page.getByRole('dialog', { name: 'mod', exact: true });
     await expect(sheet).toBeVisible();
-    // 10.013 is classic freshmore core, so the plan button says so rather than
+    // 10.013 is AY2024 freshmore core, so the plan button says so rather than
     // offering to add a mod every freshmore already takes.
     await expect(sheet.locator('[data-act="plan-btn"]')).toHaveText(/FRESHMORE CORE/);
 

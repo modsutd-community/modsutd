@@ -51,7 +51,7 @@ The TypeScript types in [`frontend/src/types/index.ts`](../frontend/src/types/in
   a leaf may be an object `{name, code?, cohort?}`. `name` alone is a course SUTD has
   announced but not numbered - it renders on the mod page and cannot block a plan,
   because there is nothing to place. `cohort` scopes a leaf to matriculation years
-  (`ay2026` / `ay2025` / `classic`), which is how 50.057 asks AY2024 students for
+  (`ay2026` / `ay2025` / `ay2024`), which is how 50.057 asks AY2024 students for
   10.014, AY2025 for 10.025, and AY2026 for a course with no code yet.
 
 ```json

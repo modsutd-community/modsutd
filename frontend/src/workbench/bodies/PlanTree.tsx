@@ -5,7 +5,7 @@ import {
   setNotes, initComponents, setComponent, addComponent, removeComponent, importRecords,
 } from '@/reducers/recordsReducer';
 import { importPlans } from '@/reducers/timetableReducer';
-import { isBundle } from '../backup';
+import { buildPlanFile, readPlanFile } from '../planFile';
 import type { Curriculum, Mod, RecordsState } from '@/types';
 import { pillarColor } from '../pillars';
 import { unmet, requirementsOf, treeOf } from '@/utils/prereq';
@@ -217,13 +217,17 @@ export function PlanTree({ onPick }: Props) {
     });
   };
 
+  // This button sits on one matriculation year's tab, so that is what it
+  // writes. It used to hand over the whole browser - every curriculum, the
+  // parsed timetable, the contributed slots - which is not what "export" on
+  // this tab means, and made the file useless for moving one plan anywhere.
   const exportRecords = () => {
-    const bundle = { records, plans, declared, timetable: events, contributed: exportContributed() };
-    const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
+    const file = buildPlanFile(freshmoreMode, plans[freshmoreMode], declared, records);
+    const blob = new Blob([JSON.stringify(file, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'modsutd-backup.json';
+    a.download = `modsutd-plan-${freshmoreMode}.json`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -270,12 +274,12 @@ export function PlanTree({ onPick }: Props) {
         <div className={styles.headerRow}>
         <div className={styles.recordTools}>
           <span className={styles.exportWrap}>
-            <button type="button" className={wb.btnQuiet} aria-expanded={exportOpen} onClick={() => setExportOpen((v) => !v)}>
+            <button type="button" data-act="export-menu" className={wb.btnQuiet} aria-expanded={exportOpen} onClick={() => setExportOpen((v) => !v)}>
               ⇣ export ▾
             </button>
             {exportOpen && (
               <span className={styles.exportMenu}>
-                <button type="button" onClick={() => { exportRecords(); setExportOpen(false); }}>
+                <button type="button" data-act="export-json" onClick={() => { exportRecords(); setExportOpen(false); }}>
                   download .json
                 </button>
                 {linked ? (
@@ -341,11 +345,17 @@ export function PlanTree({ onPick }: Props) {
               if (!f) return;
               try {
                 const parsed = JSON.parse(await f.text()) as unknown;
-                if (isBundle(parsed)) {
-                  dispatch(importRecords(parsed.records));
-                  dispatch(importPlans(parsed.plans));
-                  replaceDeclared(parsed.declared ?? []);
+                const read = readPlanFile(parsed, freshmoreMode);
+                if (read) {
+                  // Into the tab you are on, and only that one. A whole-browser
+                  // backup from the old button still reads - people have those
+                  // files - but it lands here rather than replacing every
+                  // curriculum's plan.
+                  dispatch(importPlans({ ...plans, [freshmoreMode]: read.plan }));
+                  dispatch(importRecords({ ...records, ...read.records }));
+                  if (read.declared.length) replaceDeclared(read.declared);
                 } else {
+                  // Older still: a bare RecordsState, no plans at all.
                   dispatch(importRecords(parsed as RecordsState));
                 }
               } catch {

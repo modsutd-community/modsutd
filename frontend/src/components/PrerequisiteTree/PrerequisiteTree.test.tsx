@@ -43,7 +43,7 @@ describe('prerequisite tree leaves', () => {
   it('draws every branch of 50.057, including the uncoded one', () => {
     show({
       and: ['50.003', { or: [
-        { code: '10.014', name: 'Computational Thinking for Design', cohort: ['classic'] },
+        { code: '10.014', name: 'Computational Thinking for Design', cohort: ['ay2024'] },
         { code: '10.025', name: 'Computational Thinking for Design', cohort: ['ay2025'] },
         { name: 'Algorithmic Thinking and Object-Based Abstraction', cohort: ['ay2026'] },
       ] }],

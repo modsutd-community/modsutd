@@ -11,7 +11,7 @@ test('reset layout never touches user data', async ({ page, isMobile }) => {
   await tt.getByRole('button', { name: 'plan', exact: true }).click();
   // 10.013 is core for AY2024 and earlier; AY2026 is the default and does not
   // pin it, so there would be no chip to hover.
-  await tt.locator('[data-act="cohort"]').selectOption('classic');
+  await tt.locator('[data-act="cohort"]').selectOption('ay2024');
   await hoverUntil(tt.locator('[data-level="1"]').getByText('10.013'), page.getByLabel('notes for 10.013'));
   await page.getByLabel('notes for 10.013').fill('survives reset');
   await page.getByRole('button', { name: '+ component' }).click();
@@ -33,7 +33,7 @@ test('reset layout never touches user data', async ({ page, isMobile }) => {
   await tt.getByRole('button', { name: 'plan', exact: true }).click();
   // 10.013 is core for AY2024 and earlier; AY2026 is the default and does not
   // pin it, so there would be no chip to hover.
-  await tt.locator('[data-act="cohort"]').selectOption('classic');
+  await tt.locator('[data-act="cohort"]').selectOption('ay2024');
   await hoverUntil(tt.locator('[data-level="1"]').getByText('10.013'), page.getByLabel('notes for 10.013'));
   await expect(page.getByLabel('notes for 10.013')).toHaveValue('survives reset');
 });

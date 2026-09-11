@@ -7,15 +7,16 @@ export type SheetKind = 'mod' | 'share' | 'discuss' | 'contribute' | null;
 export type TtMode = 'paste' | 'grid' | 'tree';
 // The matriculation cohort a plan follows. Not a boolean any more: SUTD's
 // freshmore core changed twice, and 50.057 alone wants a different prerequisite
-// from each of the three. `classic` is AY2024 and earlier.
-export type FreshmoreMode = 'ay2026' | 'ay2025' | 'classic';
+// from each of the three. `ay2024` covers AY2024 and earlier; it was called
+// `classic` until the cohorts were all spelled the same way.
+export type FreshmoreMode = 'ay2026' | 'ay2025' | 'ay2024';
 
 /** In the order the dropdown offers them - newest first, since most students
  *  reading this matriculated most recently. */
 export const COHORTS: { value: FreshmoreMode; label: string }[] = [
   { value: 'ay2026', label: 'AY2026' },
   { value: 'ay2025', label: 'AY2025' },
-  { value: 'classic', label: '≤ AY2024' },
+  { value: 'ay2024', label: '≤ AY2024' },
 ];
 // Degree pillars a student can belong to (for badge eligibility).
 export type HomePillar = 'EPD' | 'ESD' | 'CSD' | 'ASD' | 'DAI';

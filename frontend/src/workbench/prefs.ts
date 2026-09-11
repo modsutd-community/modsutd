@@ -68,9 +68,23 @@ export function importPrefs(prefs: unknown): boolean {
 }
 
 
+/**
+ * A stored `freshmoreMode` from before the cohorts were all spelled `ay<year>`.
+ *
+ * Migrated on READ rather than by rewriting the store, because the same value
+ * also arrives from a synced gist written by a browser that has not updated
+ * yet. One place that knows the old name is enough.
+ */
+function migrateMode(m: unknown): FreshmoreMode | undefined {
+  if (m === 'classic') return 'ay2024';
+  return m as FreshmoreMode | undefined;
+}
+
 export function loadUi(): PersistedUi {
   try {
-    return (JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as PersistedUi) ?? {};
+    const ui = (JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as PersistedUi) ?? {};
+    if (ui.freshmoreMode) ui.freshmoreMode = migrateMode(ui.freshmoreMode);
+    return ui;
   } catch {
     return {};
   }

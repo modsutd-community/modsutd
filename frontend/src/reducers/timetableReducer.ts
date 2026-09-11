@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { Curriculum, PlanState, TimetableEvent, TimetableState } from '@/types';
+import { withLegacyAlias } from '@/workbench/planFile';
 
 const STORAGE_KEY = 'modsutd.timetable.v1';
 
@@ -9,7 +10,7 @@ const emptyPlan = (): PlanState => ({ selectedMods: [], planLevels: {} });
 // than four that can disagree. A plan saved before a cohort existed simply
 // arrives empty.
 const emptyPlans = (): Record<Curriculum, PlanState> => ({
-  classic: emptyPlan(),
+  ay2024: emptyPlan(),
   ay2025: emptyPlan(),
   ay2026: emptyPlan(),
 });
@@ -30,12 +31,15 @@ function loadFromStorage(): TimetableState {
       events: Array.isArray(parsed.events) ? parsed.events : [],
       plans: parsed.plans
         ? {
-            classic: plan(parsed.plans.classic),
+            // `classic` is the old name for this cohort. Plans under it are
+            // in people's browsers and in their gists right now, so it is read
+            // for as long as anyone might still have one.
+            ay2024: plan(parsed.plans.ay2024 ?? parsed.plans.classic),
             ay2025: plan(parsed.plans.ay2025),
             ay2026: plan(parsed.plans.ay2026),
           }
-        // pre-split shape: the single plan was built against the classic core
-        : { ...emptyPlans(), classic: plan(parsed) },
+        // pre-split shape: the single plan was built against the oldest core
+        : { ...emptyPlans(), ay2024: plan(parsed) },
       savedAt: parsed.savedAt,
     };
   } catch {
@@ -46,7 +50,12 @@ function loadFromStorage(): TimetableState {
 function persist(state: TimetableState) {
   try {
     state.savedAt = new Date().toISOString();
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(
+      STORAGE_KEY,
+      // withLegacyAlias, not a plain stringify: a tab open on the pre-rename
+      // bundle reads this same key and would otherwise find no plan at all.
+      JSON.stringify({ ...state, plans: withLegacyAlias(state.plans) }),
+    );
   } catch {
     // ignore quota errors
   }
@@ -101,7 +110,11 @@ const slice = createSlice({
         };
       };
       state.plans = {
-        classic: plan(payload?.classic),
+        // `classic` again: an imported file or a pulled gist can still be
+        // carrying the old key.
+        ay2024: plan(
+          payload?.ay2024 ?? (payload as Record<string, unknown>)?.classic as PlanState | undefined,
+        ),
         ay2025: plan(payload?.ay2025),
         ay2026: plan(payload?.ay2026),
       };

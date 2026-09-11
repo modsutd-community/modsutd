@@ -234,7 +234,7 @@ export interface VenuesState {
 // Which matriculation cohort's curriculum a plan follows. The freshmore core
 // differs, and so do some prerequisites: 50.057 wants 10.014 from AY2024 and
 // earlier, 10.025 from AY2025, and a course with no code yet from AY2026.
-export type Curriculum = 'ay2026' | 'ay2025' | 'classic';
+export type Curriculum = 'ay2026' | 'ay2025' | 'ay2024';
 
 // One curriculum's plan: which mods the student placed, and at which of
 // the 10 term levels. Mods without a level default to their catalogue term.
@@ -245,7 +245,7 @@ export interface PlanState {
 
 export interface TimetableState {
   events: TimetableEvent[];
-  // The classic and AY2026 plans are fully independent - the AY2026?
+  // The AY2024 and AY2026 plans are fully independent - the AY2026?
   // toggle switches views without either side bleeding into the other.
   plans: Record<Curriculum, PlanState>;
   savedAt?: string;

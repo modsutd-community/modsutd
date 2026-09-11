@@ -5,6 +5,7 @@ import { exportAsked } from './teleAsked';
 import { exportConsent } from './logic';
 import { exportPrefs } from './prefs';
 import { useAutoBackup } from './autoBackup';
+import { withLegacyAlias } from './planFile';
 
 /**
  * Mount the gist autosave over everything this browser knows.
@@ -29,7 +30,9 @@ export function useLiveBackup(): void {
   // is not - it reads localStorage.
   useAutoBackup({
     records,
-    plans,
+    // The gist is read by other devices, and one of them may not have
+    // reloaded since `classic` was renamed. See withLegacyAlias.
+    plans: withLegacyAlias(plans) as typeof plans,
     declared,
     timetable: events,
     contributed: exportContributed(),
