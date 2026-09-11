@@ -126,6 +126,25 @@ Rules you must follow:
   another programme. Skipping is the correct answer more often than editing."""
 
 
+# A QUOTE HAS TO BE A SENTENCE, NOT A CODE. Every code a drift report flags was
+# pulled out of that same page text, so quoting the bare code is guaranteed to
+# match and the gate passes on exactly the population it exists to guard. A real
+# quote carries the words around the code, which is the only part that says
+# whether the page MEANT it.
+QUOTE_MIN_CHARS = 25
+QUOTE_MIN_WORDS = 5
+
+
+def quote_is_substantial(quote: str) -> str:
+    """Empty when the quote will do, otherwise the reason it will not."""
+    q = " ".join((quote or "").split())
+    if len(q) < QUOTE_MIN_CHARS:
+        return f"quote is {len(q)} chars, needs {QUOTE_MIN_CHARS}: a code is not a sentence"
+    if len(q.split()) < QUOTE_MIN_WORDS:
+        return f"quote is {len(q.split())} words, needs {QUOTE_MIN_WORDS}"
+    return ""
+
+
 def norm(s: str) -> str:
     """Whitespace-flattened and lowercased, for comparing a quote to a page.
 
@@ -228,6 +247,19 @@ def validate_minor(edit: dict, by_id: dict, book_ids: dict, codes: set[str]) -> 
     idx = edit.get("requirement")
     if not isinstance(idx, int) or not 0 <= idx < len(reqs):
         return False, f"requirement {idx!r} is not a group on {mid}"
+    # ADDING TO AN ALL-MANDATORY GROUP LOOSENS IT. `count == len(anyOf)` means
+    # every course in the list is required; append one and it silently becomes
+    # "choose count of len+1", so a student may now skip a course the page says
+    # they must take. minor-aai's first group is count 1 over ["10.022"], a
+    # single mandatory course, and 16 of the 37 groups in data/minors.json have
+    # this shape. Whether a new code is also mandatory (count goes up) or an
+    # alternative (count stays) is exactly the thing the page rarely says, so it
+    # is refused and reported rather than guessed.
+    group = reqs[idx]
+    if group.get("count") == len(group.get("anyOf") or []):
+        return False, (f"group {idx} on {mid} is all-mandatory "
+                       f"(count {group.get('count')} of {len(group.get('anyOf') or [])}); "
+                       "adding to it would turn a required course into a choice")
     if not isinstance(add, list) or not add or not all(isinstance(c, str) for c in add):
         return False, "add must be a non-empty list of course codes"
     for c in add:
@@ -237,8 +269,9 @@ def validate_minor(edit: dict, by_id: dict, book_ids: dict, codes: set[str]) -> 
             return False, f"{c} has no record in data/courses"
         if c in (reqs[idx].get("anyOf") or []):
             return False, f"{c} is already in that group"
-    if not quote:
-        return False, "no quote"
+    thin = quote_is_substantial(quote)
+    if thin:
+        return False, thin
     if norm(quote) not in norm(by_id[mid].get("page_text", "")):
         return False, "quote is not in the page text this minor was reported with"
     return True, ""
@@ -287,8 +320,9 @@ def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[boo
     if code in items:
         return False, "a course cannot be its own prerequisite"
 
-    if not quote:
-        return False, "no quote"
+    thin = quote_is_substantial(quote)
+    if thin:
+        return False, thin
     if norm(quote) not in norm(by_code[code].get("listed", "")):
         return False, "quote is not in the page text this course was reported with"
     return True, ""
@@ -319,23 +353,23 @@ def emit(report: list[str], out: str) -> int:
 # `python propose_edits.py --self-check`.
 SELF_CHECK: list[tuple[dict, bool]] = [
     ({"code": "50.037", "field": "prerequisites", "value": ["50.004"],
-      "quote": "helpful but not required"}, True),
+      "quote": "These courses are helpful but not required"}, True),
     ({"code": "50.037", "field": "prerequisites", "value": ["50.004"],
-      "quote": "this sentence is not on the page"}, False),
+      "quote": "this whole sentence is nowhere on the page"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": ["99.123"],
-      "quote": "helpful but not required"}, False),
+      "quote": "These courses are helpful but not required"}, False),
     ({"code": "50.037", "field": "description", "value": ["50.004"],
-      "quote": "helpful but not required"}, False),
+      "quote": "These courses are helpful but not required"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": ["50.037"],
-      "quote": "helpful but not required"}, False),
+      "quote": "These courses are helpful but not required"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": [],
-      "quote": "helpful but not required"}, False),
+      "quote": "These courses are helpful but not required"}, False),
     ({"code": "50.037", "field": "prereqTree", "value": {"or": ["50.004"]},
-      "quote": "helpful but not required"}, True),
+      "quote": "These courses are helpful but not required"}, True),
     ({"code": "50.037", "field": "prereqTree", "value": {"or": ["50.004"], "and": ["50.005"]},
-      "quote": "helpful but not required"}, False),
+      "quote": "These courses are helpful but not required"}, False),
     ({"code": "00.000", "field": "prerequisites", "value": ["50.004"],
-      "quote": "helpful but not required"}, False),
+      "quote": "These courses are helpful but not required"}, False),
 ]
 
 
@@ -343,13 +377,17 @@ SELF_CHECK: list[tuple[dict, bool]] = [
 # an off-by-one puts a core course into the electives list and the diff looks
 # plausible.
 SELF_CHECK_MINORS: list[tuple[dict, bool]] = [
-    ({"minor": "_m", "requirement": 0, "add": ["50.001"], "quote": "take 50.001"}, True),
-    ({"minor": "_m", "requirement": 0, "add": ["50.001"], "quote": "not on the page"}, False),
-    ({"minor": "_m", "requirement": 9, "add": ["50.001"], "quote": "take 50.001"}, False),
-    ({"minor": "_m", "requirement": 0, "add": ["50.002"], "quote": "take 50.001"}, False),
-    ({"minor": "_m", "requirement": 0, "add": ["99.123"], "quote": "take 50.001"}, False),
-    ({"minor": "_m", "requirement": 0, "add": [], "quote": "take 50.001"}, False),
-    ({"minor": "_nope", "requirement": 0, "add": ["50.001"], "quote": "take 50.001"}, False),
+    ({"minor": "_m", "requirement": 0, "add": ["50.001"], "quote": "Students must take 50.001 in term four"}, True),
+    ({"minor": "_m", "requirement": 0, "add": ["50.001"], "quote": "this whole sentence is not on the page at all"}, False),
+    ({"minor": "_m", "requirement": 9, "add": ["50.001"], "quote": "Students must take 50.001 in term four"}, False),
+    ({"minor": "_m", "requirement": 0, "add": ["50.002"], "quote": "Students must take 50.001 in term four"}, False),
+    ({"minor": "_m", "requirement": 0, "add": ["99.123"], "quote": "Students must take 50.001 in term four"}, False),
+    ({"minor": "_m", "requirement": 0, "add": [], "quote": "Students must take 50.001 in term four"}, False),
+    ({"minor": "_nope", "requirement": 0, "add": ["50.001"], "quote": "Students must take 50.001 in term four"}, False),
+    # all-mandatory group: adding to it would let a student skip 50.005
+    ({"minor": "_m", "requirement": 1, "add": ["50.001"], "quote": "Students must take 50.001 in term four"}, False),
+    # a bare code is not a quote, however true it is
+    ({"minor": "_m", "requirement": 0, "add": ["50.001"], "quote": "50.001"}, False),
 ]
 
 
@@ -365,10 +403,13 @@ def self_check() -> int:
             print(f"FAIL {edit} -> {got} ({why or 'accepted'}), wanted {want}")
 
     # 50.002 is already in the group, which is why proposing it must be refused.
+    # Group 0 is a choice (1 of 2) so ordinary cases can pass; group 1 is
+    # all-mandatory, which nothing may add to.
     book_ids = {"_m": {"id": "_m", "requirements": [
-        {"label": "core", "count": 1, "anyOf": ["50.002"]},
+        {"label": "electives", "count": 1, "anyOf": ["50.002", "50.003"]},
+        {"label": "core", "count": 1, "anyOf": ["50.005"]},
     ]}}
-    by_id = {"_m": {"id": "_m", "page_text": "Students   TAKE 50.001 in term 4."}}
+    by_id = {"_m": {"id": "_m", "page_text": "Students   MUST take 50.001 in term four, and then one elective."}}
     for edit, want in SELF_CHECK_MINORS:
         got, why = validate_minor(edit, by_id, book_ids, codes)
         if got != want:

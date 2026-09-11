@@ -41,6 +41,39 @@ SOURCES: dict[str, ScrapeFn] = {
 }
 
 
+# Fields a HASS subject page can actually speak to. Everything else in a record
+# came from somewhere this scrape cannot see, and is left alone.
+#
+# MERGE, NEVER REPLACE. This used to write `mod.model_dump()` over the whole
+# file whenever it differed, which is backwards from the docstring's promise and
+# from the rule CLAUDE.md records: the RICHER the existing record, the more
+# certain the overwrite. `sourceUrl` is not even a field on `Mod`, so a replace
+# deleted it outright, along with every tag the catalogue walk had collected,
+# the grading table, the workload and any contributed schedules.
+#
+# It has not bitten because sources/hass.py currently yields nothing. That is
+# not a reason to leave it: the day someone fixes those selectors, the first run
+# strips every HASS record in the repo.
+OWNED = ("name", "description", "credits", "department", "pillar", "term",
+         "prerequisites", "corequisites", "grading", "workload")
+
+
+def merge(existing: dict, payload: dict) -> dict:
+    """`existing` with the fields this scrape owns filled in where it has them.
+
+    An empty value is not an answer. A page that parsed to an empty description
+    or an empty prerequisite list is a page that broke, not a course that lost
+    its prerequisites, and telling those two apart is not possible from here.
+    """
+    out = dict(existing)
+    for k in OWNED:
+        v = payload.get(k)
+        if v in (None, "", [], {}):
+            continue
+        out[k] = v
+    return out
+
+
 def write_mod(mod: Mod, dry_run: bool) -> str:
     """Returns one of {written, unchanged, would-write}."""
     path = COURSES_DIR / f"{mod.code.replace('.', '_')}.json"
@@ -48,6 +81,7 @@ def write_mod(mod: Mod, dry_run: bool) -> str:
 
     if path.exists():
         existing = json.loads(path.read_text(encoding="utf-8"))
+        payload = merge(existing, payload)
         if not diff(existing, payload):
             return "unchanged"
 

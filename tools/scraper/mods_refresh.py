@@ -122,12 +122,36 @@ WAVES: list[list[str]] = [
 ]
 
 
+# Every script here writes under /data. WRITERS is the subset that accepts
+# --dry-run, and the two lists being equal is what the run() check enforces.
+WRITES_DATA = {
+    "gather_listing.py",
+    "scrape.py",
+    "gather_specialisations.py",
+    "term_calendar.py",
+    "propose_edits.py",
+}
+WRITERS = WRITES_DATA
+
+
 def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
     """Run one step. Returns (ok, last few lines of output)."""
     cmd = [sys.executable, *script]
-    # Only the writers understand --dry-run; the audit never writes at all.
-    if dry_run and script[0] in {"gather_listing.py", "scrape.py", "propose_edits.py"}:
-        cmd.append("--dry-run")
+    # A WRITER THAT CANNOT BE TOLD "DRY" IS NOT RUN. This list used to name
+    # three scripts, and the two writers missing from it, term_calendar.py and
+    # gather_specialisations.py, rewrote data/term-calendar.json and
+    # data/specializations.json on a run documented as writing nothing. A flag
+    # that silently writes to the source of truth is worse than no flag.
+    #
+    # So membership is declared, not inferred: WRITERS is every step that
+    # touches /data, and every one of them has to accept --dry-run. Adding a
+    # writer without the flag fails the run instead of writing.
+    if dry_run:
+        if script[0] in WRITERS:
+            cmd.append("--dry-run")
+        elif script[0] in WRITES_DATA:
+            return False, (f"{script[0]} writes to /data and has no --dry-run. "
+                           "Add one, or take it out of WRITES_DATA.")
     try:
         p = subprocess.run(
             cmd, cwd=HERE, capture_output=True, text=True,
