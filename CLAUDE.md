@@ -71,7 +71,8 @@ GitHub Discussion (not a PR) if you want to revisit one.
 - Small PRs. One concern per PR. Prefix titles: `data:` / `frontend:` /
   `scraper:` / `docs:` / `chore:`.
 - **How to write the PR body is in `.github/pull_request_template.md`**, in the
-  comment at the top, and that is the only copy. It is not decoration: an agent
+  comment at the top. That is where the rules live; everywhere else points at
+  it rather than restating them. It is not decoration: an agent
   that writes its own shape produces marketing prose, em dashes, and a tally of
   how long the bug went unnoticed. Open PRs with
   `gh pr create --body-file .github/pull_request_template.md` and fill it in,
