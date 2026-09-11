@@ -7,6 +7,7 @@ hammer SUTD's servers.
 from __future__ import annotations
 
 import hashlib
+import os
 import time
 from pathlib import Path
 
@@ -60,5 +61,12 @@ def get(url: str, *, ttl_hours: float = 24.0, delay: float = 0.0) -> str:
     resp = _client.get(url)
     resp.raise_for_status()
     if resp.text:
-        cached.write_text(resp.text, encoding="utf-8")
+        # Written to a temp file and renamed, because mods_refresh.py runs
+        # several of these at once and they share this directory. A plain
+        # write_text is not atomic: a reader can catch a half-written file, and
+        # a truncated cache entry then poisons every run until its TTL expires.
+        # os.replace is atomic on the same filesystem, on Windows too.
+        tmp = cached.with_suffix(f".{os.getpid()}.tmp")
+        tmp.write_text(resp.text, encoding="utf-8")
+        os.replace(tmp, cached)
     return resp.text

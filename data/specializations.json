@@ -1,5 +1,5 @@
 {
-  "scrapedAt": "2026-07-16",
+  "scrapedAt": "2026-09-11",
   "tracks": [
     {
       "id": "csd-artificial-intelligence",
@@ -248,7 +248,8 @@
           "anyOf": [
             "50.043",
             "50.051",
-            "50.053"
+            "50.053",
+            "50.057"
           ],
           "label": "track core courses (choose 2)"
         },

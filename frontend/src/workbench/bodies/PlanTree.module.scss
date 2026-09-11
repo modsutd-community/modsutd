@@ -41,6 +41,13 @@
   gap: 6px;
 }
 
+// Holds the badge and its source link together, so the pair wraps as one
+// rather than the icon orphaning onto the next line.
+.badgeWrap {
+  display: inline-flex;
+  align-items: center;
+}
+
 .badge {
   font-size: 10px;
   letter-spacing: 0.04em;

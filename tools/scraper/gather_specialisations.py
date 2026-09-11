@@ -505,6 +505,43 @@ def parse_dai(url: str, html: str, name_index: dict[str, str]) -> list[dict]:
 
 # --------------------------------------------------------------------------- main
 
+# A first run has nothing to compare against, so it needs an absolute floor;
+# every later run compares against what is already on disk. Both exist because
+# a mirror can answer 200 with almost nothing, and this generator is now in the
+# unattended monthly job: an empty parse used to write {"tracks": []} straight
+# over the file, and validate([]) has nothing to complain about.
+MIN_TRACKS = 8
+KEEP_FRACTION = 0.7
+
+
+def thin(tracks: list[dict], existing: Path) -> str:
+    """Empty when the answer is worth writing, otherwise why it is not."""
+    if len(tracks) < MIN_TRACKS:
+        return f"only {len(tracks)} track(s) parsed, floor is {MIN_TRACKS}"
+    try:
+        before = json.loads(existing.read_text(encoding="utf-8")).get("tracks") or []
+    except Exception:  # noqa: BLE001
+        return ""
+    if not before:
+        return ""
+    keep = int(len(before) * KEEP_FRACTION)
+    if len(tracks) < keep:
+        return (f"{len(tracks)} track(s) parsed against {len(before)} on disk, "
+                f"which is below {int(KEEP_FRACTION * 100)}%")
+    # Per pillar too: four pillars are read, and one going dark is invisible in
+    # a total that the other three still carry.
+    had = {}
+    for x in before:
+        had[x.get("pillar")] = had.get(x.get("pillar"), 0) + 1
+    now = {}
+    for x in tracks:
+        now[x.get("pillar")] = now.get(x.get("pillar"), 0) + 1
+    gone = [p for p, n in had.items() if n and not now.get(p)]
+    if gone:
+        return f"pillar(s) {', '.join(sorted(map(str, gone)))} parsed to nothing"
+    return ""
+
+
 def validate(tracks: list[dict]) -> list[str]:
     problems = []
     for t in tracks:
@@ -526,6 +563,8 @@ def validate(tracks: list[dict]) -> list[str]:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
     ap.add_argument("--out", type=Path, default=DEFAULT_OUT)
+    ap.add_argument("--dry-run", action="store_true",
+                    help="parse and report, write nothing")
     ap.add_argument("--refresh", action="store_true", help="bypass the on-disk cache")
     ap.add_argument("--ttl-hours", type=float, default=24.0)
     args = ap.parse_args()
@@ -602,8 +641,18 @@ def main() -> int:
             print("  !", p)
         return 1
 
+    weak = thin(tracks, args.out)
+    if weak:
+        print(f"REFUSING TO WRITE: {weak}.", file=sys.stderr)
+        print("A thin answer is a broken parse or a bad mirror, not SUTD dropping "
+              "its specialisation tracks. The file on disk stands.", file=sys.stderr)
+        return 1
+
     out = {"scrapedAt": date.today().isoformat(), "tracks": tracks}
     args.out.parent.mkdir(parents=True, exist_ok=True)
+    if args.dry_run:
+        print(f"[dry-run] {len(out.get('tracks') or [])} track(s), {args.out} left alone")
+        return 0
     args.out.write_text(json.dumps(out, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     json.loads(args.out.read_text(encoding="utf-8"))  # paranoia: confirm it round-trips
 

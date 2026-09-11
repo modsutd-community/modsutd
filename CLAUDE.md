@@ -177,9 +177,15 @@ Two are deliberately not monthly, and say why in their own headers:
 ## Things that look like bugs but aren't
 
 - `frontend/public/data/` is generated (gitignored) - edit `/data` instead.
-- The scraper's pillar sources deliberately yield nothing (stubs awaiting a
-  stable source); the "never wipe on empty" rule in `scrape.py` is a safety
-  feature.
+- `scrape.py` reads **hass.sutd.edu.sg and nothing else**, which is why the step
+  is called `hass`. It used to also fetch epd/esd/istd/asd.sutd.edu.sg through
+  `sources/pillar.py`, whose selectors were a best-effort guess that returned
+  before yielding anything: four hosts fetched per run to produce nothing, under
+  a step named `pillars` that scraped no pillar. A real pillar parser is written
+  against whatever HTML SUTD serves that day, so the stub was not a head start
+  and it is gone. Everything else about a mod, in every pillar, comes from the
+  `mods` step, because sutd.edu.sg's own course sitemap covers all of them.
+  The "never wipe on empty" rule in `scrape.py` stays and is a safety feature.
 - `semanticSearch.ts` is a documented stub behind `ENABLED = false`.
 - Room search behaviour that looks like a bug - every think tank for `tt`, no
   fuzziness at four characters or less - is deliberate and explained once, in
@@ -353,6 +359,31 @@ Two are deliberately not monthly, and say why in their own headers:
 - A review must be a **comment** on the mod's discussion, never the discussion
   body. giscus renders a discussion's comments and never its body, so a review
   written into the first post is invisible on the mod page forever.
+- **Cite a data change from the record, never from the diff hunk.** A hunk in
+  `data/specializations.json` reading `+ "50.057"` sits in one of 21 tracks and
+  the diff does not say which, and the nearest `"id"` line above it is
+  frequently a different record. `tools/scraper/what_changed.py` walks both
+  documents and prints each change with its record and the source URL that
+  record itself carries, which is the line a reviewer opens. `mods_refresh.py`
+  runs it on every refresh. Lists of records are matched on `id`/`code`/`name`
+  rather than index, because inserting one record makes every later index look
+  changed.
+- `tools/scraper/reports/drift.md` is **generated**, by `mods_refresh.py`, and
+  is the only tracked thing the report-only steps produce. It exists so they can
+  open a pull request: a run that changes no file opens none, and the prereq and
+  minor checks change no file by design, so their findings used to reach a run
+  summary and stop there. It carries no timestamp, so a month that finds the same
+  drift as the last changes nothing and opens nothing. Deleted when there is
+  nothing to say. Do not hand-edit it.
+- **A model proposes prerequisite edits; it never writes one.**
+  `tools/scraper/propose_edits.py` reads `audit_prereqs.py`'s JSON, asks a model
+  whether the page MEANT the codes it names, and validates every proposal before
+  touching a file: the record has to exist, the field has to be one of three, every
+  code has to have a file, and the `quote` has to appear in the page text that
+  course was reported with. A proposal that fails is listed as dropped, never
+  applied. `--self-check` runs the validator against known-good and known-bad
+  edits without a network call. Which providers exist and in what order is
+  `tools/scraper/agents/llm.py`, and nowhere else.
 - `data/term-calendar.json` is **generated**, by
   `tools/scraper/term_calendar.py`, in the monthly `scrape` job. Do not
   hand-edit it, and do not add a rollover step that does: a file a human has to

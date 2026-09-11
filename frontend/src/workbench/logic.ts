@@ -153,7 +153,13 @@ export interface SpecTrack {
   // Degree pillars barred from this track (minors: the offering pillar).
   notFor?: string[];
   pillar: string;
+  // Two names for one thing, and both are real. `gather_specialisations.py`
+  // writes `url`, `gather_minors.py` reads `source` out of data/minors.json,
+  // and no record carries both. Declared rather than cast at the read site,
+  // because a cast is how the second spelling stops being visible to the
+  // compiler.
   url?: string;
+  source?: string;
   requirements: TrackRequirement[];
   notes?: string;
 }

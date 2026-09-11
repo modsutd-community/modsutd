@@ -184,13 +184,16 @@ def parse_terms(html: str) -> list[dict]:
     return out
 
 
-def fetch_holidays(client: httpx.Client) -> list[dict]:
+def fetch_holidays(client: httpx.Client) -> list[dict] | None:
     try:
         meta = client.get(HOLIDAY_COLLECTION, timeout=30).json()["data"]
         datasets = (meta.get("collectionMetadata") or meta).get("childDatasets") or []
     except Exception as exc:  # noqa: BLE001 - the terms are still worth writing
+        # None, not []. An empty list is indistinguishable from "Singapore has
+        # no public holidays this year", and the caller writes it over a good
+        # calendar. None says "ask the file what it already knew".
         print(f"[holidays] collection: {type(exc).__name__} {exc}", file=sys.stderr)
-        return []
+        return None
 
     found: list[dict] = []
     for dataset in datasets:
@@ -226,6 +229,20 @@ def main() -> int:
         page.raise_for_status()
         terms = parse_terms(page.text)
         holidays = fetch_holidays(client)
+    # None means data.gov.sg could not be reached or answered nothing usable.
+    # Writing [] then erases every in-term holiday from a calendar that had
+    # them, silently, and the result looks exactly like a term with no holidays
+    # in it. Keep what the file already holds and say so.
+    if holidays is None:
+        try:
+            prior = json.loads(OUT.read_text(encoding="utf-8"))
+            pairs = sorted({(h["date"], h["name"]) for t in prior.get("terms", [])
+                            for h in t.get("holidays", [])})
+            holidays = [{"date": d, "name": n} for d, n in pairs]
+            print(f"[holidays] reusing {len(holidays)} from {OUT.name}", file=sys.stderr)
+        except Exception:  # noqa: BLE001
+            holidays = []
+            print("[holidays] none available and none on disk", file=sys.stderr)
 
     if len(terms) < MIN_TERMS:
         print(

@@ -1,13 +1,35 @@
 # Scraper
 
-`tools/scraper/scrape.py` walks SUTD's public course pages monthly and writes `/data/courses/*.json`. GitHub Actions runs it; the result is opened as a PR for human review.
+`tools/scraper/mods_refresh.py` is the entry point, and the monthly GitHub
+Actions job runs that one command. It orchestrates six steps and opens the
+result as a PR for human review. `scrape.py` is one of those steps.
+
+| step | reads | writes |
+|---|---|---|
+| `mods` | `www.sutd.edu.sg` course sitemaps, ~389 course pages | `data/courses/*.json` |
+| `hass` | `hass.sutd.edu.sg` freshmore and elective listings | `data/courses/*.json` |
+| `tracks` | four specialisation-track sections on `www.sutd.edu.sg` | `data/specializations.json` |
+| `terms` | SUTD's academic calendar, plus `data.gov.sg` public holidays | `data/term-calendar.json` |
+| `minors` | SUTD's minors index, then each minor page | nothing, reports |
+| `prereqs` | the same course pages as `mods` | nothing, reports |
+| `propose` | the last two reports, through a model | `data/courses`, `data/minors.json` |
+
+Five of them read `www.sutd.edu.sg`, so the names say what each produces
+rather than where it went. `hass` is the exception because it is the one on
+another host.
 
 ## Sources
 
-`scrape.py` wires up two of the modules in `tools/scraper/sources/`:
+`scrape.py` wires up one module in `tools/scraper/sources/`:
 
 - `hass.py` - HASS undergraduate subjects. Starts from the freshmore and electives listings under `https://hass.sutd.edu.sg/education/undergraduate-subjects/`, then follows one detail page per subject. Source name: `hass`.
-- `pillar.py` - the four pillar sites `https://epd.sutd.edu.sg/`, `https://esd.sutd.edu.sg/`, `https://istd.sutd.edu.sg/`, `https://asd.sutd.edu.sg/`. Source names: `epd`, `esd`, `istd`, `asd`. These adapters deliberately yield nothing today: they are stubs awaiting a stable source, not a bug to fix in passing.
+
+There used to be a `pillar.py` asking the four pillar sites. Its selectors
+were a best-effort guess and it returned before yielding anything, so it cost
+four requests a run and produced nothing, under a step then called `pillars`.
+A real pillar parser is written against whatever HTML SUTD serves that day,
+so it was not a head start. Everything about a mod in every pillar comes from
+the `mods` step anyway: the course sitemap covers all of them.
 
 `_http.py` in that folder is not a source: it is the shared cached HTTP client.
 
@@ -41,10 +63,8 @@ pip install -r requirements.txt
 python scrape.py
 
 # scrape a single source - hass | epd | esd | istd | asd
-python scrape.py --source hass
+python scrape.py --source hass   # hass is the only source
 
-# --source is repeatable, so a subset is a list rather than a pattern
-python scrape.py --source istd --source asd
 
 # dry-run - print what would change but don't write
 python scrape.py --dry-run
@@ -54,9 +74,14 @@ python scrape.py --dry-run
 
 ## LLM fallback - written, not wired
 
-`tools/scraper/agents/llm_extractor.py` exists and works on its own, but nothing imports it. `scrape.py` has no LLM branch, so provider keys change nothing about a scrape today: a source that returns zero mods prints a line and leaves the data alone.
+`tools/scraper/agents/llm_extractor.py` exists and works on its own, but
+nothing imports it. `scrape.py` has no LLM branch, so a source that returns
+zero mods prints a line and leaves the data alone.
 
-Wiring it in means calling it from the orchestrator yourself - `fallback(count)` decides whether the deterministic result is suspiciously thin, then `extract(html, source_url)` returns a validated `Mod` or `None`. The provider chain it reads is `.env.example` at the repo root.
+A model IS wired in elsewhere: `propose_edits.py` reads the prereq and minor
+drift reports and proposes edits, validating every one against the page text
+it quotes before a file is touched. Which providers exist and in what order
+is `agents/llm.py`, and the tokens are in `.env.example` at the repo root.
 
 ## How it fails
 
@@ -65,12 +90,24 @@ Wiring it in means calling it from the orchestrator yourself - `fallback(count)`
 | `0 mods scraped` from a source   | SUTD changed the page layout                         | Update the CSS selectors in `tools/scraper/sources/<name>.py` |
 | `403 Forbidden` from a corp page | IP blocked or login wall                             | Wait and retry off-peak; the scraper never wipes on empty     |
 | Some fields empty                | New field on the SUTD page that we don't extract yet | Add a parser branch + matching field in `frontend/src/types`  |
-| PR is huge                       | Multiple sources changed at once                     | Bisect - run `--source <one>` at a time                       |
+| PR is huge                       | Multiple sources changed at once                     | Bisect - run `mods_refresh.py --only <one step>` at a time    |
 
 ## CI
 
 The workflow lives at `.github/workflows/scrape.yml`, on the repo's usual monthly schedule (first Saturday, 00:00 Singapore - the shape is in [CLAUDE.md](../CLAUDE.md)). SUTD data changes about once a term, so monthly is plenty. `workflow_dispatch` is on, so you can run it from the Actions tab without waiting.
 
-The job installs `tools/scraper/requirements.txt` on Python 3.12 and runs `python scrape.py` from `tools/scraper`. On a non-empty diff it opens a PR titled `data: monthly scrape` against `main`, from a `chore/scrape-<run id>` branch, labelled `data` and `automated`.
+The job installs `tools/scraper/requirements.txt` on Python 3.12 and runs
+`python tools/scraper/mods_refresh.py`. It opens a PR titled
+`data: monthly mods refresh` against `main`, from a
+`chore/mods-refresh-<run id>` branch, labelled `data` and `automated`.
 
-It authenticates with `secrets.MODSUTD_BOT_TOKEN` if set, falling back to `secrets.GITHUB_TOKEN`. The bot token is optional - set it only when you want a separate bot identity, as a fine-grained PAT with `contents: write` and `pull-requests: write`.
+`secrets.MODSUTD_BOT_TOKEN` is REQUIRED, and the job's first step fails
+without it. There is no `GITHUB_TOKEN` fallback: main's ruleset only lets the
+admin role bypass, so the default token cannot open that PR, and the old
+fallback meant finding that out after 389 pages had been read and thrown
+away. It is a fine-grained PAT with `contents: write` and
+`pull-requests: write`.
+
+The report-only steps have a tracked artefact of their own,
+`tools/scraper/reports/drift.md`, because a run that changes no file opens no
+PR. Each run rewrites only the sections of the steps it ran.
