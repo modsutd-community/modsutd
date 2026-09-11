@@ -222,7 +222,11 @@ export function PlanTree({ onPick }: Props) {
   // parsed timetable, the contributed slots - which is not what "export" on
   // this tab means, and made the file useless for moving one plan anywhere.
   const exportRecords = () => {
-    const file = buildPlanFile(freshmoreMode, plans[freshmoreMode], declared, records);
+    // [...fixed.keys()] is the freshmore core pinned into terms 1 to 3. Its
+    // chips carry records like any other and it is never in selectedMods.
+    const file = buildPlanFile(
+      freshmoreMode, plans[freshmoreMode], declared, records, [...fixed.keys()],
+    );
     const blob = new Blob([JSON.stringify(file, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

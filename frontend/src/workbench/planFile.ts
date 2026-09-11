@@ -18,7 +18,10 @@ export interface PlanFile {
   exportedAt: string;
   plan: PlanState;
   declared: string[];
-  /** Only the mods in this plan: a record for a mod you are not taking is noise. */
+  /**
+   * Only the mods in this plan, which includes the pinned freshmore core:
+   * a record for a mod you are not taking is noise, but the core IS taken.
+   */
   records: RecordsState;
 }
 
@@ -61,11 +64,22 @@ function recordsFor(records: RecordsState, codes: string[]): RecordsState {
   return out;
 }
 
+/**
+ * `pinned` is the freshmore core for this cohort.
+ *
+ * Required, and not optional with a default, because forgetting it loses data
+ * silently: the core is pinned into terms 1 to 3 from `data/freshmore.json` and
+ * is never in `plan.selectedMods`, yet its chips carry the same record form as
+ * any other. Filtering the export on `selectedMods` alone dropped every score
+ * and note a student had written against 10.013, and the file still looked
+ * complete.
+ */
 export function buildPlanFile(
   curriculum: Curriculum,
   plan: PlanState,
   declared: string[],
   records: RecordsState,
+  pinned: string[],
 ): PlanFile {
   return {
     kind: PLAN_FILE_KIND,
@@ -74,7 +88,7 @@ export function buildPlanFile(
     exportedAt: new Date().toISOString(),
     plan,
     declared,
-    records: recordsFor(records, plan?.selectedMods ?? []),
+    records: recordsFor(records, [...(plan?.selectedMods ?? []), ...pinned]),
   };
 }
 
