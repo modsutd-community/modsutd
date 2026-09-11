@@ -28,6 +28,12 @@ export function ExtIcon({ className }: { className?: string }) {
  *
  * Standalone because the badges it sits beside are `<label>`s wrapping a
  * checkbox: a link nested inside one toggles the checkbox on the way through.
+ *
+ * NOT label-safe, and stopPropagation does not make it so. That only stops the
+ * React click from bubbling; a `<label>`'s activation is the browser's own
+ * default and fires anyway, so nesting this would open the tab AND flip the
+ * checkbox. preventDefault is not the answer either, since that is what
+ * navigates. Render it as a sibling of the label.
  */
 export function ExtLink({ href, what }: { href: string; what: string }) {
   return (

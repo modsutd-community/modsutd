@@ -13,8 +13,8 @@ is why only the real prefixes below are read at all.
 What it can say honestly is narrower than it first looks. "The repo requires a
 code the page does not name" sounds like drift and is not: most of these pages
 say "any HASS elective" or "any 50.xxx", and the repo expands that into the
-actual list - data/minors.json says so in its own `note`. Flagging those made
-nine of ten minors look broken.
+actual list - data/minors.json says so in its own `note`. Flagging that marks
+nearly every minor as drifting when nothing has changed.
 
 So it flags the three things that really do mean stale:
   - the page is unreachable, or 404s
@@ -110,6 +110,15 @@ def main() -> int:
             line += f"  | page names, repo does not: {', '.join(row['extra'][:12])}"
             if len(row["extra"]) > 12:
                 line += f" (+{len(row['extra']) - 12})"
+        # Printed, deliberately not counted as drift. On most of these pages
+        # this list IS the expansion of "any HASS elective" the repo made on
+        # purpose, so counting it marks nearly every minor as drifting. A human
+        # reading an unusually long one is how a dropped requirement surfaces.
+        if row["gone"]:
+            gone = ", ".join(row["gone"][:12])
+            if len(row["gone"]) > 12:
+                gone += f" (+{len(row['gone']) - 12})"
+            line += "\n" + " " * 36 + "repo requires, page does not name: " + gone
         print(line)
 
     print(f"\n{drift} of {len(minors)} need a look.")

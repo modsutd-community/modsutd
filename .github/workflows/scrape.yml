@@ -28,6 +28,20 @@ jobs:
                     echo "Not the first Saturday in Singapore ($d) - nothing to do." >> "$GITHUB_STEP_SUMMARY"
                   fi
 
+            # Checked BEFORE the refresh, not after. main's ruleset only lets
+            # the admin role bypass, so create-pull-request cannot open this PR
+            # without the bot token. Finding that out at the last step means
+            # 389 pages were read and the result thrown away.
+            - name: The bot token has to exist
+              if: steps.when.outputs.go == 'true'
+              env:
+                  TOKEN: ${{ secrets.MODSUTD_BOT_TOKEN }}
+              run: |
+                  if [ -z "$TOKEN" ]; then
+                    echo "MODSUTD_BOT_TOKEN is not set. .env.example says what it is and where it goes." >&2
+                    exit 1
+                  fi
+
             - uses: actions/checkout@v4
               if: steps.when.outputs.go == 'true'
 
@@ -52,10 +66,12 @@ jobs:
             # the network rather than a page.
             - name: refresh the mods
               if: steps.when.outputs.go == 'true'
+              # Named, not inherited. `shell: bash` is `bash -eo pipefail`, so
+              # the pipe below reports the scraper's status and not tee's; a
+              # refresh that failed every step would otherwise open a PR
+              # looking healthy. Do not drop this to rely on the default.
+              shell: bash
               run: |
-                  # pipefail, or the shell reports tee's status and a refresh
-                  # that failed every step still opens a PR looking healthy.
-                  set -o pipefail
                   python tools/scraper/mods_refresh.py | tee -a "$GITHUB_STEP_SUMMARY"
 
             - name: open PR with diff
