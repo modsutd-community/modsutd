@@ -253,6 +253,10 @@ export function PlanTree({ onPick }: Props) {
           const landing = planKeyFor(code, level);
           if (addOnDrop) dispatch(selectMod({ mode: freshmoreMode, code: landing, level }));
           else if (landing !== key) {
+            // Refuse rather than merge. selectMod is guarded by includes, so
+            // dropping T3's copy onto a term that already has one would have
+            // removed the source and added nothing: one chip silently gone.
+            if (plan.includes(landing)) return;
             dispatch(deselectMod({ mode: freshmoreMode, code: key }));
             dispatch(selectMod({ mode: freshmoreMode, code: landing, level }));
           } else dispatch(setPlanLevel({ mode: freshmoreMode, code: key, level }));
