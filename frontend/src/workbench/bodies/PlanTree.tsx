@@ -5,11 +5,11 @@ import {
   setNotes, initComponents, setComponent, addComponent, removeComponent, importRecords,
 } from '@/reducers/recordsReducer';
 import { importPlans } from '@/reducers/timetableReducer';
-import { buildPlanFile, readPlanFile } from '../planFile';
+import { buildPlanFile, readPlanFile, importableRecords } from '../planFile';
 import type { Curriculum, Mod, RecordsState } from '@/types';
 import { pillarColor } from '../pillars';
 import { unmet, requirementsOf, treeOf } from '@/utils/prereq';
-import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFreshmore, freshmoreFixedSet } from '../logic';
+import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFreshmore, freshmoreFixedSet, freshmoreCoreFor } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
 import { useGithubLink, startDeviceFlow, pollForToken, pushBackup, DeviceStart } from '../sync';
 import { useAutoState, useAutoSaveSetting, setAutoSave } from '../autoBackup';
@@ -50,6 +50,23 @@ export function PlanTree({ onPick }: Props) {
   const importRef = useRef<HTMLInputElement>(null);
   const linked = useGithubLink();
   const [exportOpen, setExportOpen] = useState(false);
+  // A menu that only closes by pressing its own button is a menu that follows
+  // you around the panel. pointerdown rather than click, so it closes on the
+  // press that starts an interaction somewhere else rather than after it.
+  const exportWrapRef = useRef<HTMLSpanElement | null>(null);
+  useEffect(() => {
+    if (!exportOpen) return;
+    const away = (e: PointerEvent) => {
+      if (!exportWrapRef.current?.contains(e.target as Node)) setExportOpen(false);
+    };
+    const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') setExportOpen(false); };
+    document.addEventListener('pointerdown', away);
+    document.addEventListener('keydown', esc);
+    return () => {
+      document.removeEventListener('pointerdown', away);
+      document.removeEventListener('keydown', esc);
+    };
+  }, [exportOpen]);
   const [device, setDevice] = useState<DeviceStart | null>(null);
   const [syncStatus, setSyncStatus] = useState<string | null>(null);
   const autoOn = useAutoSaveSetting();
@@ -277,7 +294,7 @@ export function PlanTree({ onPick }: Props) {
       <div className={styles.header}>
         <div className={styles.headerRow}>
         <div className={styles.recordTools}>
-          <span className={styles.exportWrap}>
+          <span className={styles.exportWrap} ref={exportWrapRef}>
             <button type="button" data-act="export-menu" className={wb.btnQuiet} aria-expanded={exportOpen} onClick={() => setExportOpen((v) => !v)}>
               ⇣ export ▾
             </button>
@@ -286,7 +303,13 @@ export function PlanTree({ onPick }: Props) {
                 <button type="button" data-act="export-json" onClick={() => { exportRecords(); setExportOpen(false); }}>
                   download .json
                 </button>
-                {linked ? (
+                {/* Only when autosave is OFF. With it on, the gist is written a
+                    few seconds after any change, so this button is a second way
+                    to do what already happened - and one that reads as though
+                    nothing had been saved until it was pressed. Turning autosave
+                    off is what leaves a reader with no way to write the gist at
+                    all, which is the case this is here for. */}
+                {linked && !autoOn ? (
                   <button
                     type="button"
                     onClick={async () => {
@@ -368,7 +391,21 @@ export function PlanTree({ onPick }: Props) {
                   // exactly where it used to.
                   const into = read.curriculum;
                   dispatch(importPlans({ ...plans, [into]: read.plan }));
-                  dispatch(importRecords({ ...records, ...read.records }));
+                  // The plan comes from the file; the freshmore core does not.
+                  // It is read out of data/freshmore.json for the cohort, so a
+                  // file cannot add to it, reorder it or swap a course out of
+                  // it - the only thing an import may do to a core mod is
+                  // replace its record. Records for anything else were being
+                  // merged into the store wholesale, so a hand-edited file
+                  // could leave notes on a course nobody is taking.
+                  dispatch(importRecords({
+                    ...records,
+                    ...importableRecords(
+                      read.records,
+                      read.plan?.selectedMods ?? [],
+                      [...freshmoreFixedSet(freshmoreCoreFor(into)).keys()],
+                    ),
+                  }));
                   // Unconditional. `if (read.declared.length)` meant a file
                   // that honestly declares no tracks could not clear the ones
                   // this browser has, so importing a plan left the old badges

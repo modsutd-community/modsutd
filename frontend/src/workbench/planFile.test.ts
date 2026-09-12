@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 import {
-  buildPlanFile, readPlanFile, migratePlans, migrateCurriculum, PLAN_FILE_KIND,
+  buildPlanFile, readPlanFile, migratePlans, migrateCurriculum, hasContent,
+  importableRecords, PLAN_FILE_KIND,
 } from './planFile';
 import type { PlanState, RecordsState } from '@/types';
 
@@ -166,5 +167,54 @@ describe('a cohort key this app does not have', () => {
     expect(migrateCurriculum(undefined)).toBeUndefined();
     expect(migrateCurriculum('classic')).toBe('ay2024');
     expect(migrateCurriculum('ay2026')).toBe('ay2026');
+  });
+});
+
+// Opening a mod's card creates a record, and the freshmore core seeds its
+// components from the catalogue, so most records are the shape the app made
+// rather than anything the student wrote. Exporting those made the same plan
+// produce a different file depending on which chips had been hovered.
+describe('an export carries what was written, not what was looked at', () => {
+  const touched = {
+    '10.018': { notes: '', components: [] },
+    '10.015': { notes: '', components: [{ name: 'Quiz 1', weight: 20, score: null }] },
+    '10.014': { notes: 's', components: [] },
+    '10.013': { notes: '  ', components: [{ name: 'Quiz 1', weight: 20, score: 18 }] },
+  } as unknown as RecordsState;
+
+  it('drops a record with no notes and no score', () => {
+    expect(hasContent(touched['10.018'])).toBe(false);
+    expect(hasContent(touched['10.015'])).toBe(false);
+  });
+
+  it('keeps notes, and keeps a score even when the notes are blank', () => {
+    expect(hasContent(touched['10.014'])).toBe(true);
+    expect(hasContent(touched['10.013'])).toBe(true);
+  });
+
+  it('exports only those two, however many chips were opened', () => {
+    const core = ['10.013', '10.014', '10.015', '10.018'];
+    const f = buildPlanFile('ay2024', plan([]), [], touched, core);
+    expect(Object.keys(f.records).sort()).toEqual(['10.013', '10.014']);
+  });
+});
+
+// The plan comes from the file. The freshmore core does not: it is read out of
+// data/freshmore.json for the cohort, so a file may replace a core mod's record
+// and nothing else about the core.
+describe('an import may only bring records this cohort can hold', () => {
+  const incoming = {
+    '50.001': { notes: 'planned', components: [] },
+    '10.013': { notes: 'core', components: [] },
+    '99.123': { notes: 'not taking this', components: [] },
+  } as unknown as RecordsState;
+
+  it('keeps the planned mod and the core mod, drops the stranger', () => {
+    const kept = importableRecords(incoming, ['50.001'], ['10.013']);
+    expect(Object.keys(kept).sort()).toEqual(['10.013', '50.001']);
+  });
+
+  it('drops everything when the cohort core has not loaded and nothing is planned', () => {
+    expect(Object.keys(importableRecords(incoming, [], []))).toEqual([]);
   });
 });

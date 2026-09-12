@@ -78,11 +78,32 @@ export function migratePlans<T>(plans: Record<string, T>): Record<string, T> {
   return { [CURRENT_FOR_LEGACY]: legacy, ...rest } as Record<string, T>;
 }
 
-function recordsFor(records: RecordsState, codes: string[]): RecordsState {
+/**
+ * Whether a record holds anything a reader would miss.
+ *
+ * A record is created by opening a mod's card, and the freshmore core seeds its
+ * components from the catalogue's grading table, so most records are the shape
+ * the app made rather than anything the student wrote. Notes, or a score
+ * somebody typed, is the whole of what is theirs.
+ */
+export function hasContent(v: unknown): boolean {
+  const r = v as { notes?: string; components?: Array<{ score?: number | null }> } | undefined;
+  if (typeof r?.notes === 'string' && r.notes.trim()) return true;
+  return (r?.components ?? []).some((c) => c && c.score !== null && c.score !== undefined);
+}
+
+/**
+ * Records for `codes`, and only the ones carrying something.
+ *
+ * Both halves matter. Without the code filter an export is the whole browser;
+ * without the content filter it is every chip the reader hovered, which made
+ * exporting the same plan twice produce different files.
+ */
+export function recordsFor(records: RecordsState, codes: string[]): RecordsState {
   const keep = new Set(codes);
   const out: RecordsState = {} as RecordsState;
   for (const [code, v] of Object.entries(records ?? {})) {
-    if (keep.has(code)) (out as Record<string, unknown>)[code] = v;
+    if (keep.has(code) && hasContent(v)) (out as Record<string, unknown>)[code] = v;
   }
   return out;
 }
@@ -113,6 +134,27 @@ export function buildPlanFile(
     declared,
     records: recordsFor(records, [...(plan?.selectedMods ?? []), ...pinned]),
   };
+}
+
+/**
+ * The records in `read` that this cohort is allowed to receive.
+ *
+ * A file can name any course code it likes. The planned mods come from the file
+ * and are the student's own, but the freshmore core does NOT: it is read out of
+ * `data/freshmore.json` for the cohort, so a file cannot add to it, reorder it
+ * or swap a course out of it. The only thing an import may do to a core mod is
+ * replace the editable part, which is the record.
+ *
+ * So an incoming record is kept when its code is in the imported plan or in
+ * this cohort's core, and dropped otherwise. Records for anything else were
+ * being merged into the store wholesale.
+ */
+export function importableRecords(
+  incoming: RecordsState,
+  planned: string[],
+  core: string[],
+): RecordsState {
+  return recordsFor(incoming, [...planned, ...core]);
 }
 
 export interface ReadPlan {
