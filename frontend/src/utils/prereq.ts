@@ -32,9 +32,14 @@ function appliesTo(
   // "no DAI student ever needs 50.001", which is one year too broad: the
   // exemption is DAI AND AY2024-or-earlier, and a DAI student on AY2025 does
   // need it. An absent notForCohort keeps the old meaning, every cohort.
-  if (pillar && leaf.notFor?.includes(pillar)) {
+  if (pillar && leaf.notForPillar?.includes(pillar)) {
     const years = leaf.notForCohort;
-    if (!years?.length || (cohort !== undefined && years.includes(cohort))) return false;
+    // undefined is 'every cohort'; [] is 'no cohort'. Treating them the same
+    // made an accidentally empty scope the widest possible exemption, which
+    // is the opposite of what writing an empty list looks like it means.
+    if (years === undefined || (cohort !== undefined && years.includes(cohort))) {
+      return false;
+    }
   }
   if (!leaf.cohort?.length || cohort === undefined) return true;
   return leaf.cohort.includes(cohort);

@@ -214,10 +214,10 @@ export function PlanTree({ onPick }: Props) {
   const badge = useMemo(() =>
     [...tracks, ...minors]
       // Home pillar gates eligibility: specialisations belong to your own
-      // pillar; minors bar the offering pillar's own students (notFor).
+      // pillar; minors bar the offering pillar's own students (notForPillar).
       .filter((t) => {
         if (!currentPillar) return true;
-        if (t.pillar === 'Minor') return !(t.notFor ?? []).includes(currentPillar);
+        if (t.pillar === 'Minor') return !(t.notForPillar ?? []).includes(currentPillar);
         return t.pillar === currentPillar;
       })
       .map((t) => {

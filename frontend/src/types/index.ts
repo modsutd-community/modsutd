@@ -58,15 +58,15 @@ export interface PrereqNamed {
    * take 50.007 without 50.001, and a prerequisite that is real for four
    * pillars and not the fifth cannot be said with a cohort alone.
    */
-  notFor?: string[];
+  notForPillar?: string[];
   /**
-   * Which cohorts `notFor` applies to. Absent means all of them.
+   * Which cohorts `notForPillar` applies to. Absent means all of them.
    *
-   * `notFor` alone says "these pillars never need this", and `cohort` alone
-   * says "only these years need this". Neither can say what 50.001 is: a
-   * prerequisite for everybody EXCEPT a DAI student matriculated AY2024 or
-   * earlier. That is the two conditions at once, so the exemption carries its
-   * own year scope rather than borrowing the leaf's.
+   * `notForPillar` alone says "these pillars never need this", and `cohort`
+   * alone says "only these years need this". Neither can say what 50.001
+   * is: a prerequisite for everybody EXCEPT a DAI student matriculated
+   * AY2024 or earlier. That is two conditions at once, so the exemption
+   * carries its own year scope rather than borrowing the leaf's.
    */
   notForCohort?: Curriculum[];
 }
