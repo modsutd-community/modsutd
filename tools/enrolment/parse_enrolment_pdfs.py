@@ -439,7 +439,7 @@ def to_schedules(rows: list[dict], instructors: list[str] | None = None) -> list
                 "startTime": r["start"],
                 "endTime": r["end"],
                 "location": room,
-                "instructors": instructors or [],
+                "instructors": list(instructors or ()),
             }
             if r["section"]:
                 s["cohort"] = r["section"]
@@ -578,6 +578,15 @@ def self_check() -> int:
     # and CI02, two instructors, one room. Both are real.
     eq("two sections in one room both survive",
        len(to_schedules(rows + [dict(rows[0], section="CI02")])), 4)
+
+    # One list per slot. `instructors or []` builds a fresh list only when the
+    # argument is None, and hands every slot the caller's own list when it is
+    # not, so editing one class's teaching staff would edit every class's.
+    who = ["A Person"]
+    two = to_schedules(rows, who)
+    two[0]["instructors"].append("Someone Else")
+    eq("each slot owns its instructors", two[1]["instructors"], ["A Person"])
+    eq("and the caller's list is untouched", who, ["A Person"])
 
     # A block prints its rooms as names when it prints no code, and the
     # instructors sit in the same tail with no separator marking where the
