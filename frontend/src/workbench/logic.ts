@@ -287,6 +287,41 @@ export function freshmoreFixedSet(core: FreshmoreCore): Map<string, number> {
   return out;
 }
 
+// ---- repeatable mods --------------------------------------------------------
+
+/**
+ * Mods a student can hold more than one chip of.
+ *
+ * 02.XFER is the summer or winter HASS transfer: a real course each time, done
+ * in whichever term it was done in, and a student may take several across a
+ * degree. Everything else is one chip, because a course is passed once.
+ */
+export const REPEATABLE = new Set(['02.XFER']);
+
+/**
+ * The plan key for a mod placed at a level.
+ *
+ * A repeatable one carries its term, `02.XFER|T3`, so two of them are two
+ * entries in `selectedMods` rather than one the `includes` guard throws away.
+ * The term rather than a counter, so the key says what it is, it survives a
+ * reload without a sequence to maintain, and a student cannot stack three
+ * transfers into one term.
+ */
+export function planKeyFor(code: string, level: number): string {
+  return REPEATABLE.has(code) ? `${code}|T${level}` : code;
+}
+
+/**
+ * The catalogue code behind a plan key.
+ *
+ * Only strips a suffix the store does not already know: `99.999|Calculus` IS a
+ * key in the store, and has to stay one.
+ */
+export function codeOfKey(key: string): string {
+  const cut = key.indexOf('|');
+  return cut === -1 ? key : key.slice(0, cut);
+}
+
 // ---- skill-tree placement ---------------------------------------------------
 
 // Catalogue term, clamped to the 8-term undergraduate span.

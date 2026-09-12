@@ -22,7 +22,7 @@ import {awaitingDeploy, CONTRIBUTED_EVENT} from "../contributed";
 import {teleState} from "../teleState";
 import {askedAt, markAsked, clearAsked, TELE_ASKED_EVENT} from "../teleAsked";
 import {ReviewForm} from "../ReviewForm";
-import {defaultLevel, useFreshmore, freshmoreFixedSet} from "../logic";
+import {defaultLevel, useFreshmore, freshmoreFixedSet, planKeyFor} from "../logic";
 import {useWorkbenchUi} from "../uiContext";
 import {Otto} from "../Otto";
 import {ExtIcon} from "../ExtLink";
@@ -372,7 +372,11 @@ export function ModBody({code, onPick, onFocusRoom}: Props) {
 
     // The plan stores unique keys, not codes - the 99.999 placeholders share
     // a code and only the key tells them apart.
-    const planKey = mod.key ?? mod.code;
+    // A repeatable mod is keyed by the term it lands in, so "add to plan" puts
+    // it at its catalogue term and a second one goes elsewhere by dragging. The
+    // button reads inPlan against that same key, so it offers ADD again once
+    // this term's copy exists rather than claiming the mod is already placed.
+    const planKey = planKeyFor(mod.key ?? mod.code, defaultLevel(mod));
     // Terms 1-3 pin the freshmore core, and a pinned mod is in the plan without
     // being in selectedMods. The button read "+ ADD TO PLAN" for a mod already
     // sitting in T1 of the tree, and pressing it would have added a second copy
