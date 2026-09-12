@@ -15,7 +15,32 @@
     "30.101"
   ],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "13:00",
+      "endTime": "14:00",
+      "location": "2.406",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "13:00",
+      "endTime": "15:30",
+      "location": "2.406",
+      "instructors": []
+    },
+    {
+      "type": "Lecture",
+      "day": "Tuesday",
+      "startTime": "11:30",
+      "endTime": "14:00",
+      "location": "2.406",
+      "instructors": []
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",
