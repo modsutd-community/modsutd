@@ -34,6 +34,12 @@ const slice = createSlice({
     },
     // One-time prefill; migrates the legacy name-keyed scores when present.
     initComponents(state, { payload }: PayloadAction<{ code: string; defaults: Array<{ name: string; weight: number }> }>) {
+      // NOTHING TO SEED IS NOTHING TO STORE. A mod with no published grading
+      // table has no default components, so this wrote {notes:"", components:[]}
+      // for the mere act of opening its card. Those empty shells then travelled:
+      // an export carried a record for every chip the reader had happened to
+      // hover, so exporting the same plan twice produced different files.
+      if (!payload.defaults.length && !state[payload.code]) return;
       const rec = state[payload.code] ?? emptyRecord();
       if (rec.components && rec.components.length > 0) return;
       const legacy = rec.scores ?? {};

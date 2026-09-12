@@ -267,6 +267,18 @@ export function useFreshmore(mode: Curriculum = 'ay2026'): FreshmoreCore {
   return freshmoreCache?.[mode]?.terms ?? {};
 }
 
+/**
+ * The freshmore core for a cohort, read straight off the module cache.
+ *
+ * `useFreshmore` is the hook and cannot be called from an event handler, which
+ * is where an import needs this: it has to know which mods the cohort pins
+ * before it will accept a record for one. Returns {} until the fetch lands,
+ * which for an import means a stricter filter rather than a wrong one.
+ */
+export function freshmoreCoreFor(mode: Curriculum): FreshmoreCore {
+  return freshmoreCache?.[mode]?.terms ?? {};
+}
+
 export function freshmoreFixedSet(core: FreshmoreCore): Map<string, number> {
   const out = new Map<string, number>();
   for (const [term, t] of Object.entries(core)) {
