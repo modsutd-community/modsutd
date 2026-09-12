@@ -1,0 +1,172 @@
+#!/usr/bin/env python3
+"""Mark each pillar's own core courses as getting no batch chat.
+
+    python tools/scraper/gather_no_batch_chat.py            # refresh, then report
+    python tools/scraper/gather_no_batch_chat.py --dry-run  # report, write nothing
+
+WHY A PILLAR CORE GETS NO CHAT
+A batch chat is for a course a cohort CHOOSES, where the people in it are the
+people who picked the same elective and have nothing else in common. A pillar's
+core is taken by everybody in that pillar, who already share a cohort chat, a
+timetable and a year group. A second group with the same membership is noise,
+which is the same reason capstones and thesis mods are excluded.
+
+Those lists are published and they move, so they are read rather than typed.
+
+WHAT IT OWNS, AND WHAT IT LEAVES ALONE
+It writes `noBatchChat: true` together with `noBatchChatReason: "pillar core"`,
+and it only ever removes a flag carrying that same reason. A record flagged for
+another reason - 01.400 Capstone 1, 02.XFER - is left exactly as it is, because
+this script has no opinion about those and no way to tell it made them.
+
+THE FILTER IS THE `.general-listing-grid`, NOT THE PAGE
+Reading course codes off the whole page returns 23 for DAI where the grid has 8:
+the rest are navigation, related links and a footer. Scoped to the grid, the
+`?course-type=` filter is honoured server-side and the answer is the core.
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import pathlib
+import re
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from sources import _http  # noqa: E402
+
+from bs4 import BeautifulSoup  # noqa: E402
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+COURSES = ROOT / "data" / "courses"
+
+REASON = "pillar core"
+
+# The course-type ids are SUTD's own, and each pillar numbers them differently.
+# They came from the filtered URLs a maintainer arrived at by using the site.
+SOURCES: dict[str, str] = {
+    "DAI (AY2025 and earlier)":
+        "https://www.sutd.edu.sg/dai/education/undergraduate/courses/ay2025-earlier/"
+        "?course-type=124%2C1466",
+    "DAI (AY2026 onwards)":
+        "https://www.sutd.edu.sg/dai/education/undergraduate/courses/ay2026-onwards/"
+        "?course-type=124%2C1466",
+    "CSD/ISTD":
+        "https://www.sutd.edu.sg/istd/education/undergraduate/courses/?course-type=204",
+    "ESD":
+        "https://www.sutd.edu.sg/esd/education/undergraduate/courses/?course-type=363",
+    "EPD":
+        "https://www.sutd.edu.sg/epd/education/undergraduate/courses/?course-type=423%2C424",
+    "ASD":
+        "https://www.sutd.edu.sg/asd/education/undergraduate/courses/?course-type=168%2C167",
+}
+
+CODE = re.compile(r"\b(\d{2})\.(\d{3})([A-Za-z]?)\b")
+# The real undergraduate code space. A listing page also carries phone and
+# reference numbers that match the shape.
+PREFIXES = {"01", "02", "03", "10", "20", "30", "40", "50", "60"}
+
+# A pillar that parses to nothing is a redesign or a bad minute, not a pillar
+# that dropped its core. Refusing keeps the flags already on disk.
+MIN_PER_PILLAR = 2
+
+
+def codes_in_grid(url: str) -> list[str] | None:
+    """The codes inside the listing grid, or None when there is no grid."""
+    soup = BeautifulSoup(_http.get(url, ttl_hours=72, delay=0.4), "html.parser")
+    grid = soup.select_one(".general-listing-grid")
+    if grid is None:
+        return None
+    text = " ".join(grid.get_text(" ", strip=True).split())
+    return sorted({
+        f"{m.group(1)}.{m.group(2)}{m.group(3)}"
+        for m in CODE.finditer(text)
+        if m.group(1) in PREFIXES
+    })
+
+
+def path_for(code: str) -> pathlib.Path:
+    return COURSES / f"{code.replace('.', '_')}.json"
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--dry-run", action="store_true", help="report, write nothing")
+    args = ap.parse_args()
+
+    wanted: set[str] = set()
+    failed: list[str] = []
+    for name, url in SOURCES.items():
+        try:
+            found = codes_in_grid(url)
+        except Exception as exc:  # noqa: BLE001
+            found = None
+            print(f"  {name:<24} UNREACHABLE {type(exc).__name__}", file=sys.stderr)
+        if found is None:
+            failed.append(name)
+            print(f"  {name:<24} no listing grid", file=sys.stderr)
+            continue
+        if len(found) < MIN_PER_PILLAR:
+            failed.append(name)
+            print(f"  {name:<24} only {len(found)} code(s), floor is {MIN_PER_PILLAR}",
+                  file=sys.stderr)
+            continue
+        print(f"  {name:<24} {len(found):>2}  {', '.join(found)}")
+        wanted |= set(found)
+
+    if failed:
+        # Partial is worse than nothing here: a pillar that failed to parse would
+        # look like a pillar with no core, and every one of its courses would
+        # have its flag taken off.
+        print(f"\nREFUSING TO WRITE: {len(failed)} source(s) did not parse "
+              f"({', '.join(failed)}). The flags on disk stand.", file=sys.stderr)
+        return 1
+
+    added, removed, missing = [], [], []
+    for code in sorted(wanted):
+        p = path_for(code)
+        if not p.exists():
+            missing.append(code)
+            continue
+        d = json.loads(p.read_text(encoding="utf-8"))
+        if d.get("noBatchChat") and d.get("noBatchChatReason") == REASON:
+            continue
+        if d.get("noBatchChat"):
+            # Flagged by a human for a reason this script did not write. Left
+            # alone, and not claimed.
+            continue
+        d["noBatchChat"] = True
+        d["noBatchChatReason"] = REASON
+        if not args.dry_run:
+            p.write_text(json.dumps(d, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        added.append(code)
+
+    for p in sorted(COURSES.glob("*.json")):
+        d = json.loads(p.read_text(encoding="utf-8"))
+        if d.get("noBatchChatReason") != REASON:
+            continue
+        if d["code"] in wanted:
+            continue
+        d.pop("noBatchChat", None)
+        d.pop("noBatchChatReason", None)
+        if not args.dry_run:
+            p.write_text(json.dumps(d, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        removed.append(d["code"])
+
+    tag = "[dry-run] " if args.dry_run else ""
+    print(f"\n{tag}{len(wanted)} core course(s) across {len(SOURCES)} listings")
+    if added:
+        print(f"{tag}flagged: {', '.join(added)}")
+    if removed:
+        print(f"{tag}no longer a core, flag removed: {', '.join(removed)}")
+    if missing:
+        print(f"listed by SUTD but no record here: {', '.join(missing)}. "
+              f"The `mods` step creates those; this runs after it.")
+    if not added and not removed:
+        print(f"{tag}nothing to change")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -18,5 +18,7 @@
     "Term 5",
     "Core"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-018-heuristics-and-systems-theory/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-018-heuristics-and-systems-theory/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

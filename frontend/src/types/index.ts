@@ -89,6 +89,11 @@ export interface Mod {
   // Data rather than a regex on the name: "capstone|thesis" could not express
   // 60.003 or 02.XFER, and a rule nobody can see is a rule nobody can edit.
   noBatchChat?: boolean;
+  // Who set the flag above, when a script did. Only `gather_no_batch_chat.py`
+  // writes one, and it removes only the flags carrying its own reason - so a
+  // course a human excluded by hand survives a pillar redesign, and a course
+  // that leaves its pillar's core gets its flag taken back off.
+  noBatchChatReason?: string;
   // The SUTD page this record was read from. Linked from the mod name so a
   // reader can check the source in one click rather than taking this app's
   // word for it - and so a maintainer finding a dead link knows a re-scrape is

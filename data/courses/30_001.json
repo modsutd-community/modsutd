@@ -18,5 +18,7 @@
     "Core",
     "EPD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/30-001-structures-materials/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-001-structures-materials/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

@@ -17,5 +17,7 @@
     "Term 5",
     "Core"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-012-manufacturing-and-service-operations/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-012-manufacturing-and-service-operations/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

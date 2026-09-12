@@ -17,5 +17,7 @@
     "Core",
     "ESD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-015-simulation-modelling-and-analysis/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-015-simulation-modelling-and-analysis/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

@@ -19,14 +19,18 @@ async function stub(page: Page, codes: string[], registry: Record<string, unknow
 }
 
 test.describe('telegram batch chat', () => {
+  // A T7 CSD elective, and it has to stay one. 50.040 stands here because a
+  // course a student CHOOSES is the only kind that gets a chat: this suite used
+  // 50.001 until it was read off CSD's own core listing, and every eligibility
+  // test then asserted against a mod that is no longer eligible.
   const ENTRY = {
-    '50.001': { linkEnc: 'v1:stub:stub', title: 'x', created: '2026-07', expires: '2099-01-01' },
+    '50.040': { linkEnc: 'v1:stub:stub', title: 'x', created: '2026-07', expires: '2099-01-01' },
   };
 
   test('an offered mod shows the branded join button', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'same component in the mobile sheet');
-    await stub(page, ['50.001'], ENTRY);
-    await page.goto('/mods/50.001');
+    await stub(page, ['50.040'], ENTRY);
+    await page.goto('/mods/50.040');
 
     const join = page.locator('[data-panel="mod"]').getByRole('button', { name: /Join the Tele chat/ });
     await expect(join).toBeVisible();
@@ -59,14 +63,14 @@ test.describe('telegram batch chat', () => {
     let reads = 0;
     // Registered LAST on purpose: Playwright tries the most recently added
     // route first, so a counting route added before stub() never fires.
-    await stub(page, ['50.001'], {});
+    await stub(page, ['50.040'], {});
     await page.route(/telegram-groups\.json/, (r) => {
       reads += 1;
       return r.fulfill({ json: {} });
     });
 
     await page.clock.install();
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     // fetchAll reads the registry twice, the bundled copy and the one on main,
     // and they land independently - so wait for both before taking a baseline
     // or the second one lands during the next assertion and reads as a refresh.
@@ -76,8 +80,8 @@ test.describe('telegram batch chat', () => {
     const cat = page.locator('[data-panel="cat"]');
     const reopen = async () => {
       await cat.getByRole('button', { name: /10\.013/ }).first().click();
-      await cat.getByRole('button', { name: /50\.001/ }).first().click();
-      await expect(page.locator('[data-panel="mod"]')).toContainText('50.001');
+      await cat.getByRole('button', { name: /50\.040/ }).first().click();
+      await expect(page.locator('[data-panel="mod"]')).toContainText('50.040');
     };
 
     // Inside the window, clicking through mods costs no fetch at all.
@@ -103,15 +107,23 @@ test.describe('telegram batch chat', () => {
     // main has not got the slots yet - that is the state under test, and
     // without this stub the probe would flip it straight to ready.
     await page.route(/raw\.githubusercontent\.com.*courses/, (r) => r.fulfill({ json: { schedules: [] } }));
+    // COMMITTING is "this browser pasted, the build has not caught up", and
+    // overlayLocal never covers deployed data - so the bundle has to have no
+    // slots for this mod. Emptied here rather than relying on the shipped file
+    // still being empty: one contributed timetable would make that untrue and
+    // this test would fail for a reason that has nothing to do with the state.
+    await page.route('**/data/courses.json', (r) => r.fulfill({
+      json: coursesWithSchedules(['50.040'], []),
+    }));
 
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     const waiting = page.locator('[data-act="tele-awaiting"]');
     // Nobody who has not pasted sees anything at all.
     await expect(waiting).toHaveCount(0);
 
     await page.evaluate(() => localStorage.setItem(
       'modsutd.contributed.v3',
-      JSON.stringify({ '50.001': { at: Date.now(), termEnd: '2099-12-12', schedules: [
+      JSON.stringify({ '50.040': { at: Date.now(), termEnd: '2099-12-12', schedules: [
         { type: 'Cohort', day: 'Monday', startTime: '09:00', endTime: '11:00', location: '2.101', instructors: [] },
       ] } })));
     await page.reload();
@@ -134,11 +146,19 @@ test.describe('telegram batch chat', () => {
     await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: {} }));
 
     await page.route(/raw\.githubusercontent\.com.*courses/, (r) => r.fulfill({ json: { schedules: [] } }));
+    // COMMITTING is "this browser pasted, the build has not caught up", and
+    // overlayLocal never covers deployed data - so the bundle has to have no
+    // slots for this mod. Emptied here rather than relying on the shipped file
+    // still being empty: one contributed timetable would make that untrue and
+    // this test would fail for a reason that has nothing to do with the state.
+    await page.route('**/data/courses.json', (r) => r.fulfill({
+      json: coursesWithSchedules(['50.040'], []),
+    }));
 
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     await page.evaluate(() => localStorage.setItem(
       'modsutd.contributed.v3',
-      JSON.stringify({ '50.001': { at: Date.now(), termEnd: '2099-12-12', schedules: [
+      JSON.stringify({ '50.040': { at: Date.now(), termEnd: '2099-12-12', schedules: [
         { type: 'Cohort', day: 'Monday', startTime: '09:00', endTime: '11:00', location: '2.101', instructors: [] },
       ] } })));
     await page.reload();
@@ -164,16 +184,16 @@ test.describe('telegram batch chat', () => {
     const stored = await page.evaluate(() => localStorage.getItem('modsutd.contributed.v3'));
     expect(stored).toBe(null);
 
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     await expect(page.locator('[data-act="tele-awaiting"]')).toHaveCount(0);
   });
 
   test('a refused link is explained in the top banner, not inline', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'same component in the mobile sheet');
-    await stub(page, ['50.001'], ENTRY);
+    await stub(page, ['50.040'], ENTRY);
     await page.route('**/api/telegram-link', (r) =>
       r.fulfill({ status: 429, json: { code: 'quota', error: 'that is 8 join links today - the rest unlock tomorrow' } }));
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
 
     // Wait on the request, not on the banner appearing in time: notice.ts
     // clears itself after 7s, and the assertion's own budget is shorter than
@@ -185,15 +205,24 @@ test.describe('telegram batch chat', () => {
     await expect(page.getByRole('status').getByText(/8 join links today/)).toBeVisible();
   });
 
-  test('capstone and thesis mods never get a chat', async ({ page, isMobile }) => {
+  // 50.001 is the pillar-core half of this: everybody in CSD takes it, so the
+  // chat would have the same membership as the cohort chat they are already in.
+  // It is flagged by tools/scraper/gather_no_batch_chat.py rather than by hand,
+  // which is why it is worth an assertion - a listing that stops parsing takes
+  // the flag off and nothing else would notice.
+  test('capstones, thesis mods and pillar cores never get a chat', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'same component in the mobile sheet');
-    await stub(page, ['01.400', '20.512'], {});
+    await stub(page, ['01.400', '20.512', '50.001'], {});
 
-    for (const code of ['01.400', '20.512']) {
+    for (const code of ['01.400', '20.512', '50.001']) {
       await page.goto(`/mods/${code}`);
       const mod = page.locator('[data-panel="mod"]');
       await expect(mod.locator(`[data-code="${code}"]`)).toBeVisible();
-      await expect(mod.getByRole('button', { name: /Join the Tele chat/ })).toHaveCount(0);
+      // tele-create is what an ELIGIBLE mod draws under these stubs: the term
+      // is live and the slots are on main, so the only thing standing between
+      // it and a chat is the flag. Asserting on the LIVE join button instead
+      // would hold for every state, because the registry here is empty.
+      await expect(mod.locator('[data-act="tele-create"]')).toHaveCount(0);
     }
   });
 
@@ -210,7 +239,7 @@ test.describe('telegram batch chat', () => {
       raw.push(r.request().url());
       return r.fulfill({ json: {} });
     });
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     await expect.poll(() => raw.length, { timeout: 10_000 }).toBeGreaterThan(0);
     for (const url of raw) expect(url).toMatch(/[?&]t=\d+/);
   });
