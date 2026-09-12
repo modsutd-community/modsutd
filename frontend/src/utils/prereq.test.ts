@@ -199,3 +199,41 @@ describe('a prerequisite that one pillar does not have', () => {
   });
 });
 });
+
+// 50.001 is a prerequisite of 50.007 for everybody EXCEPT a DAI student
+// matriculated AY2024 or earlier. Two conditions at once: notForPillar alone exempted
+// every DAI student in every year, and cohort alone would have exempted every
+// pillar in AY2024.
+describe('an exemption scoped to a pillar AND a cohort', () => {
+  const tree = {
+    and: [
+      { code: '50.001', name: 'Information Systems & Programming',
+        notForPillar: ['DAI'], notForCohort: ['ay2024'] },
+      '50.004',
+    ],
+  } as unknown as PrereqTree;
+  const got = (c: string) => c === '50.004';
+
+  it('exempts a DAI student on ay2024', () => {
+    expect(unmet(tree, got, 'ay2024', 'DAI')).toEqual([]);
+  });
+
+  it('still requires it of a DAI student on ay2025', () => {
+    expect(unmet(tree, got, 'ay2025', 'DAI')).toContain('50.001');
+  });
+
+  it('still requires it of a CSD student on ay2024', () => {
+    expect(unmet(tree, got, 'ay2024', 'CSD')).toContain('50.001');
+  });
+
+  it('an EMPTY scope exempts nobody, unlike a missing one', () => {
+    const none = { and: [{ code: '50.001', name: 'x',
+      notForPillar: ['DAI'], notForCohort: [] }] } as unknown as PrereqTree;
+    expect(unmet(none, got, 'ay2024', 'DAI')).toContain('50.001');
+  });
+
+  it('an unscoped notForPillar keeps exempting every cohort', () => {
+    const any = { and: [{ code: '50.001', name: 'x', notForPillar: ['DAI'] }] } as unknown as PrereqTree;
+    expect(unmet(any, got, 'ay2026', 'DAI')).toEqual([]);
+  });
+});

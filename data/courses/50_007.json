@@ -24,11 +24,11 @@
       {
         "code": "50.001",
         "name": "Information Systems & Programming",
-        "cohort": [
-          "ay2024"
-        ],
-        "notFor": [
+        "notForPillar": [
           "DAI"
+        ],
+        "notForCohort": [
+          "ay2024"
         ]
       },
       "50.004"
