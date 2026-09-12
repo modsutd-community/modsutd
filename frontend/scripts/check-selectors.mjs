@@ -52,8 +52,13 @@ for (const file of readdirSync(E2E).filter((f) => f.endsWith('.spec.ts'))) {
     }
   }
 
-  lines.forEach((line, i) => {
+  lines.forEach((rawLine, i) => {
     const at = `${file}:${i + 1}`;
+    // Comments are prose ABOUT the test, so a note explaining why a selector
+    // was chosen was itself read as a selector: "another name: it loads no
+    // bundle" matched the `name:` branch below. Stripped the same way the
+    // statement pass strips it, except a `//` after a colon is a URL.
+    const line = rawLine.replace(/(^|[^:])\/\/.*$/, '$1');
 
     // A CSS-module class is a build artefact - the hash changes when the
     // bundler feels like it, and the name changes on any refactor. There is no
