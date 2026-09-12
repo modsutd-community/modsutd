@@ -15,7 +15,32 @@
     "30.002"
   ],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "13:00",
+      "endTime": "15:00",
+      "location": "2.308",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "18:00",
+      "endTime": "20:00",
+      "location": "2.507",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "09:30",
+      "endTime": "10:30",
+      "location": "2.514",
+      "instructors": []
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",
