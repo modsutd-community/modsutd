@@ -7,7 +7,32 @@
   "pillar": "HASS",
   "term": "1",
   "prerequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Lecture",
+      "day": "Tuesday",
+      "startTime": "14:00",
+      "endTime": "15:00",
+      "location": "Online",
+      "instructors": []
+    },
+    {
+      "type": "Lecture",
+      "day": "Wednesday",
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "location": "Albert",
+      "instructors": []
+    }
+  ],
   "corequisites": [],
   "tags": [
     "Term 1",

@@ -8,7 +8,48 @@
   "term": "1",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "location": "Lecture",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "10:30",
+      "endTime": "13:00",
+      "location": "1.413",
+      "instructors": []
+    }
+  ],
   "workload": {
     "lecture": 6,
     "tutorial": 0,

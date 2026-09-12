@@ -8,7 +8,16 @@
   "term": "1",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "15:30",
+      "endTime": "17:30",
+      "location": "Lecture",
+      "instructors": []
+    }
+  ],
   "tags": [
     "Term 1",
     "Freshmore Core",

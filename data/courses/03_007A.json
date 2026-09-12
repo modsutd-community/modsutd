@@ -8,7 +8,40 @@
   "term": "1",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Friday",
+      "startTime": "11:30",
+      "endTime": "13:30",
+      "location": "Albert",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "14:30",
+      "endTime": "17:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "15:30",
+      "endTime": "18:30",
+      "location": "Albert",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "12:30",
+      "endTime": "15:00",
+      "location": "1.413",
+      "instructors": []
+    }
+  ],
   "tags": [
     "ASD",
     "Freshmore Core",
