@@ -226,6 +226,12 @@ describe('an exemption scoped to a pillar AND a cohort', () => {
     expect(unmet(tree, got, 'ay2024', 'CSD')).toContain('50.001');
   });
 
+  it('an EMPTY scope exempts nobody, unlike a missing one', () => {
+    const none = { and: [{ code: '50.001', name: 'x',
+      notForPillar: ['DAI'], notForCohort: [] }] } as unknown as PrereqTree;
+    expect(unmet(none, got, 'ay2024', 'DAI')).toContain('50.001');
+  });
+
   it('an unscoped notForPillar keeps exempting every cohort', () => {
     const any = { and: [{ code: '50.001', name: 'x', notForPillar: ['DAI'] }] } as unknown as PrereqTree;
     expect(unmet(any, got, 'ay2026', 'DAI')).toEqual([]);
