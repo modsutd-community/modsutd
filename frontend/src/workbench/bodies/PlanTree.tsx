@@ -6,6 +6,10 @@ import {
 } from '@/reducers/recordsReducer';
 import { importPlans } from '@/reducers/timetableReducer';
 import { buildPlanFile, readPlanFile, importableRecords } from '../planFile';
+import { liveBundle } from '../backup';
+import { exportAsked } from '../teleAsked';
+import { exportConsent } from '../logic';
+import { exportPrefs } from '../prefs';
 import type { Curriculum, Mod, RecordsState } from '@/types';
 import { pillarColor } from '../pillars';
 import { unmet, requirementsOf, treeOf } from '@/utils/prereq';
@@ -340,11 +344,20 @@ export function PlanTree({ onPick }: Props) {
                       setExportOpen(false);
                       try {
                         setSyncStatus('saving…');
-                        await pushBackup({
-                          records, plans, declared,
-                          timetable: events,
-                          contributed: exportContributed(),
-                        });
+                        // The SAME bundle the autosave sends. This used to
+                        // build its own with five sections, and pushBackup
+                        // defaults `changed` to all eight, so the three missing
+                        // ones were written as undefined over the gist: one
+                        // press wiped the consent flag and every setting.
+                        await pushBackup(liveBundle(
+                          { records, plans, declared, timetable: events },
+                          {
+                            contributed: exportContributed(),
+                            teleAsked: exportAsked(),
+                            consent: exportConsent(),
+                            prefs: exportPrefs(),
+                          },
+                        ));
                         setSyncStatus('✓ saved to your private gist');
                       } catch (e) {
                         setSyncStatus(`✗ ${(e as Error).message}`);

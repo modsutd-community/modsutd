@@ -92,18 +92,41 @@ export function hasContent(v: unknown): boolean {
   return (r?.components ?? []).some((c) => c && c.score !== null && c.score !== undefined);
 }
 
+const EMPTY_RECORD = { notes: '', components: [] };
+
 /**
- * Records for `codes`, and only the ones carrying something.
+ * Records for `codes`: every `pinned` one, and the rest only if written.
  *
- * Both halves matter. Without the code filter an export is the whole browser;
- * without the content filter it is every chip the reader hovered, which made
- * exporting the same plan twice produce different files.
+ * The two halves answer different problems.
+ *
+ * A planned mod is in the file because the student chose it, so an untouched
+ * one carries nothing and is left out. That is what stopped the same plan
+ * exporting differently twice: a record is created by opening a chip's card,
+ * so including empty ones recorded which chips had been hovered.
+ *
+ * A pinned mod is in the file either way. The core is not the student's
+ * choice, it is the cohort's, so the same cohort always writes the same set of
+ * core codes and the file says what the core was. An import cannot use them to
+ * change the core - that is read from data/freshmore.json - so an empty one
+ * costs a line and carries no risk.
  */
-export function recordsFor(records: RecordsState, codes: string[]): RecordsState {
+export function recordsFor(
+  records: RecordsState,
+  codes: string[],
+  pinned: string[] = [],
+): RecordsState {
   const keep = new Set(codes);
+  const core = new Set(pinned);
   const out: RecordsState = {} as RecordsState;
   for (const [code, v] of Object.entries(records ?? {})) {
-    if (keep.has(code) && hasContent(v)) (out as Record<string, unknown>)[code] = v;
+    if (keep.has(code) && (core.has(code) || hasContent(v))) {
+      (out as Record<string, unknown>)[code] = v;
+    }
+  }
+  // A core mod whose card was never opened has no record at all, and leaving it
+  // out would make the file depend on that again.
+  for (const code of core) {
+    if (!(code in out)) (out as Record<string, unknown>)[code] = { ...EMPTY_RECORD };
   }
   return out;
 }
@@ -132,7 +155,7 @@ export function buildPlanFile(
     exportedAt: new Date().toISOString(),
     plan,
     declared,
-    records: recordsFor(records, [...(plan?.selectedMods ?? []), ...pinned]),
+    records: recordsFor(records, [...(plan?.selectedMods ?? []), ...pinned], pinned),
   };
 }
 
@@ -154,6 +177,10 @@ export function importableRecords(
   planned: string[],
   core: string[],
 ): RecordsState {
+  // No `pinned` argument on purpose. On the way OUT a core mod gets an empty
+  // record so the file is the same every time; on the way IN an empty record is
+  // nothing, and inventing one would overwrite whatever this browser had
+  // written against that core mod.
   return recordsFor(incoming, [...planned, ...core]);
 }
 
