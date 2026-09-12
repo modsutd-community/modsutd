@@ -244,12 +244,18 @@ def parse_page(page, venues: dict[str, str], known: set[str],
     if not day_x:
         return [], ["no day headers on the page"]
 
-    # How wide a day is, measured rather than assumed, so a block can be checked
-    # against the column it lands nearest instead of merely being given it. A
-    # class that straddles a boundary is a layout this has not seen, and putting
-    # it on the wrong day would read as a real class nobody can find.
+    # Where each day's column starts and ends, measured from the spacing of the
+    # headers rather than assumed: the pillar files are A4 with 150pt columns
+    # and the HASS file is A3 with 220pt ones. A block belongs to the day whose
+    # column CONTAINS it, which is not the same as the day whose header is
+    # nearest - a block centred on a boundary is nearest to one of them and
+    # inside neither, and putting it on that day would read as a real class
+    # nobody can find. Distance from the centre cannot express this: classes
+    # run up to six abreast in one day, so a legitimate block sits as far as
+    # (column - its own width) / 2 off centre.
     gaps = [b[1] - a[1] for a, b in zip(day_x, day_x[1:])]
-    reach = (min(gaps) / 2 + 2) if gaps else page.width
+    half = (min(gaps) / 2) if gaps else page.width
+    SLACK = 2.0  # the columns are drawn to the point, not to the pixel
 
     # The legend sits below the grid; its swatches mark where the week ends.
     swatches = [r for r in page.rects
@@ -326,10 +332,11 @@ def parse_page(page, venues: dict[str, str], known: set[str],
 
         centre = (b["x0"] + b["x1"]) / 2
         name, at = min(day_x, key=lambda d: abs(d[1] - centre))
-        if abs(at - centre) > reach:
-            problems.append(f"{code}: sits {abs(at - centre):.0f}pt from the "
-                            f"nearest day ({name}), which is outside its "
-                            f"column. Dropped rather than guessed.")
+        if b["x0"] < at - half - SLACK or b["x1"] > at + half + SLACK:
+            problems.append(f"{code}: spans {b['x0']:.0f}-{b['x1']:.0f}, which "
+                            f"does not fit {name}'s column "
+                            f"({at - half:.0f}-{at + half:.0f}). Dropped rather "
+                            f"than guessed at.")
             continue
         day = name
         out.append({
@@ -452,6 +459,67 @@ def sort_key(s: dict) -> tuple:
             s.get("cohort", ""))
 
 
+class FakePage:
+    """A page shaped like pdfplumber's, built from text rather than a file.
+
+    parse_page is the half of this that geometry decides - which day a block
+    lands in, where the legend cuts the grid off, which curve is a class - and
+    none of it was reachable without a PDF. Committing a real enrolment export
+    to test it is not an option: it is SUTD's internal document and it names
+    teaching staff on every block. So the page is described here instead, in
+    the same shape pdfplumber hands over.
+
+    Geometry copied from a real export: a 150pt day column, the grid starting
+    at y=69 with 44pt to the hour, the legend swatches at y=569.
+    """
+
+    width, height = 842.0, 595.0
+
+    def __init__(self, blocks):
+        # blocks: (day index, top, bottom, text[, x nudge]), text as printed
+        # lines. The nudge is how a block is put between two columns.
+        self.blocks = [b if len(b) == 5 else (*b, 0.0) for b in blocks]
+
+    def _left(self, day_i, nudge):
+        return 52.8 + day_i * 150 + nudge
+
+    def extract_words(self):
+        out = []
+        for i, day in enumerate(DAYS[:5]):
+            left = 52.8 + i * 150
+            out.append({"text": day, "x0": left + 59, "x1": left + 91,
+                        "top": 58.2, "bottom": 67.2})
+        return out
+
+    @property
+    def rects(self):
+        # the legend swatches, which is how the grid's floor is found
+        return [{"x0": 36.0 + i * 32, "x1": 43.0 + i * 32,
+                 "top": 569.0, "bottom": 576.0} for i in range(3)]
+
+    @property
+    def curves(self):
+        return [{"non_stroking_color": (0.67, 0.85, 0.58),
+                 "x0": self._left(d, n), "x1": self._left(d, n) + 150,
+                 "top": top, "bottom": bottom}
+                for d, top, bottom, _, n in self.blocks]
+
+    def crop(self, box):
+        x0, top, _x1, _bottom = box
+        for d, t, _b, text, n in self.blocks:
+            if abs(self._left(d, n) - x0) < 0.5 and abs(t - top) < 0.5:
+                return _Cropped(text)
+        return _Cropped("")
+
+
+class _Cropped:
+    def __init__(self, text):
+        self.text = text
+
+    def extract_text(self, **_):
+        return self.text
+
+
 def self_check() -> int:
     """Drive the readers that turn a block's text into a record.
 
@@ -550,6 +618,52 @@ def self_check() -> int:
        "HASS & TE")
     eq("label, plain", label_of("2630 Term 7 ESD_180826.pdf"), "ESD")
 
+    # parse_page, driven end to end. Everything above is a reader; this is the
+    # geometry that decides which day a block belongs to and where the grid
+    # stops, and it was unreachable without opening a file.
+    index = {"think tank 10": "1.416", "think tank 9": "1.415",
+             "lecture theatre 4": "2.404"}
+    rooms_known = {"1.416", "1.415", "2.404", "2.507"}
+
+    page = FakePage([
+        (0, 201.0, 289.0,
+         "09:30\n11x w38-43, 45, 47-50\n50.006, CI01, CBL, Think Tank 10, Think\n"
+         "Tank 9, 1.416, 1.415, CHOO Tsu Wei Kenny\n11:30"),
+        (3, 113.0, 201.0,
+         "09:00\n12x w38-43, 45-50\n02.183HT, LH01, LEC, Lecture Theatre 4,\n11:00"),
+        (1, 377.0, 509.0, "15:00\n11x w38-43\nHASS, HASS placehold\n18:00"),
+    ])
+    rows, notes = parse_page(page, index, rooms_known)
+    eq("a page parses to one row per class", len(rows), 2)
+    eq("no note on a clean page", notes, [])
+    eq("the block is on the day its column is",
+       [r["day"] for r in rows], ["Monday", "Thursday"])
+    eq("the printed times are the times", (rows[0]["start"], rows[0]["end"]),
+       ("09:30", "11:30"))
+    eq("codes beat the names beside them", rows[0]["rooms"], ["1.416", "1.415"])
+    eq("a block with no code resolves its name", rows[1]["rooms"], ["2.404"])
+    eq("the HASS placeholder is not a class",
+       [r["code"] for r in rows], ["50.006", "02.183HT"])
+    eq("CBL is a cohort, LEC a lecture",
+       [r["type"] for r in rows], ["Cohort", "Lecture"])
+
+    # A block sitting between two columns is a layout this has not seen. Put on
+    # the nearer day it would read as a real class nobody can find.
+    astray = FakePage([(0, 201.0, 289.0,
+                        "09:30\n11x w38-43\n50.006, CI01, CBL, Think Tank 10, 1.416, X\n11:30",
+                        90.0)])
+    rows2, notes2 = parse_page(astray, index, rooms_known)
+    eq("a block between two columns is dropped", rows2, [])
+    eq("and says so", len(notes2), 1)
+
+    # A room the catalogue does not hold still goes in, because the class is
+    # real, but the run has to say so.
+    stranger = FakePage([(0, 201.0, 289.0,
+                          "09:30\n11x w38-43\n50.006, CI01, CBL, 9.999, Someone\n11:30")])
+    rows3, notes3 = parse_page(stranger, index, rooms_known)
+    eq("an unknown room is still written", [r["rooms"] for r in rows3], [["9.999"]])
+    eq("an unknown room is reported", len(notes3), 1)
+
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
         for f in fails:
@@ -562,14 +676,22 @@ def self_check() -> int:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    if "--self-check" in sys.argv:
-        return self_check()
     ap.add_argument("--self-check", action="store_true",
                     help="run the readers against known shapes, no PDF needed")
-    ap.add_argument("folder", help="the folder holding the six enrolment PDFs")
+    # Optional so --self-check can stand alone, and required below when it is
+    # not given: argparse owns the whole command line, so a flag passed beside
+    # a folder is an error rather than something silently ignored.
+    ap.add_argument("folder", nargs="?",
+                    help="the folder holding the six enrolment PDFs")
     ap.add_argument("--dry-run", action="store_true", help="report, write nothing")
     ap.add_argument("--report", help="write the report here as well as to stdout")
     args = ap.parse_args()
+    if args.self_check:
+        if args.folder:
+            ap.error("--self-check opens nothing, so it takes no folder")
+        return self_check()
+    if not args.folder:
+        ap.error("a folder holding the six enrolment PDFs is required")
 
     folder = pathlib.Path(args.folder)
     if not folder.is_dir():

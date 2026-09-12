@@ -48,10 +48,14 @@ bounds - so the block IS the record.
   the record's line where it would read as four rooms.
 - **A line that wraps mid-token joins with no space**, or `DS-01` becomes
   `DS- 01` and matches no room.
-- **A block has to sit inside the day column it lands nearest**, measured from
-  the spacing of the day headers. A block that straddles a boundary is a
-  layout this has not seen, and a class put on the wrong day reads as a real
-  class nobody can find, so it is dropped and reported instead.
+- **A block has to fit inside the day column it lands nearest**, not merely be
+  near its header. The columns are measured from the header spacing, because
+  the pillar files are A4 with 150pt columns and the HASS file is A3 with
+  220pt ones, and classes run up to six abreast there - so a legitimate block
+  sits as far as (column minus its own width) / 2 off centre and distance from
+  the centre cannot tell it from a block straddling a boundary. One that fits
+  no column is dropped and reported: a class put on the wrong day reads as a
+  real class nobody can find.
 
 A block says:
 
