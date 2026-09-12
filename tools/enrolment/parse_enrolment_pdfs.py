@@ -52,10 +52,18 @@ import re
 import sys
 from collections import defaultdict
 
-try:
-    import pdfplumber
-except ImportError:  # pragma: no cover - a missing tool dep, not a code path
-    sys.exit("pdfplumber is needed: pip install -r tools/enrolment/requirements.txt")
+
+def load_pdfplumber():
+    """Imported on use, not at the top. `--self-check` drives the readers
+    against text these files produce and opens nothing, so CI runs it without
+    installing a PDF library for it."""
+    try:
+        import pdfplumber
+    except ImportError:
+        sys.exit("pdfplumber is needed to read a PDF: "
+                 "pip install -r tools/enrolment/requirements.txt")
+    return pdfplumber
+
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 COURSES = ROOT / "data" / "courses"
@@ -441,6 +449,8 @@ def main() -> int:
     if missing:
         die(f"no file for {', '.join(missing)}. All six are needed: a pillar "
             f"read as empty would look like a pillar with no classes.")
+
+    pdfplumber = load_pdfplumber()
 
     known = {json.loads(f.read_text(encoding="utf-8"))["code"]
              for f in COURSES.glob("*.json")}
