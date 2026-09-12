@@ -21,30 +21,7 @@
       "day": "Tuesday",
       "startTime": "11:30",
       "endTime": "14:00",
-      "location": "2.406A",
-      "instructors": [],
-      "cohort": "LP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
-    },
-    {
-      "type": "Lecture",
-      "day": "Tuesday",
-      "startTime": "11:30",
-      "endTime": "14:00",
-      "location": "2.406B",
+      "location": "2.406",
       "instructors": [],
       "cohort": "LP01",
       "weeks": [
@@ -67,30 +44,7 @@
       "day": "Thursday",
       "startTime": "13:00",
       "endTime": "15:30",
-      "location": "2.406A",
-      "instructors": [],
-      "cohort": "CP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
-    },
-    {
-      "type": "Cohort",
-      "day": "Thursday",
-      "startTime": "13:00",
-      "endTime": "15:30",
-      "location": "2.406B",
+      "location": "2.406",
       "instructors": [],
       "cohort": "CP01",
       "weeks": [

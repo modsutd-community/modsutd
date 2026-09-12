@@ -31,7 +31,10 @@ WHAT A BLOCK SAYS
     50.006, CI01, CBL, Think Tank 10, Think Tank 9, 1.416, 1.415, CHOO Tsu Wei Kenny
       code   sect  kind  <---- venues, named then coded ---->  <- instructors
 
-The names and the codes are the same rooms twice, so the codes win. A block
+The names and the codes are the same rooms twice, so the codes win - except
+that the registry splits a divisible classroom into halves the catalogue does
+not hold, so `2.507A, 2.507B` becomes the one room 2.507 that the venue page
+and the heatmap can actually show. A block
 with no code at all (the HASS lectures: "Lecture Theatre 4,") is resolved
 through data/venues, which is why "Lecture Theatre 4 (Hokkien Foundation)" has
 to match on its name with the donor stripped.
@@ -108,6 +111,28 @@ def die(msg: str) -> None:
 
 
 # ---------------------------------------------------------------- venues ----
+
+def venue_codes() -> set[str]:
+    """Every room the catalogue holds, which is what a `location` may name."""
+    return {json.loads(f.read_text(encoding="utf-8"))["code"]
+            for f in VENUES.glob("*.json")}
+
+
+def whole_room(code: str, known: set[str]) -> str:
+    """The room a printed code belongs to.
+
+    The registry splits a divisible classroom when a cohort takes both halves:
+    Cohort Classroom 14 is printed as `2.507A, 2.507B`, and the catalogue holds
+    one room, 2.507. A `location` naming a code no venue has is a slot the room
+    page and the heatmap can never show, so the halves resolve to the room they
+    are halves of. A suffix that IS its own room stays: the design studios are
+    2.313A and 2.313B, two records, two doors.
+    """
+    if code in known:
+        return code
+    parent = code[:-1]
+    return parent if code[-1:].isalpha() and parent in known else code
+
 
 def venue_index() -> dict[str, str]:
     """Every name a room answers to, lowercased, to its code.
@@ -208,7 +233,8 @@ def r_day(block, day_x) -> str:
     return min(day_x, key=lambda d: abs(d[1] - centre))[0][:3]
 
 
-def parse_page(page, venues: dict[str, str]) -> tuple[list[dict], list[str]]:
+def parse_page(page, venues: dict[str, str], known: set[str],
+               ) -> tuple[list[dict], list[str]]:
     """Every class block on the page, plus whatever could not be read."""
     words = page.extract_words()
     day_x = sorted(
@@ -278,6 +304,25 @@ def parse_page(page, venues: dict[str, str]) -> tuple[list[dict], list[str]]:
                 problems.append(f"{code} {r_day(b, day_x)} {times[0]}: kept "
                                 f"{', '.join(rooms)} but could not place "
                                 f"{', '.join(unresolved)}")
+
+        # Both halves of a divisible classroom name one room, so this also
+        # collapses "2.507A, 2.507B" to a single 2.507: one room, busy once.
+        seen_rooms: list[str] = []
+        for r in rooms:
+            whole = whole_room(r, known)
+            if whole not in seen_rooms:
+                seen_rooms.append(whole)
+        rooms = seen_rooms
+
+        # A location naming a room the catalogue does not hold is a slot the
+        # room page and the heatmap can never show. It still goes in, because
+        # the class is real and the code is what the registry printed, but the
+        # run says so.
+        strangers = [r for r in rooms if r not in known]
+        if strangers:
+            problems.append(f"{code} {r_day(b, day_x)} {times[0]}: "
+                            f"{', '.join(strangers)} has no venue record, so "
+                            f"nothing will show this class on that room's page")
 
         centre = (b["x0"] + b["x1"]) / 2
         name, at = min(day_x, key=lambda d: abs(d[1] - centre))
@@ -481,6 +526,17 @@ def self_check() -> int:
        resolve_named(["Think Tank 2", "Room 9 3/4"], index),
        (["1.309"], ["Room 9 3/4"]))
 
+    # The registry splits a divisible classroom when a cohort takes both
+    # halves, and the catalogue holds the room rather than the halves.
+    rooms_known = {"2.507", "2.313A", "2.313B", "1.411"}
+    eq("a half resolves to the room it is half of",
+       whole_room("2.507A", rooms_known), "2.507")
+    eq("a suffix that is its own room stays",
+       whole_room("2.313B", rooms_known), "2.313B")
+    eq("a room nobody has is left as it was",
+       whole_room("9.999Z", rooms_known), "9.999Z")
+    eq("a plain code is untouched", whole_room("1.411", rooms_known), "1.411")
+
     eq("pillar from a filename", pillar_of("2630 Term 7 HASS & TE_260826.pdf"), "HASS")
     eq("CSD is ISTD", pillar_of("2630 Term 7 CSD_180826.pdf"), "ISTD")
     eq("no pillar in the name", pillar_of("timetable.pdf"), None)
@@ -542,6 +598,7 @@ def main() -> int:
     known = {json.loads(f.read_text(encoding="utf-8"))["code"]
              for f in COURSES.glob("*.json")}
     venues = venue_index()
+    rooms_known = venue_codes()
 
     sections: list[str] = []
     per_mod: dict[str, list[dict]] = defaultdict(list)
@@ -558,7 +615,7 @@ def main() -> int:
             legend: list[str] = []
             problems: list[str] = []
             for page in pdf.pages:
-                r, pr = parse_page(page, venues)
+                r, pr = parse_page(page, venues, rooms_known)
                 rows.extend(r)
                 problems.extend(pr)
                 legend.extend(c for c in legend_of(page) if c not in legend)
@@ -659,8 +716,14 @@ def main() -> int:
         pathlib.Path(args.report).write_text(text + "\n", encoding="utf-8")
     # A note means a block went in with less than the registry printed, or did
     # not go in at all. Neither is a clean run, and neither is visible unless
-    # the exit code says so.
-    return 1 if short or absent or noted else 0
+    # the exit code says so. It is NOT "nothing happened": everything that
+    # parsed has already been written, and the line above says what.
+    if short or absent or noted:
+        print()
+        print("Exit 1: the courses above are written, and the report has "
+              "something in it a person has to look at before committing.")
+        return 1
+    return 0
 
 
 if __name__ == "__main__":

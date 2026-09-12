@@ -67,6 +67,15 @@ block with no code (the HASS lectures, `Lecture Theatre 4,`) resolves through
 donor stripped: the record says "Lecture Theatre 4 (Hokkien Foundation)" and
 the registry prints "Lecture Theatre 4".
 
+**A divisible classroom is printed as its halves and the catalogue holds the
+room.** Cohort Classroom 14 comes through as `2.507A, 2.507B` and there is one
+venue, `2.507`. A `location` naming a code no venue has is a slot the room page
+and the heatmap can never show, so a half resolves to the room it is half of,
+and both halves collapse to one slot: one room, busy once. A suffix that IS its
+own room survives, because the exact code is looked for first: the design
+studios are `2.313A` and `2.313B`, two records, two doors. Any room that still
+has no venue record after that is reported, and the run exits non-zero.
+
 There is no separator in a record marking where the venues stop and the
 instructors start, so a tail field is a venue exactly when it resolves to one.
 A name that resolves to nothing is reported by code, day and time rather than
