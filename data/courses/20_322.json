@@ -8,7 +8,53 @@
   "term": "1",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "13:00",
+      "endTime": "15:00",
+      "location": "2.403",
+      "instructors": [],
+      "cohort": "LA01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:30",
+      "endTime": "12:30",
+      "location": "2.514",
+      "instructors": [],
+      "cohort": "CA01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "ASD",
     "Elective / Technical Elective"

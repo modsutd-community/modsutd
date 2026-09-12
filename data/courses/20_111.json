@@ -11,7 +11,54 @@
     "20.102",
     "20.103"
   ],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "14:00",
+      "endTime": "18:00",
+      "location": "2.518",
+      "instructors": [],
+      "cohort": "CA01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "14:00",
+      "endTime": "18:00",
+      "location": "2.518",
+      "instructors": [],
+      "cohort": "CA01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "ASD",
     "Term 7",

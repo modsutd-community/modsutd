@@ -10,7 +10,144 @@
     "50.001"
   ],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "13:00",
+      "endTime": "14:30",
+      "location": "2.607A",
+      "instructors": [],
+      "cohort": "LI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "13:00",
+      "endTime": "14:30",
+      "location": "2.607B",
+      "instructors": [],
+      "cohort": "LI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Lecture",
+      "day": "Tuesday",
+      "startTime": "12:00",
+      "endTime": "13:30",
+      "location": "2.607A",
+      "instructors": [],
+      "cohort": "LI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Lecture",
+      "day": "Tuesday",
+      "startTime": "12:00",
+      "endTime": "13:30",
+      "location": "2.607B",
+      "instructors": [],
+      "cohort": "LI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "location": "2.607A",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "location": "2.607B",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",

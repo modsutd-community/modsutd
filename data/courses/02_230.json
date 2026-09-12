@@ -7,7 +7,120 @@
   "pillar": "HASS",
   "term": "7",
   "prerequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "location": "2.505",
+      "instructors": [],
+      "cohort": "LH01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "16:00",
+      "endTime": "18:00",
+      "location": "2.406A",
+      "instructors": [],
+      "cohort": "CH01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "16:00",
+      "endTime": "18:00",
+      "location": "2.406B",
+      "instructors": [],
+      "cohort": "CH01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:30",
+      "endTime": "11:30",
+      "location": "2.406A",
+      "instructors": [],
+      "cohort": "CH02",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:30",
+      "endTime": "11:30",
+      "location": "2.406B",
+      "instructors": [],
+      "cohort": "CH02",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",

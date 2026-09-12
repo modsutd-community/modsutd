@@ -14,7 +14,22 @@
       "startTime": "08:30",
       "endTime": "11:30",
       "location": "1.408",
-      "instructors": []
+      "instructors": [],
+      "cohort": "CH01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     }
   ],
   "tags": [

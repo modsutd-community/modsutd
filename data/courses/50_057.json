@@ -47,16 +47,92 @@
       "day": "Tuesday",
       "startTime": "14:00",
       "endTime": "17:00",
-      "location": "2.505",
-      "instructors": []
+      "location": "1.415",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     },
     {
       "type": "Cohort",
-      "day": "Wednesday",
-      "startTime": "18:00",
-      "endTime": "21:00",
-      "location": "2.308",
-      "instructors": []
+      "day": "Tuesday",
+      "startTime": "14:00",
+      "endTime": "17:00",
+      "location": "1.416",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "16:00",
+      "endTime": "19:00",
+      "location": "1.415",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "16:00",
+      "endTime": "19:00",
+      "location": "1.416",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     }
   ],
   "tags": [
