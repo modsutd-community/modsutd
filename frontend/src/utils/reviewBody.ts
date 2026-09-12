@@ -1,10 +1,9 @@
 // The review's markdown shape, kept out of the component so it can be tested
 // on its own.
 //
-// Fields are separated by a BLANK line, not a single newline. Markdown joins
-// consecutive lines into one paragraph, so `**Term taken**: T4` directly above
-// `**Difficulty**: 3` rendered as one run-on line, and a bulleted answer under
-// a label swallowed the label that followed it.
+// A blank line goes after a field whose answer is on its own line, because
+// markdown reads the line after a list as part of the last bullet and the next
+// label vanished into it. Short fields stay one per line, a compact block.
 //
 // A blank field is left out entirely rather than emitted as an empty label.
 // Posting `**Results (optional)**: ` says nothing, but it reads on the thread
@@ -32,11 +31,22 @@ const clean = (field: string, v: string) =>
 const OWN_LINE = new Set<string>(['Best part', 'Worst part', 'Tips for future students']);
 
 export function buildBody(vals: Record<string, string>, extra: string): string {
-  const head = ORDER
+  const answered = ORDER
     .map((field) => [field, clean(field, (vals[field] ?? '').trim())] as const)
-    .filter(([, v]) => v)
-    .map(([field, v]) => (OWN_LINE.has(field) ? `**${field}**:\n${v}` : `**${field}**: ${v}`))
-    .join('\n\n');
+    .filter(([, v]) => v);
+  const head = answered
+    .map(([field, v], i) => {
+      const line = OWN_LINE.has(field) ? `**${field}**:\n${v}` : `**${field}**: ${v}`;
+      // A blank line ONLY after a field whose answer is on its own line,
+      // and only when something follows it. Markdown reads the line after a
+      // list as part of the last bullet, so `**Worst part**:` directly under
+      // one disappeared into it. Between two short fields a blank line is not
+      // needed, and would turn a compact block of labelled rows into
+      // paragraphs for every review that has no list in it at all.
+      const needsGap = OWN_LINE.has(field) && i < answered.length - 1;
+      return needsGap ? `${line}\n` : line;
+    })
+    .join('\n');
   const tail = extra.trim();
 
   if (!head) return tail ? `${tail}\n` : '';

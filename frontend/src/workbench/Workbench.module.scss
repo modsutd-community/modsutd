@@ -620,6 +620,15 @@
 }
 
 .sheet {
+    // A downward drag inside the sheet is the browser's pull-to-refresh before
+    // it is anything of ours: dragging the mod content down reloaded the app
+    // rather than dismissing the sheet. `contain` keeps the gesture here, so a
+    // scroll that reaches the top of the sheet stops at the sheet.
+    //
+    // Scoped to the sheet on purpose. The same rule on `html` would take
+    // pull-to-refresh away from the whole app, and a reader standing on the
+    // mods list still wants it.
+    overscroll-behavior: contain;
     position: absolute;
     left: 0;
     right: 0;
@@ -673,6 +682,10 @@
 }
 
 .sheetBody {
+    // The scrolling child, and the one the finger is actually on. Overscroll
+    // chains to the nearest scrollable ancestor, so containing it on `.sheet`
+    // alone still let a flick that started in here reach the page behind.
+    overscroll-behavior: contain;
     flex: 1;
     display: flex;
     flex-direction: column;

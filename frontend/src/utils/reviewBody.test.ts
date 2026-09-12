@@ -22,7 +22,7 @@ describe('buildBody', () => {
 
   it('keeps the fixed order regardless of insertion order', () => {
     const out = buildBody({ 'Worst part': 'w', 'Term taken': 'T4, 2026', 'Best part': 'b' }, '');
-    expect(out).toBe('**Term taken**: T4, 2026\n\n**Best part**:\nb\n\n**Worst part**:\nw\n');
+    expect(out).toBe('**Term taken**: T4, 2026\n**Best part**:\nb\n\n**Worst part**:\nw\n');
   });
 
   it('drops the rule when there are no structured answers to separate', () => {

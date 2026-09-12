@@ -8,20 +8,11 @@
 
 html {
   font-size: 16px;
-  // Installed as a PWA, a downward drag near the top of the screen is the
-  // browser's pull-to-refresh before it is anything of ours, so dragging a
-  // panel down reloaded the app instead of moving the panel. `contain` keeps
-  // the gesture inside the page: a scroll that reaches the top stops there
-  // rather than becoming a refresh. Not `none`, which would also kill the
-  // overscroll bounce that tells a reader they have reached the end.
-  overscroll-behavior-y: contain;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 body {
-  // Both, because which element owns the overscroll differs between engines.
-  overscroll-behavior-y: contain;
   font-family: var(--wb-mono);
   line-height: 1.6;
   color: var(--wb-ink);
