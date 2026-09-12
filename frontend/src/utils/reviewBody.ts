@@ -1,6 +1,11 @@
 // The review's markdown shape, kept out of the component so it can be tested
 // on its own.
 //
+// Fields are separated by a BLANK line, not a single newline. Markdown joins
+// consecutive lines into one paragraph, so `**Term taken**: T4` directly above
+// `**Difficulty**: 3` rendered as one run-on line, and a bulleted answer under
+// a label swallowed the label that followed it.
+//
 // A blank field is left out entirely rather than emitted as an empty label.
 // Posting `**Results (optional)**: ` says nothing, but it reads on the thread
 // as though the student answered and had nothing to say - and a review of six
@@ -17,12 +22,21 @@ export const ORDER = [
 const clean = (field: string, v: string) =>
   field === 'Term taken' ? v.split(',').map((s) => s.trim()).filter(Boolean).join(', ') : v;
 
+// Fields whose answer goes on its own line under the label.
+//
+// GitHub will not render a list that starts on the same line as other text:
+// `**Best part**: - one` is one paragraph reading "- one", not a bullet. These
+// three are the free-text ones, they are where a student writes several things,
+// and the form turns each Enter into a bullet - so the label has to end the
+// line for any of that to show up as a list.
+const OWN_LINE = new Set<string>(['Best part', 'Worst part', 'Tips for future students']);
+
 export function buildBody(vals: Record<string, string>, extra: string): string {
   const head = ORDER
     .map((field) => [field, clean(field, (vals[field] ?? '').trim())] as const)
     .filter(([, v]) => v)
-    .map(([field, v]) => `**${field}**: ${v}`)
-    .join('\n');
+    .map(([field, v]) => (OWN_LINE.has(field) ? `**${field}**:\n${v}` : `**${field}**: ${v}`))
+    .join('\n\n');
   const tail = extra.trim();
 
   if (!head) return tail ? `${tail}\n` : '';

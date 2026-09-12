@@ -23,6 +23,42 @@ const CHIP_FIELDS = [
         options: ["lighter", "as-stated", "heavier"],
     },
 ] as const;
+/**
+ * Enter starts a bullet.
+ *
+ * A student writing three things about a course writes three lines, and three
+ * lines of plain text are one paragraph on GitHub. Rather than teach markdown
+ * in a placeholder, the newline brings its own "- ".
+ *
+ * Already starting with "-" is left alone, so holding Enter does not build
+ * "- - - ". The dash is inserted at the caret rather than appended, because a
+ * student who goes back to split an earlier line should get a bullet there too.
+ */
+function bulletOnEnter(
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
+    set: (v: string) => void,
+) {
+    if (e.key !== "Enter" || e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
+    const el = e.currentTarget;
+    const {selectionStart: start, selectionEnd: end, value} = el;
+    // What the rest of the line already is. If the student pressed Enter in the
+    // middle of a bulleted line, the tail carries its own text and wants a
+    // dash; if the tail already has one, it does not.
+    const tail = value.slice(end);
+    const nextLine = tail.replace(/^\n/, "").split("\n")[0] ?? "";
+    if (/^\s*-\s/.test(nextLine) && start === end && tail.startsWith("\n")) return;
+
+    e.preventDefault();
+    const insert = "\n- ";
+    const next = value.slice(0, start) + insert + tail;
+    set(next);
+    // React owns the value, so the caret has to be put back after the paint or
+    // it jumps to the end of the field on every newline.
+    requestAnimationFrame(() => {
+        el.selectionStart = el.selectionEnd = start + insert.length;
+    });
+}
+
 const LONG_FIELDS = [
     "Best part",
     "Worst part",
@@ -249,6 +285,7 @@ export function ReviewForm({
                         rows={2}
                         value={vals[label] ?? ""}
                         onChange={(e) => set(label, e.target.value)}
+                        onKeyDown={(e) => bulletOnEnter(e, (v) => set(label, v))}
                     />
                 </label>
             ))}

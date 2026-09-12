@@ -91,6 +91,8 @@ test.describe('timetable · grid geometry', () => {
     expect(overflow).toContain('auto');
 
     // The flagship export unlocks once events exist.
-    await expect(page.getByRole('button', { name: /\.ics \(2\)/ })).toBeEnabled();
+    // The button no longer counts the events, so this asserts it is offered at
+    // all - the count was never what this test is about.
+    await expect(page.getByRole('button', { name: /\.ics/ })).toBeEnabled();
   });
 });
