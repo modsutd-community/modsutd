@@ -31,24 +31,24 @@ const OUT = join(__dirname, '..', 'public', 'sitemap.xml');
 
 const ORIGIN = 'https://modsutd.tech';
 
-function readDir(dir) {
+// Every record that has a code, and a complaint about any that does not.
+// `encodeURIComponent(undefined)` is the string "undefined", so a malformed
+// record does not throw here - it quietly puts /mods/undefined in the sitemap
+// and sends a crawler at a page that cannot exist. Skipping it is right;
+// skipping it silently is not.
+function records(dir) {
   if (!statSync(dir, { throwIfNoEntry: false })) return [];
-  return readdirSync(dir)
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => JSON.parse(readFileSync(join(dir, f), 'utf-8')));
-}
-
-// The last time anything in a directory changed, as a date. Per-record mtimes
-// would be the file's checkout time on a fresh clone, which is today for every
-// one of them and tells a crawler nothing.
-function lastChanged(dir) {
-  let newest = 0;
-  if (!statSync(dir, { throwIfNoEntry: false })) return null;
-  for (const f of readdirSync(dir)) {
-    const s = statSync(join(dir, f));
-    if (s.mtimeMs > newest) newest = s.mtimeMs;
+  const out = [];
+  const bad = [];
+  for (const f of readdirSync(dir).filter((f) => f.endsWith('.json'))) {
+    const r = JSON.parse(readFileSync(join(dir, f), 'utf-8'));
+    if (typeof r.code === 'string' && r.code) out.push(r);
+    else bad.push(f);
   }
-  return newest ? new Date(newest).toISOString().slice(0, 10) : null;
+  if (bad.length) {
+    console.warn(`  sitemap: ${bad.length} record(s) with no code, left out: ${bad.join(', ')}`);
+  }
+  return out;
 }
 
 // XML has five predefined entities and a URL can carry three of them. A venue
@@ -58,17 +58,21 @@ const esc = (s) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c],
   );
 
-const courses = readDir(join(SRC_DATA, 'courses'));
-const venues = readDir(join(SRC_DATA, 'venues'));
-const courseDay = lastChanged(join(SRC_DATA, 'courses'));
-const venueDay = lastChanged(join(SRC_DATA, 'venues'));
+const courses = records(join(SRC_DATA, 'courses'));
+const venues = records(join(SRC_DATA, 'venues'));
 
+// NO lastmod anywhere, deliberately. Every candidate for one here is a
+// filesystem mtime, and the build that matters runs on a fresh clone where
+// every file was written at checkout - so a per-file date and a per-directory
+// date are the same build date wearing different disguises, and they would
+// claim all 614 pages changed on every deploy. A lastmod a crawler learns to
+// distrust is worse than none; changefreq carries the hint on its own. Git
+// would know the real date, but that is one subprocess per record.
 const urls = [
   { loc: `${ORIGIN}/`, priority: '1.0', changefreq: 'daily' },
-  { loc: `${ORIGIN}/mods`, priority: '0.9', changefreq: 'daily', lastmod: courseDay },
-  { loc: `${ORIGIN}/venues`, priority: '0.8', changefreq: 'weekly', lastmod: venueDay },
-  // Hand-written and static, so it has no lastmod from /data. It is the one
-  // page here a reader who runs no JavaScript can actually read.
+  { loc: `${ORIGIN}/mods`, priority: '0.9', changefreq: 'daily' },
+  { loc: `${ORIGIN}/venues`, priority: '0.8', changefreq: 'weekly' },
+  // The one page here a reader who runs no JavaScript can actually read.
   { loc: `${ORIGIN}/faq.html`, priority: '0.6', changefreq: 'monthly' },
 ];
 
@@ -80,7 +84,6 @@ for (const c of courses) {
     loc: `${ORIGIN}/mods/${encodeURIComponent(c.code)}`,
     priority: c.retired ? '0.3' : '0.7',
     changefreq: 'weekly',
-    lastmod: courseDay,
   });
 }
 
@@ -89,7 +92,6 @@ for (const v of venues) {
     loc: `${ORIGIN}/venues?focus=${encodeURIComponent(v.code)}`,
     priority: '0.5',
     changefreq: 'monthly',
-    lastmod: venueDay,
   });
 }
 

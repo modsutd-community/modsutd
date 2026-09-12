@@ -11,6 +11,26 @@ const E2E = join(dirname(fileURLToPath(import.meta.url)), '..', 'e2e');
 
 // Long enough that real accessible names pass ("generate timetable", "clear",
 // "post review") and only sentences trip it.
+// Everything up to the first `//` that is not inside a quoted string. Naive
+// about escapes on purpose: a backslash-escaped quote inside a test selector
+// would have to be followed by a `//` on the same line to matter, and the cost
+// of being wrong is one false positive a maintainer can read.
+function stripComment(line) {
+  let quote = null;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (quote) {
+      if (c === '\\') i++;
+      else if (c === quote) quote = null;
+    } else if (c === '"' || c === "'" || c === '`') {
+      quote = c;
+    } else if (c === '/' && line[i + 1] === '/') {
+      return line.slice(0, i);
+    }
+  }
+  return line;
+}
+
 const PROSE_LEN = 28;
 
 const problems = [];
@@ -56,9 +76,14 @@ for (const file of readdirSync(E2E).filter((f) => f.endsWith('.spec.ts'))) {
     const at = `${file}:${i + 1}`;
     // Comments are prose ABOUT the test, so a note explaining why a selector
     // was chosen was itself read as a selector: "another name: it loads no
-    // bundle" matched the `name:` branch below. Stripped the same way the
-    // statement pass strips it, except a `//` after a colon is a URL.
-    const line = rawLine.replace(/(^|[^:])\/\/.*$/, '$1');
+    // bundle" matched the `name:` branch below.
+    //
+    // Cut at the first `//` that is OUTSIDE a string. Counting quotes rather
+    // than matching a pattern, because the two things that look like a comment
+    // and are not - a URL in a selector, and a `//` inside quoted copy - both
+    // sit inside a string literal, and a regex that tries to spot them by
+    // shape would silently truncate a real selector and miss it.
+    const line = stripComment(rawLine);
 
     // A CSS-module class is a build artefact - the hash changes when the
     // bundler feels like it, and the name changes on any refactor. There is no

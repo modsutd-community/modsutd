@@ -7,6 +7,7 @@
   "scripts": {
     "predev": "node scripts/sync-data.mjs && node scripts/gen-sitemap.mjs",
     "prebuild": "node scripts/sync-data.mjs && node scripts/gen-sitemap.mjs",
+    "gen-sitemap": "node scripts/gen-sitemap.mjs",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
