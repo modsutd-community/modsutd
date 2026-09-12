@@ -48,6 +48,10 @@ bounds - so the block IS the record.
   the record's line where it would read as four rooms.
 - **A line that wraps mid-token joins with no space**, or `DS-01` becomes
   `DS- 01` and matches no room.
+- **A block has to sit inside the day column it lands nearest**, measured from
+  the spacing of the day headers. A block that straddles a boundary is a
+  layout this has not seen, and a class put on the wrong day reads as a real
+  class nobody can find, so it is dropped and reported instead.
 
 A block says:
 
@@ -62,6 +66,14 @@ block with no code (the HASS lectures, `Lecture Theatre 4,`) resolves through
 `data/venues`, which is why the index also holds each name with its bracketed
 donor stripped: the record says "Lecture Theatre 4 (Hokkien Foundation)" and
 the registry prints "Lecture Theatre 4".
+
+There is no separator in a record marking where the venues stop and the
+instructors start, so a tail field is a venue exactly when it resolves to one.
+A name that resolves to nothing is reported by code, day and time rather than
+dropped, and a run with any such note exits non-zero: a class written with
+fewer rooms than the registry printed is not a clean import. One venue name
+carries a comma of its own, so a field that fails is retried joined to the one
+after it.
 
 `CBL` is a Cohort and `LEC` a Lecture; the section id agrees (`CI01` / `LI01`).
 The section is stored as `cohort`, and the teaching weeks as `weeks` - that is

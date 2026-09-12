@@ -171,6 +171,43 @@ def split_record(lines: list[str]) -> tuple[str, str]:
     return joined[: m.start()].strip(), joined[m.start():].strip()
 
 
+def resolve_named(fields: list[str], venues: dict[str, str]) -> tuple[list[str], list[str]]:
+    """Room codes for venue names, and the names that stayed unplaced.
+
+    A field at a time, except that one venue name carries a comma of its own
+    ("Humanities, Arts and Social Sciences (HASS) office"), so a field that
+    does not resolve is retried joined to the one after it. Instructor names
+    are in this same tail and resolve to nothing, which is how they are told
+    apart from rooms: there is no separator in the record that marks where the
+    venues stop.
+    """
+    rooms: list[str] = []
+    unresolved: list[str] = []
+    i = 0
+    while i < len(fields):
+        f = fields[i]
+        hit = venues.get(f.lower())
+        if hit is None and i + 1 < len(fields):
+            pair = f"{f}, {fields[i + 1]}"
+            hit = venues.get(pair.lower())
+            if hit is not None:
+                rooms.append(hit)
+                i += 2
+                continue
+        if hit is not None:
+            rooms.append(hit)
+        else:
+            unresolved.append(f)
+        i += 1
+    return rooms, unresolved
+
+
+def r_day(block, day_x) -> str:
+    """The day a block is nearest, for a message. Not the day it is given."""
+    centre = (block["x0"] + block["x1"]) / 2
+    return min(day_x, key=lambda d: abs(d[1] - centre))[0][:3]
+
+
 def parse_page(page, venues: dict[str, str]) -> tuple[list[dict], list[str]]:
     """Every class block on the page, plus whatever could not be read."""
     words = page.extract_words()
@@ -180,6 +217,13 @@ def parse_page(page, venues: dict[str, str]) -> tuple[list[dict], list[str]]:
     )
     if not day_x:
         return [], ["no day headers on the page"]
+
+    # How wide a day is, measured rather than assumed, so a block can be checked
+    # against the column it lands nearest instead of merely being given it. A
+    # class that straddles a boundary is a layout this has not seen, and putting
+    # it on the wrong day would read as a real class nobody can find.
+    gaps = [b[1] - a[1] for a, b in zip(day_x, day_x[1:])]
+    reach = (min(gaps) / 2 + 2) if gaps else page.width
 
     # The legend sits below the grid; its swatches mark where the week ends.
     swatches = [r for r in page.rects
@@ -223,18 +267,32 @@ def parse_page(page, venues: dict[str, str]) -> tuple[list[dict], list[str]]:
         if not rooms:
             # No code printed at all, so the name is all there is. The HASS
             # lectures are the whole of this case.
-            named = [venues.get(f.lower()) for f in rest]
-            rooms = [r for r in named if r]
+            rooms, unresolved = resolve_named(rest, venues)
             if not rooms:
                 problems.append(f"{code}: no room in {rest!r}")
+            elif unresolved:
+                # Some resolved and some did not, so the record would go in
+                # with fewer rooms than the registry printed and nothing would
+                # say so. The class is still written, because a class on a
+                # known room is better than no class, but the run reports it.
+                problems.append(f"{code} {r_day(b, day_x)} {times[0]}: kept "
+                                f"{', '.join(rooms)} but could not place "
+                                f"{', '.join(unresolved)}")
 
         centre = (b["x0"] + b["x1"]) / 2
+        name, at = min(day_x, key=lambda d: abs(d[1] - centre))
+        if abs(at - centre) > reach:
+            problems.append(f"{code}: sits {abs(at - centre):.0f}pt from the "
+                            f"nearest day ({name}), which is outside its "
+                            f"column. Dropped rather than guessed.")
+            continue
+        day = name
         out.append({
             "code": code,
             "section": section,
             "type": KIND.get(kind.upper(), "Cohort"),
             "kind_raw": kind,
-            "day": min(day_x, key=lambda d: abs(d[1] - centre))[0],
+            "day": day,
             "start": times[0],
             "end": times[-1],
             "rooms": rooms,
@@ -266,10 +324,18 @@ def legend_of(page) -> list[str]:
 
 
 def pillar_of(name: str) -> str | None:
+    """The pillar a filename names, matched as a word.
+
+    A bare `in` test reads a pillar out of any longer word that happens to
+    contain it, and the export names carry dates and job numbers. "HASS & TE"
+    is tried before "HASS" so the combined file is not claimed by the shorter
+    token first.
+    """
     upper = name.upper()
     for pillar, tokens in PILLARS.items():
-        if any(t.upper() in upper for t in tokens):
-            return pillar
+        for t in tokens:
+            if re.search(rf"(?<![A-Z0-9]){re.escape(t.upper())}(?![A-Z0-9])", upper):
+                return pillar
     return None
 
 
@@ -400,9 +466,30 @@ def self_check() -> int:
     eq("two sections in one room both survive",
        len(to_schedules(rows + [dict(rows[0], section="CI02")])), 4)
 
+    # A block prints its rooms as names when it prints no code, and the
+    # instructors sit in the same tail with no separator marking where the
+    # venues stop. Anything that does not resolve is named rather than dropped.
+    index = {"lecture theatre 4": "2.404", "think tank 2": "1.309",
+             "humanities, arts and social sciences (hass) office": "1.402"}
+    eq("names resolve to codes",
+       resolve_named(["Lecture Theatre 4", "KOEK Hui Xia Christina"], index),
+       (["2.404"], ["KOEK Hui Xia Christina"]))
+    eq("a venue whose own name has a comma is rejoined",
+       resolve_named(["Humanities", "Arts and Social Sciences (HASS) office"], index),
+       (["1.402"], []))
+    eq("a room nobody knows is reported, not swallowed",
+       resolve_named(["Think Tank 2", "Room 9 3/4"], index),
+       (["1.309"], ["Room 9 3/4"]))
+
     eq("pillar from a filename", pillar_of("2630 Term 7 HASS & TE_260826.pdf"), "HASS")
     eq("CSD is ISTD", pillar_of("2630 Term 7 CSD_180826.pdf"), "ISTD")
     eq("no pillar in the name", pillar_of("timetable.pdf"), None)
+    # A bare `in` test reads DAI out of "daily", and these filenames are
+    # whatever the person exporting them typed.
+    eq("a pillar inside a longer word is not a pillar",
+       pillar_of("2630 Term 7 daily rooms_180826.pdf"), None)
+    eq("the pillar still matches next to punctuation",
+       pillar_of("term7-ESD.pdf"), "ESD")
     eq("label keeps only the pillar", label_of("2630 Term 7 HASS & TE_260826.pdf"),
        "HASS & TE")
     eq("label, plain", label_of("2630 Term 7 ESD_180826.pdf"), "ESD")
@@ -462,6 +549,7 @@ def main() -> int:
     every_parsed: set[str] = set()
     renamed: dict[str, str] = {}
     absent: set[str] = set()
+    noted = 0
 
     for pillar in PILLARS:
         path = by_pillar[pillar]
@@ -522,7 +610,8 @@ def main() -> int:
         if extra:
             lines.append(f"Parsed but not in the legend ({len(extra)}): {', '.join(extra)}")
         for p in problems:
-            lines.append(f"- note: {p}")
+            lines.append(f"- **note**: {p}")
+        noted += len(problems)
         sections.append("\n".join(lines))
 
     # ---- write ----------------------------------------------------------
@@ -568,7 +657,10 @@ def main() -> int:
     print(text)
     if args.report:
         pathlib.Path(args.report).write_text(text + "\n", encoding="utf-8")
-    return 1 if short or absent else 0
+    # A note means a block went in with less than the registry printed, or did
+    # not go in at all. Neither is a clean run, and neither is visible unless
+    # the exit code says so.
+    return 1 if short or absent or noted else 0
 
 
 if __name__ == "__main__":
