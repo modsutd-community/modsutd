@@ -93,7 +93,12 @@ export interface Mod {
   // writes one, and it removes only the flags carrying its own reason - so a
   // course a human excluded by hand survives a pillar redesign, and a course
   // that leaves its pillar's core gets its flag taken back off.
-  noBatchChatReason?: string;
+  //
+  // A closed set, not a free string: there is one writer and one value, and a
+  // second writer adding a reason has to widen this in the same change. The
+  // course JSON is imported directly in places, so a reason that drifts from
+  // the one the script writes fails typecheck rather than matching nothing.
+  noBatchChatReason?: 'pillar core';
   // The SUTD page this record was read from. Linked from the mod name so a
   // reader can check the source in one click rather than taking this app's
   // word for it - and so a maintainer finding a dead link knows a re-scrape is

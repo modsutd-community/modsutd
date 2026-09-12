@@ -15,7 +15,10 @@ Those lists are published and they move, so they are read rather than typed.
 
 WHAT IT OWNS, AND WHAT IT LEAVES ALONE
 It writes `noBatchChat: true` together with `noBatchChatReason: "pillar core"`,
-and it only ever removes a flag carrying that same reason. A record flagged for
+and it only ever removes a flag carrying that same reason - and never more than
+MAX_REMOVALS of them in one run, because a page that comes back half-parsed
+clears the per-pillar floor and would then quietly unflag whatever it missed.
+A record flagged for
 another reason - 01.400 Capstone 1, 02.XFER - is left exactly as it is, because
 this script has no opinion about those and no way to tell it made them.
 
@@ -71,6 +74,15 @@ PREFIXES = {"01", "02", "03", "10", "20", "30", "40", "50", "60"}
 # that dropped its core. Refusing keeps the flags already on disk.
 MIN_PER_PILLAR = 2
 
+# The floor above only catches a page that returns almost nothing. A page that
+# returns HALF its grid clears it, and then every core it failed to mention
+# gets its flag taken off: a bad minute turned into a data change nobody asked
+# for. A curriculum drops a core or two at a time, so more than that in one run
+# is the page being wrong rather than the course list changing. Deliberately
+# NOT a count of what each pillar should have, because the whole reason this
+# reads the listing is that those numbers move.
+MAX_REMOVALS = 2
+
 
 def codes_in_grid(url: str) -> list[str] | None:
     """The codes inside the listing grid, or None when there is no grid."""
@@ -123,6 +135,23 @@ def main() -> int:
               f"({', '.join(failed)}). The flags on disk stand.", file=sys.stderr)
         return 1
 
+    # Worked out before anything is written, because a removal pass that turns
+    # out to be too broad has to stop the additions with it: both came off the
+    # same parse.
+    stale = sorted(
+        d["code"]
+        for d in (json.loads(f.read_text(encoding="utf-8"))
+                  for f in sorted(COURSES.glob("*.json")))
+        if d.get("noBatchChatReason") == REASON and d["code"] not in wanted
+    )
+    if len(stale) > MAX_REMOVALS:
+        print(f"REFUSING TO WRITE: {len(stale)} flag(s) would come off "
+              f"({', '.join(stale)}), and the cap is {MAX_REMOVALS}. Either a "
+              f"listing came back short, or the core really did change that "
+              f"much. Check the pages above, then raise MAX_REMOVALS in the "
+              f"same commit that records why.", file=sys.stderr)
+        return 1
+
     added, removed, missing = [], [], []
     for code in sorted(wanted):
         p = path_for(code)
@@ -142,17 +171,14 @@ def main() -> int:
             p.write_text(json.dumps(d, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         added.append(code)
 
-    for p in sorted(COURSES.glob("*.json")):
+    for code in stale:
+        p = path_for(code)
         d = json.loads(p.read_text(encoding="utf-8"))
-        if d.get("noBatchChatReason") != REASON:
-            continue
-        if d["code"] in wanted:
-            continue
         d.pop("noBatchChat", None)
         d.pop("noBatchChatReason", None)
         if not args.dry_run:
             p.write_text(json.dumps(d, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        removed.append(d["code"])
+        removed.append(code)
 
     tag = "[dry-run] " if args.dry_run else ""
     print(f"\n{tag}{len(wanted)} core course(s) across {len(SOURCES)} listings")
