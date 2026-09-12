@@ -174,7 +174,30 @@ function TeleChat({mod}: {mod: Mod}) {
         return () => clearInterval(t);
     }, [state, refresh]);
 
-    if (state === "none") return null;
+    // A mod that can never have a chat says so, rather than showing nothing.
+    // Silence read as a bug: a student who saw the button on one mod and not
+    // the next had no way to tell whether it was broken or deliberate.
+    //
+    // Only when chatMod is what ruled it out. state is also "none" while the
+    // term window is shut or the slots are not on main yet, and both of those
+    // are temporary - claiming a mod will never get a chat would be wrong.
+    if (state === "none") {
+        if (chatMod) return null;
+        return (
+            <div className={styles.teleRow}>
+                <button
+                    type="button"
+                    className={`${styles.teleBtn} ${styles.teleNever}`}
+                    disabled
+                    data-act="tele-never"
+                    data-tip-side="block"
+                    data-tip="Batch chats are for electives and HASS from T3 onwards. Capstones and thesis mods split students across their own project teams, so a cohort-wide group would be noise."
+                >
+                    <TelegramIcon /> won&apos;t create tele chat
+                </button>
+            </div>
+        );
+    }
 
     if (state === "committing") {
         // Dotted and unpressable because pressing it could not work yet: the

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { ensurePanel } from './support/panels';
 
 // The global search: one input, filters mods AND rooms. Typing surfaces the
 // MODS + ROOM FINDER panels (stacked) on desktop; '/' and ⌘K focus it.
@@ -47,7 +48,7 @@ test.describe('global search', () => {
   test('the URL never changes while working the tools', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'rail is a desktop affordance');
     await page.goto('/');
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await page.locator('button[aria-label="Room Finder"]').click();
     await page.locator('[data-panel="cat"]').getByRole('button', { name: /10\.013/ }).click();
     expect(new URL(page.url()).pathname).toBe('/');

@@ -72,7 +72,7 @@ chatId } }` to the registry (auto-commit, same policy as crowdsourced
 
         > First person to join is now admin, and can make others admin too.
         > Invite your friends and enjoy!
-        > Created by modSUTD
+        > Created by modSUTD.tech
 
     `adminGranted` is recorded so the group is never visited again. The
     throwaway **stays** until the term ends: Telegram revokes the invite

@@ -85,13 +85,16 @@ export function makeDefaults(vw: number, vh: number): LayoutMap {
             hidden: false,
             z: 3,
         },
+        // Closed on a fresh load. Writing a review is something a student does
+        // once they have an opinion, which is weeks after they first open this;
+        // the timetable is what they came for.
         share: {
             x: rightX,
             y: top,
             w: rightW,
             h: fullH,
             collapsed: false,
-            hidden: false,
+            hidden: true,
             z: 2,
         },
         mod: {
@@ -103,13 +106,16 @@ export function makeDefaults(vw: number, vh: number): LayoutMap {
             hidden: true,
             z: 5,
         },
+        // Open on a fresh load, in the column REVIEW used to hold. A
+        // student arrives with a timetable to paste, not a review to
+        // write.
         tt: {
-            x: rightX - 40,
-            y: top + 30,
-            w: Math.min(560, usableW - colW),
-            h: Math.floor(usableH * 0.75),
+            x: rightX,
+            y: top,
+            w: rightW,
+            h: fullH,
             collapsed: false,
-            hidden: true,
+            hidden: false,
             z: 1,
         },
         discuss: {
