@@ -50,6 +50,19 @@ test.describe('crawlable files', () => {
     expect(body).toMatch(/List View/);
   });
 
+  // A sitemap that lists a URL which opens nothing is a sitemap of soft 404s,
+  // and crawl budget spent on 225 of them is budget not spent on the mods. The
+  // two shapes it lists are checked here rather than assumed: a mod is a path
+  // segment, a room is a query param, and the boot-time reader in Workbench.tsx
+  // is the only thing that knows either.
+  test('every shape the sitemap lists opens what it claims', async ({ page, isMobile }) => {
+    test.skip(!!isMobile, 'same routes, and the mobile sheet is covered elsewhere');
+    await page.goto('/venues?focus=2.507');
+    await expect(page.locator('[data-panel="rooms"]')).toContainText('2.507');
+    await page.goto('/mods/50.040');
+    await expect(page.locator('[data-panel="mod"]')).toContainText('50.040');
+  });
+
   test('the homepage describes itself before any script runs', async ({ request }) => {
     const res = await request.get('/');
     const body = await res.text();

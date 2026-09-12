@@ -62,6 +62,14 @@ GitHub Discussion (not a PR) if you want to revisit one.
   the next agent believes it. Before opening a PR, grep the repo for the field,
   flag, filename or rule you touched and update every hit. `directions` was
   documented as an authored venue field for a while after it stopped existing.
+- **`frontend/public/faq.html` is copy that no test can check.** It is the only
+  page a crawler that runs no JavaScript reads, and it states three things the
+  repo decides elsewhere: that a timetable is pasted from MyPortal's LIST view
+  and not the weekly grid, that reviews are giscus comments, and that the
+  licence is Apache 2.0. Change any of those and change that file in the same
+  PR. It is hand-written and static on purpose - it names no course and no room,
+  so it cannot go stale against `/data`, only against a decision.
+
 - **Say a thing once, and link to it.** Each fact has one home: fields in
   `docs/data-format.md`, procedures in `.claude/skills/`, invariants and the
   gate here, why-it-is-shaped-this-way in `docs/architecture.md`. Everywhere
