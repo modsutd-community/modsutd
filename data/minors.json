@@ -1,7 +1,7 @@
 {
   "source": "https://www.sutd.edu.sg/education/undergraduate/minors/ + each minor page",
   "gathered": "2026-07-23",
-  "note": "codes with letter suffixes (02.143DH) are stored as their base code; a few lists are approximations - see per-minor notes; notFor = degree pillars barred from the minor (its offering pillar's own students; dai assumed closed to DAI majors too)",
+  "note": "codes with letter suffixes (02.143DH) are stored as their base code; a few lists are approximations - see per-minor notes; notForPillar = degree pillars barred from the minor (its offering pillar's own students; dai assumed closed to DAI majors too)",
   "ignoreNote": "Minor pages SUTD still publishes that this repo deliberately does not carry. gather_minors.py reads this so a decision already made stops being reported as drift every month.",
   "ignore": [
     {
@@ -66,7 +66,7 @@
         }
       ],
       "note": "non-ESD only; elective count approximates the 24-credit rule",
-      "notFor": [
+      "notForPillar": [
         "ESD"
       ]
     },
@@ -115,7 +115,7 @@
         }
       ],
       "note": "AY2023-onwards intake rules",
-      "notFor": [
+      "notForPillar": [
         "CSD"
       ]
     },
@@ -211,7 +211,7 @@
         }
       ],
       "note": "cross-pillar list depends on home pillar; encoded as the union",
-      "notFor": [
+      "notForPillar": [
         "CSD"
       ]
     },
@@ -286,7 +286,7 @@
           "label": "DAI studio / HCD"
         }
       ],
-      "notFor": [
+      "notForPillar": [
         "CSD",
         "DAI"
       ]
@@ -445,7 +445,7 @@
           "label": "elective"
         }
       ],
-      "notFor": [
+      "notForPillar": [
         "EPD"
       ]
     },

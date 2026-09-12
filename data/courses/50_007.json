@@ -24,7 +24,7 @@
       {
         "code": "50.001",
         "name": "Information Systems & Programming",
-        "notFor": [
+        "notForPillar": [
           "DAI"
         ],
         "notForCohort": [

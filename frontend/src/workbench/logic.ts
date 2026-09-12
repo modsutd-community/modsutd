@@ -151,7 +151,10 @@ export interface SpecTrack {
   id: string;
   name: string;
   // Degree pillars barred from this track (minors: the offering pillar).
-  notFor?: string[];
+  // Named for what it holds: the old `notFor` did not say pillars, and the
+  // prerequisite leaves grew a `notForCohort` beside it that made the bare
+  // name ambiguous.
+  notForPillar?: string[];
   pillar: string;
   // Two names for one thing, and both are real. `gather_specialisations.py`
   // writes `url`, `gather_minors.py` reads `source` out of data/minors.json,
