@@ -59,6 +59,16 @@ export interface PrereqNamed {
    * pillars and not the fifth cannot be said with a cohort alone.
    */
   notFor?: string[];
+  /**
+   * Which cohorts `notFor` applies to. Absent means all of them.
+   *
+   * `notFor` alone says "these pillars never need this", and `cohort` alone
+   * says "only these years need this". Neither can say what 50.001 is: a
+   * prerequisite for everybody EXCEPT a DAI student matriculated AY2024 or
+   * earlier. That is the two conditions at once, so the exemption carries its
+   * own year scope rather than borrowing the leaf's.
+   */
+  notForCohort?: Curriculum[];
 }
 export type PrereqTree =
   | string

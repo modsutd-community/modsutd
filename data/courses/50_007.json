@@ -26,6 +26,9 @@
         "name": "Information Systems & Programming",
         "notFor": [
           "DAI"
+        ],
+        "notForCohort": [
+          "ay2024"
         ]
       },
       "50.004"
