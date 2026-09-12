@@ -41,7 +41,24 @@
     ]
   },
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "14:00",
+      "endTime": "17:00",
+      "location": "2.505",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "18:00",
+      "endTime": "21:00",
+      "location": "2.308",
+      "instructors": []
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",
