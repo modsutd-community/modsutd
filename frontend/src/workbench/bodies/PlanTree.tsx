@@ -449,6 +449,9 @@ export function PlanTree({ onPick }: Props) {
                     status === 'no' ? styles.badgeGap : '',
                   ].join(' ')}
                   data-tip={tip}
+                  // Left-anchored: these sit at the panel's left edge and the
+                  // tip is a sentence, so centring it clipped the opening words.
+                  data-tip-side="start"
                 >
                   <input
                     type="checkbox"

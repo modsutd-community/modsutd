@@ -157,6 +157,23 @@ pre {
   transition-delay: 0.45s;
 }
 
+// Anchored to the element's own left edge rather than centred on it. A centred
+// tip is half its own width to the left of what it describes, so on anything
+// near a panel's left edge it reaches past the scroll container and the first
+// words are clipped off. Put this on a tip that is long AND lives on the left:
+// the specialisation and minor badges are both.
+[data-tip][data-tip-side='start']::after {
+  left: 0;
+  transform: none;
+}
+
+// The mirror, for the right edge.
+[data-tip][data-tip-side='end']::after {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+
 [data-tip][data-tip-side='right']::after {
   left: calc(100% + 8px);
   top: 50%;
