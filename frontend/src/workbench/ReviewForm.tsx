@@ -41,12 +41,16 @@ function bulletOnEnter(
     if (e.key !== "Enter" || e.shiftKey || e.ctrlKey || e.metaKey || e.altKey) return;
     const el = e.currentTarget;
     const {selectionStart: start, selectionEnd: end, value} = el;
-    // What the rest of the line already is. If the student pressed Enter in the
-    // middle of a bulleted line, the tail carries its own text and wants a
-    // dash; if the tail already has one, it does not.
+    // What will LAND on the new line: the text after the caret, up to the end
+    // of the current line. Pressing Enter at the end of a line lands nothing
+    // there, so it gets a dash; pressing it just before an existing "- "
+    // carries that dash down and must not get a second.
+    //
+    // The old guard also required the caret to sit at a line end, so Enter
+    // between two bullets inserted a bare blank line instead of a third.
     const tail = value.slice(end);
-    const nextLine = tail.replace(/^\n/, "").split("\n")[0] ?? "";
-    if (/^\s*-\s/.test(nextLine) && start === end && tail.startsWith("\n")) return;
+    const lands = tail.split("\n")[0] ?? "";
+    if (/^\s*-\s/.test(lands)) return;
 
     e.preventDefault();
     const insert = "\n- ";
