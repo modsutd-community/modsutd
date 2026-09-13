@@ -304,6 +304,12 @@ def parse_page(page, venues) -> tuple[list[dict], list[str]]:
         rooms, unresolved = resolve_named(rest, venues)
         if not rooms:
             problems.append(f"{code}: no room in {rest!r}")
+        # `unresolved` is deliberately NOT reported. The instructors are in this
+        # same tail with no separator marking where the venues stop, so they
+        # come back unresolved on every block and a note about them would be a
+        # note on every block. A room that fails to resolve while others
+        # succeed is indistinguishable from a teaching name here; the case that
+        # matters, a block with no room at all, is the line above.
         seen_rooms: list[str] = []
         for r in rooms:
             if r not in seen_rooms:
