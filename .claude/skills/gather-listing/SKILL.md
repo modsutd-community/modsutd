@@ -36,7 +36,11 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   `\d{2}\.\d{3}` codes and MUST stop at the next heading or
   mutually-exclusive-subject codes leak in; credits from
   `Number of credits:\s*(\d+)` (absent on many pages → default 12); tags
-  from `section.js-page-tags a`; term from the first `Term N` tag.
+  from `section.js-page-tags a`; term from the first `Term N` tag, and with
+  no such tag **8** for an elective or **1** for a `Freshmore Core`, because
+  calling both of them term 1 put 149 electives and graduate subjects in the
+  freshmore term. `python gather_listing.py --self-check` pins that table and
+  runs in CI.
 - **Merge policy - never degrade**: existing repo files get a surgical
   `tags` update (pillar tags are unioned in from suffix-variant pages like
   03-007a/b), description fill when the repo one is empty, and grading +

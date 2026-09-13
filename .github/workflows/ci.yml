@@ -80,6 +80,14 @@ jobs:
         working-directory: .
         run: python tools/enrolment/parse_enrolment_pdfs.py --self-check
 
+      # Where an untermed course lands decides which term filter finds it,
+      # where the plan first puts it, and whether it can have a batch chat.
+      # A wrong answer is invisible: the course simply sits in a term nobody
+      # expects it in. Needs no network.
+      - name: an untermed course still lands where it belongs
+        working-directory: tools/scraper
+        run: python gather_listing.py --self-check
+
       # The home-screen icon is geometry, not taste: the maskable safe zone is
       # a circle of radius 2/5 of the icon, and artwork past it is clipped by a
       # launcher mask. It shipped over that line twice, because nothing here
