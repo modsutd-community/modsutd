@@ -92,10 +92,10 @@ def main() -> int:
 
         # The group exists from here. Anything that goes wrong below leaves it
         # real and unreachable unless this says where it is.
+        # Only the export. It is the one call whose failure loses something
+        # that cannot be reconstructed from the chat id alone.
         try:
             invite = client(functions.messages.ExportChatInviteRequest(peer=chat_id))
-            for user in seed:
-                client(functions.messages.DeleteChatUserRequest(chat_id=chat_id, user_id=user))
         except Exception:
             with open(ORPHAN_FILE, "w", encoding="utf-8") as f:
                 json.dump({"code": code, "title": title, "chatId": chat_id,
@@ -104,6 +104,18 @@ def main() -> int:
                   f"not exported. {ORPHAN_FILE} has what is needed to finish it "
                   f"by hand.", file=sys.stderr)
             raise
+
+        # Best effort, deliberately. The seed bot only joins on the rare
+        # USERS_TOO_FEW fallback, and one lingering in a group is untidy
+        # rather than harmful - where failing the run here would throw away a
+        # link that exported perfectly well and orphan the group over it.
+        for user in seed:
+            try:
+                client(functions.messages.DeleteChatUserRequest(chat_id=chat_id, user_id=user))
+            except Exception as exc:  # noqa: BLE001
+                print(f"{code}: the seed bot could not be removed from chat "
+                      f"{chat_id}: {type(exc).__name__}. The chat and its link "
+                      f"are fine; remove it by hand.", file=sys.stderr)
         # The creator STAYS (muted): in a basic group only it can appoint an
         # admin, so it waits for the sweep to hand over to the first joiner.
 
