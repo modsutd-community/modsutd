@@ -12,8 +12,17 @@ on:
 permissions:
     contents: write
 
+# Per MOD, not one queue for the whole workflow. GitHub holds exactly one
+# pending run per group, so a third request while a first is running cancels
+# the second: with a single group, a student whose pasted timetable has three
+# eligible mods and who clicks all three loses the middle one, silently, and a
+# term's worth asked for at once loses almost all of them.
+#
+# Keyed on the mod, duplicate clicks for the SAME mod still queue and the
+# second one skips on the registry, which is what should happen. Different mods
+# no longer see each other. The commit step is what makes that safe.
 concurrency:
-    group: telegram-groups
+    group: telegram-group-${{ github.event.client_payload.mod }}
     cancel-in-progress: false
 
 jobs:
@@ -97,34 +106,66 @@ jobs:
                   pip install --quiet telethon cryptography
                   python3 tools/telegram/create_group.py | tee /tmp/created.json
 
+            # Optimistic concurrency: every attempt starts from the CURRENT
+            # main, re-reads the registry and writes its one entry, so two runs
+            # landing together merge instead of one clobbering the other.
+            #
+            # The previous loop pushed first and only then pulled --rebase,
+            # which cannot work here: both sides rewrite the whole file, so the
+            # rebase conflicts and the second run fails after its group already
+            # exists on Telegram. That failure is why this workflow could only
+            # ever run one at a time.
             - name: Commit the registry entry
               if: steps.gate.outputs.skip == ''
               env:
                   EXPIRES: ${{ steps.gate.outputs.expires }}
               run: |
-                  python3 - <<'PY'
-                  import datetime, json, pathlib
+                  git config user.name "github-actions[bot]"
+                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                  # `if` rather than capturing $?: the step runs under bash -e,
+                  # where a failing standalone command exits before the next
+                  # line, so a `wrote=$?` after the heredoc would never run. A
+                  # command used as an `if` condition is exempt.
+                  for attempt in 1 2 3 4 5; do
+                    git fetch --quiet origin main
+                    git reset --quiet --hard origin/main
+                    if ! python3 - <<'PY'
+                  import datetime, json, os, pathlib, sys
                   created = json.load(open('/tmp/created.json'))
                   p = pathlib.Path('data/telegram-groups.json')
                   reg = json.loads(p.read_text() or '{}')
-                  import os
+                  today = datetime.date.today().isoformat()
+                  # Re-checked here as well as in the gate. Runs for different
+                  # mods now overlap, so several can pass a gate that read the
+                  # same count and then all write. Telegram's own ceiling is 50
+                  # a day and it answers a 51st with a flood error, so the last
+                  # word on the cap belongs where the entry is actually added.
+                  if sum(1 for v in reg.values() if v.get('createdDay') == today) >= 40:
+                      print('daily cap reached between the gate and the commit; '
+                            'the group exists on Telegram but is not registered. '
+                            'Re-run this mod tomorrow.', file=sys.stderr)
+                      sys.exit(3)
                   reg[created['code']] = {
                       'linkEnc': created['linkEnc'],
                       'title': created['title'],
                       'created': created['created'],
-                      'createdDay': datetime.date.today().isoformat(),
+                      'createdDay': today,
                       'expires': os.environ.get('EXPIRES', ''),
                       'chatId': created['chatId'],
                   }
                   p.write_text(json.dumps(reg, indent=2, sort_keys=True) + '\n')
                   PY
-                  git config user.name "github-actions[bot]"
-                  git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-                  git add data/telegram-groups.json
-                  git commit -m "data: telegram group registry entry"
-                  for i in 1 2 3; do
-                    git push origin HEAD:main && exit 0
-                    git pull --rebase origin main || exit 1
-                    sleep 3
+                    then
+                      exit 1   # the reason is already on stderr
+                    fi
+                    git add data/telegram-groups.json
+                    git diff --cached --quiet && exit 0   # already registered
+                    git commit --quiet -m "data: telegram group registry entry"
+                    git push --quiet origin HEAD:main && exit 0
+                    # Someone else pushed between the fetch and the push. Back
+                    # off by a different amount per run so two do not keep
+                    # colliding on the same beat.
+                    sleep $(( (RANDOM % 5) + attempt * 2 ))
                   done
+                  echo "could not register the group after 5 attempts" >&2
                   exit 1
