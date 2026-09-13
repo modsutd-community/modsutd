@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<!--
+  A real page, in the one response, for a reader that runs no JavaScript.
+
+  The app is a single client-rendered surface, so every route answers with the
+  same empty root element. GPTBot, ClaudeBot and PerplexityBot execute no
+  JavaScript at all, and Google's render pass is a queue a new domain waits in.
+  This page is the answer to "what is modSUTD and how do I export my timetable"
+  that all of them can read today.
+
+  Hand-written and static on purpose. It is not built from /data, it names no
+  course and no room, and it therefore cannot go stale against the catalogue.
+  Anything that has to track /data belongs in a generated page, not here.
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>modSUTD FAQ - SUTD mods, timetable to .ics, room finder</title>
+    <meta
+      name="description"
+      content="What modSUTD is, how to export an SUTD timetable to a .ics calendar file, how course reviews work, and who runs it. Independent and student-built, not affiliated with SUTD."
+    />
+    <link rel="canonical" href="https://modsutd.tech/faq.html" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is modSUTD?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "modSUTD is a free, student-built website for the Singapore University of Technology and Design. It holds a catalogue of SUTD courses with prerequisites and credits, converts a pasted SUTD timetable into a .ics calendar file, plans a degree across all ten terms, and finds rooms on campus with floor plans. It is independent and is not affiliated with or endorsed by SUTD."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I export my SUTD timetable to Google Calendar?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Open your timetable in MyPortal and switch it to List View, select the table and copy it, then paste it into the Timetable panel on modsutd.tech. It parses the classes and offers a .ics file, which Google Calendar, Apple Calendar and Outlook all import. Use List View rather than the weekly grid: the grid shows one week and repeating it invents classes on dates that do not meet."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is modSUTD official?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. modSUTD is built and run by SUTD students and is not affiliated with, endorsed by, or operated by SUTD. Course information is read from SUTD's own public course pages; where the two disagree, SUTD's page is correct."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where do the course reviews come from?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Students write them. Each course has a discussion thread hosted on GitHub Discussions through giscus, and a review is a comment on that thread. Reviews are public, signed with a GitHub account, and are not moderated into a score: there is no rating, only what people wrote."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does modSUTD track me?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. There is no analytics, no tracking, no advertising and no cookies. The site has no backend and no accounts: it reads static JSON files, and your plan and layout are saved in your own browser. A timetable you paste is parsed in your browser and nothing leaves it unless you explicitly choose to contribute the class times."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I find a room at SUTD?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Search the room code or its name in the Rooms panel. Every room shows its building and floor labelled the way the door plates are, the classes scheduled in it, and a map: rooms surveyed on the campus walk deep-link an indoor floor plan, and the rest pin their own coordinates on OpenStreetMap."
+            }
+          }
+        ]
+      }
+    </script>
+    <style>
+      :root { color-scheme: dark; }
+      body {
+        margin: 0 auto;
+        padding: 2rem 1.25rem 4rem;
+        max-width: 44rem;
+        background: #0d0e11;
+        color: #e9eaed;
+        font: 16px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      a { color: #7aa2f7; }
+      h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+      h2 { font-size: 1.05rem; margin: 2rem 0 .35rem; }
+      p { margin: .35rem 0 0; }
+      .lede { color: #a9adb8; margin-bottom: 2rem; }
+      .back { display: inline-block; margin-top: 2.5rem; }
+      footer { margin-top: 3rem; color: #7e828d; font-size: .85rem; }
+    </style>
+  </head>
+  <body>
+    <h1>modSUTD FAQ</h1>
+    <p class="lede">
+      A free, student-built course catalogue, timetable converter, degree planner
+      and room finder for SUTD.
+      <a href="/">Open modSUTD</a>.
+    </p>
+
+    <h2>What is modSUTD?</h2>
+    <p>
+      modSUTD is a free website for the Singapore University of Technology and
+      Design. It holds a catalogue of SUTD courses with prerequisites and
+      credits, converts a pasted SUTD timetable into a <code>.ics</code> calendar
+      file, plans a degree across all ten terms, and finds rooms on campus with
+      floor plans. It is built by SUTD students and is not affiliated with or
+      endorsed by SUTD.
+    </p>
+
+    <h2>How do I export my SUTD timetable to Google Calendar?</h2>
+    <p>
+      Open your timetable in MyPortal and switch it to <strong>List View</strong>,
+      select the table and copy it, then paste it into the Timetable panel on
+      modsutd.tech. It parses the classes and offers a <code>.ics</code> file,
+      which Google Calendar, Apple Calendar and Outlook all import.
+    </p>
+    <p>
+      Use List View rather than the weekly grid. The grid shows one week, so
+      filling a term means repeating it, and a class it invents on a date that
+      does not meet cannot be removed by a later export.
+    </p>
+
+    <h2>Is modSUTD official?</h2>
+    <p>
+      No. modSUTD is built and run by students and is not affiliated with,
+      endorsed by, or operated by SUTD. Course information is read from SUTD's
+      own public course pages, and where the two disagree, SUTD's page is
+      correct.
+    </p>
+
+    <h2>Where do the course reviews come from?</h2>
+    <p>
+      Students write them. Each course has a discussion thread hosted on GitHub
+      Discussions through giscus, and a review is a comment on that thread.
+      Reviews are public, signed with a GitHub account, and are not reduced to a
+      score: there is no rating, only what people wrote.
+    </p>
+
+    <h2>Does modSUTD track me?</h2>
+    <p>
+      No. There is no analytics, no tracking, no advertising and no cookies. The
+      site has no backend and no accounts: it reads static JSON files, and your
+      plan and layout are saved in your own browser. A timetable you paste is
+      parsed in your browser, and nothing leaves it unless you explicitly choose
+      to contribute the class times.
+    </p>
+
+    <h2>How do I find a room at SUTD?</h2>
+    <p>
+      Search the room code or its name in the Rooms panel. Every room shows its
+      building and floor labelled the way the door plates are, the classes
+      scheduled in it, and a map: rooms surveyed on the campus walk deep-link an
+      indoor floor plan, and the rest pin their own coordinates on
+      OpenStreetMap.
+    </p>
+
+    <h2>Who runs it, and can I help?</h2>
+    <p>
+      It is open source under Apache 2.0 at
+      <a href="https://github.com/modsutd-community/modsutd">github.com/modsutd-community/modsutd</a>,
+      and it is built and maintained by SUTD students. Corrections to course data
+      and new room details are welcome as pull requests or issues.
+    </p>
+
+    <a class="back" href="/">&larr; Open modSUTD</a>
+
+    <footer>
+      modSUTD is independent and is not affiliated with or endorsed by the
+      Singapore University of Technology and Design.
+    </footer>
+  </body>
+</html>

@@ -21,5 +21,7 @@
     "total": 9,
     "source": "official"
   },
-  "sourceUrl": "https://www.sutd.edu.sg/course/20-212-digital-design-and-fabrication/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-212-digital-design-and-fabrication/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

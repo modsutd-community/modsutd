@@ -36,5 +36,7 @@
       }
     ]
   },
-  "sourceUrl": "https://www.sutd.edu.sg/course/50-002-computation-structures/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-002-computation-structures/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

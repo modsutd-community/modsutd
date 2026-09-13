@@ -15,5 +15,7 @@
     "Core",
     "DAI"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/60-001-applied-deep-learning/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/60-001-applied-deep-learning/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

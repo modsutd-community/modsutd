@@ -69,7 +69,14 @@ jobs:
                   if cur and t.isoformat() <= str(cur.get("expires") or ""):
                       print("skip=exists"); sys.exit(0)
                   print(f"expires={win['end']}")
-                  if sum(1 for v in reg.values() if v.get("createdDay") == t.isoformat()) >= 6:
+                  # Telegram allows 50 groups or channels a day per account and
+                  # answers a 51st with a flood error, so the cap is a real
+                  # limit rather than a preference. 40 leaves room for the
+                  # handover sweep and a retry without going near it. It used
+                  # to be 6, which was fine while chats arrived one paste at a
+                  # time and is six days of waiting once a term's timetable is
+                  # imported in one go.
+                  if sum(1 for v in reg.values() if v.get("createdDay") == t.isoformat()) >= 40:
                       print("skip=daily-cap"); sys.exit(0)
                   print("skip=")
                   print(f"code={code}")

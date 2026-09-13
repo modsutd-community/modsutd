@@ -71,6 +71,15 @@ jobs:
         working-directory: tools/scraper
         run: python propose_edits.py --self-check
 
+      # The enrolment reader turns a term's six registry PDFs into every mod's
+      # schedule at once, so a reader that drifts writes the wrong room into 40
+      # course files in one run. Its parsing is pure and needs no PDF: the
+      # shapes in the table are ones these files actually produce, including a
+      # weeks line that wraps into the record it precedes.
+      - name: the enrolment readers still read what they should
+        working-directory: .
+        run: python tools/enrolment/parse_enrolment_pdfs.py --self-check
+
       # Where an untermed course lands decides which term filter finds it,
       # where the plan first puts it, and whether it can have a batch chat.
       # A wrong answer is invisible: the course simply sits in a term nobody

@@ -7,7 +7,64 @@
   "pillar": "ASD",
   "term": "7",
   "prerequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "09:30",
+      "endTime": "10:30",
+      "location": "2.505",
+      "instructors": [],
+      "cohort": "LA01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "09:30",
+      "endTime": "12:30",
+      "location": "2.308",
+      "instructors": [],
+      "cohort": "CA01",
+      "weeks": [
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "09:30",
+      "endTime": "13:30",
+      "location": "2.308",
+      "instructors": [],
+      "cohort": "CA01",
+      "weeks": [
+        38,
+        39
+      ]
+    }
+  ],
   "tags": [
     "ASD",
     "Elective / Technical Elective"

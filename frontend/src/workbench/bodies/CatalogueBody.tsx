@@ -6,9 +6,24 @@ import { PILLAR_COLORS, PILLAR_ORDER, pillarColor, modPillars } from '../pillars
 import { useWorkbenchUi, SortKey } from '../uiContext';
 import { useFilteredMods } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
+import { chatEligible } from '../teleState';
 import { Otto } from '../Otto';
 import wb from '../wb.module.scss';
 import styles from './CatalogueBody.module.scss';
+
+// The same glyph the mod panel's button uses. Inlined rather than shared,
+// because it is drawn at 11px here against 15px there and the two want
+// different stroke weights; the path is Telegram's own mark.
+function TeleMark() {
+  return (
+    <svg viewBox="0 0 24 24" width="11" height="11" aria-label="can have a batch chat" role="img">
+      <path
+        fill="currentColor"
+        d="M21.9 4.3 18.9 19c-.2 1-.8 1.2-1.6.8l-4.5-3.3-2.2 2.1c-.2.2-.4.4-.9.4l.3-4.6 8.3-7.5c.4-.3-.1-.5-.6-.2L7.4 13.1 2.9 11.7c-1-.3-1-1 .2-1.5l17.5-6.8c.8-.3 1.5.2 1.3 1z"
+      />
+    </svg>
+  );
+}
 
 const TERMS: Term[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
@@ -143,6 +158,18 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
           >
             <span className={styles.code} style={{ color: selected === k && selectedOpen ? '#fff' : undefined }}>{m.code}</span>
             <span className={styles.name}>{m.name}</span>
+            {/* A mod that can have a batch chat, marked in the list rather
+                than only on the mod page. Whether one EXISTS yet needs the
+                registry, which is a fetch; whether one can exist is knowable
+                from the record, and that is the question a reader scanning
+                the catalogue is asking. */}
+            <span
+              className={styles.tele}
+              data-act={chatEligible(m) ? 'tele-eligible' : undefined}
+              aria-hidden={!chatEligible(m)}
+            >
+              {chatEligible(m) ? <TeleMark /> : null}
+            </span>
             <span className={styles.pillar} style={{ color: pillarColor(m.pillar) }}>
               {m.pillar}
               {modPillars(m).length > 1 ? <span className={styles.pillarMore}>+{modPillars(m).length - 1}</span> : null}

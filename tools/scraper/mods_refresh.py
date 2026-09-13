@@ -27,7 +27,8 @@ shared file:
   wave 1  mods, tracks, minors, terms         - four different outputs
   wave 2  hass                                - writes data/courses too, so
                                                 it must not race mods
-  wave 3  prereqs                             - reads what the two above wrote
+  wave 3  cores                               - writes data/courses as well
+  wave 4  prereqs                             - reads what the three above wrote
 
 STEP NAMES. Five of the six steps read www.sutd.edu.sg, so a name after the
 host tells a reader nothing. They are named after what they produce instead,
@@ -94,6 +95,13 @@ STEPS: list[tuple[str, list[str], str]] = [
         "prose, and the repo expands 'any HASS elective' into a real list",
     ),
     (
+        "cores",
+        ["gather_no_batch_chat.py"],
+        "each pillar's own core courses, from its published listing -> "
+        "noBatchChat, because a chat for a course everybody in the pillar takes "
+        "has the same membership as the cohort chat they already have",
+    ),
+    (
         "prereqs",
         ["audit_prereqs.py", "--json", str(SCRATCH / "prereqs.json")],
         "prerequisites against each mod's own page. Reports; `propose` is what "
@@ -117,6 +125,9 @@ STEPS: list[tuple[str, list[str], str]] = [
 WAVES: list[list[str]] = [
     ["mods", "tracks", "minors", "terms"],
     ["hass"],
+    # Its own wave. It writes data/courses, so it cannot run beside `mods` or
+    # `hass`, and `prereqs` READS those records so it cannot run beside this.
+    ["cores"],
     ["prereqs"],
     ["propose"],
 ]
@@ -126,6 +137,7 @@ WAVES: list[list[str]] = [
 # --dry-run, and the two lists being equal is what the run() check enforces.
 WRITES_DATA = {
     "gather_listing.py",
+    "gather_no_batch_chat.py",
     "scrape.py",
     "gather_specialisations.py",
     "term_calendar.py",

@@ -1,0 +1,17 @@
+# modsutd.tech is a public catalogue. Everything here is already public data
+# from sutd.edu.sg plus timetables students chose to contribute, so there is
+# nothing to hide from a crawler and the whole site is open.
+#
+# This file has to live in public/ rather than be served by a route: vercel.json
+# rewrites /(.*) to /index.html, so anything without a real file behind it
+# answers 200 with the app shell. A robots.txt that is secretly an HTML page is
+# worse than none.
+
+User-agent: *
+Allow: /
+
+# The relays hold no readable content: each one is a stateless POST or a
+# redirect that exists because a browser cannot keep a token.
+Disallow: /api/
+
+Sitemap: https://modsutd.tech/sitemap.xml
