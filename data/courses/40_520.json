@@ -13,5 +13,7 @@
     "Core",
     "ESD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-520-stochastic-models/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-520-stochastic-models/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

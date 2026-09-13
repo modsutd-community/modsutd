@@ -13,5 +13,7 @@
     "Core",
     "EPD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/30-505-design-science/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-505-design-science/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

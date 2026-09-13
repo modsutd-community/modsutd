@@ -13,5 +13,7 @@
     "Term 2",
     "Core"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/02-542-urban-policy-and-planning-in-practice-singapore-as-a-living-laboratory/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/02-542-urban-policy-and-planning-in-practice-singapore-as-a-living-laboratory/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

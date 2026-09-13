@@ -80,6 +80,14 @@ jobs:
         working-directory: .
         run: python tools/enrolment/parse_enrolment_pdfs.py --self-check
 
+      # Which mods get a batch chat is decided by a tag, and getting it wrong
+      # is invisible from the outside: a course quietly stops offering one, or
+      # quietly starts. The distinction that matters is Core against Core
+      # Elective, because one is taken by everyone and one is chosen.
+      - name: a core is told from a core elective
+        working-directory: .
+        run: python tools/scraper/gather_no_batch_chat.py --self-check
+
       # A contributed room that is not a room is invisible: the slot is
       # written, the heatmap draws, and nothing says the room does not exist.
       # "Albert", "Lecture" and "Online" all reached /data that way.

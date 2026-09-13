@@ -21,5 +21,7 @@
     "total": 18,
     "source": "official"
   },
-  "sourceUrl": "https://www.sutd.edu.sg/course/20-501-graduate-studio/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-501-graduate-studio/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

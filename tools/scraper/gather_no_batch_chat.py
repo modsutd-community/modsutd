@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mark each pillar's own core courses as getting no batch chat.
+"""Mark every core course as getting no batch chat.
 
     python tools/scraper/gather_no_batch_chat.py            # refresh, then report
     python tools/scraper/gather_no_batch_chat.py --dry-run  # report, write nothing
@@ -16,21 +16,29 @@ There are two kinds, and they are found differently.
 A PILLAR core is published per pillar and the lists move, so they are read off
 each pillar's own filtered listing rather than typed.
 
-A FRESHMORE core is already in our own data: SUTD tags it `Freshmore Core`, and
-every freshmore takes it in term 1 or 2 alongside the same 200 people. 02.001
-Global Humanities and 02.003 Social Science are the HASS ones, and they were
-slipping through because the eligibility rule lets any HASS course past the
-term gate - a rule that is right for the electives it was written for and wrong
-for these. No network is needed for this half.
+A TAGGED core is already in our own data. SUTD's own page tags it, and
+`gather_listing.py` copied the tag into the record, so this half needs no
+network at all. `Freshmore Core` is 02.001, 02.003 and the 10.0xx subjects,
+which every freshmore takes alongside the same 200 people; `Core` is a
+programme's own, most of the 20.5xx, 30.5xx and 40.5xx graduate courses.
+
+`Core Elective` is NOT in that list and that is the whole distinction: a student
+chooses which core elective to take, so the people in it have nothing else in
+common, which is the case for a batch chat rather than against it.
 
 WHAT IT OWNS, AND WHAT IT LEAVES ALONE
-It writes `noBatchChat: true` together with `noBatchChatReason: "pillar core"`,
-and it only ever removes a flag carrying that same reason - and never more than
-MAX_REMOVALS of them in one run, because a page that comes back half-parsed
-clears the per-pillar floor and would then quietly unflag whatever it missed.
-A record flagged for
-another reason - 01.400 Capstone 1, 02.XFER - is left exactly as it is, because
-this script has no opinion about those and no way to tell it made them.
+Each half writes `noBatchChat: true` with its own `noBatchChatReason`, and each
+removes only flags carrying one of its own: `pillar core` for the listing half,
+`freshmore core` and `programme core` for the tag half. The two never share a
+reason, or each would take the other's flags off on every run.
+
+The listing half additionally refuses to remove more than MAX_REMOVALS in one
+run, because a page that comes back half-parsed clears the per-pillar floor and
+would then quietly unflag whatever it missed.
+
+A record flagged for a reason neither half wrote - 01.400 Capstone 1, 02.XFER -
+is left exactly as it is, because a flag with no reason was set by a person and
+this script has no way to know what they knew.
 
 THE FILTER IS THE `.general-listing-grid`, NOT THE PAGE
 Reading course codes off the whole page returns 23 for DAI where the grid has 8:
@@ -55,10 +63,19 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 COURSES = ROOT / "data" / "courses"
 
 REASON = "pillar core"
-# Its own reason, so each half only ever removes what it wrote. A course that
-# stops being a pillar core must not have a freshmore flag taken off with it.
-FRESHMORE_REASON = "freshmore core"
-FRESHMORE_TAG = "Freshmore Core"
+# A tag that says "everybody on this programme takes this", and the reason each
+# one writes. Own reasons, so this pass only ever removes what it wrote and a
+# course that stops being a PILLAR core keeps a tag-driven flag, and the other
+# way round.
+#
+# `Core Elective` is deliberately absent and is not an oversight: a student
+# CHOOSES which core elective to take, so the people in it have nothing else in
+# common, which is the whole case for a batch chat. `Elective` and
+# `Elective / Technical Elective` likewise.
+TAG_REASONS: dict[str, str] = {
+    "Freshmore Core": "freshmore core",
+    "Core": "programme core",
+}
 PLACEHOLDER_CODE = "99.999"
 
 # The course-type ids are SUTD's own, and each pillar numbers them differently.
@@ -117,13 +134,37 @@ def path_for(code: str) -> pathlib.Path:
     return COURSES / f"{code.replace('.', '_')}.json"
 
 
-def freshmore_pass(dry_run: bool) -> tuple[list[str], list[str]]:
-    """Flag every course SUTD tags `Freshmore Core`, and unflag what stops.
+def reason_for(tags: list[str]) -> str | None:
+    """The reason a course's own tags give for having no chat, or None.
+
+    Pure, so it can be driven without touching /data. The distinction it has to
+    get right is `Core` against `Core Elective`: one is taken by everyone on
+    the programme and one is chosen, and choosing is the entire case for a
+    batch chat.
+    """
+    for tag, reason in TAG_REASONS.items():
+        if tag in tags:
+            return reason
+    return None
+
+
+def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
+    """Flag every course whose own tags call it a core, and unflag what stops.
 
     Reads only /data, so it runs whether or not the listings are reachable and
-    cannot be left half-applied by a bad minute on sutd.edu.sg. Owns its own
-    reason, so it never touches a pillar-core flag or one a human set.
+    cannot be left half-applied by a bad minute on sutd.edu.sg. The tags are
+    what `gather_listing.py` copied off the course's own page, so this is the
+    page speaking, once removed.
+
+    Two tags, for the two kinds the listing distinguishes. `Freshmore Core` is
+    02.001 and 02.003 and the 10.0xx subjects: every freshmore takes them
+    alongside the same 200 people. `Core` is a programme's own, which is most
+    of the 20.5xx, 30.5xx and 40.5xx graduate courses and the ASD studios.
+
+    It owns its reasons and touches nothing else, so a hand-set flag with no
+    reason - 01.400 Capstone 1, 02.XFER - is never disturbed.
     """
+    mine = set(TAG_REASONS.values())
     added, removed = [], []
     for f in sorted(COURSES.glob("*.json")):
         d = json.loads(f.read_text(encoding="utf-8"))
@@ -132,13 +173,18 @@ def freshmore_pass(dry_run: bool) -> tuple[list[str], list[str]]:
         # a course anyone can be in a chat about.
         if d.get("code") == PLACEHOLDER_CODE:
             continue
-        tagged = FRESHMORE_TAG in (d.get("tags") or [])
-        mine = d.get("noBatchChatReason") == FRESHMORE_REASON
-        if tagged and not d.get("noBatchChat"):
+        reason = reason_for(d.get("tags") or [])
+        current = d.get("noBatchChatReason")
+
+        if reason and not d.get("noBatchChat"):
             d["noBatchChat"] = True
-            d["noBatchChatReason"] = FRESHMORE_REASON
-            added.append(d["code"])
-        elif mine and not tagged:
+            d["noBatchChatReason"] = reason
+            added.append(f"{d['code']} ({reason})")
+        elif reason and current in mine and current != reason:
+            # It was one kind of core and is now the other. Ours either way.
+            d["noBatchChatReason"] = reason
+            added.append(f"{d['code']} ({current} -> {reason})")
+        elif not reason and current in mine:
             d.pop("noBatchChat", None)
             d.pop("noBatchChatReason", None)
             removed.append(d["code"])
@@ -150,6 +196,45 @@ def freshmore_pass(dry_run: bool) -> tuple[list[str], list[str]]:
     return added, removed
 
 
+def self_check() -> int:
+    """Drive the tag reader. No network, no /data.
+
+    Getting this wrong is invisible from the outside: a course quietly stops
+    offering a chat, or quietly starts, and the only sign is a button that is
+    not there.
+    """
+    cases = [
+        (["Freshmore Core", "HASS"], "freshmore core", "02.001 and 02.003"),
+        (["SMT", "Freshmore Core"], "freshmore core", "the 10.0xx subjects"),
+        (["ASD", "Core"], "programme core", "a programme's own core"),
+        (["Core"], "programme core", "the tag on its own"),
+        # The distinction the whole pass turns on.
+        (["EPD", "Core Elective"], None, "a core elective is CHOSEN"),
+        (["Elective / Technical Elective", "HASS"], None, "an elective"),
+        (["Elective"], None, "the short form"),
+        (["Freshmore Elective"], None, "chosen, even in freshmore"),
+        (["Term 7", "CSD"], None, "no core tag at all"),
+        ([], None, "no tags at all"),
+    ]
+    fails = []
+    for tags, want, why in cases:
+        got = reason_for(tags)
+        if got != want:
+            fails.append(f"{why}: {tags} gave {got!r}, want {want!r}")
+    # The two halves must not share a reason, or each would remove the other's
+    # flags on every run and the pair would never settle.
+    if REASON in TAG_REASONS.values():
+        fails.append(f"the tag pass and the listing pass share the reason {REASON!r}, "
+                     f"so each would remove the other's flags")
+    if fails:
+        print(f"self-check: {len(fails)} failure(s)")
+        for f in fails:
+            print(f"  - {f}")
+        return 1
+    print("self-check: the tag reader behaves")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dry-run", action="store_true", help="report, write nothing")
@@ -157,11 +242,12 @@ def main() -> int:
 
     # First, and unconditionally: it needs no network, so a listing that is
     # down must not take the freshmore half with it.
-    fresh_added, fresh_removed = freshmore_pass(args.dry_run)
-    if fresh_added:
-        print(f"freshmore core, flagged: {', '.join(fresh_added)}")
-    if fresh_removed:
-        print(f"no longer a freshmore core, flag removed: {', '.join(fresh_removed)}")
+    tag_added, tag_removed = core_tag_pass(args.dry_run)
+    if tag_added:
+        print(f"a core by its own tags, flagged ({len(tag_added)}): "
+              f"{', '.join(tag_added)}")
+    if tag_removed:
+        print(f"no longer a core by its tags, flag removed: {', '.join(tag_removed)}")
 
     wanted: set[str] = set()
     failed: list[str] = []
@@ -251,4 +337,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    if "--self-check" in sys.argv:
+        raise SystemExit(self_check())
     raise SystemExit(main())
