@@ -237,7 +237,7 @@ test.describe('plan + records', () => {
     const ins = page.locator('[data-panel="mod"]');
     const tt = page.locator('[data-panel="tt"]');
 
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
 
     await cat.getByRole('button', { name: /02\.XFER/ }).click();
