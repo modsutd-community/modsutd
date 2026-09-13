@@ -171,7 +171,6 @@ if __name__ == "__main__":
     # through to the real mode gives "bad payload: PAYLOAD", which explains
     # nothing.
     if "--self-check" in sys.argv:
-        sys.exit("the venue reader lives in tools/venue_resolve.py now:
-"
-                 "    python tools/venue_resolve.py --self-check")
+        sys.exit("the venue reader lives in tools/venue_resolve.py now: "
+                 "run `python tools/venue_resolve.py --self-check`")
     raise SystemExit(main())
