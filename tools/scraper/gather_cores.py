@@ -18,10 +18,8 @@ each pillar's own filtered listing rather than typed.
 
 A TAGGED core is already in our own data. SUTD's own page tags it, and
 `gather_mods.py` copied the tag into the record, so this half needs no
-network at all. `Freshmore Core` is 02.001, 02.003 and the 10.0xx subjects,
-which every freshmore takes alongside the same 200 people; `Core` is a
-programme's own: the 20.5xx, 30.5xx and 40.5xx graduate courses and six ASD
-cores in the middle of the undergraduate degree.
+network at all. `Freshmore Core` is what every freshmore takes alongside the
+same 200 people; `Core` is a programme's own, whoever the programme is.
 
 `Core Elective` counts as a core. It reads like a choice and is not one in the
 sense that matters: it is a slot every student on the programme has to fill from
@@ -29,14 +27,15 @@ a short published list, so the cohort shares it the way they share any core.
 `Elective` and `Elective / Technical Elective` are the real choices and stay
 out.
 
-The reasons are the tags, lowercased. Naming them for what they seem to be goes
-wrong: "graduate core" fits the 28 courses numbered 500 and up and is flatly
-false for the six ASD cores at terms 4 to 8.
+The reasons are the tags, lowercased, and nothing is inferred from the code
+number. A course is a graduate core when the page says graduate, and the page
+does not say it here: it says `Core`. So the reason is `core`, which is vague
+and is what was published.
 
 WHAT IT OWNS, AND WHAT IT LEAVES ALONE
 Each half writes `noBatchChat: true` with its own `noBatchChatReason`, and each
 removes only flags carrying one of its own: `pillar core` for the listing half,
-`freshmore core` and `programme core` for the tag half. The two never share a
+and `freshmore core`, `core` and `core elective` for the tag half. The two never share a
 reason, or each would take the other's flags off on every run.
 
 The listing half additionally refuses to remove more than MAX_REMOVALS in one
@@ -76,11 +75,11 @@ REASON = "pillar core"
 # way round.
 #
 # Each reason is the tag it came from, lowercased, and that is deliberate.
-# Naming them for what they seem to BE goes wrong: "graduate core" would fit
-# the 28 courses numbered 500 and up and be flatly false for the six ASD cores
-# at terms 4 to 8 (20.213, 20.221, 20.222, 20.224, 20.318, 20.319). A reason
-# copied off the tag cannot be wrong about the course, because the tag is what
-# the page said.
+# Nothing is read off the code number: 5xx is not a graduate marker, and
+# "graduate core" would be flatly false for the ASD cores tagged `Core` that
+# sit at terms 4 to 8 (20.213, 20.221, 20.222, 20.224, 20.318, 20.319). A
+# reason copied off the tag cannot be wrong about the course, because the tag
+# is what the page said. It can only be as vague as the page was.
 #
 # `Core Elective` is here too. It reads like a choice and is not one in the
 # sense that matters: it is a slot every student on the programme must fill
@@ -172,10 +171,8 @@ def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
     what `gather_mods.py` copied off the course's own page, so this is the
     page speaking, once removed.
 
-    Two tags, for the two kinds the listing distinguishes. `Freshmore Core` is
-    02.001 and 02.003 and the 10.0xx subjects: every freshmore takes them
-    alongside the same 200 people. `Core` is a programme's own, which is most
-    of the 20.5xx, 30.5xx and 40.5xx graduate courses and the ASD studios.
+    The tags it reads and what each becomes is TAG_REASONS, and the rule for
+    why a reason is the tag rather than a description is written there.
 
     It owns its reasons and touches nothing else, so a hand-set flag with no
     reason - 01.400 Capstone 1, 02.XFER - is never disturbed.
