@@ -291,6 +291,16 @@
 
   &:hover { background: rgba(42, 171, 238, 0.08); }
 }
+// Outlined and quiet: it is a statement, not an action. Distinct from
+// .teleWaiting, which is dotted because it will become pressable in a moment
+// and this one never will.
+.teleNever {
+    background: transparent;
+    border: 1px solid rgba(233, 234, 237, 0.22);
+    color: rgba(233, 234, 237, 0.5);
+    cursor: default;
+}
+
 
 .teleIcon {
   width: 14px;

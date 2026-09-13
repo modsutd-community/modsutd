@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { test, expect } from '@playwright/test';
 import { hoverUntil } from './support/hoverCard';
+import { ensurePanel } from './support/panels';
 
 // The plan (10 term levels, fixed Freshmore core in T1-3, automatic
 // prerequisite checks) and per-mod records living in the chip hover card.
@@ -39,7 +40,7 @@ test.describe('plan + records', () => {
     // 10.013/10.014 are the AY2024-and-earlier core and AY2026 is the default,
     // so choose the cohort FIRST: each one keeps its own plan, and a mod added
     // before the switch lands in the plan that was showing at the time.
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
     await tt.locator('[data-act="cohort"]').selectOption('ay2024');
 
@@ -94,7 +95,7 @@ test.describe('plan + records', () => {
     await ins.getByRole('button', { name: '+ ADD TO PLAN' }).click();
     await cat.getByRole('button', { name: /01\.101/ }).click();
 
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
 
     // Hover the chip; the card must survive the pointer traveling into it
@@ -156,7 +157,7 @@ test.describe('plan + records', () => {
     const ins = page.locator('[data-panel="mod"]');
     const tt = page.locator('[data-panel="tt"]');
 
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
     await tt.locator('[data-act="cohort"]').selectOption('ay2024');
 
@@ -197,7 +198,7 @@ test.describe('plan + records', () => {
     const ins = page.locator('[data-panel="mod"]');
     const tt = page.locator('[data-panel="tt"]');
 
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
     const pick = tt.locator('[data-act="cohort"]');
     await pick.selectOption('ay2024');
@@ -275,7 +276,7 @@ test.describe('plan + records', () => {
     await ins.getByRole('button', { name: '+ ADD TO PLAN' }).click();
     await cat.getByRole('button', { name: /50\.003/ }).click();
 
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
     await hoverUntil(
       tt.locator('[data-level="5"]').getByText('50.003'),
@@ -295,7 +296,7 @@ test.describe('plan + records', () => {
     test.skip(!!isMobile, 'hover cards are the desktop affordance; mobile long-presses');
 
     const tt = page.locator('[data-panel="tt"]');
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
 
     const t1 = tt.locator('[data-level="1"]');
@@ -315,7 +316,7 @@ test.describe('plan + records', () => {
     const ins = page.locator('[data-panel="mod"]');
     const tt = page.locator('[data-panel="tt"]');
 
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
     const pick = tt.locator('[data-act="cohort"]');
     await pick.selectOption('ay2024');
@@ -353,7 +354,7 @@ test.describe('plan + records', () => {
     const ins = page.locator('[data-panel="mod"]');
     const tt = page.locator('[data-panel="tt"]');
 
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
     await tt.locator('[data-act="cohort"]').selectOption('ay2026');
     // 03.007A is fixed in AY2026 term 1, and the tree shows it there. Exact,
@@ -371,8 +372,10 @@ test.describe('plan + records', () => {
     test.skip(!!isMobile, 'drag is the desktop affordance; mobile keeps + ADD TO PLAN');
 
     const cat = page.locator('[data-panel="cat"]');
+    // The panel opens on a drop, and TIMETABLE is now open from the start, so
+    // "it appeared" is no longer the thing to assert. The plan holding the mod
+    // afterwards is, and that is asserted below.
     const tt = page.locator('[data-panel="tt"]');
-    await expect(tt).toBeHidden();
 
     const row = cat.getByRole('button', { name: /50\.004/ });
     await row.scrollIntoViewIfNeeded();
@@ -435,7 +438,7 @@ test.describe('plan + records', () => {
     // Deliberately on an EMPTY plan: switching to a cohort you have not planned
     // yet must not take the control away with the tree, or there is no way back.
     const tt = page.locator('[data-panel="tt"]');
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
 
     const pick = page.locator('[data-act="cohort"]');
@@ -473,7 +476,7 @@ test.describe('plan + records', () => {
     await cat.getByRole('button', { name: /40\.321/ }).click();
     await ins.getByRole('button', { name: '+ ADD TO PLAN' }).click();
     await cat.getByRole('button', { name: /40\.321/ }).click();
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
 
     await hoverUntil(tt.getByText('40.321', { exact: true }), tt.locator('[data-act="prereq-list"]'));
@@ -507,7 +510,7 @@ test.describe('plan + records', () => {
       await ins.getByRole('button', { name: '+ ADD TO PLAN' }).click();
       await cat.getByRole('button', { name: code }).click();
     }
-    await page.locator('button[aria-label="Timetable"]').click();
+    await ensurePanel(page, 'Timetable', 'tt');
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
 
     await hoverUntil(tt.getByText('40.321', { exact: true }), tt.locator('[data-act="prereq-list"]'));

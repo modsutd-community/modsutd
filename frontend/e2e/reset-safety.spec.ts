@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { hoverUntil } from './support/hoverCard';
+import { ensurePanel } from './support/panels';
 
 // 'Reset layout' means LAYOUT. Records, plans and the parsed timetable
 // must survive it byte-for-byte.
@@ -29,7 +30,7 @@ test('reset layout never touches user data', async ({ page, isMobile }) => {
   expect(await grab()).toEqual(before);
 
   // and the UI still shows it after reopening the plan
-  await page.locator('button[aria-label="Timetable"]').click().catch(() => {});
+  await ensurePanel(page, 'Timetable', 'tt');
   await tt.getByRole('button', { name: 'plan', exact: true }).click();
   // 10.013 is core for AY2024 and earlier; AY2026 is the default and does not
   // pin it, so there would be no chip to hover.
