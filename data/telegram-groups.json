@@ -57,5 +57,13 @@
     "expires": "2026-12-19",
     "linkEnc": "v1:zvNNl1hnQcxr9NPC:HZ3atx0IaxzsUYEx1osLtDiQ/OHwJzdQxglzmTlzyBkOljBVqhLhNWfRWJ84/w==",
     "title": "50.046 Cloud Computing and Internet of Things Sep'26"
+  },
+  "50.054": {
+    "chatId": 5395628336,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:BQ/5VmfH1mb18qoH:9zydtz0F0C+jOgwVdO4qrj2X71eQjlnbzxRcs8zMRYkk6ZI3dKOkX4JympWoDw==",
+    "title": "50.054 Compiler Design and Program Analysis Sep'26"
   }
 }
