@@ -24,5 +24,7 @@
     "total": 9,
     "source": "official"
   },
-  "sourceUrl": "https://www.sutd.edu.sg/course/20-203-architectural-energy-systems/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-203-architectural-energy-systems/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

@@ -13,11 +13,26 @@
   "schedules": [
     {
       "type": "Cohort",
-      "day": "Thursday",
-      "startTime": "14:00",
-      "endTime": "16:00",
-      "location": "1.410",
-      "instructors": []
+      "day": "Tuesday",
+      "startTime": "09:00",
+      "endTime": "10:30",
+      "location": "1.409",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     },
     {
       "type": "Cohort",
@@ -25,7 +40,45 @@
       "startTime": "09:00",
       "endTime": "10:30",
       "location": "1.410",
-      "instructors": []
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "09:00",
+      "endTime": "10:30",
+      "location": "1.409",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     },
     {
       "type": "Cohort",
@@ -33,7 +86,68 @@
       "startTime": "09:00",
       "endTime": "10:30",
       "location": "1.410",
-      "instructors": []
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "location": "1.409",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "location": "1.410",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     }
   ],
   "tags": [

@@ -8,7 +8,72 @@
   "term": "1",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "location": "1.414",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "15:30",
+      "endTime": "18:00",
+      "location": "1.414",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "10:30",
+      "endTime": "13:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "15:30",
+      "endTime": "18:00",
+      "location": "1.414",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "10:30",
+      "endTime": "13:00",
+      "location": "1.414",
+      "instructors": []
+    }
+  ],
   "workload": {
     "lecture": 6,
     "tutorial": 0,
@@ -22,5 +87,7 @@
     "Freshmore Core",
     "SMT"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/10-013-modelling-and-analysis/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-013-modelling-and-analysis/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

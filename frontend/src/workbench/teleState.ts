@@ -3,7 +3,62 @@
 // across a `useState`, two localStorage readers and a network probe, and no
 // two of them agreed - so this is a table a test can drive directly.
 
+import type { Mod } from '@/types';
+import { modPillars } from './pillars';
+
 export type TeleState = 'none' | 'committing' | 'ready' | 'creating' | 'live';
+
+// Capstone and thesis mods get no batch chat: students are split across their
+// own project teams, so a cohort-wide group is noise. A fallback for records
+// that predate the flag and for anything SUTD names a capstone before anyone
+// marks it. `noBatchChat` in the data is the real list.
+const SOLO_PROJECT = /capstone|thesis/i;
+
+/**
+ * Whether a chat is the kind of thing this mod gets at all.
+ *
+ * Here rather than in the panel that draws the button, because the catalogue
+ * marks the same mods in its own column and two copies of this rule would
+ * disagree the first time either moved. Nothing is fetched, so it is knowable
+ * on the first render of either.
+ */
+export function chatEligible(mod: Mod): boolean {
+  return (
+    (Number(mod.term) >= 3 || modPillars(mod).includes('HASS'))
+    && !mod.noBatchChat
+    && !SOLO_PROJECT.test(mod.name)
+  );
+}
+
+
+/**
+ * Whether there is a chat to point at: one that exists, or one the button
+ * would actually make.
+ *
+ * Eligibility alone is a property of the record and stays true forever, so it
+ * marked every HASS course in the catalogue including the ones not offered
+ * this term. The registry alone is too narrow the other way: a mod running
+ * this term whose chat nobody has asked for yet is exactly the row worth
+ * marking, because one click makes it.
+ *
+ * So it is the workflow's own gate, minus the parts only the server can know:
+ * eligible, running this term (which is what a non-empty `schedules` means,
+ * since slots only arrive from a contributed timetable), and inside the term
+ * window. Plus anything already in the registry and unexpired.
+ */
+export function chatOffered(
+  mod: Mod,
+  entry: { expires?: string } | undefined,
+  termEnd: string | undefined,
+  today = new Date().toISOString().slice(0, 10),
+): boolean {
+  if (entry?.expires && today <= entry.expires) return true;
+  if (!chatEligible(mod)) return false;
+  // No slots means nobody is taking it this term as far as this repo knows,
+  // and `telegram-group.yml` refuses it with skip=not-offered.
+  if (!mod.schedules?.length) return false;
+  return !!termEnd && today <= termEnd;
+}
 
 export interface TeleFacts {
   /** Term >= 3 or HASS, not noBatchChat, not a capstone or thesis. */

@@ -17,7 +17,53 @@
     ]
   },
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "13:00",
+      "endTime": "15:00",
+      "location": "1.610",
+      "instructors": [],
+      "cohort": "CS01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "08:30",
+      "endTime": "10:30",
+      "location": "1.610",
+      "instructors": [],
+      "cohort": "CS01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",

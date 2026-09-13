@@ -17,5 +17,7 @@
     "Core",
     "ESD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-017-probability-and-statistics/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-017-probability-and-statistics/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

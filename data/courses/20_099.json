@@ -12,5 +12,7 @@
     "ASD",
     "Core Elective"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/20-099-urban-sketching/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-099-urban-sketching/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

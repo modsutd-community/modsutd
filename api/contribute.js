@@ -61,7 +61,13 @@ const TYPES = new Set(['Lecture', 'Cohort', 'Tutorial', 'Lab', 'Studio', 'Semina
 // from the app, so this is a copy on purpose.
 const MOD_RE = /^\d{2}\.\d{3}[A-Za-z]?$/;
 const TIME_RE = /^([01]\d|2[0-3]):[0-5]\d$/;
-const VENUE_RE = /^[\w .\-#()/]{1,30}$/;
+// 60, not 30. A printed room name carries its donor and they are long:
+// "Think Tank 13 (Yangzheng Foundation)" is 36 and
+// "Digital Manufacturing and Design (DManD) Research Studio" is 56, so the old
+// cap silently refused the very names tools/venue_resolve.py exists to turn
+// into room codes. Shape only either way - this relay cannot read data/venues,
+// so what a venue RESOLVES to is decided by fold_slots.py on the runner.
+const VENUE_RE = /^[\w .\-#()/]{1,60}$/;
 const TERM_RE = /^[\w ,/]{1,40}$/;
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 

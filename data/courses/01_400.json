@@ -10,19 +10,49 @@
   "schedules": [
     {
       "type": "Cohort",
-      "day": "Friday",
-      "startTime": "08:30",
-      "endTime": "11:30",
-      "location": "1.411",
-      "instructors": []
-    },
-    {
-      "type": "Cohort",
       "day": "Wednesday",
       "startTime": "10:30",
       "endTime": "13:30",
       "location": "1.411",
-      "instructors": []
+      "instructors": [],
+      "cohort": "CC01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "08:30",
+      "endTime": "11:30",
+      "location": "1.411",
+      "instructors": [],
+      "cohort": "CC01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     }
   ],
   "tags": [

@@ -22,5 +22,7 @@
     "total": 12,
     "source": "official"
   },
-  "sourceUrl": "https://www.sutd.edu.sg/course/20-511-thesis-preparation/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-511-thesis-preparation/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

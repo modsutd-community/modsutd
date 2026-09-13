@@ -19,8 +19,65 @@
       rel="stylesheet"
     />
     <title>modSUTD</title>
+
+    <!-- Ships in the one response every crawler gets. GPTBot, ClaudeBot and
+         PerplexityBot execute no JavaScript, so anything the app sets after
+         boot is invisible to them and this is the only description they read.
+         There is deliberately no aggregateRating or review: nothing in /data
+         holds a rating, and inventing one to make the markup richer is a
+         misrepresentation Google issues manual actions for. -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "modSUTD",
+        "alternateName": "SUTD mods",
+        "url": "https://modsutd.tech",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires JavaScript",
+        "description": "An independent, student-built course catalogue, timetable-to-.ics converter, degree planner and room finder for SUTD. Not affiliated with or endorsed by SUTD.",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "SGD" },
+        "license": "https://github.com/modsutd-community/modsutd/blob/main/LICENSE",
+        "codeRepository": "https://github.com/modsutd-community/modsutd",
+        "featureList": [
+          "SUTD course catalogue with prerequisites, credits and reviews",
+          "Convert a pasted SUTD timetable into a .ics calendar file",
+          "Degree planner across all ten terms",
+          "Room finder with floor plans and occupancy heatmaps",
+          "Course reviews written by SUTD students"
+        ],
+        "author": { "@type": "Organization", "name": "modSUTD contributors", "url": "https://github.com/modsutd-community" }
+      }
+    </script>
   </head>
   <body>
+    <!-- Without this a reader with JavaScript off gets a white page and no
+         way to tell whether the site is broken or their browser is. It is also
+         the only markup a crawler that runs no JavaScript sees at all, which
+         is every AI answer engine, so it carries the one sentence saying what
+         this is and a link to a page that answers properly. -->
+    <noscript>
+      <div style="max-width:40rem;margin:3rem auto;padding:0 1.25rem;color:#e9eaed;font:16px/1.6 system-ui,sans-serif">
+        <h1 style="font-size:1.4rem">modSUTD</h1>
+        <p>
+          A free, student-built course catalogue, timetable-to-.ics converter,
+          degree planner and room finder for SUTD. It needs JavaScript to run,
+          because it is a single page that does its work in your browser and has
+          no server behind it.
+        </p>
+        <p>
+          <a href="/faq.html" style="color:#7aa2f7">Read the FAQ</a> for what it
+          does and how to export an SUTD timetable, or see the source at
+          <a href="https://github.com/modsutd-community/modsutd" style="color:#7aa2f7">github.com/modsutd-community/modsutd</a>.
+        </p>
+        <p style="color:#7e828d;font-size:.85rem">
+          Not affiliated with or endorsed by the Singapore University of
+          Technology and Design.
+        </p>
+      </div>
+    </noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

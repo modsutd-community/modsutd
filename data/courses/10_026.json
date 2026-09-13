@@ -27,5 +27,7 @@
   "corequisites": [
     "03.007B"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/10-026-design-computation/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-026-design-computation/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

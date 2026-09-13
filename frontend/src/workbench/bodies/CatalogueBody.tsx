@@ -6,9 +6,25 @@ import { PILLAR_COLORS, PILLAR_ORDER, pillarColor, modPillars } from '../pillars
 import { useWorkbenchUi, SortKey } from '../uiContext';
 import { useFilteredMods } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
+import { useTelegramData } from '../telegram';
+import { chatOffered } from '../teleState';
 import { Otto } from '../Otto';
 import wb from '../wb.module.scss';
 import styles from './CatalogueBody.module.scss';
+
+// The same glyph the mod panel's button uses. Inlined rather than shared,
+// because it is drawn at 11px here against 15px there and the two want
+// different stroke weights; the path is Telegram's own mark.
+function TeleMark() {
+  return (
+    <svg viewBox="0 0 24 24" width="11" height="11" aria-label="has a batch chat" role="img">
+      <path
+        fill="currentColor"
+        d="M21.9 4.3 18.9 19c-.2 1-.8 1.2-1.6.8l-4.5-3.3-2.2 2.1c-.2.2-.4.4-.9.4l.3-4.6 8.3-7.5c.4-.3-.1-.5-.6-.2L7.4 13.1 2.9 11.7c-1-.3-1-1 .2-1.5l17.5-6.8c.8-.3 1.5.2 1.3 1z"
+      />
+    </svg>
+  );
+}
 
 const TERMS: Term[] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
 
@@ -39,6 +55,13 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
   const loading = useAppSelector((s) => s.mods.loading);
   const error = useAppSelector((s) => s.mods.error);
   const rows = useFilteredMods();
+  // Module-cached and already fetched by the mod panel, so this is a read
+  // rather than a request. Null until it lands, which draws no mark: a row
+  // that gains one a moment later is better than one that promises a chat
+  // and takes it away.
+  const [tg] = useTelegramData();
+  const offered = (m: (typeof rows)[number]) =>
+    chatOffered(m, tg?.registry[m.code], tg?.term.end);
   const suppressClick = useRef(false);
 
   return (
@@ -143,6 +166,20 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
           >
             <span className={styles.code} style={{ color: selected === k && selectedOpen ? '#fff' : undefined }}>{m.code}</span>
             <span className={styles.name}>{m.name}</span>
+            {/* A chat to point at: one that exists, or one the button on
+                that mod's page would actually make. Eligibility alone marks
+                every HASS course forever, including the ones not offered this
+                term; the registry alone misses the row worth marking most,
+                a mod running now whose chat nobody has asked for yet. Costs
+                no extra request: useTelegramData is module-cached and the mod
+                panel already pays for it. */}
+            <span
+              className={styles.tele}
+              data-act={offered(m) ? 'tele-eligible' : undefined}
+              aria-hidden={!offered(m)}
+            >
+              {offered(m) ? <TeleMark /> : null}
+            </span>
             <span className={styles.pillar} style={{ color: pillarColor(m.pillar) }}>
               {m.pillar}
               {modPillars(m).length > 1 ? <span className={styles.pillarMore}>+{modPillars(m).length - 1}</span> : null}

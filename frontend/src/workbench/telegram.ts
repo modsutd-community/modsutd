@@ -68,6 +68,11 @@ interface TgData {
 
 let cache: TgData | null = null;
 let cachedAt = 0;
+// The fetch that is already happening. Two components read this now, the mod
+// panel and the catalogue's chat mark, and both mount with an empty cache and
+// both call refresh - which fetched the same four files twice. Sharing the
+// promise makes a second caller wait on the first instead of racing it.
+let inFlight: Promise<TgData> | null = null;
 
 // A group is created by a workflow, minutes after somebody asks for one, and
 // the registry is a file on main. Cached for the session, the panel showed
@@ -134,7 +139,10 @@ async function fetchAll(): Promise<TgData> {
 export function useTelegramData(): [TgData | null, () => Promise<void>] {
   const [data, setData] = useState<TgData | null>(cache);
   const refresh = useCallback(async () => {
-    const next = await fetchAll();
+    // Deduplicated across callers AND across components: whoever asks while a
+    // fetch is in the air gets that one.
+    inFlight ??= fetchAll().finally(() => { inFlight = null; });
+    const next = await inFlight;
     cache = next;
     cachedAt = Date.now();
     setData(next);

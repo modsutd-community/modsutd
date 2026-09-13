@@ -1,5 +1,10 @@
 # 🐙 modSUTD
 
+A free **SUTD course catalogue, timetable-to-`.ics` converter, degree planner and
+room finder**, live at **[modsutd.tech](https://modsutd.tech)**. Paste your SUTD
+timetable and get a calendar file; look up any course, its prerequisites and what
+students said about it; find a room and the floor it is on.
+
 > modSUTD is an independent, student-built project. It is currently not affiliated
 > with, endorsed by, or operated by the Singapore University of Technology
 > and Design.

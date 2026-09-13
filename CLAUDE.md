@@ -62,6 +62,14 @@ GitHub Discussion (not a PR) if you want to revisit one.
   the next agent believes it. Before opening a PR, grep the repo for the field,
   flag, filename or rule you touched and update every hit. `directions` was
   documented as an authored venue field for a while after it stopped existing.
+- **`frontend/public/faq.html` is copy that no test can check.** It is the only
+  page a crawler that runs no JavaScript reads, and it states three things the
+  repo decides elsewhere: that a timetable is pasted from MyPortal's LIST view
+  and not the weekly grid, that reviews are giscus comments, and that the
+  licence is Apache 2.0. Change any of those and change that file in the same
+  PR. It is hand-written and static on purpose - it names no course and no room,
+  so it cannot go stale against `/data`, only against a decision.
+
 - **Say a thing once, and link to it.** Each fact has one home: fields in
   `docs/data-format.md`, procedures in `.claude/skills/`, invariants and the
   gate here, why-it-is-shaped-this-way in `docs/architecture.md`. Everywhere
@@ -150,6 +158,8 @@ each new maintainer (or their agent) doesn't re-derive them:
 - `gather-specialisations` - refresh the specialisation-track criteria
 - `venue-search` - what room search already handles, and the one table to
   update when a new room type appears
+- `parse-subject-enrolment-pdfs` - fill a whole term's schedules and rooms
+  from the registry's six enrolment PDFs, rather than waiting for pastes
 - `retire-mod` - a course SUTD dropped: mark it, keep its history, close
   its review thread. Never delete the file
 
@@ -434,6 +444,46 @@ Two are deliberately not monthly, and say why in their own headers:
   the repo ROOT - one file for the relays and the python tools both, because
   two meant the same token pasted twice. Vite alone serves no `/api` and every
   call 404s.
+
+- **Every mod and every room has a real HTML file in `dist`**, written by
+  `frontend/scripts/prerender.mjs` in the `postbuild` hook. Nothing renders
+  React: each page is the same shell with its own `<title>`, description,
+  canonical link and `Course`/`Place` JSON-LD, plus a `<noscript>` body
+  carrying that record's facts. `#root` is left empty, so React mounts exactly
+  as before and a reader with JavaScript never sees the static copy.
+  It reads `dist/data/*.json`, the bundle the app itself fetches, so the page
+  and the app cannot describe the same course differently.
+  Two things there are load-bearing. The canonical url is `/mods/50.040` with
+  NO trailing slash, and no static server resolves that to
+  `mods/50.040/index.html` on its own: the last segment has a dot, so it reads
+  as a filename with an extension and falls through to the SPA. `vercel.json`
+  rewrites `/mods/:code` and `/venues/:code` to the file explicitly, ahead of
+  the catch-all, and `prerenderedPaths()` in `vite.config.ts` does the same for
+  `vite preview` so the e2e suite tests what production does. A consequence
+  worth knowing: an unknown code now 404s rather than opening the app empty.
+  `/venues/<code>` is an ADDITION to `/venues?focus=<code>`, which still works
+  and is what every already-shared link uses.
+
+- **A room string becomes a room code in exactly one place**,
+  `tools/venue_resolve.py`, shared by `fold_slots.py` (a pasted timetable) and
+  `tools/enrolment/parse_enrolment_pdfs.py` (the registry's export). There was
+  a copy in each and they disagreed about what a room is, which is how
+  `Albert`, `Lecture` and `Online` came to sit in `/data` as room codes with
+  heatmaps drawn for them. `location` is a key into `data/venues` and nothing
+  else: the room finder, the heatmaps and the `.ics` all look the room up by
+  it, so a string that is not one fails silently everywhere at once.
+  Three things there are load-bearing. A name two rooms really share - 2.209
+  and 2.306 are both "Studio 7" - resolves to NEITHER and does not fall through
+  to fragment matching, or it lands on "Dance Studio 7" in another block. A
+  fragment must be a whole word of exactly one room's name and at least four
+  characters, because a room's name carries its donor and a donor is a person:
+  "Wee" and "Hur" are inside "Think Tank 2 (Wee Hur)". And a code the catalogue
+  does not hold is refused rather than written, on both doors.
+  The remaining hole is upstream and known: `timetableParser.ts` picks the room
+  cell by looking for a bracketed code, and a row that prints none falls back to
+  a lazy capture that truncates at the first word. That is where `Albert` came
+  from. It is caught by the resolver rather than prevented, and fixing it
+  properly needs the venue list in the browser.
 
 - **Vercel does not deploy main; `deploy.yml` does.** `vercel.json` sets
   `git.deploymentEnabled.main: false`, so pushes to main build only through the

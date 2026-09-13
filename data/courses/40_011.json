@@ -17,5 +17,7 @@
     "Core",
     "ESD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-011-data-and-business-analytics-for-esd-students-only/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-011-data-and-business-analytics-for-esd-students-only/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

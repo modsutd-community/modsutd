@@ -7,7 +7,32 @@
   "pillar": "HASS",
   "term": "1",
   "prerequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Lecture",
+      "day": "Wednesday",
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "location": "1.102",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "location": "1.414",
+      "instructors": []
+    }
+  ],
   "corequisites": [],
   "tags": [
     "Term 1",
@@ -15,5 +40,7 @@
     "Freshmore Core",
     "HASS"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/02-003-social-science-understanding-behaviour-culture-society/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/02-003-social-science-understanding-behaviour-culture-society/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }
