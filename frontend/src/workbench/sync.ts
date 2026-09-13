@@ -129,7 +129,10 @@ export async function pollForToken(
   const deadline = now() + (start.expires_in ?? DEFAULT_EXPIRES_S) * 1000;
   for (;;) {
     if (signal?.aborted) throw new Error('cancelled');
-    await waitTurn(now() + interval, now);
+    // Never past the deadline. Each slow_down makes the interval longer, so a
+    // fixed `now() + interval` would sail over the expiry and poll a code
+    // GitHub has already thrown away, then report it that much late.
+    await waitTurn(Math.min(now() + interval, deadline), now);
     if (signal?.aborted) throw new Error('cancelled');
     if (now() >= deadline) {
       throw new Error('that code expired - press Link now for a fresh one');

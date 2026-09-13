@@ -76,6 +76,22 @@ describe('device flow polling', () => {
     await expect(pollForToken(START, undefined, clock.now)).rejects.toThrow(/expired/);
   });
 
+  it('never waits past the deadline, however long slow_down has made the gap', () => {
+    // Each slow_down adds five seconds, so an interval can outgrow what is left
+    // of the code. Waiting the full interval would poll a code GitHub has
+    // already discarded and report the expiry that much late.
+    replies({ error: 'slow_down' }, { error: 'authorization_pending' });
+    const clock = fakeClock();
+    return pollForToken({ ...START, expires_in: 7 }, undefined, clock.now)
+      .then(() => { throw new Error('should have expired'); })
+      .catch((e: Error) => {
+        expect(e.message).toMatch(/expired/);
+        // 5s to the first poll, then the last 2s rather than the 10s the
+        // slow_down asked for.
+        expect(clock.gaps.slice(0, 2)).toEqual([5000, 2000]);
+      });
+  });
+
   it('gives up on a reply that is neither a token nor an error', async () => {
     // A Vercel error page, or an empty body. Both left `j` with no
     // access_token and no error, which was a `continue` and therefore forever.
