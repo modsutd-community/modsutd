@@ -93,7 +93,8 @@ STEPS: list[tuple[str, list[str], str]] = [
         ["canaries.py"],
         "the SUTD hosts nothing else in this run fetches. Every other step is "
         "a canary for its own host and fails loudly when it goes; this covers "
-        "what is left, which is virtualtour.sutd.edu.sg. REPORTS ONLY, and "
+        "what is left, which is virtualtour.sutd.edu.sg - asked for a real "
+        "tile named by data/venues, not its front page. REPORTS ONLY, and "
         "never fails the run",
     ),
     (
