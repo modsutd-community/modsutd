@@ -52,7 +52,7 @@ def pano_scenes() -> list[str]:
     return out
 
 CLIENT = httpx.Client(
-    timeout=20,
+    timeout=10,
     follow_redirects=True,
     headers={"User-Agent": "modsutd-scraper/0.1 (+https://github.com/modsutd-community/modsutd)"},
 )
@@ -73,26 +73,26 @@ def main() -> int:
         print("no panoScenes in data/venues - nothing to probe")
         return 0
 
-    # Two, not all of them. One scene answering proves the host, the path shape
-    # and the tile naming are all still what Pano.tsx assumes, and a second
-    # catches the case where one scene was retired rather than the tour moving.
-    # Probing every scene would be 32 requests to say the same thing.
+    # All of them, not a sample. One scene answering proves the host and the
+    # path shape, but a tour is free to retire a single room, and a sample would
+    # leave the 360 panel broken for that one with nothing said. It is one
+    # request per scene, in a run that walks 389 course pages.
     bad: list[str] = []
-    for scene in scenes[:2]:
+    for scene in scenes:
         url = FACE_URL.format(scene=scene)
         why = check(url)
         if why is None:
-            print(f"ok   {url}")
             continue
         bad.append(f"`{scene}` -> {why}")
         print(f"DOWN {url} -> {why}", file=sys.stderr)
 
+    print(f"{len(scenes) - len(bad)}/{len(scenes)} panorama tiles still served")
     if bad:
         print()
-        print(f"The virtual tour is not serving the tiles `panoScenes` names, "
-              f"so the 360 panel draws nothing for the "
-              f"{len(scenes)} scene(s) in data/venues. Nothing else in this run "
-              f"fetches that host, so this is the only place it shows up:")
+        print(f"The virtual tour is not serving {len(bad)} of the "
+              f"{len(scenes)} tiles `panoScenes` names, so the 360 panel draws "
+              f"nothing for those rooms. Nothing else in this run fetches that "
+              f"host, so this is the only place it shows up:")
         for line in bad:
             print(f"- {line}")
     # Always 0. A host down for a minute is not a reason to fail a refresh.
