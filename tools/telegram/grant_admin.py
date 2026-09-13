@@ -30,8 +30,19 @@ its members by then. Leaving also deletes the dialog on this side, so the
 throwaway is not left carrying a list of every group it ever made - that
 removes it for us only, never for anyone else.
 
-Reads/updates data/telegram-groups.json (adminGranted flag); prints the
+A handover is not permanent, and `adminGranted` on its own stopped describing
+a chat that has an admin. Telegram takes a member's admin rights with them when
+they leave, and the first joiner is free to join and walk straight back out: a
+chat can be an hour old, handed over, and already unmoderated. So every live
+chat is asked each run whether a human admin is still inside, and one that is
+not goes back in the queue for the next joiner. The throwaway does not count -
+it is the channel creator after the migration, so it is an admin by
+construction and would answer yes forever.
+
+Reads/updates data/telegram-groups.json (adminGranted, adminUserId); prints the
 codes it handed over, one per line.
+
+    python grant_admin.py --self-check   # the two readers, no network
 """
 
 from __future__ import annotations
@@ -105,6 +116,43 @@ def peer_of(client, entry: dict):
     return chat
 
 
+def sort_joiners(parts, users, me_id: int) -> tuple[list[int], list[int]]:
+    """(humans earliest first, bots) out of a participant list.
+
+    Pure, and shared by the basic group and the migrated channel, because the
+    two requests answer with different participant classes carrying the same
+    two fields. The creator has no `date` at all, so a missing one sorts last
+    rather than raising against an int.
+    """
+    by_id = {u.id: u for u in users}
+    humans: list[tuple[object, int]] = []
+    bots: list[int] = []
+    for part in parts:
+        uid = getattr(part, "user_id", None)
+        if uid is None or uid == me_id:
+            continue
+        user = by_id.get(uid)
+        if user is not None and getattr(user, "bot", False):
+            bots.append(uid)
+            continue
+        if user is not None and getattr(user, "deleted", False):
+            continue
+        humans.append((getattr(part, "date", None), uid))
+    humans.sort(key=lambda h: (h[0] is None, h[0]))
+    return [uid for _, uid in humans], bots
+
+
+def has_human_admin(parts, users, me_id: int) -> bool:
+    """Whether anyone but this account still administers the chat.
+
+    Asked of the ADMIN list rather than of one recorded user id, because the
+    two ways a handover comes undone look identical from here: the admin left,
+    or another admin demoted them. Deleted accounts do not count - a deactivated
+    Telegram account keeps its rank and can do nothing with it.
+    """
+    return bool(sort_joiners(parts, users, me_id)[0])
+
+
 def migrate(client, chat_id: int) -> types.Channel:
     """Migrate the basic group and return the Channel it became.
 
@@ -127,11 +175,20 @@ def migrate(client, chat_id: int) -> types.Channel:
 def main() -> int:
     reg = json.loads(REG.read_text(encoding="utf-8") or "{}")
     todo = {c: e for c, e in reg.items() if not e.get("adminGranted") and active(e)}
+    # Handed over, still running, and this account can still address it. Asked
+    # every run whether the promotion still holds: a chat whose only human admin
+    # has left is in the state the sweep exists to prevent, and it can arrive
+    # there any day rather than only on the day of the handover.
+    recheck = {
+        c: e for c, e in reg.items()
+        if e.get("adminGranted") and active(e) and not e.get("left")
+        and e.get("supergroup") and e.get("accessHash") is not None
+    }
     # Terms that are over and this account has not yet walked out of. The link
     # is dead weight from here - telegram-prune deletes the ciphertext on the
     # first Saturday anyway - and the chat is the students'.
     done = {c: e for c, e in reg.items() if not active(e) and not e.get("left")}
-    if not todo and not done:
+    if not todo and not done and not recheck:
         return 0
 
     client = TelegramClient(
@@ -153,22 +210,11 @@ def main() -> int:
                     print(f"{code}: already a supergroup, skipping", file=sys.stderr)
                     continue
                 full = client(functions.messages.GetFullChatRequest(chat_id))
-                parts = full.full_chat.participants.participants
-                humans = []
-                bot_ids = []
-                for part in parts:
-                    if part.user_id == me.id:
-                        continue
-                    user = next((u for u in full.users if u.id == part.user_id), None)
-                    if user is not None and user.bot:
-                        bot_ids.append(part.user_id)
-                        continue
-                    humans.append((getattr(part, "date", None), part.user_id))
+                humans, bot_ids = sort_joiners(
+                    full.full_chat.participants.participants, full.users, me.id)
                 if not humans:
                     continue  # nobody joined yet - stay parked, retry next run
-
-                humans.sort(key=lambda h: (h[0] is None, h[0]))
-                first = humans[0][1]
+                first = humans[0]
 
                 for bid in bot_ids:  # defensive: the seed bot leaves at creation
                     client(functions.messages.DeleteChatUserRequest(chat_id=chat_id, user_id=bid))
@@ -200,10 +246,47 @@ def main() -> int:
                 # invite link in the registry belongs to this account and dies
                 # with its membership.
                 entry["adminGranted"] = True
+                entry["adminUserId"] = first
                 changed = True
                 print(code)
             except Exception as exc:  # noqa: BLE001 - one bad group must not stall the sweep
                 print(f"{code}: {type(exc).__name__}: {exc}", file=sys.stderr)
+
+        for code, entry in recheck.items():
+            try:
+                peer = peer_of(client, entry)
+                admins = client(functions.channels.GetParticipantsRequest(
+                    channel=peer, filter=types.ChannelParticipantsAdmins(),
+                    offset=0, limit=200, hash=0))
+                if has_human_admin(admins.participants, admins.users, me.id):
+                    continue
+
+                members = client(functions.channels.GetParticipantsRequest(
+                    channel=peer, filter=types.ChannelParticipantsRecent(),
+                    offset=0, limit=200, hash=0))
+                humans, _ = sort_joiners(members.participants, members.users, me.id)
+                if not humans:
+                    # The screenshot case: the first and only joiner left the
+                    # same minute they arrived. Nothing to promote, so the chat
+                    # waits for the next joiner exactly as an unadopted one does.
+                    print(f"{code}: admin left, nobody inside - parked",
+                          file=sys.stderr)
+                    continue
+
+                client(functions.channels.EditAdminRequest(
+                    channel=peer, user_id=humans[0], admin_rights=RIGHTS, rank=""))
+                # Re-exported for the same reason the handover does it: the
+                # registry is what students are handed, so it holds a link this
+                # run read back off the live chat.
+                invite = client(functions.messages.ExportChatInviteRequest(peer=peer))
+                entry["linkEnc"] = encrypt(invite.link)
+                entry["adminUserId"] = humans[0]
+                note = client.send_message(peer, HANDOVER)
+                client(functions.messages.UpdatePinnedMessageRequest(peer=peer, id=note.id))
+                changed = True
+                print(f"{code}: re-granted")
+            except Exception as exc:  # noqa: BLE001 - one bad group must not stall the sweep
+                print(f"{code}: recheck: {type(exc).__name__}: {exc}", file=sys.stderr)
 
         for code, entry in done.items():
             try:
@@ -226,5 +309,65 @@ def main() -> int:
     return 0
 
 
+def self_check() -> int:
+    """The two readers, against participant lists shaped like Telegram's."""
+    fails: list[str] = []
+
+    def eq(label: str, got: object, want: object) -> None:
+        if got != want:
+            fails.append(f"{label}\n      got  {got}\n      want {want}")
+
+    class P:  # a participant: the two fields both request classes carry
+        def __init__(self, user_id, date=None):
+            self.user_id, self.date = user_id, date
+
+    class U:
+        def __init__(self, uid, bot=False, deleted=False):
+            self.id, self.bot, self.deleted = uid, bot, deleted
+
+    ME = 1
+    users = [U(1), U(2), U(3), U(4, bot=True), U(5, deleted=True)]
+
+    # The creator carries no date and must not be compared against an int.
+    got, bots = sort_joiners([P(1), P(3, 30), P(2, 20)], users, ME)
+    eq("earliest human first, this account dropped", got, [2, 3])
+    eq("and no bots among them", bots, [])
+
+    got, bots = sort_joiners([P(4, 10), P(2, 20)], users, ME)
+    eq("a bot is not a candidate", got, [2])
+    eq("and is reported so it can be removed", bots, [4])
+
+    eq("a deleted account is neither", sort_joiners([P(5, 10)], users, ME)[0], [])
+
+    # A chat somebody migrated from a Telegram client has a creator that is not
+    # this account, and ChannelParticipantCreator carries no join date. Sorting
+    # it first would hand a chat back to whoever already runs it.
+    eq("no join date sorts last, not first",
+       sort_joiners([P(2, 20), P(3)], users, ME)[0], [2, 3])
+
+    # The screenshot: joined 20:28, left 20:28. Telegram drops a member who
+    # leaves from the participant list, so by the next sweep only the throwaway
+    # is there and there is nobody to promote.
+    eq("the only joiner left, so nobody is promotable",
+       sort_joiners([P(1)], users, ME)[0], [])
+
+    # ChannelParticipantsAdmins after that: the throwaway is the creator of the
+    # migrated channel, so it is always in this list and never an answer.
+    eq("the creator alone is not a human admin",
+       has_human_admin([P(1)], users, ME), False)
+    eq("a promoted student is", has_human_admin([P(1), P(2, 20)], users, ME), True)
+    eq("a bot admin is not", has_human_admin([P(1), P(4, 20)], users, ME), False)
+
+    if fails:
+        print(f"self-check: {len(fails)} failure(s)")
+        for f in fails:
+            print(f"  - {f}")
+        return 1
+    print("self-check: the participant readers behave")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--self-check" in sys.argv:
+        sys.exit(self_check())
     sys.exit(main())

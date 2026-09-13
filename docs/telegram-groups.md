@@ -74,10 +74,21 @@ chatId } }` to the registry (auto-commit, same policy as crowdsourced
         > Invite your friends and enjoy!
         > Created by modSUTD.tech
 
-    `adminGranted` is recorded so the group is never visited again. The
-    throwaway **stays** until the term ends: Telegram revokes the invite
-    links of a user who leaves, so walking out here would kill the link it
-    just exported.
+    `adminGranted` and `adminUserId` are recorded. The throwaway **stays**
+    until the term ends: Telegram revokes the invite links of a user who
+    leaves, so walking out here would kill the link it just exported.
+
+7. Every live chat this account can still address is then asked whether a
+   human admin is still inside, because `adminGranted` describes what
+   happened once and not what is true now. Telegram takes a member's admin
+   rights with them when they leave, and the first joiner is free to join
+   and walk straight back out, so a chat can be an hour old, handed over
+   and already unmoderated. If the admin list holds nobody but the
+   throwaway, the earliest remaining joiner is promoted and the note is
+   pinned again; if the chat is empty of humans it parks exactly as an
+   unadopted one does and waits for the next joiner. The throwaway is
+   excluded from that question by construction: migration made it the
+   channel creator, so it is an admin forever and would always answer yes.
 
 **Subsequent clicks**: the registry already holds the link, so the button
 is a plain `t.me` link - no relay, no workflow, no Telegram API.
@@ -131,5 +142,9 @@ unlisted here.
   registry.
 - **Unadopted groups**: a group nobody joins keeps the throwaway inside
   until it expires. Harmless, but it is why the account must be muted.
+- **The admin who left**: a student can join, take the promotion and leave,
+  and their admin rights go with them. The daily sweep re-asks rather than
+  trusting `adminGranted`, so the next joiner gets it. Between the two the
+  chat has no admin, which is the same state an unadopted group is in.
 - **A full chat**: 200 members is the hard basic-group cap; further joins
   fail with `USERS_TOO_MUCH`. Only relevant for a very large batch.
