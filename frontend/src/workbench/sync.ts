@@ -83,32 +83,6 @@ export interface DeviceStart {
 const SLOW_DOWN_STEP_MS = 5_000;
 const DEFAULT_EXPIRES_S = 900;
 
-/**
- * Sleep, but come back early when the tab does.
- *
- * A phone freezes timers in a background tab, and going to github.com to type
- * the code is exactly that. The wake never polls sooner than GitHub's own
- * interval, because it compares wall-clock time against `until` rather than
- * trusting the timer to have run.
- */
-function waitTurn(until: number, now: () => number): Promise<void> {
-  return new Promise((resolve) => {
-    const done = () => {
-      document.removeEventListener('visibilitychange', onVisible);
-      resolve();
-    };
-    // Nothing cancels the timer when the wake wins. A promise resolves once and
-    // removeEventListener on a listener already gone is a no-op, so the late
-    // firing costs one function call and keeping a handle to cancel it would
-    // cost a mutable binding read before it is assigned.
-    const onVisible = () => {
-      if (document.visibilityState === 'visible' && now() >= until) done();
-    };
-    document.addEventListener('visibilitychange', onVisible);
-    setTimeout(done, Math.max(0, until - now()));
-  });
-}
-
 export async function startDeviceFlow(): Promise<DeviceStart> {
   const r = await fetch('/api/gh-device-code', { method: 'POST' });
   const j = await r.json().catch(() => ({}));
@@ -129,10 +103,10 @@ export async function pollForToken(
   const deadline = now() + (start.expires_in ?? DEFAULT_EXPIRES_S) * 1000;
   for (;;) {
     if (signal?.aborted) throw new Error('cancelled');
-    // Never past the deadline. Each slow_down makes the interval longer, so a
-    // fixed `now() + interval` would sail over the expiry and poll a code
-    // GitHub has already thrown away, then report it that much late.
-    await waitTurn(Math.min(now() + interval, deadline), now);
+    // Capped at the deadline. Each slow_down makes the interval longer, so a
+    // plain `interval` would sail over the expiry and poll a code GitHub has
+    // already thrown away, then report it that much late.
+    await new Promise((r) => setTimeout(r, Math.max(0, Math.min(interval, deadline - now()))));
     if (signal?.aborted) throw new Error('cancelled');
     if (now() >= deadline) {
       throw new Error('that code expired - press Link now for a fresh one');

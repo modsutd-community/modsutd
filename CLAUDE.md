@@ -493,9 +493,11 @@ Two are deliberately not monthly, and say why in their own headers:
   collect the token. Each one adds five seconds. And the loop carries the code's
   own `expires_in` as a deadline, because a reply with neither an
   `access_token` nor an `error` - an empty body, an error page - is a `continue`
-  and would otherwise sit on that banner for the rest of the session. The wait
-  also ends early when the tab comes back, since a phone freezes timers in a
-  background tab and typing the code on github.com is exactly that.
+  and would otherwise sit on that banner for the rest of the session. The wait is capped at
+  that deadline too, or a slow_down-stretched interval sails past it. There is
+  deliberately no wake on the tab becoming visible: nothing says the person went
+  to github.com rather than anywhere else, GitHub pushes nothing when the
+  authorisation lands, and the next poll is seconds away in any case.
 
 - **Vercel does not deploy main; `deploy.yml` does.** `vercel.json` sets
   `git.deploymentEnabled.main: false`, so pushes to main build only through the
