@@ -49,6 +49,15 @@ ORPHAN_FILE = "/tmp/orphan.json"
 
 
 def main() -> int:
+    # Cleared before anything can write it, so the file can only ever describe
+    # THIS run. A hosted runner is a fresh VM and /tmp starts empty, but that is
+    # a property of where this happens to run rather than of the script, and a
+    # stale record would send someone to recover a chat that was already fine.
+    try:
+        os.remove(ORPHAN_FILE)
+    except FileNotFoundError:
+        pass
+
     code = os.environ["MOD_CODE"]
     name = os.environ["MOD_NAME"]
     bot = (os.environ.get("TG_BOT_USERNAME") or "").lstrip("@")
