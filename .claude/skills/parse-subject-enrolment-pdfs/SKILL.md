@@ -89,9 +89,27 @@ carries a comma of its own, so a field that fails is retried joined to the one
 after it.
 
 `CBL` is a Cohort and `LEC` a Lecture; the section id agrees (`CI01` / `LI01`).
-The section is stored as `cohort`, and the teaching weeks as `weeks` - that is
-what tells 50.046 CI01 from CI02 in the same lecture theatre at the same hour,
-and 40.302 from 40.305 in the same room across half a term each.
+The section is stored as `cohort` - that is what tells 50.046 CI01 from CI02 in
+the same lecture theatre at the same hour, and 40.302 from 40.305 in the same
+room across half a term each. The weeks line is read to find the record's start
+and then thrown away: nothing in the app asked which weeks a class meets, and a
+field nothing reads is a field that goes stale silently.
+
+## The write merges, it does not replace
+
+`merge_schedules` takes what is in the course record and what the export says.
+The export wins for every meeting it describes. A slot the export does not
+describe survives and is listed under "Kept" at the end of the report, because
+a make-up class or a room change reaches `/data` through a student's paste and
+nowhere else, and an import that assigns over the top deletes it silently.
+
+A contributed slot carries no `cohort` - SAMS prints the section on the header
+row, so one student's paste cannot say which of CI01 and CI02 they are in. So
+an unsectioned entry is matched on type, day, times and room alone, and folds
+into the export's sectioned row rather than drawing the class twice. A
+sectioned entry is matched on the full key, so two real sections both survive.
+Check the Kept list in the report: it is short, and every line in it is either a
+real change the registry has not published or a slot to correct.
 
 ## The legend is the tally
 
