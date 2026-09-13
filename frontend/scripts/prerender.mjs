@@ -228,9 +228,12 @@ for (const v of venues) {
   if (!safeSegment(v.code)) { rejected.push(v.code); continue; }
   const url = `${ORIGIN}/venues/${encodeURIComponent(v.code)}`;
   const where = `Building ${v.building}, floor ${v.floor}`;
+  // Campus Centre, Antique House and Swimming Pool have no room number: their
+  // code IS their name, so joining the two printed it twice.
+  const label = v.code === v.name ? v.name : `${v.code} ${v.name}`;
 
   write(`venues/${v.code}`, page(shell, {
-    title: `${v.code} ${v.name} - SUTD room - modSUTD`,
+    title: `${label} - SUTD room - modSUTD`,
     description: trim(
       `${v.name} is room ${v.code} at SUTD: ${where}. See what is scheduled in it and how to find it.`,
     ),
@@ -261,7 +264,7 @@ for (const v of venues) {
         ['Floor', v.floor],
         ['Type', v.type],
       ],
-      `${v.code} ${v.name}`,
+      label,
       `${v.name} is a room at the Singapore University of Technology and Design. ${where}.`,
     ),
   }));
