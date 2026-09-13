@@ -150,6 +150,8 @@ each new maintainer (or their agent) doesn't re-derive them:
 - `gather-specialisations` - refresh the specialisation-track criteria
 - `venue-search` - what room search already handles, and the one table to
   update when a new room type appears
+- `parse-subject-enrolment-pdfs` - fill a whole term's schedules and rooms
+  from the registry's six enrolment PDFs, rather than waiting for pastes
 - `retire-mod` - a course SUTD dropped: mark it, keep its history, close
   its review thread. Never delete the file
 

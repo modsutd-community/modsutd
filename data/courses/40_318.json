@@ -10,7 +10,98 @@
     "40.260"
   ],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "11:00",
+      "endTime": "13:00",
+      "location": "1.309",
+      "instructors": [],
+      "cohort": "CS01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "11:00",
+      "endTime": "13:00",
+      "location": "1.310",
+      "instructors": [],
+      "cohort": "CS01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "11:30",
+      "endTime": "13:30",
+      "location": "1.309",
+      "instructors": [],
+      "cohort": "CS01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "11:30",
+      "endTime": "13:30",
+      "location": "1.310",
+      "instructors": [],
+      "cohort": "CS01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "ESD",
     "Term 7",
