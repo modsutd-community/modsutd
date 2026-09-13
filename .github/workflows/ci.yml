@@ -80,6 +80,13 @@ jobs:
         working-directory: .
         run: python tools/enrolment/parse_enrolment_pdfs.py --self-check
 
+      # A contributed room that is not a room is invisible: the slot is
+      # written, the heatmap draws, and nothing says the room does not exist.
+      # "Albert", "Lecture" and "Online" all reached /data that way.
+      - name: a contributed venue still resolves to a real room
+        working-directory: .
+        run: python tools/fold_slots.py --self-check
+
       # Where an untermed course lands decides which term filter finds it,
       # where the plan first puts it, and whether it can have a batch chat.
       # A wrong answer is invisible: the course simply sits in a term nobody

@@ -18,6 +18,7 @@ from pathlib import Path
 
 DATA = Path(__file__).resolve().parent.parent / "data"
 COURSES = DATA / "courses"
+VENUES = DATA / "venues"
 TERM_WINDOW = DATA / "term-window.json"
 TERM_CALENDAR = DATA / "term-calendar.json"
 MAX_SLOTS = 80
@@ -29,7 +30,77 @@ TYPES = {"Lecture", "Cohort", "Tutorial", "Lab", "Studio", "Seminar", "Recitatio
 # dropping the suffix threw away every slot for both.
 MOD_RE = re.compile(r"^\d{2}\.\d{3}[A-Za-z]?$")
 TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
-VENUE_RE = re.compile(r"^[\w .\-#()/]{1,30}$")
+# The shape a venue may arrive in. Shape only: what it has to RESOLVE to is
+# `room_code` below, because a shape check let "Albert", "Lecture" and "Online"
+# into /data as room codes, and the room finder then grew heatmaps for rooms
+# that do not exist.
+VENUE_RE = re.compile(r"^[\w .\-#()/]{1,40}$")
+# What a real room code looks like. `data/venues` is keyed on these.
+ROOM_CODE_RE = re.compile(r"^\d{1,2}\.\d{3}[A-Za-z]?$")
+
+
+def venue_index() -> dict[str, str]:
+    """Every name a room answers to, lowercased, to its code.
+
+    Three keys per room, because a pasted timetable prints whichever it feels
+    like: the code, the full name, and the name with its donor bracket dropped.
+    "Lecture Theatre 1 (Albert Hong)" is therefore reachable as `1.102`, as its
+    full name, and as "lecture theatre 1".
+
+    A name two rooms share resolves to neither. Guessing between them puts a
+    class in the wrong room, which is worse than leaving the slot out.
+    """
+    hits: dict[str, set[str]] = {}
+    for f in sorted(VENUES.glob("*.json")):
+        v = json.loads(f.read_text(encoding="utf-8"))
+        code = v["code"]
+        keys = {code.lower()}
+        for n in filter(None, [v.get("name"), *(v.get("altNames") or [])]):
+            keys.add(n.strip().lower())
+            bare = re.sub(r"\s*\([^)]*\)\s*$", "", n).strip().lower()
+            if bare:
+                keys.add(bare)
+        for k in keys:
+            hits.setdefault(k, set()).add(code)
+    return {k: next(iter(v)) for k, v in hits.items() if len(v) == 1}
+
+
+def room_code(raw: str, index: dict[str, str]) -> str | None:
+    """The room a contributed venue string names, or None.
+
+    A code passes only if `data/venues` actually has it: a paste is public
+    input, and "2.999" is as easy to send as "2.507".
+
+    Then the name, whole. Then, last, a name that appears inside exactly ONE
+    room's name - which is how the fragment "Albert" reaches
+    "Lecture Theatre 1 (Albert Hong)" and nothing else. "Lecture" is in
+    dozens, so it resolves to nothing and the slot is dropped rather than
+    written as a room called Lecture.
+    """
+    text = raw.strip()
+    if not text:
+        return None
+    low = text.lower()
+    if ROOM_CODE_RE.match(text):
+        if low in index:
+            return index[low]
+        # A divisible classroom's half: the registry prints 2.507A and 2.507B
+        # and the catalogue holds the room, 2.507. Same rule the enrolment
+        # import uses, so a pasted half and an imported one land together.
+        parent = text[:-1].lower()
+        if text[-1].isalpha() and parent in index:
+            return index[parent]
+        return None                    # a code we do not have is not a room
+    if low in index:
+        return index[low]
+    # A fragment. Only if it is distinctive enough to name one room.
+    matches = {code for name, code in index.items()
+               if not ROOM_CODE_RE.match(name) and low in name.split()}
+    if len(matches) == 1:
+        return next(iter(matches))
+    whole = {code for name, code in index.items()
+             if not ROOM_CODE_RE.match(name) and low in name}
+    return next(iter(whole)) if len(whole) == 1 else None
 
 
 def valid(slot: object) -> bool:
@@ -69,6 +140,43 @@ def term_span(start: str, end: str) -> tuple[str, str]:
     return start, end
 
 
+def self_check() -> int:
+    """Drive the venue reader against /data. No payload, no network.
+
+    Where a contributed room lands is invisible when it goes wrong: the slot is
+    written, the heatmap draws, and nothing says the room does not exist. These
+    are the strings that actually reached /data before this had a resolver.
+    """
+    index = venue_index()
+    cases = [
+        # (what a paste sent, what it must become, why)
+        ("1.102", "1.102", "a code the repo has"),
+        ("2.507", "2.507", "another"),
+        ("Lecture Theatre 1 (Albert Hong)", "1.102", "the printed name, whole"),
+        ("lecture theatre 1", "1.102", "the name with the donor dropped"),
+        ("Cohort Classroom 14", "2.507", "a name with no donor"),
+        ("Albert", "1.102", "a fragment that names exactly one room"),
+        ("2.507A", "2.507", "half of a divisible classroom"),
+        ("2.313A", "2.313A", "a suffix that IS its own room"),
+        ("Lecture", None, "in dozens of names, so it names none"),
+        ("Online", None, "not a room at all"),
+        ("9.999", None, "code-shaped, and not a room the repo has"),
+        ("", None, "nothing"),
+    ]
+    fails = []
+    for raw, want, why in cases:
+        got = room_code(raw, index)
+        if got != want:
+            fails.append(f"{why}: {raw!r} gave {got!r}, want {want!r}")
+    if fails:
+        print(f"self-check: {len(fails)} failure(s)")
+        for f in fails:
+            print(f"  - {f}")
+        return 1
+    print(f"self-check: every venue reads correctly ({len(index)} keys)")
+    return 0
+
+
 def main() -> int:
     try:
         payload = json.loads(os.environ["PAYLOAD"])
@@ -102,9 +210,21 @@ def main() -> int:
     added: list[str] = []
     skipped = 0
 
+    index = venue_index()
+    unplaced: list[str] = []
+
     for slot in slots:
         path = COURSES / f"{slot['mod'].replace('.', '_')}.json"
         if not path.exists():
+            skipped += 1
+            continue
+        # A room this repo knows, or the slot does not go in. Everything
+        # downstream treats `location` as a venue key: the room finder, the
+        # heatmaps, the .ics. A string that is not one is a room that does not
+        # exist, and it is invisible until someone searches for it.
+        room = room_code(str(slot["venue"]), index)
+        if room is None:
+            unplaced.append(f"{slot['mod']} {slot['day']} {slot['start']} @ {slot['venue']!r}")
             skipped += 1
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -114,7 +234,7 @@ def main() -> int:
             "day": slot["day"],
             "startTime": slot["start"],
             "endTime": slot["end"],
-            "location": slot["venue"],
+            "location": room,
             "instructors": [],
         }
         if any(
@@ -129,7 +249,15 @@ def main() -> int:
         schedules.append(entry)
         schedules.sort(key=lambda s: (s.get("day", ""), s.get("startTime", "")))
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        added.append(f"{slot['mod']} {slot['day']} {slot['start']}-{slot['end']} @ {slot['venue']}")
+        added.append(f"{slot['mod']} {slot['day']} {slot['start']}-{slot['end']} @ {room}")
+
+    if unplaced:
+        # Reported, not silent: a room this repo has never heard of is usually
+        # a venue worth adding rather than a bad paste.
+        print(f"{len(unplaced)} slot(s) named a room that is not in data/venues "
+              f"and were left out:", file=sys.stderr)
+        for u in unplaced:
+            print(f"  {u}", file=sys.stderr)
 
     # The term string is attacker-reachable too - whitelist it.
     term = str(payload.get("term", "unspecified"))
@@ -143,4 +271,6 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    if "--self-check" in sys.argv:
+        sys.exit(self_check())
     raise SystemExit(main())
