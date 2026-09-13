@@ -18,18 +18,10 @@
     },
     {
       "type": "Lecture",
-      "day": "Tuesday",
-      "startTime": "14:00",
-      "endTime": "15:00",
-      "location": "Online",
-      "instructors": []
-    },
-    {
-      "type": "Lecture",
       "day": "Wednesday",
       "startTime": "09:00",
       "endTime": "10:00",
-      "location": "Albert",
+      "location": "1.102",
       "instructors": []
     }
   ],
@@ -40,5 +32,7 @@
     "Freshmore Core",
     "HASS"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/02-003-social-science-understanding-behaviour-culture-society/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/02-003-social-science-understanding-behaviour-culture-society/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

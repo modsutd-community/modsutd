@@ -16,5 +16,7 @@
     "Freshmore Core",
     "SMT"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/01-020-design-thinking-project-iii/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/01-020-design-thinking-project-iii/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

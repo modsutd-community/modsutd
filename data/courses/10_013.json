@@ -18,14 +18,6 @@
       "instructors": []
     },
     {
-      "type": "Lecture",
-      "day": "Monday",
-      "startTime": "09:00",
-      "endTime": "10:00",
-      "location": "Lecture",
-      "instructors": []
-    },
-    {
       "type": "Cohort",
       "day": "Monday",
       "startTime": "14:00",
@@ -63,5 +55,7 @@
     "Freshmore Core",
     "SMT"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/10-013-modelling-and-analysis/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-013-modelling-and-analysis/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }
