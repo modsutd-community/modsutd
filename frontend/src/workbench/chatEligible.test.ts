@@ -97,7 +97,7 @@ describe('the button on a mod page', () => {
     expect(teleState({
       chatMod: chatEligible(ineligible),
       entry: true, askedAt: Date.now(), termOk: true,
-      committed: true, committing: true,
+      committed: true, committing: true, capped: false,
     })).toBe('none');
   });
 });

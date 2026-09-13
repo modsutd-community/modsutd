@@ -127,6 +127,17 @@ unlisted here.
   burst past that spreads across days. The cap is re-checked at the commit,
   because runs for different mods overlap and several can clear one gate. The
   button copy must never promise instant.
+  Past the cap the button says so and is unpressable, rather than accepting an
+  ask that goes nowhere: the relay answers 202 for any well-formed code, the
+  gate prints `skip=daily-cap` and exits green, so a pressed button would have
+  shown "creating the chat..." for its ten-minute TTL and then gone back to
+  offering with nobody told why. The browser counts it off the registry it
+  already reads from main - every entry carries `createdDay` - so there is one
+  number and no second place to keep it. `capReached` in
+  `frontend/src/workbench/teleState.ts` is the reader, and its `DAILY_CREATE_CAP`
+  has to move with the two in the workflow. UTC on both sides, which is 08:00
+  in Singapore: a local date would disagree with the gate for those eight
+  hours.
 - **Two clicks at once**: runs are keyed on the mod, so different mods create
   in parallel and the same mod queues. A single queue for the whole workflow
   cancelled the second of three rapid clicks, because GitHub keeps one pending
