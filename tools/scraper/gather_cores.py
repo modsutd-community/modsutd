@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Mark every core course as getting no batch chat.
 
-    python tools/scraper/gather_no_batch_chat.py            # refresh, then report
-    python tools/scraper/gather_no_batch_chat.py --dry-run  # report, write nothing
+    python tools/scraper/gather_cores.py            # refresh, then report
+    python tools/scraper/gather_cores.py --dry-run  # report, write nothing
 
 WHY A CORE GETS NO CHAT
 A batch chat is for a course a cohort CHOOSES, where the people in it are the
@@ -17,14 +17,21 @@ A PILLAR core is published per pillar and the lists move, so they are read off
 each pillar's own filtered listing rather than typed.
 
 A TAGGED core is already in our own data. SUTD's own page tags it, and
-`gather_listing.py` copied the tag into the record, so this half needs no
+`gather_mods.py` copied the tag into the record, so this half needs no
 network at all. `Freshmore Core` is 02.001, 02.003 and the 10.0xx subjects,
 which every freshmore takes alongside the same 200 people; `Core` is a
-programme's own, most of the 20.5xx, 30.5xx and 40.5xx graduate courses.
+programme's own: the 20.5xx, 30.5xx and 40.5xx graduate courses and six ASD
+cores in the middle of the undergraduate degree.
 
-`Core Elective` is NOT in that list and that is the whole distinction: a student
-chooses which core elective to take, so the people in it have nothing else in
-common, which is the case for a batch chat rather than against it.
+`Core Elective` counts as a core. It reads like a choice and is not one in the
+sense that matters: it is a slot every student on the programme has to fill from
+a short published list, so the cohort shares it the way they share any core.
+`Elective` and `Elective / Technical Elective` are the real choices and stay
+out.
+
+The reasons are the tags, lowercased. Naming them for what they seem to be goes
+wrong: "graduate core" fits the 28 courses numbered 500 and up and is flatly
+false for the six ASD cores at terms 4 to 8.
 
 WHAT IT OWNS, AND WHAT IT LEAVES ALONE
 Each half writes `noBatchChat: true` with its own `noBatchChatReason`, and each
@@ -68,13 +75,22 @@ REASON = "pillar core"
 # course that stops being a PILLAR core keeps a tag-driven flag, and the other
 # way round.
 #
-# `Core Elective` is deliberately absent and is not an oversight: a student
-# CHOOSES which core elective to take, so the people in it have nothing else in
-# common, which is the whole case for a batch chat. `Elective` and
-# `Elective / Technical Elective` likewise.
+# Each reason is the tag it came from, lowercased, and that is deliberate.
+# Naming them for what they seem to BE goes wrong: "graduate core" would fit
+# the 28 courses numbered 500 and up and be flatly false for the six ASD cores
+# at terms 4 to 8 (20.213, 20.221, 20.222, 20.224, 20.318, 20.319). A reason
+# copied off the tag cannot be wrong about the course, because the tag is what
+# the page said.
+#
+# `Core Elective` is here too. It reads like a choice and is not one in the
+# sense that matters: it is a slot every student on the programme must fill
+# from a short published list, so a cohort shares it the way they share any
+# core. `Elective` and `Elective / Technical Elective` are the real choices and
+# stay out.
 TAG_REASONS: dict[str, str] = {
     "Freshmore Core": "freshmore core",
-    "Core": "programme core",
+    "Core Elective": "core elective",
+    "Core": "core",
 }
 PLACEHOLDER_CODE = "99.999"
 
@@ -153,7 +169,7 @@ def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
 
     Reads only /data, so it runs whether or not the listings are reachable and
     cannot be left half-applied by a bad minute on sutd.edu.sg. The tags are
-    what `gather_listing.py` copied off the course's own page, so this is the
+    what `gather_mods.py` copied off the course's own page, so this is the
     page speaking, once removed.
 
     Two tags, for the two kinds the listing distinguishes. `Freshmore Core` is
@@ -206,11 +222,15 @@ def self_check() -> int:
     cases = [
         (["Freshmore Core", "HASS"], "freshmore core", "02.001 and 02.003"),
         (["SMT", "Freshmore Core"], "freshmore core", "the 10.0xx subjects"),
-        (["ASD", "Core"], "programme core", "a programme's own core"),
-        (["Core"], "programme core", "the tag on its own"),
-        # The distinction the whole pass turns on.
-        (["EPD", "Core Elective"], None, "a core elective is CHOSEN"),
-        (["Elective / Technical Elective", "HASS"], None, "an elective"),
+        (["ASD", "Core"], "core", "a programme's own core"),
+        (["Core"], "core", "the tag on its own"),
+        (["EPD", "Core Elective"], "core elective", "a slot every student fills"),
+        # `Core` is a substring of `Core Elective`, so the mapping is ordered
+        # longest-first and membership is exact. A core elective must not come
+        # back as a plain core: each reason removes only its own flags, and two
+        # passes disagreeing about which they own is how a flag gets stuck.
+        (["Core Elective"], "core elective", "the longer tag wins outright"),
+        (["Elective / Technical Elective", "HASS"], None, "a real choice"),
         (["Elective"], None, "the short form"),
         (["Freshmore Elective"], None, "chosen, even in freshmore"),
         (["Term 7", "CSD"], None, "no core tag at all"),

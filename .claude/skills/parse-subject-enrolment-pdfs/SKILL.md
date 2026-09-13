@@ -130,7 +130,7 @@ so no chat can be created until this PR is merged. After it is:
 
 - only mods with `noBatchChat` unset get one, which in practice is the HASS
   courses and the electives. A pillar core is flagged by
-  `tools/scraper/gather_no_batch_chat.py` and gets none.
+  `tools/scraper/gather_cores.py` and gets none.
 - the workflow's own gate is **six chats a day**
   (`createdDay == today >= 6 -> skip=daily-cap`), so a term's worth takes
   several days. Do not read a skipped dispatch as a failure; check

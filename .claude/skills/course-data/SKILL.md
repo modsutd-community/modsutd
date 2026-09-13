@@ -49,7 +49,7 @@ check every field against the others:
   spelling variant (that is `utils/search.ts`); `landmarks` is derived by
   `sync-data.mjs` and never typed.
 - **A prerequisite list cannot say "or".** SUTD writes "40.002 Optimisation or
-  60.008 Systems Design Studio" and `gather_listing.py` keeps only the codes, so
+  60.008 Systems Design Studio" and `gather_mods.py` keeps only the codes, so
   `prerequisites` reads as "all of" and the plan demands both. When the listing
   joins the CODES with "or", add a `prereqTree` beside it:
   `{"or": ["40.002", "60.008"]}`, or `{"and": ["50.003", {"or": [...]}]}` for a

@@ -1,7 +1,7 @@
 {
   "code": "99.999",
   "name": "Introduction to Programming",
-  "description": "AY2026 revamped Freshmore curriculum subject. SUTD has not published a course code yet - this entry is distinguished by name only, so prerequisite links to it cannot resolve. Refresh via the gather-listing skill once the official code appears.",
+  "description": "AY2026 revamped Freshmore curriculum subject. SUTD has not published a course code yet - this entry is distinguished by name only, so prerequisite links to it cannot resolve. Refresh via the gather-mods skill once the official code appears.",
   "credits": 6,
   "department": "Science, Mathematics and Technology",
   "pillar": "SMT",

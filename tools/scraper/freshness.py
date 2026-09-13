@@ -36,7 +36,7 @@ HASS_LIST_URLS = [
 ]
 
 # The official course post-type sitemaps - the same enumeration
-# gather_listing.py crawls. Cheap (2 fetches) and covers every pillar.
+# gather_mods.py crawls. Cheap (2 fetches) and covers every pillar.
 COURSE_SITEMAPS = [
     "https://www.sutd.edu.sg/course-sitemap.xml",
     "https://www.sutd.edu.sg/course-sitemap2.xml",
@@ -99,7 +99,7 @@ def site_manifest(site_url: str) -> dict | None:
 def sitemap_codes() -> set[str] | None:
     # Undergrad slugs look like /course/50-043-database-systems/. Suffix
     # variants (03-007a) collapse to the plain code, matching
-    # gather_listing.py's dedupe rule.
+    # gather_mods.py's dedupe rule.
     import re
     from urllib.parse import unquote
 
@@ -216,7 +216,7 @@ def main() -> None:
         gone_all = sorted(repo_all - smap)
         if new_all:
             drift.append(
-                f"{len(new_all)} listed mods missing from the repo (run the gather-listing skill): "
+                f"{len(new_all)} listed mods missing from the repo (run the gather-mods skill): "
                 + ", ".join(new_all[:15]) + ("…" if len(new_all) > 15 else "")
             )
         if gone_all:
@@ -262,7 +262,7 @@ def main() -> None:
     if drift:
         lines += ["## needs a human", ""] + [f"- [ ] {d}" for d in drift] + [
             "",
-            "fix procedures: `.claude/skills/gather-listing` (catalogue/tags), "
+            "fix procedures: `.claude/skills/gather-mods` (catalogue/tags), "
             "`.claude/skills/gather-specialisations` (track criteria), "
             "`.claude/skills/course-data` (manual data edits), "
             "`.claude/skills/new-term` (term rollover).",

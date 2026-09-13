@@ -93,7 +93,7 @@ you the file had to stay.
 - **A course that moved term or changed name.** Edit the record; see
   `.claude/skills/course-data`.
 - **A course split into lettered halves** (03.007 -> 03.007A/03.007B). All three
-  can be live at once. `gather_listing.py` refuses to recreate a base code whose
+  can be live at once. `gather_mods.py` refuses to recreate a base code whose
   lettered siblings exist, so do not "tidy" the base file away.
 - **A placeholder** (`99.999`, `02.XFER`). Those are ours, not SUTD's, and are
   removed outright when they stop being needed.

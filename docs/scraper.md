@@ -34,15 +34,15 @@ the `mods` step anyway: the course sitemap covers all of them.
 
 `_http.py` in that folder is not a source: it is the shared cached HTTP client.
 
-`term_calendar.py` sits beside `scrape.py` rather than under `sources/`, because
+`gather_terms.py` sits beside `scrape.py` rather than under `sources/`, because
 it writes a different file for a different reason. It rebuilds
 `data/term-calendar.json` from SUTD's academic-calendar page - which carries
 every trimester of 2026-2030 in one document - and merges Singapore's public
 holidays from data.gov.sg. Run it the same way:
 
 ```bash
-python term_calendar.py --dry-run   # print, don't write
-python term_calendar.py
+python gather_terms.py --dry-run   # print, don't write
+python gather_terms.py
 ```
 
 It refuses to write below six parsed trimesters, so a redesigned page fails

@@ -154,7 +154,7 @@ each new maintainer (or their agent) doesn't re-derive them:
 
 - `new-term` - everything that must change when a new term starts
 - `course-data` - how to add or fix course/venue JSON correctly
-- `gather-listing` - refresh the catalogue from the official listing
+- `gather-mods` - refresh the catalogue from the official listing
 - `gather-specialisations` - refresh the specialisation-track criteria
 - `venue-search` - what room search already handles, and the one table to
   update when a new room type appears
@@ -395,7 +395,7 @@ Two are deliberately not monthly, and say why in their own headers:
   edits without a network call. Which providers exist and in what order is
   `tools/scraper/agents/llm.py`, and nowhere else.
 - `data/term-calendar.json` is **generated**, by
-  `tools/scraper/term_calendar.py`, in the monthly `scrape` job. Do not
+  `tools/scraper/gather_terms.py`, in the monthly `scrape` job. Do not
   hand-edit it, and do not add a rollover step that does: a file a human has to
   remember to update is right until the first year nobody remembers. What it
   contains and what reads it: `.claude/skills/new-term`.

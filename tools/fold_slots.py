@@ -22,8 +22,8 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 # enrolment import. Two copies disagreed about what a room is.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from venue_resolve import VENUE_RE, room_code, venue_index  # noqa: E402
-COURSES = DATA / "courses"
 
+COURSES = DATA / "courses"
 TERM_WINDOW = DATA / "term-window.json"
 TERM_CALENDAR = DATA / "term-calendar.json"
 MAX_SLOTS = 80
@@ -35,6 +35,8 @@ TYPES = {"Lecture", "Cohort", "Tutorial", "Lab", "Studio", "Seminar", "Recitatio
 # dropping the suffix threw away every slot for both.
 MOD_RE = re.compile(r"^\d{2}\.\d{3}[A-Za-z]?$")
 TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
+
+
 def valid(slot: object) -> bool:
     if not isinstance(slot, dict):
         return False
@@ -52,7 +54,7 @@ def valid(slot: object) -> bool:
 def term_span(start: str, end: str) -> tuple[str, str]:
     """The published span of the term a paste falls in, or the paste's own.
 
-    tools/scraper/term_calendar.py generates the calendar from SUTD's page, so
+    tools/scraper/gather_terms.py generates the calendar from SUTD's page, so
     this is the real first Monday and last day rather than whatever dates one
     student's timetable happens to carry.
     """

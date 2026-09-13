@@ -14,5 +14,7 @@
     "Core Elective",
     "EPD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/30-111-entrepreneurship/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-111-entrepreneurship/",
+  "noBatchChat": true,
+  "noBatchChatReason": "core elective"
 }

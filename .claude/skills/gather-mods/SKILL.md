@@ -1,18 +1,18 @@
 ---
-name: gather-listing
-description: Refresh modSUTD's catalogue from the official sutd.edu.sg course listing - new mods, tags, descriptions - via tools/scraper/gather_listing.py. Use when the freshness issue reports "listed mods missing from the repo", when a term brings new offerings, or on "refresh the catalogue/tags".
+name: gather-mods
+description: Refresh modSUTD's catalogue from the official sutd.edu.sg course listing - new mods, tags, descriptions - via tools/scraper/gather_mods.py. Use when the freshness issue reports "listed mods missing from the repo", when a term brings new offerings, or on "refresh the catalogue/tags".
 ---
 
 # Refreshing the catalogue from the official listing
 
 The official source is the WordPress course post-type, enumerated by two
 sitemaps (`course-sitemap.xml`, `course-sitemap2.xml`) - NOT the JS-rendered
-listing page. `tools/scraper/gather_listing.py` is the reusable gatherer;
+listing page. `tools/scraper/gather_mods.py` is the reusable gatherer;
 
 ## Run it
 
 ```bash
-tools/scraper/.venv/bin/python tools/scraper/gather_listing.py            # full run
+tools/scraper/.venv/bin/python tools/scraper/gather_mods.py            # full run
 #   --dry-run        report only, write nothing
 #   --limit N        first N pages (debugging)
 #   --delay 0.25     politeness delay on cache misses
@@ -39,7 +39,7 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   from `section.js-page-tags a`; term from the first `Term N` tag, and with
   no such tag **8** for an elective or **1** for a `Freshmore Core`, because
   calling both of them term 1 put 149 electives and graduate subjects in the
-  freshmore term. `python gather_listing.py --self-check` pins that table and
+  freshmore term. `python gather_mods.py --self-check` pins that table and
   runs in CI.
 - **Merge policy - never degrade**: existing repo files get a surgical
   `tags` update (pillar tags are unioned in from suffix-variant pages like
@@ -66,7 +66,7 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
 
 ## Verify the harvest, do not trust it
 
-`gather_listing.py` reads the listing and keeps the codes. It cannot read a
+`gather_mods.py` reads the listing and keeps the codes. It cannot read a
 sentence, and SUTD writes prerequisites as prose that changes meaning:
 
 - **Matriculation-year alternatives.** "10.014 Computational Thinking for

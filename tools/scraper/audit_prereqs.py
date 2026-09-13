@@ -1,6 +1,6 @@
 """Reconcile every course record's prerequisites against its SUTD page.
 
-`gather_listing.py` reads the prerequisite block and keeps the course codes in
+`gather_mods.py` reads the prerequisite block and keeps the course codes in
 it, so "40.002 or 60.008" and "40.002 and 60.008" both arrive as
 ["40.002", "60.008"] - which the plan then treats as "all of". This says which
 ones the page joins with "or", and which ones the repo and the page disagree
@@ -59,12 +59,12 @@ def url_by_code() -> dict[str, str]:
 
 
 def prereq_block(html: str) -> str:
-    """The prerequisite text, read the way gather_listing reads it.
+    """The prerequisite text, read the way gather_mods reads it.
 
     Hunting for a heading with a regex and slicing to the next one silently
     skips most pages: SUTD does not use one heading level consistently, and the
     block is sometimes a <ul> and sometimes prose. Walking the document with a
-    state machine - the same shape gather_listing.py uses to produce the
+    state machine - the same shape gather_mods.py uses to produce the
     records this audits - reads them all.
     """
     soup = BeautifulSoup(html, "html.parser")

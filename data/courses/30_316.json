@@ -26,5 +26,7 @@
     "preparation": 5,
     "total": 9,
     "source": "official"
-  }
+  },
+  "noBatchChat": true,
+  "noBatchChatReason": "core elective"
 }
