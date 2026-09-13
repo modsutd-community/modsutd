@@ -116,7 +116,10 @@ export async function pollForToken(
     // link and put the banner back to "Link now" - the "Failed to fetch" that
     // worked on a second try. A transient failure is not an answer, so wait
     // and ask again.
-    let j: { access_token?: string; error?: string; error_description?: string };
+    let j: {
+      access_token?: string; error?: string; error_description?: string;
+      interval?: number;
+    };
     try {
       const r = await fetch('/api/gh-device-token', {
         method: 'POST',
@@ -135,10 +138,16 @@ export async function pollForToken(
     // slow_down is an instruction, not a status. GitHub answers it when a
     // client polls faster than the interval it was given, and it keeps
     // answering it until the client actually slows down - so ignoring it meant
-    // the authorisation could land and never be collected. Each one adds five
-    // seconds, which is what the spec asks for.
+    // the authorisation could land and never be collected.
+    //
+    // The new interval it wants comes back in the same body, so take that when
+    // it is there and fall back to the spec's five-second step when it is not.
+    // There is deliberately no ceiling: capping below what GitHub asked for
+    // earns another slow_down, which is the loop this exists to break. In
+    // practice it settles at ten seconds and stops.
     if (j.error === 'slow_down') {
-      interval += SLOW_DOWN_STEP_MS;
+      const asked = Number(j.interval) * 1000;
+      interval = asked > interval ? asked : interval + SLOW_DOWN_STEP_MS;
       continue;
     }
     if (j.error && j.error !== 'authorization_pending') {

@@ -493,11 +493,16 @@ Two are deliberately not monthly, and say why in their own headers:
   collect the token. Each one adds five seconds. And the loop carries the code's
   own `expires_in` as a deadline, because a reply with neither an
   `access_token` nor an `error` - an empty body, an error page - is a `continue`
-  and would otherwise sit on that banner for the rest of the session. The wait is capped at
-  that deadline too, or a slow_down-stretched interval sails past it. There is
+  and would otherwise sit on that banner for the rest of the session. The new interval
+  comes back in the slow_down body, so it is taken from there rather than
+  guessed, and it is deliberately not capped: a ceiling below what GitHub asked
+  for earns another slow_down and rebuilds the loop. The wait IS capped at the
+  deadline, or a stretched interval sails past the expiry. There is
   deliberately no wake on the tab becoming visible: nothing says the person went
-  to github.com rather than anywhere else, GitHub pushes nothing when the
-  authorisation lands, and the next poll is seconds away in any case.
+  to github.com rather than anywhere else, and GitHub pushes nothing when the
+  authorisation lands, so coming back cannot be a signal. What the banner does
+  instead is say it is checking and how long the code lasts, because "waiting..."
+  with no other information is what a reader files as a bug.
 
 - **Vercel does not deploy main; `deploy.yml` does.** `vercel.json` sets
   `git.deploymentEnabled.main: false`, so pushes to main build only through the

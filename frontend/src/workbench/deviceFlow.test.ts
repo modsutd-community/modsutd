@@ -70,6 +70,19 @@ describe('device flow polling', () => {
     expect(clock.gaps.slice(0, 3)).toEqual([5000, 10000, 15000]);
   });
 
+  it('takes the interval GitHub asks for, not a guess', async () => {
+    // The slow_down body carries the new interval. Using it rather than always
+    // adding five means the client lands on what GitHub wants in one step; a
+    // ceiling below that would earn another slow_down and rebuild the loop.
+    replies({ error: 'slow_down', interval: 30 }, { access_token: 'gho_i' });
+    const clock = fakeClock();
+    return pollForToken({ ...START, expires_in: 900 }, undefined, clock.now)
+      .then((t) => {
+        expect(t).toBe('gho_i');
+        expect(clock.gaps.slice(0, 2)).toEqual([5000, 30000]);
+      });
+  });
+
   it('gives up when the code has expired instead of waiting for good', async () => {
     replies({ error: 'authorization_pending' });
     const clock = fakeClock();
