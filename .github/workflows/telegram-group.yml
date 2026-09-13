@@ -167,5 +167,22 @@ jobs:
                     # colliding on the same beat.
                     sleep $(( (RANDOM % 5) + attempt * 2 ))
                   done
-                  echo "could not register the group after 5 attempts" >&2
+                  # Every attempt lost the race. The group EXISTS on Telegram
+                  # at this point, and an entry that never lands is a group
+                  # nothing can find: no student gets the link, the daily cap
+                  # does not count it, and the end-of-term sweep never leaves
+                  # it, because all three read the registry. So the entry goes
+                  # where a person will find it. Nothing here is a secret the
+                  # registry does not already hold in the clear on main.
+                  {
+                    echo "### Telegram group created but NOT registered"
+                    echo
+                    echo "Five pushes to main all lost the race. The group is live."
+                    echo "Add this to \`data/telegram-groups.json\` by hand:"
+                    echo
+                    echo '```json'
+                    cat /tmp/created.json
+                    echo '```'
+                  } >> "$GITHUB_STEP_SUMMARY"
+                  echo "could not register the group after 5 attempts; the entry is in the job summary" >&2
                   exit 1
