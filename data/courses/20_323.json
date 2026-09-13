@@ -5,12 +5,57 @@
   "credits": 9,
   "department": "Architecture and Sustainable Design",
   "pillar": "ASD",
-  "term": "1",
+  "term": "8",
   "prerequisites": [
     "20.102"
   ],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "10:30",
+      "endTime": "13:30",
+      "location": "2.413",
+      "instructors": [],
+      "cohort": "CA01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "10:30",
+      "endTime": "13:30",
+      "location": "2.605",
+      "instructors": [],
+      "cohort": "CA01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "ASD",
     "Elective / Technical Elective"

@@ -14,5 +14,7 @@
     "Term 2",
     "Freshmore Core"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/03-007-design-thinking-and-innovation/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/03-007-design-thinking-and-innovation/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

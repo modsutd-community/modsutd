@@ -13,5 +13,7 @@
     "Freshmore Core",
     "SMT"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/10-001-advanced-mathematics-i/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-001-advanced-mathematics-i/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

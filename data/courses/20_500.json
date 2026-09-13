@@ -12,5 +12,7 @@
     "ASD",
     "Core"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/20-500-advanced-design-research-studio/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-500-advanced-design-research-studio/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

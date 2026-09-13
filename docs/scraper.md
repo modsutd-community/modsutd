@@ -11,6 +11,7 @@ result as a PR for human review. `scrape.py` is one of those steps.
 | `tracks` | four specialisation-track sections on `www.sutd.edu.sg` | `data/specializations.json` |
 | `terms` | SUTD's academic calendar, plus `data.gov.sg` public holidays | `data/term-calendar.json` |
 | `minors` | SUTD's minors index, then each minor page | nothing, reports |
+| `cores` | each pillar's core listing on `www.sutd.edu.sg` | `data/courses/*.json` |
 | `prereqs` | the same course pages as `mods` | nothing, reports |
 | `propose` | the last two reports, through a model | `data/courses`, `data/minors.json` |
 

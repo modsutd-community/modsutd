@@ -107,8 +107,28 @@ unlisted here.
 
 - **Session invalidated** -> both workflows fail loudly; relink by
   re-running `login.py` and replacing `TG_SESSION`.
-- **Flood limits on creation**: the daily cap spreads a burst of
-  first-clicks across days. The button copy must never promise instant.
+- **Flood limits on creation**: Telegram allows 50 groups or channels a day
+  per account, so the gate in `telegram-group.yml` caps a day at 40 and a
+  burst past that spreads across days. The cap is re-checked at the commit,
+  because runs for different mods overlap and several can clear one gate. The
+  button copy must never promise instant.
+- **Two clicks at once**: runs are keyed on the mod, so different mods create
+  in parallel and the same mod queues. A single queue for the whole workflow
+  cancelled the second of three rapid clicks, because GitHub keeps one pending
+  run per concurrency group.
+- **Hitting the ceiling**: Telegram counts per ACCOUNT, so it can refuse before
+  the registry's cap of 40 does - the session's own history counts, not just
+  what this repo knows about. A refusal at creation is clean: nothing exists,
+  the run fails, and the button goes back to offering once the browser's
+  ten-minute ask expires, so the next click works. `create_group.py` prints the
+  `FloodWaitError` wait so the log says when.
+- **A group with no link**: the one failure that loses something is anything
+  that goes wrong AFTER `CreateChatRequest`, because the group is real from
+  that moment. `create_group.py` writes `/tmp/orphan.json` with the chat id and
+  the workflow puts it in the job summary, which is enough to export a fresh
+  invite for that chat and add the entry by hand. Without the entry nothing
+  finds it again: the button, the cap and the end-of-term sweep all read the
+  registry.
 - **Unadopted groups**: a group nobody joins keeps the throwaway inside
   until it expires. Harmless, but it is why the account must be muted.
 - **A full chat**: 200 members is the hard basic-group cap; further joins

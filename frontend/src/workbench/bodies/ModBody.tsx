@@ -19,7 +19,7 @@ import {
     slotsOnMain,
 } from "../telegram";
 import {awaitingDeploy, CONTRIBUTED_EVENT} from "../contributed";
-import {teleState} from "../teleState";
+import {teleState, chatEligible} from "../teleState";
 import {askedAt, markAsked, clearAsked, TELE_ASKED_EVENT} from "../teleAsked";
 import {ReviewForm} from "../ReviewForm";
 import {defaultLevel, useFreshmore, freshmoreFixedSet} from "../logic";
@@ -30,13 +30,6 @@ import wb from "../wb.module.scss";
 import styles from "./ModBody.module.scss";
 
 const REPO = "modsutd-community/modsutd";
-
-// Capstone and thesis mods get no batch chat: students are split across
-// their own project teams, so a cohort-wide group is just noise.
-// Kept as a fallback for records that predate the flag, and for anything new
-// SUTD names a capstone or thesis before anyone marks it. `noBatchChat` in the
-// data is the real list.
-const SOLO_PROJECT = /capstone|thesis/i;
 
 function TelegramIcon() {
     return (
@@ -82,12 +75,9 @@ function TeleChat({mod}: {mod: Mod}) {
     const [tg, refresh] = useTelegramData();
     const [copied, setCopied] = useState(false);
 
-    // Whether a chat is the kind of thing this mod gets at all. Nothing here is
-    // fetched, so it is knowable on the first render.
-    const chatMod =
-        (Number(mod.term) >= 3 || modPillars(mod).includes("HASS")) &&
-        !mod.noBatchChat &&
-        !SOLO_PROJECT.test(mod.name);
+    // The catalogue marks the same mods in its own column, so the rule lives in
+    // teleState.ts and neither copy can drift from the other.
+    const chatMod = chatEligible(mod);
 
     // Re-render on either store changing. localStorage fires no event in the
     // tab that wrote it, so without these the panel is a render behind its own

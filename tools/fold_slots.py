@@ -17,7 +17,13 @@ import sys
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parent.parent / "data"
+
+# One reader for every room string that reaches /data, shared with the
+# enrolment import. Two copies disagreed about what a room is.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from venue_resolve import VENUE_RE, room_code, venue_index  # noqa: E402
 COURSES = DATA / "courses"
+
 TERM_WINDOW = DATA / "term-window.json"
 TERM_CALENDAR = DATA / "term-calendar.json"
 MAX_SLOTS = 80
@@ -29,9 +35,6 @@ TYPES = {"Lecture", "Cohort", "Tutorial", "Lab", "Studio", "Seminar", "Recitatio
 # dropping the suffix threw away every slot for both.
 MOD_RE = re.compile(r"^\d{2}\.\d{3}[A-Za-z]?$")
 TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
-VENUE_RE = re.compile(r"^[\w .\-#()/]{1,30}$")
-
-
 def valid(slot: object) -> bool:
     if not isinstance(slot, dict):
         return False
@@ -102,9 +105,21 @@ def main() -> int:
     added: list[str] = []
     skipped = 0
 
+    index = venue_index()
+    unplaced: list[str] = []
+
     for slot in slots:
         path = COURSES / f"{slot['mod'].replace('.', '_')}.json"
         if not path.exists():
+            skipped += 1
+            continue
+        # A room this repo knows, or the slot does not go in. Everything
+        # downstream treats `location` as a venue key: the room finder, the
+        # heatmaps, the .ics. A string that is not one is a room that does not
+        # exist, and it is invisible until someone searches for it.
+        room = room_code(str(slot["venue"]), index)
+        if room is None:
+            unplaced.append(f"{slot['mod']} {slot['day']} {slot['start']} @ {slot['venue']!r}")
             skipped += 1
             continue
         data = json.loads(path.read_text(encoding="utf-8"))
@@ -114,7 +129,7 @@ def main() -> int:
             "day": slot["day"],
             "startTime": slot["start"],
             "endTime": slot["end"],
-            "location": slot["venue"],
+            "location": room,
             "instructors": [],
         }
         if any(
@@ -129,7 +144,15 @@ def main() -> int:
         schedules.append(entry)
         schedules.sort(key=lambda s: (s.get("day", ""), s.get("startTime", "")))
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        added.append(f"{slot['mod']} {slot['day']} {slot['start']}-{slot['end']} @ {slot['venue']}")
+        added.append(f"{slot['mod']} {slot['day']} {slot['start']}-{slot['end']} @ {room}")
+
+    if unplaced:
+        # Reported, not silent: a room this repo has never heard of is usually
+        # a venue worth adding rather than a bad paste.
+        print(f"{len(unplaced)} slot(s) named a room that is not in data/venues "
+              f"and were left out:", file=sys.stderr)
+        for u in unplaced:
+            print(f"  {u}", file=sys.stderr)
 
     # The term string is attacker-reachable too - whitelist it.
     term = str(payload.get("term", "unspecified"))
@@ -143,4 +166,11 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    # The venue reading this file used to own moved to venue_resolve.py, and
+    # so did its check. Said here because the flag used to work and falling
+    # through to the real mode gives "bad payload: PAYLOAD", which explains
+    # nothing.
+    if "--self-check" in sys.argv:
+        sys.exit("the venue reader lives in tools/venue_resolve.py now: "
+                 "run `python tools/venue_resolve.py --self-check`")
     raise SystemExit(main())

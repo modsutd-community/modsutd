@@ -8,7 +8,64 @@
   "term": "1",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.414",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "10:30",
+      "endTime": "13:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "11:00",
+      "endTime": "13:00",
+      "location": "1.414",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "16:30",
+      "endTime": "18:30",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "10:30",
+      "endTime": "13:00",
+      "location": "1.414",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "15:30",
+      "endTime": "18:00",
+      "location": "1.413",
+      "instructors": []
+    }
+  ],
   "tags": [
     "ISTD",
     "Term 1",
@@ -22,5 +79,7 @@
     "total": 12,
     "source": "official"
   },
-  "sourceUrl": "https://www.sutd.edu.sg/course/10-025-computational-thinking-for-design/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-025-computational-thinking-for-design/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

@@ -13,7 +13,76 @@
     "50.004"
   ],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "11:30",
+      "endTime": "13:00",
+      "location": "2.507",
+      "instructors": [],
+      "cohort": "LI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Lecture",
+      "day": "Tuesday",
+      "startTime": "10:30",
+      "endTime": "12:00",
+      "location": "2.507",
+      "instructors": [],
+      "cohort": "LI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "11:30",
+      "endTime": "13:30",
+      "location": "2.507",
+      "instructors": [],
+      "cohort": "CI01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",

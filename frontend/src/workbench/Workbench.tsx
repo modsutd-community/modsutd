@@ -20,6 +20,8 @@ import {useFilteredMods, detectConflicts, useNowInfo} from "./logic";
 import {Panel} from "./Panel";
 import {Otto} from "./Otto";
 import {CatalogueBody} from "./bodies/CatalogueBody";
+import {useTelegramData} from "./telegram";
+import {chatOffered} from "./teleState";
 import {ModBody} from "./bodies/ModBody";
 import {TimetableBody} from "./bodies/TimetableBody";
 import {RoomsBody} from "./bodies/RoomsBody";
@@ -170,10 +172,28 @@ function WorkbenchInner() {
                 ui.setTerm(term as Exclude<typeof ui.term, "ALL">);
             if (isMobile) ui.setMobileTab("mods");
             else api.open("cat");
+        } else if (/^\/venues\/[^/]+$/.test(path)) {
+            // A room as a path, so it can be a prerendered file: you cannot
+            // write dist/venues/index.html?focus=2.507. An ADDITION, not a
+            // rename - /venues?focus= below still works and is what every
+            // existing link and share uses.
+            ui.setSelectedRoom(safeDecode(path.slice("/venues/".length)));
+            // The search box is restored from the last visit, and the room
+            // list is narrowed by it, so a saved filter could hide the very
+            // room the link names. A url that names one room outranks whatever
+            // was typed days ago.
+            ui.setFilter("");
+            if (isMobile) ui.setMobileTab("rooms");
+            else api.open("rooms");
         } else if (path === "/venues") {
             const focus = params.get("focus");
             const q = params.get("q");
-            if (focus) ui.setSelectedRoom(focus);
+            if (focus) {
+                ui.setSelectedRoom(focus);
+                // Same reason as the path form above. An explicit ?q= below
+                // still wins, because that one was asked for in the url.
+                ui.setFilter("");
+            }
             // /venues?q= now feeds the one shared search, same as the mods tab.
             if (q !== null) ui.setFilter(q);
             if (isMobile) ui.setMobileTab("rooms");
@@ -717,6 +737,11 @@ function MobileShell({
     const ui = useWorkbenchUi();
     const rows = useFilteredMods();
     const dispatch = useAppDispatch();
+    // Shares the module cache with the desktop list and the mod panel, so the
+    // mobile shell pays for no extra request of its own.
+    const [tg] = useTelegramData();
+    const offered = (m: (typeof rows)[number]) =>
+        chatOffered(m, tg?.registry[m.code], tg?.term.end);
     const suppressClick = useRef(false);
 
     const TABS: Array<{key: MobileTab; label: string; icon: string}> = [
@@ -919,6 +944,26 @@ function MobileShell({
                                                     }}
                                                 >
                                                     {m.pillar}
+                                                    {/* The same mark the
+                                                        desktop list carries
+                                                        beside PILR, and the
+                                                        same question: is
+                                                        there a chat, or would
+                                                        the button make one.
+                                                        Two lists, different
+                                                        markup, one rule. */}
+                                                    {offered(m) ? (
+                                                        <span
+                                                            data-act="tele-eligible"
+                                                            aria-label="has a batch chat"
+                                                            style={{
+                                                                marginLeft: 4,
+                                                                color: "rgba(122,162,247,0.65)",
+                                                            }}
+                                                        >
+                                                            ✈
+                                                        </span>
+                                                    ) : null}
                                                 </span>
                                             </span>
                                             <span className={styles.mrowName}>

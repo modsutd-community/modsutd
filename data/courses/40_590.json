@@ -5,7 +5,7 @@
   "credits": 12,
   "department": "Engineering Systems and Design",
   "pillar": "ESD",
-  "term": "1",
+  "term": "8",
   "prerequisites": [],
   "corequisites": [],
   "schedules": [],
@@ -13,5 +13,7 @@
     "Core",
     "ESD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-590-research-seminar/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-590-research-seminar/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

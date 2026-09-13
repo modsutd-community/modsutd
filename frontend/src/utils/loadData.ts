@@ -42,7 +42,18 @@ export function buildAvailability(courses: Mod[]): Record<string, VenueAvailabil
         type: s.type,
       };
       const entry = (map[code] ??= { venueCode: code, schedule: [] });
-      entry.schedule.push(slot);
+      // A room is busy once, however many classes are sitting in it. SUTD runs
+      // a large CBL as two sections in one lecture theatre - 50.046 CI01 and
+      // CI02 both meet in 2.404 at 11:30 on Monday, two instructors, one room -
+      // and each is its own schedule entry, so without this the hour draws the
+      // same mod twice in the heatmap and the busy-until tooltip counts it
+      // twice. The section is what tells the two apart, and it is not a thing
+      // a room has.
+      const dup = entry.schedule.some(
+        (s) => s.day === slot.day && s.startTime === slot.startTime
+          && s.endTime === slot.endTime && s.modCode === slot.modCode,
+      );
+      if (!dup) entry.schedule.push(slot);
     }
   }
   return map;

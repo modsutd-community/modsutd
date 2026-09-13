@@ -13,5 +13,7 @@
     "Term 3",
     "Core"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/02-563-master-research-project/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/02-563-master-research-project/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

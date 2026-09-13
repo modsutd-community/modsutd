@@ -9,7 +9,11 @@ const LIVE_TERM = { start: '2026-01-01', end: '2099-01-01' };
 
 async function stub(page: Page, codes: string[], registry: Record<string, unknown>) {
   await page.route('**/data/term-window.json', (r) => r.fulfill({ json: LIVE_TERM }));
-  await page.route('**/data/telegram-groups.json', (r) => r.fulfill({ json: registry }));
+  // A regex, not a glob: fetchAll reads the registry twice, the bundled copy
+  // and the one on main through raw.githubusercontent with a cache-busting
+  // query. A glob on the path matches only the first, and the real registry
+  // from main then leaks into a test that meant to supply its own.
+  await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: registry }));
   await page.route('**/data/courses.json', (r) => r.fulfill({
     json: coursesWithSchedules(codes, [{
       type: 'Lecture', day: 'Monday', startTime: '09:00', endTime: '11:00',
@@ -19,14 +23,18 @@ async function stub(page: Page, codes: string[], registry: Record<string, unknow
 }
 
 test.describe('telegram batch chat', () => {
+  // A T7 CSD elective, and it has to stay one. 50.040 stands here because a
+  // course a student CHOOSES is the only kind that gets a chat: this suite used
+  // 50.001 until it was read off CSD's own core listing, and every eligibility
+  // test then asserted against a mod that is no longer eligible.
   const ENTRY = {
-    '50.001': { linkEnc: 'v1:stub:stub', title: 'x', created: '2026-07', expires: '2099-01-01' },
+    '50.040': { linkEnc: 'v1:stub:stub', title: 'x', created: '2026-07', expires: '2099-01-01' },
   };
 
   test('an offered mod shows the branded join button', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'same component in the mobile sheet');
-    await stub(page, ['50.001'], ENTRY);
-    await page.goto('/mods/50.001');
+    await stub(page, ['50.040'], ENTRY);
+    await page.goto('/mods/50.040');
 
     const join = page.locator('[data-panel="mod"]').getByRole('button', { name: /Join the Tele chat/ });
     await expect(join).toBeVisible();
@@ -59,14 +67,14 @@ test.describe('telegram batch chat', () => {
     let reads = 0;
     // Registered LAST on purpose: Playwright tries the most recently added
     // route first, so a counting route added before stub() never fires.
-    await stub(page, ['50.001'], {});
+    await stub(page, ['50.040'], {});
     await page.route(/telegram-groups\.json/, (r) => {
       reads += 1;
       return r.fulfill({ json: {} });
     });
 
     await page.clock.install();
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     // fetchAll reads the registry twice, the bundled copy and the one on main,
     // and they land independently - so wait for both before taking a baseline
     // or the second one lands during the next assertion and reads as a refresh.
@@ -76,8 +84,8 @@ test.describe('telegram batch chat', () => {
     const cat = page.locator('[data-panel="cat"]');
     const reopen = async () => {
       await cat.getByRole('button', { name: /10\.013/ }).first().click();
-      await cat.getByRole('button', { name: /50\.001/ }).first().click();
-      await expect(page.locator('[data-panel="mod"]')).toContainText('50.001');
+      await cat.getByRole('button', { name: /50\.040/ }).first().click();
+      await expect(page.locator('[data-panel="mod"]')).toContainText('50.040');
     };
 
     // Inside the window, clicking through mods costs no fetch at all.
@@ -103,15 +111,23 @@ test.describe('telegram batch chat', () => {
     // main has not got the slots yet - that is the state under test, and
     // without this stub the probe would flip it straight to ready.
     await page.route(/raw\.githubusercontent\.com.*courses/, (r) => r.fulfill({ json: { schedules: [] } }));
+    // COMMITTING is "this browser pasted, the build has not caught up", and
+    // overlayLocal never covers deployed data - so the bundle has to have no
+    // slots for this mod. Emptied here rather than relying on the shipped file
+    // still being empty: one contributed timetable would make that untrue and
+    // this test would fail for a reason that has nothing to do with the state.
+    await page.route('**/data/courses.json', (r) => r.fulfill({
+      json: coursesWithSchedules(['50.040'], []),
+    }));
 
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     const waiting = page.locator('[data-act="tele-awaiting"]');
     // Nobody who has not pasted sees anything at all.
     await expect(waiting).toHaveCount(0);
 
     await page.evaluate(() => localStorage.setItem(
       'modsutd.contributed.v3',
-      JSON.stringify({ '50.001': { at: Date.now(), termEnd: '2099-12-12', schedules: [
+      JSON.stringify({ '50.040': { at: Date.now(), termEnd: '2099-12-12', schedules: [
         { type: 'Cohort', day: 'Monday', startTime: '09:00', endTime: '11:00', location: '2.101', instructors: [] },
       ] } })));
     await page.reload();
@@ -134,11 +150,19 @@ test.describe('telegram batch chat', () => {
     await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: {} }));
 
     await page.route(/raw\.githubusercontent\.com.*courses/, (r) => r.fulfill({ json: { schedules: [] } }));
+    // COMMITTING is "this browser pasted, the build has not caught up", and
+    // overlayLocal never covers deployed data - so the bundle has to have no
+    // slots for this mod. Emptied here rather than relying on the shipped file
+    // still being empty: one contributed timetable would make that untrue and
+    // this test would fail for a reason that has nothing to do with the state.
+    await page.route('**/data/courses.json', (r) => r.fulfill({
+      json: coursesWithSchedules(['50.040'], []),
+    }));
 
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     await page.evaluate(() => localStorage.setItem(
       'modsutd.contributed.v3',
-      JSON.stringify({ '50.001': { at: Date.now(), termEnd: '2099-12-12', schedules: [
+      JSON.stringify({ '50.040': { at: Date.now(), termEnd: '2099-12-12', schedules: [
         { type: 'Cohort', day: 'Monday', startTime: '09:00', endTime: '11:00', location: '2.101', instructors: [] },
       ] } })));
     await page.reload();
@@ -164,16 +188,16 @@ test.describe('telegram batch chat', () => {
     const stored = await page.evaluate(() => localStorage.getItem('modsutd.contributed.v3'));
     expect(stored).toBe(null);
 
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     await expect(page.locator('[data-act="tele-awaiting"]')).toHaveCount(0);
   });
 
   test('a refused link is explained in the top banner, not inline', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'same component in the mobile sheet');
-    await stub(page, ['50.001'], ENTRY);
+    await stub(page, ['50.040'], ENTRY);
     await page.route('**/api/telegram-link', (r) =>
       r.fulfill({ status: 429, json: { code: 'quota', error: 'that is 8 join links today - the rest unlock tomorrow' } }));
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
 
     // Wait on the request, not on the banner appearing in time: notice.ts
     // clears itself after 7s, and the assertion's own budget is shorter than
@@ -185,16 +209,77 @@ test.describe('telegram batch chat', () => {
     await expect(page.getByRole('status').getByText(/8 join links today/)).toBeVisible();
   });
 
-  test('capstone and thesis mods never get a chat', async ({ page, isMobile }) => {
+  // 50.001 is the pillar-core half of this: everybody in CSD takes it, so the
+  // chat would have the same membership as the cohort chat they are already in.
+  // It is flagged by tools/scraper/gather_no_batch_chat.py rather than by hand,
+  // which is why it is worth an assertion - a listing that stops parsing takes
+  // the flag off and nothing else would notice.
+  test('capstones, thesis mods and pillar cores never get a chat', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'same component in the mobile sheet');
-    await stub(page, ['01.400', '20.512'], {});
+    await stub(page, ['01.400', '20.512', '50.001'], {});
 
-    for (const code of ['01.400', '20.512']) {
+    for (const code of ['01.400', '20.512', '50.001']) {
       await page.goto(`/mods/${code}`);
       const mod = page.locator('[data-panel="mod"]');
       await expect(mod.locator(`[data-code="${code}"]`)).toBeVisible();
-      await expect(mod.getByRole('button', { name: /Join the Tele chat/ })).toHaveCount(0);
+      // tele-create is what an ELIGIBLE mod draws under these stubs: the term
+      // is live and the slots are on main, so the only thing standing between
+      // it and a chat is the flag. Asserting on the LIVE join button instead
+      // would hold for every state, because the registry here is empty.
+      await expect(mod.locator('[data-act="tele-create"]')).toHaveCount(0);
     }
+  });
+
+  // The catalogue marks a chat that EXISTS, not one that could. Eligibility is
+  // a property of the record and would mark every HASS course in the catalogue
+  // whether or not it runs this term; the registry is the only thing that
+  // knows a group was actually made, and "there is a chat to join" is the
+  // question a reader scanning the list is asking.
+  test('the catalogue marks a chat that exists or one the button would make',
+    async ({ page }) => {
+      // 50.040 and 10.013 get slots, so both "run this term"; the registry is
+      // empty, so nothing here has a chat yet.
+      await stub(page, ['50.040', '10.013'], {});
+      const only = async (code: string) => {
+        await page.goto(`/mods?q=${code}`);
+        await expect(page.getByText(code, { exact: false }).first()).toBeVisible();
+        return page.locator('[data-act="tele-eligible"]');
+      };
+
+      // Eligible AND running, with no chat yet: one click would make one, so
+      // the row is marked. This is the case the registry alone misses.
+      await expect(await only('50.040')).toHaveCount(1);
+      // Running this term, and freshmore, whose cohort already shares a chat.
+      await expect(await only('10.013')).toHaveCount(0);
+      // Eligible forever, HASS, and not offered this term: no slots, so
+      // nothing anyone could create. This is the case that prompted the rule.
+      await expect(await only('02.153')).toHaveCount(0);
+      // And its sibling that IS offered this term is marked, on the strength
+      // of one slot and no registry entry at all.
+      await expect(await only('02.146')).toHaveCount(1);
+      // A capstone, running or not.
+      await expect(await only('01.400')).toHaveCount(0);
+    });
+
+  // A chat that exists is joinable whatever the catalogue says about the
+  // course, so an entry outranks the rest of the rule.
+  test('the catalogue marks a live chat for a mod with no slots', async ({ page }) => {
+    await stub(page, [], ENTRY);
+    await page.goto('/mods?q=50.040');
+    await expect(page.getByText('50.040', { exact: false }).first()).toBeVisible();
+    await expect(page.locator('[data-act="tele-eligible"]')).toHaveCount(1);
+  });
+
+  // An entry whose term has ended is not a chat anyone can join. Asserted on
+  // 02.153, which has no slots: for a mod that IS running, the other half of
+  // the rule marks the row whatever the old entry says, and rightly so.
+  test('the catalogue drops the mark when the entry has expired', async ({ page }) => {
+    await stub(page, [], {
+      '02.153': { linkEnc: 'v1:stub:stub', title: 'x', created: '2020-01', expires: '2020-06-30' },
+    });
+    await page.goto('/mods?q=02.153');
+    await expect(page.getByText('02.153', { exact: false }).first()).toBeVisible();
+    await expect(page.locator('[data-act="tele-eligible"]')).toHaveCount(0);
   });
 
   // The registry lives on main and is read through raw.githubusercontent,
@@ -210,7 +295,7 @@ test.describe('telegram batch chat', () => {
       raw.push(r.request().url());
       return r.fulfill({ json: {} });
     });
-    await page.goto('/mods/50.001');
+    await page.goto('/mods/50.040');
     await expect.poll(() => raw.length, { timeout: 10_000 }).toBeGreaterThan(0);
     for (const url of raw) expect(url).toMatch(/[?&]t=\d+/);
   });

@@ -8,7 +8,98 @@
   "term": "7",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "location": "2.404",
+      "instructors": [],
+      "cohort": "LH01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "16:00",
+      "endTime": "18:00",
+      "location": "2.308",
+      "instructors": [],
+      "cohort": "CH01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "18:00",
+      "endTime": "20:00",
+      "location": "2.308",
+      "instructors": [],
+      "cohort": "CH02",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "location": "2.308",
+      "instructors": [],
+      "cohort": "CH03",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",
