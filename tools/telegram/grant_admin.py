@@ -175,10 +175,18 @@ def migrate(client, chat_id: int) -> types.Channel:
 def main() -> int:
     reg = json.loads(REG.read_text(encoding="utf-8") or "{}")
     todo = {c: e for c, e in reg.items() if not e.get("adminGranted") and active(e)}
-    # Handed over, still running, and this account can still address it. Asked
-    # every run whether the promotion still holds: a chat whose only human admin
-    # has left is in the state the sweep exists to prevent, and it can arrive
-    # there any day rather than only on the day of the handover.
+    # Handed over by THIS sweep, still running, and addressable as a channel.
+    # Asked every run whether the promotion still holds: a chat whose only human
+    # admin has left is in the state the sweep exists to prevent, and it can
+    # arrive there any day rather than only on the day of the handover.
+    #
+    # The three conditions past `adminGranted` are narrower than "every live
+    # chat" on purpose. `channels.getParticipants` answers for a channel and not
+    # for a basic group, and the handover writes `adminGranted`, `supergroup`
+    # and `accessHash` in one block, so an entry carrying the first without the
+    # other two is one a person edited. A term that is over is the `done` queue
+    # below: the chat belongs to its members by then and this account is walking
+    # out of it.
     recheck = {
         c: e for c, e in reg.items()
         if e.get("adminGranted") and active(e) and not e.get("left")
