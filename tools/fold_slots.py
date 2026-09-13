@@ -39,16 +39,17 @@ VENUE_RE = re.compile(r"^[\w .\-#()/]{1,40}$")
 ROOM_CODE_RE = re.compile(r"^\d{1,2}\.\d{3}[A-Za-z]?$")
 
 
-def venue_index() -> dict[str, str]:
-    """Every name a room answers to, lowercased, to its code.
+def venue_index() -> dict[str, set[str]]:
+    """Every name a room answers to, lowercased, to the codes that answer.
+
+    Values are SETS on purpose. Two rooms really are both called "Studio 7"
+    (2.209 and 2.306) and two more are both "Robotics Innovation Laboratory",
+    so a name is not a key - it is a question that sometimes has two answers,
+    and the caller has to see that rather than be handed one of them.
 
     Three keys per room, because a pasted timetable prints whichever it feels
     like: the code, the full name, and the name with its donor bracket dropped.
-    "Lecture Theatre 1 (Albert Hong)" is therefore reachable as `1.102`, as its
-    full name, and as "lecture theatre 1".
-
-    A name two rooms share resolves to neither. Guessing between them puts a
-    class in the wrong room, which is worse than leaving the slot out.
+    "Lecture Theatre 1 (Albert Hong)" is reachable by all three.
     """
     hits: dict[str, set[str]] = {}
     for f in sorted(VENUES.glob("*.json")):
@@ -62,45 +63,60 @@ def venue_index() -> dict[str, str]:
                 keys.add(bare)
         for k in keys:
             hits.setdefault(k, set()).add(code)
-    return {k: next(iter(v)) for k, v in hits.items() if len(v) == 1}
+    return hits
 
 
-def room_code(raw: str, index: dict[str, str]) -> str | None:
+def room_code(raw: str, index: dict[str, set[str]]) -> str | None:
     """The room a contributed venue string names, or None.
 
-    A code passes only if `data/venues` actually has it: a paste is public
-    input, and "2.999" is as easy to send as "2.507".
+    Four steps, each refusing rather than guessing.
 
-    Then the name, whole. Then, last, a name that appears inside exactly ONE
-    room's name - which is how the fragment "Albert" reaches
-    "Lecture Theatre 1 (Albert Hong)" and nothing else. "Lecture" is in
-    dozens, so it resolves to nothing and the slot is dropped rather than
-    written as a room called Lecture.
+    A code passes only if `data/venues` actually has it: a paste is public
+    input and "2.999" is as easy to send as "2.507". A trailing letter whose
+    parent exists is a divisible classroom's half, so 2.507A is 2.507 - the
+    same rule the enrolment import uses.
+
+    Then the name, whole. If that name belongs to TWO rooms it stops here and
+    returns None; it does not fall through. That fall-through is what made
+    "Studio 7", a real name shared by 2.209 and 2.306, resolve to 61.205
+    "Dance Studio 7" - a room on another campus block that merely contains the
+    words.
+
+    Last, a fragment, matched against every venue name rather than against the
+    names that happened to be unambiguous. "Albert" is inside exactly one name
+    and becomes 1.102; "Robotics" is inside two identically named labs and
+    becomes nothing; "Lecture" is inside dozens.
     """
     text = raw.strip()
     if not text:
         return None
     low = text.lower()
+
     if ROOM_CODE_RE.match(text):
-        if low in index:
-            return index[low]
-        # A divisible classroom's half: the registry prints 2.507A and 2.507B
-        # and the catalogue holds the room, 2.507. Same rule the enrolment
-        # import uses, so a pasted half and an imported one land together.
+        hit = index.get(low)
+        if hit and len(hit) == 1:
+            return next(iter(hit))
         parent = text[:-1].lower()
-        if text[-1].isalpha() and parent in index:
-            return index[parent]
-        return None                    # a code we do not have is not a room
-    if low in index:
-        return index[low]
-    # A fragment. Only if it is distinctive enough to name one room.
-    matches = {code for name, code in index.items()
-               if not ROOM_CODE_RE.match(name) and low in name.split()}
-    if len(matches) == 1:
-        return next(iter(matches))
-    whole = {code for name, code in index.items()
-             if not ROOM_CODE_RE.match(name) and low in name}
-    return next(iter(whole)) if len(whole) == 1 else None
+        if text[-1].isalpha():
+            hit = index.get(parent)
+            if hit and len(hit) == 1:
+                return next(iter(hit))
+        return None
+
+    hit = index.get(low)
+    if hit is not None:
+        # Known, and that includes known to be ambiguous.
+        return next(iter(hit)) if len(hit) == 1 else None
+
+    # A fragment. Over every name, so a name two rooms share counts twice and
+    # refuses, rather than being invisible here because it was deduped away.
+    codes: set[str] = set()
+    for name, owners in index.items():
+        if ROOM_CODE_RE.match(name):
+            continue
+        if low in name.split() or low in name:
+            codes |= owners
+    return next(iter(codes)) if len(codes) == 1 else None
 
 
 def valid(slot: object) -> bool:
@@ -159,6 +175,18 @@ def self_check() -> int:
         ("2.507A", "2.507", "half of a divisible classroom"),
         ("2.313A", "2.313A", "a suffix that IS its own room"),
         ("Lecture", None, "in dozens of names, so it names none"),
+        # The ambiguous-name trap. Both 2.209 and 2.306 really are called
+        # "Studio 7", and the fallback used to skip past that and hand back
+        # 61.205 "Dance Studio 7", a room in another block that merely
+        # contains the words.
+        ("Studio 7", None, "a name two rooms share is not an answer"),
+        ("Robotics", None, "two labs have the identical name"),
+        ("Incubation Room", None, "so do two incubation rooms"),
+        # And the other side of it: an exact name wins over a longer one that
+        # contains it. A paste saying Think Tank 11 does not mean Mini Think
+        # Tank 11.
+        ("Think Tank 11", "1.503", "its own name beats a longer one"),
+        ("Studio 1", "1.521", "the same, against Dance Studio 1"),
         ("Online", None, "not a room at all"),
         ("9.999", None, "code-shaped, and not a room the repo has"),
         ("", None, "nothing"),
