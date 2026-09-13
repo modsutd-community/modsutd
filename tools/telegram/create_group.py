@@ -13,6 +13,19 @@ TG_BOT_USERNAME (optional seed fallback).
 Prints one JSON line: {code, title, linkEnc, created, chatId}. The link is
 encrypted because the registry it lands in is committed to a public repo -
 see linkcrypt.py.
+
+THE ONE FAILURE THAT LOSES SOMETHING
+Everything before CreateChatRequest can fail freely: nothing exists yet, the
+workflow reports it, and the button goes back to offering once the ten-minute
+ask expires. Everything AFTER it is different, because the group is real from
+that moment and the throwaway is sitting in it. A failure there used to end the
+run with nothing written anywhere, so the group had no link, no registry entry,
+and nothing that would ever find it again: the prune sweep reads the registry,
+so it would never leave either.
+
+So a failure past that point writes ORPHAN_FILE with the chat id, which is all
+a person needs to export a fresh invite link for that chat and add the entry by
+hand. The workflow puts it in the job summary.
 """
 
 from __future__ import annotations
@@ -28,6 +41,11 @@ from telethon.sessions import StringSession
 from telethon.tl import functions
 
 from linkcrypt import encrypt
+
+
+# Read by the workflow's failure path. /tmp rather than the checkout, so a
+# `git reset --hard` in a later step cannot take it away.
+ORPHAN_FILE = "/tmp/orphan.json"
 
 
 def main() -> int:
@@ -53,6 +71,16 @@ def main() -> int:
         seed = []
         try:
             created = client(functions.messages.CreateChatRequest(users=[], title=title))
+        except errors.FloodWaitError as exc:
+            # Telegram's own ceiling, which can bite before the registry's own
+            # cap of 40 does: the limit is per ACCOUNT and counts everything
+            # this session has created, not only what this repo knows about.
+            # Nothing exists yet, so this is a clean refusal - the button goes
+            # back to offering once the ask expires and the next click works.
+            print(f"{code}: Telegram is rate limiting group creation for "
+                  f"{exc.seconds}s. Nothing was created. Try again after that.",
+                  file=sys.stderr)
+            raise
         except errors.RPCError as exc:
             if "USERS_TOO_FEW" not in str(exc) or not bot:
                 raise
@@ -62,9 +90,20 @@ def main() -> int:
         chats = getattr(created, "chats", None) or created.updates.chats
         chat_id = chats[0].id
 
-        invite = client(functions.messages.ExportChatInviteRequest(peer=chat_id))
-        for user in seed:
-            client(functions.messages.DeleteChatUserRequest(chat_id=chat_id, user_id=user))
+        # The group exists from here. Anything that goes wrong below leaves it
+        # real and unreachable unless this says where it is.
+        try:
+            invite = client(functions.messages.ExportChatInviteRequest(peer=chat_id))
+            for user in seed:
+                client(functions.messages.DeleteChatUserRequest(chat_id=chat_id, user_id=user))
+        except Exception:
+            with open(ORPHAN_FILE, "w", encoding="utf-8") as f:
+                json.dump({"code": code, "title": title, "chatId": chat_id,
+                           "note": "group created, link not exported"}, f)
+            print(f"{code}: the group exists (chat {chat_id}) but its link was "
+                  f"not exported. {ORPHAN_FILE} has what is needed to finish it "
+                  f"by hand.", file=sys.stderr)
+            raise
         # The creator STAYS (muted): in a basic group only it can appoint an
         # admin, so it waits for the sweep to hand over to the first joiner.
 
