@@ -12,7 +12,7 @@ merges what it finds into /data/courses/:
 Courses that mention LKYCIC or NAMIC (as standalone tokens - "Dynamics"
 must not match "NAMIC") are skipped.
 
-Run with:  python gather_listing.py [--dry-run] [--limit N]
+Run with:  python gather_mods.py [--dry-run] [--limit N]
                                     [--delay 0.25] [--ttl-hours 168]
 
 Raw HTML is cached under .cache/ (shared with sources/_http.py) so

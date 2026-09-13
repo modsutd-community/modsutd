@@ -29,7 +29,7 @@ describe('mods that get no batch chat', () => {
   });
 
   // A pillar's core is taken by everybody in that pillar, who already share a
-  // cohort chat. gather_no_batch_chat.py reads those lists off each pillar's
+  // cohort chat. gather_cores.py reads those lists off each pillar's
   // published listing and marks them, and marks WHY - so it can unmark its own
   // when a course leaves the core, and cannot touch a flag a human set.
   it('marks a pillar core, and says that is why', () => {

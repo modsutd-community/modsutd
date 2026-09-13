@@ -38,4 +38,4 @@ Quickest orientation, if you read nothing else:
 
 Repeatable procedures are skills in `.claude/skills/`, and they are plain
 Markdown - readable by any agent, whatever runs them. `new-term`, `course-data`,
-`gather-listing`, `gather-specialisations`, `venue-search`, `pr-review`.
+`gather-mods`, `gather-specialisations`, `venue-search`, `pr-review`.

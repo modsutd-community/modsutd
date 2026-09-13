@@ -21,6 +21,15 @@ on:
     # will notice, and it is a quarter of the runs. Nothing overnight, because
     # nobody is checking whether a room is free at 3am.
     schedule:
+        # UTC. Singapore is UTC+8, so this is 06:00, 10:00, 14:00 and 18:00
+        # local - written out because reading 22,2,6,10 and expecting those
+        # hours is a question that gets asked every time.
+        #
+        # A run will usually be LATE. GitHub schedules are best effort and
+        # queue behind the hour's load, so 06:00 UTC has landed at 07:24 before
+        # now. A deploy that looks like it fired at an hour not on this list is
+        # either that delay or a push: a code push to main deploys immediately,
+        # and merging anything outside data/, docs/ and *.md is a code push.
         - cron: "0 22,2,6,10 * * *"
     workflow_dispatch:
 

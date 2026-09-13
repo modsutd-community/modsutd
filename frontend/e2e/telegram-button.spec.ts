@@ -211,7 +211,7 @@ test.describe('telegram batch chat', () => {
 
   // 50.001 is the pillar-core half of this: everybody in CSD takes it, so the
   // chat would have the same membership as the cohort chat they are already in.
-  // It is flagged by tools/scraper/gather_no_batch_chat.py rather than by hand,
+  // It is flagged by tools/scraper/gather_cores.py rather than by hand,
   // which is why it is worth an assertion - a listing that stops parsing takes
   // the flag off and nothing else would notice.
   test('capstones, thesis mods and pillar cores never get a chat', async ({ page, isMobile }) => {

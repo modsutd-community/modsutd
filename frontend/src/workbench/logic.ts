@@ -305,7 +305,7 @@ export function defaultLevel(mod: Mod | undefined): number {
 export const CONSENT_KEY = 'modsutd.timetable.consent.v3';
 // Only what to say before /data/term-calendar.json has loaded, or when the
 // date falls outside every published term. The real label comes from that
-// file, which tools/scraper/term_calendar.py regenerates from SUTD's own
+// file, which tools/scraper/gather_terms.py regenerates from SUTD's own
 // academic-calendar page - a constant edited by hand at rollover is a constant
 // that is wrong from the first rollover nobody remembers.
 export const DEFAULT_TERM_LABEL = 'the current term';

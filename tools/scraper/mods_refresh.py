@@ -66,7 +66,7 @@ DRIFT = ROOT / "tools" / "scraper" / "reports" / "drift.md"
 STEPS: list[tuple[str, list[str], str]] = [
     (
         "mods",
-        ["gather_listing.py"],
+        ["gather_mods.py"],
         "every mod on sutd.edu.sg, walked from the two course sitemaps: new "
         "mods, tags, descriptions, source URLs, grading and workload",
     ),
@@ -83,7 +83,7 @@ STEPS: list[tuple[str, list[str], str]] = [
     ),
     (
         "terms",
-        ["term_calendar.py"],
+        ["gather_terms.py"],
         "term dates from sutd.edu.sg's academic calendar, plus the Singapore "
         "public holidays inside each term from data.gov.sg "
         "-> data/term-calendar.json",
@@ -96,7 +96,7 @@ STEPS: list[tuple[str, list[str], str]] = [
     ),
     (
         "cores",
-        ["gather_no_batch_chat.py"],
+        ["gather_cores.py"],
         "every core course -> noBatchChat, because a chat for a course "
         "everybody takes has the same membership as the cohort chat they "
         "already have. Two halves: each pillar's own core read off its "
@@ -144,11 +144,11 @@ WAVES: list[list[str]] = [
 # Every script here writes under /data. WRITERS is the subset that accepts
 # --dry-run, and the two lists being equal is what the run() check enforces.
 WRITES_DATA = {
-    "gather_listing.py",
-    "gather_no_batch_chat.py",
+    "gather_mods.py",
+    "gather_cores.py",
     "scrape.py",
     "gather_specialisations.py",
-    "term_calendar.py",
+    "gather_terms.py",
     "propose_edits.py",
 }
 
@@ -176,7 +176,7 @@ def run(script: list[str], dry_run: bool) -> tuple[bool, str]:
     """Run one step. Returns (ok, last few lines of output)."""
     cmd = [sys.executable, *script]
     # A WRITER THAT CANNOT BE TOLD "DRY" IS NOT RUN. This list used to name
-    # three scripts, and the two writers missing from it, term_calendar.py and
+    # three scripts, and the two writers missing from it, gather_terms.py and
     # gather_specialisations.py, rewrote data/term-calendar.json and
     # data/specializations.json on a run documented as writing nothing. A flag
     # that silently writes to the source of truth is worse than no flag.

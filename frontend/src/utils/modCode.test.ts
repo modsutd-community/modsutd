@@ -5,7 +5,7 @@ import contributeRelay from '../../../api/contribute.js?raw';
 import reviewRelay from '../../../api/review-thread.js?raw';
 import groupRelay from '../../../api/telegram-group.js?raw';
 import foldSlots from '../../../tools/fold_slots.py?raw';
-import gatherListing from '../../../tools/scraper/gather_listing.py?raw';
+import gatherListing from '../../../tools/scraper/gather_mods.py?raw';
 import { CANONICAL_MOD, eventsToSlots } from './contributeTimetable';
 import { looksLikeCode } from './search';
 import type { TimetableEvent } from '@/types';

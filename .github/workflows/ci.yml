@@ -86,7 +86,7 @@ jobs:
       # Elective, because one is taken by everyone and one is chosen.
       - name: a core is told from a core elective
         working-directory: .
-        run: python tools/scraper/gather_no_batch_chat.py --self-check
+        run: python tools/scraper/gather_cores.py --self-check
 
       # A room string that is not a room is invisible: the slot is written, the
       # heatmap draws, and nothing says the room does not exist. "Albert",
@@ -104,7 +104,7 @@ jobs:
       # expects it in. Needs no network.
       - name: an untermed course still lands where it belongs
         working-directory: tools/scraper
-        run: python gather_listing.py --self-check
+        run: python gather_mods.py --self-check
 
       # The home-screen icon is geometry, not taste: the maskable safe zone is
       # a circle of radius 2/5 of the icon, and artwork past it is clipped by a
