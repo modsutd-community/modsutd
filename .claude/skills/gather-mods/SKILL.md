@@ -1,6 +1,6 @@
 ---
 name: gather-mods
-description: Refresh modSUTD's catalogue from the official sutd.edu.sg course listing - new mods, tags, descriptions - via tools/scraper/gather_mods.py. Use when the freshness issue reports "listed mods missing from the repo", when a term brings new offerings, or on "refresh the catalogue/tags".
+description: Refresh modSUTD's catalogue from the official sutd.edu.sg course listing - new mods, tags, descriptions - via tools/scraper/gather_mods.py. Use when a scrape pull request reports listed mods missing from the repo, when a term brings new offerings, or on "refresh the catalogue/tags".
 ---
 
 # Refreshing the catalogue from the official listing
@@ -60,7 +60,7 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
    (some e2e fixtures pin mods - 10.013, 10.018, 02.101; update specs in the
    same PR if a pinned fixture legitimately changed).
 3. Mods that vanish from the sitemap are RETIRED, not deleted - keep their
-   files (history + reviews); the freshness report lists them as notes.
+   files (history + reviews); the `scrape` run lists them as notes.
 4. PR title `data: listing refresh <date>`, one concern per PR.
 
 
@@ -104,5 +104,6 @@ Turn a confirmed cohort split into a `prereqTree` with object leaves - see
 
 SUTD redesign symptoms: 0 pages parsed (heading strings changed - check the
 state-machine keys first), sitemap 404 (post type renamed), tags empty
-(`js-page-tags` class renamed). The monthly freshness workflow
-(.github/workflows/freshness.yml) detects the drift; this skill is the fix.
+(`js-page-tags` class renamed). The monthly `scrape` workflow
+(.github/workflows/scrape.yml) is where the drift shows up, because the step
+returns nothing and says so; this skill is the fix.

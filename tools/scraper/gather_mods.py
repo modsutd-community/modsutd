@@ -102,7 +102,7 @@ PILLAR_TAG_NAMES = {"smt", "hass", "istd", "epd", "esd", "asd", "dai"}
 def fetch(url: str, *, delay: float, ttl_hours: float) -> str:
     """_http.get with a polite delay whenever the cache will miss.
 
-    The freshness test that decides whether to sleep lives in `_http` beside
+    The staleness test that decides whether to sleep lives in `_http` beside
     the one that decides whether to fetch. Two copies of it drift, and the
     copy that drifts is the one that sleeps for every cache hit.
     """

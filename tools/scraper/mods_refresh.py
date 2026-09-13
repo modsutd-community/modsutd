@@ -89,6 +89,15 @@ STEPS: list[tuple[str, list[str], str]] = [
         "-> data/term-calendar.json",
     ),
     (
+        "canaries",
+        ["canaries.py"],
+        "the SUTD hosts nothing else in this run fetches. Every other step is "
+        "a canary for its own host and fails loudly when it goes; this covers "
+        "what is left, which is virtualtour.sutd.edu.sg - asked for every tile "
+        "data/venues names, not its front page. REPORTS ONLY, and never fails "
+        "the run",
+    ),
+    (
         "minors",
         ["gather_minors.py", "--json", str(SCRATCH / "minors.json")],
         "each minor against its own page. REPORTS ONLY - the requirements are "
@@ -126,7 +135,7 @@ STEPS: list[tuple[str, list[str], str]] = [
 
 # Steps in the same wave run together; a wave finishes before the next starts.
 WAVES: list[list[str]] = [
-    ["mods", "tracks", "minors", "terms"],
+    ["mods", "tracks", "minors", "terms", "canaries"],
     ["hass"],
     # Its own wave, and it has to be AFTER `mods`: that is the step that
     # creates a record for a course SUTD has just added, and this is the step
@@ -207,9 +216,14 @@ def timed(script: list[str], dry_run: bool) -> tuple[bool, str, float]:
     return ok, tail, time.time() - t0
 
 
-# Steps whose only product is prose. A change in what they say is the thing
-# worth a human reading, and nothing else in the run records it.
-REPORTING = ("minors", "prereqs", "propose")
+# Steps whose FINDINGS have no other home. A run that changes no file opens no
+# pull request, so what these say would reach a run summary and stop there.
+# Everything else in WAVES writes /data and its finding IS the diff.
+#
+# `propose` is here despite writing, because the half of it worth reading is
+# the half that did not: a proposal dropped for failing validation changes no
+# file and is exactly what a person needs to see.
+REPORTING = ("canaries", "minors", "prereqs", "propose")
 
 
 def split_sections(text: str) -> dict[str, str]:
