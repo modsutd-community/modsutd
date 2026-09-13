@@ -13,5 +13,7 @@
     "Core",
     "EPD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/30-502-research-methods/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-502-research-methods/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

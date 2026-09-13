@@ -13,5 +13,7 @@
     "ASD",
     "Core"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/20-502-design-computation-in-architecture-design-exploration/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-502-design-computation-in-architecture-design-exploration/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

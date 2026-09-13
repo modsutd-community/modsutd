@@ -13,5 +13,7 @@
     "Core",
     "ESD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-510-linear-optimisation/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-510-linear-optimisation/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

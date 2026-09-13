@@ -13,5 +13,7 @@
     "Term 1",
     "Core"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/02-521-urban-data-and-methods-i-data-inference-and-modelling-for-urban-systems-quantitative/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/02-521-urban-data-and-methods-i-data-inference-and-modelling-for-urban-systems-quantitative/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

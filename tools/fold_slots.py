@@ -17,8 +17,13 @@ import sys
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parent.parent / "data"
+
+# One reader for every room string that reaches /data, shared with the
+# enrolment import. Two copies disagreed about what a room is.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from venue_resolve import VENUE_RE, room_code, venue_index  # noqa: E402
 COURSES = DATA / "courses"
-VENUES = DATA / "venues"
+
 TERM_WINDOW = DATA / "term-window.json"
 TERM_CALENDAR = DATA / "term-calendar.json"
 MAX_SLOTS = 80
@@ -30,95 +35,6 @@ TYPES = {"Lecture", "Cohort", "Tutorial", "Lab", "Studio", "Seminar", "Recitatio
 # dropping the suffix threw away every slot for both.
 MOD_RE = re.compile(r"^\d{2}\.\d{3}[A-Za-z]?$")
 TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
-# The shape a venue may arrive in. Shape only: what it has to RESOLVE to is
-# `room_code` below, because a shape check let "Albert", "Lecture" and "Online"
-# into /data as room codes, and the room finder then grew heatmaps for rooms
-# that do not exist.
-VENUE_RE = re.compile(r"^[\w .\-#()/]{1,40}$")
-# What a real room code looks like. `data/venues` is keyed on these.
-ROOM_CODE_RE = re.compile(r"^\d{1,2}\.\d{3}[A-Za-z]?$")
-
-
-def venue_index() -> dict[str, set[str]]:
-    """Every name a room answers to, lowercased, to the codes that answer.
-
-    Values are SETS on purpose. Two rooms really are both called "Studio 7"
-    (2.209 and 2.306) and two more are both "Robotics Innovation Laboratory",
-    so a name is not a key - it is a question that sometimes has two answers,
-    and the caller has to see that rather than be handed one of them.
-
-    Three keys per room, because a pasted timetable prints whichever it feels
-    like: the code, the full name, and the name with its donor bracket dropped.
-    "Lecture Theatre 1 (Albert Hong)" is reachable by all three.
-    """
-    hits: dict[str, set[str]] = {}
-    for f in sorted(VENUES.glob("*.json")):
-        v = json.loads(f.read_text(encoding="utf-8"))
-        code = v["code"]
-        keys = {code.lower()}
-        for n in filter(None, [v.get("name"), *(v.get("altNames") or [])]):
-            keys.add(n.strip().lower())
-            bare = re.sub(r"\s*\([^)]*\)\s*$", "", n).strip().lower()
-            if bare:
-                keys.add(bare)
-        for k in keys:
-            hits.setdefault(k, set()).add(code)
-    return hits
-
-
-def room_code(raw: str, index: dict[str, set[str]]) -> str | None:
-    """The room a contributed venue string names, or None.
-
-    Four steps, each refusing rather than guessing.
-
-    A code passes only if `data/venues` actually has it: a paste is public
-    input and "2.999" is as easy to send as "2.507". A trailing letter whose
-    parent exists is a divisible classroom's half, so 2.507A is 2.507 - the
-    same rule the enrolment import uses.
-
-    Then the name, whole. If that name belongs to TWO rooms it stops here and
-    returns None; it does not fall through. That fall-through is what made
-    "Studio 7", a real name shared by 2.209 and 2.306, resolve to 61.205
-    "Dance Studio 7" - a room on another campus block that merely contains the
-    words.
-
-    Last, a fragment, matched against every venue name rather than against the
-    names that happened to be unambiguous. "Albert" is inside exactly one name
-    and becomes 1.102; "Robotics" is inside two identically named labs and
-    becomes nothing; "Lecture" is inside dozens.
-    """
-    text = raw.strip()
-    if not text:
-        return None
-    low = text.lower()
-
-    if ROOM_CODE_RE.match(text):
-        hit = index.get(low)
-        if hit and len(hit) == 1:
-            return next(iter(hit))
-        parent = text[:-1].lower()
-        if text[-1].isalpha():
-            hit = index.get(parent)
-            if hit and len(hit) == 1:
-                return next(iter(hit))
-        return None
-
-    hit = index.get(low)
-    if hit is not None:
-        # Known, and that includes known to be ambiguous.
-        return next(iter(hit)) if len(hit) == 1 else None
-
-    # A fragment. Over every name, so a name two rooms share counts twice and
-    # refuses, rather than being invisible here because it was deduped away.
-    codes: set[str] = set()
-    for name, owners in index.items():
-        if ROOM_CODE_RE.match(name):
-            continue
-        if low in name.split() or low in name:
-            codes |= owners
-    return next(iter(codes)) if len(codes) == 1 else None
-
-
 def valid(slot: object) -> bool:
     if not isinstance(slot, dict):
         return False
@@ -154,55 +70,6 @@ def term_span(start: str, end: str) -> tuple[str, str]:
         if start <= last and end >= first:
             return first, last
     return start, end
-
-
-def self_check() -> int:
-    """Drive the venue reader against /data. No payload, no network.
-
-    Where a contributed room lands is invisible when it goes wrong: the slot is
-    written, the heatmap draws, and nothing says the room does not exist. These
-    are the strings that actually reached /data before this had a resolver.
-    """
-    index = venue_index()
-    cases = [
-        # (what a paste sent, what it must become, why)
-        ("1.102", "1.102", "a code the repo has"),
-        ("2.507", "2.507", "another"),
-        ("Lecture Theatre 1 (Albert Hong)", "1.102", "the printed name, whole"),
-        ("lecture theatre 1", "1.102", "the name with the donor dropped"),
-        ("Cohort Classroom 14", "2.507", "a name with no donor"),
-        ("Albert", "1.102", "a fragment that names exactly one room"),
-        ("2.507A", "2.507", "half of a divisible classroom"),
-        ("2.313A", "2.313A", "a suffix that IS its own room"),
-        ("Lecture", None, "in dozens of names, so it names none"),
-        # The ambiguous-name trap. Both 2.209 and 2.306 really are called
-        # "Studio 7", and the fallback used to skip past that and hand back
-        # 61.205 "Dance Studio 7", a room in another block that merely
-        # contains the words.
-        ("Studio 7", None, "a name two rooms share is not an answer"),
-        ("Robotics", None, "two labs have the identical name"),
-        ("Incubation Room", None, "so do two incubation rooms"),
-        # And the other side of it: an exact name wins over a longer one that
-        # contains it. A paste saying Think Tank 11 does not mean Mini Think
-        # Tank 11.
-        ("Think Tank 11", "1.503", "its own name beats a longer one"),
-        ("Studio 1", "1.521", "the same, against Dance Studio 1"),
-        ("Online", None, "not a room at all"),
-        ("9.999", None, "code-shaped, and not a room the repo has"),
-        ("", None, "nothing"),
-    ]
-    fails = []
-    for raw, want, why in cases:
-        got = room_code(raw, index)
-        if got != want:
-            fails.append(f"{why}: {raw!r} gave {got!r}, want {want!r}")
-    if fails:
-        print(f"self-check: {len(fails)} failure(s)")
-        for f in fails:
-            print(f"  - {f}")
-        return 1
-    print(f"self-check: every venue reads correctly ({len(index)} keys)")
-    return 0
 
 
 def main() -> int:
@@ -299,6 +166,11 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    # The venue reading this file used to own moved to venue_resolve.py, and
+    # so did its check. Said here because the flag used to work and falling
+    # through to the real mode gives "bad payload: PAYLOAD", which explains
+    # nothing.
     if "--self-check" in sys.argv:
-        sys.exit(self_check())
+        sys.exit("the venue reader lives in tools/venue_resolve.py now: "
+                 "run `python tools/venue_resolve.py --self-check`")
     raise SystemExit(main())

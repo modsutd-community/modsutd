@@ -112,46 +112,43 @@ def die(msg: str) -> None:
 
 # ---------------------------------------------------------------- venues ----
 
-def venue_codes() -> set[str]:
-    """Every room the catalogue holds, which is what a `location` may name."""
-    return {json.loads(f.read_text(encoding="utf-8"))["code"]
-            for f in VENUES.glob("*.json")}
+# One reader for every room string that reaches /data, shared with
+# tools/fold_slots.py. There used to be a copy here, and the two disagreed:
+# this one would not take a fragment like "Albert", and it would write a code
+# `data/venues` has never heard of. A room is a room whichever door it came
+# through.
+sys.path.insert(0, str(ROOT / "tools"))
+from venue_resolve import room_code, venue_index  # noqa: E402
 
 
-def whole_room(code: str, known: set[str]) -> str:
-    """The room a printed code belongs to.
+def resolve_named(fields: list[str], venues) -> tuple[list[str], list[str]]:
+    """Room codes for the venue strings in a record's tail, and what is left.
 
-    The registry splits a divisible classroom when a cohort takes both halves:
-    Cohort Classroom 14 is printed as `2.507A, 2.507B`, and the catalogue holds
-    one room, 2.507. A `location` naming a code no venue has is a slot the room
-    page and the heatmap can never show, so the halves resolve to the room they
-    are halves of. A suffix that IS its own room stays: the design studios are
-    2.313A and 2.313B, two records, two doors.
+    A field at a time, except that one venue name carries a comma of its own
+    ("Humanities, Arts and Social Sciences (HASS) office"), so a field that
+    does not resolve is retried joined to the one after it. Instructor names
+    are in this same tail and resolve to nothing, which is how they are told
+    apart from rooms: there is no separator in the record saying where the
+    venues stop.
     """
-    if code in known:
-        return code
-    parent = code[:-1]
-    return parent if code[-1:].isalpha() and parent in known else code
-
-
-def venue_index() -> dict[str, str]:
-    """Every name a room answers to, lowercased, to its code.
-
-    The donor in brackets is dropped as a SECOND key, never as a replacement:
-    "Think Tank 2 (Wee Hur)" is what the record says and the registry prints
-    "Think Tank 2", and both have to resolve. A name two rooms share resolves
-    to neither, because guessing between them puts a class in the wrong room.
-    """
-    hits: dict[str, set[str]] = defaultdict(set)
-    for f in sorted(VENUES.glob("*.json")):
-        v = json.loads(f.read_text(encoding="utf-8"))
-        names = [v.get("name"), *(v.get("altNames") or [])]
-        for n in filter(None, names):
-            hits[n.strip().lower()].add(v["code"])
-            bare = re.sub(r"\s*\([^)]*\)\s*$", "", n).strip().lower()
-            if bare:
-                hits[bare].add(v["code"])
-    return {k: next(iter(v)) for k, v in hits.items() if len(v) == 1}
+    rooms: list[str] = []
+    unresolved: list[str] = []
+    i = 0
+    while i < len(fields):
+        f = fields[i]
+        hit = room_code(f, venues)
+        if hit is None and i + 1 < len(fields):
+            pair = room_code(f"{f}, {fields[i + 1]}", venues)
+            if pair is not None:
+                rooms.append(pair)
+                i += 2
+                continue
+        if hit is not None:
+            rooms.append(hit)
+        else:
+            unresolved.append(f)
+        i += 1
+    return rooms, unresolved
 
 
 # ------------------------------------------------------------------ parse ----
@@ -233,8 +230,7 @@ def r_day(block, day_x) -> str:
     return min(day_x, key=lambda d: abs(d[1] - centre))[0][:3]
 
 
-def parse_page(page, venues: dict[str, str], known: set[str],
-               ) -> tuple[list[dict], list[str]]:
+def parse_page(page, venues) -> tuple[list[dict], list[str]]:
     """Every class block on the page, plus whatever could not be read."""
     words = page.extract_words()
     day_x = sorted(
@@ -295,40 +291,30 @@ def parse_page(page, venues: dict[str, str], known: set[str],
         kind = fields[2] if len(fields) > 2 else ""
         rest = fields[3:]
 
-        rooms = [f for f in rest if ROOM.fullmatch(f)]
+        # Every field in the tail, through the one shared reader. It knows a
+        # code, a code that is half of a divisible classroom, a printed name,
+        # a name without its donor, and a fragment that names exactly one room
+        # - so the names and the codes the registry prints for the same rooms
+        # both arrive at the same answer and dedupe to one.
+        #
+        # The instructors are in this tail too, and they come out unresolved,
+        # which is how they are told from rooms: nothing in the record says
+        # where the venues stop. Checked against every teaching name in these
+        # six files, and none of them resolves.
+        rooms, unresolved = resolve_named(rest, venues)
         if not rooms:
-            # No code printed at all, so the name is all there is. The HASS
-            # lectures are the whole of this case.
-            rooms, unresolved = resolve_named(rest, venues)
-            if not rooms:
-                problems.append(f"{code}: no room in {rest!r}")
-            elif unresolved:
-                # Some resolved and some did not, so the record would go in
-                # with fewer rooms than the registry printed and nothing would
-                # say so. The class is still written, because a class on a
-                # known room is better than no class, but the run reports it.
-                problems.append(f"{code} {r_day(b, day_x)} {times[0]}: kept "
-                                f"{', '.join(rooms)} but could not place "
-                                f"{', '.join(unresolved)}")
-
-        # Both halves of a divisible classroom name one room, so this also
-        # collapses "2.507A, 2.507B" to a single 2.507: one room, busy once.
+            problems.append(f"{code}: no room in {rest!r}")
+        # `unresolved` is deliberately NOT reported. The instructors are in this
+        # same tail with no separator marking where the venues stop, so they
+        # come back unresolved on every block and a note about them would be a
+        # note on every block. A room that fails to resolve while others
+        # succeed is indistinguishable from a teaching name here; the case that
+        # matters, a block with no room at all, is the line above.
         seen_rooms: list[str] = []
         for r in rooms:
-            whole = whole_room(r, known)
-            if whole not in seen_rooms:
-                seen_rooms.append(whole)
+            if r not in seen_rooms:
+                seen_rooms.append(r)
         rooms = seen_rooms
-
-        # A location naming a room the catalogue does not hold is a slot the
-        # room page and the heatmap can never show. It still goes in, because
-        # the class is real and the code is what the registry printed, but the
-        # run says so.
-        strangers = [r for r in rooms if r not in known]
-        if strangers:
-            problems.append(f"{code} {r_day(b, day_x)} {times[0]}: "
-                            f"{', '.join(strangers)} has no venue record, so "
-                            f"nothing will show this class on that room's page")
 
         centre = (b["x0"] + b["x1"]) / 2
         name, at = min(day_x, key=lambda d: abs(d[1] - centre))
@@ -603,17 +589,6 @@ def self_check() -> int:
        resolve_named(["Think Tank 2", "Room 9 3/4"], index),
        (["1.309"], ["Room 9 3/4"]))
 
-    # The registry splits a divisible classroom when a cohort takes both
-    # halves, and the catalogue holds the room rather than the halves.
-    rooms_known = {"2.507", "2.313A", "2.313B", "1.411"}
-    eq("a half resolves to the room it is half of",
-       whole_room("2.507A", rooms_known), "2.507")
-    eq("a suffix that is its own room stays",
-       whole_room("2.313B", rooms_known), "2.313B")
-    eq("a room nobody has is left as it was",
-       whole_room("9.999Z", rooms_known), "9.999Z")
-    eq("a plain code is untouched", whole_room("1.411", rooms_known), "1.411")
-
     eq("pillar from a filename", pillar_of("2630 Term 7 HASS & TE_260826.pdf"), "HASS")
     eq("CSD is ISTD", pillar_of("2630 Term 7 CSD_180826.pdf"), "ISTD")
     eq("no pillar in the name", pillar_of("timetable.pdf"), None)
@@ -632,7 +607,6 @@ def self_check() -> int:
     # stops, and it was unreachable without opening a file.
     index = {"think tank 10": "1.416", "think tank 9": "1.415",
              "lecture theatre 4": "2.404"}
-    rooms_known = {"1.416", "1.415", "2.404", "2.507"}
 
     page = FakePage([
         (0, 201.0, 289.0,
@@ -642,7 +616,7 @@ def self_check() -> int:
          "09:00\n12x w38-43, 45-50\n02.183HT, LH01, LEC, Lecture Theatre 4,\n11:00"),
         (1, 377.0, 509.0, "15:00\n11x w38-43\nHASS, HASS placehold\n18:00"),
     ])
-    rows, notes = parse_page(page, index, rooms_known)
+    rows, notes = parse_page(page, index)
     eq("a page parses to one row per class", len(rows), 2)
     eq("no note on a clean page", notes, [])
     eq("the block is on the day its column is",
@@ -661,7 +635,7 @@ def self_check() -> int:
     astray = FakePage([(0, 201.0, 289.0,
                         "09:30\n11x w38-43\n50.006, CI01, CBL, Think Tank 10, 1.416, X\n11:30",
                         90.0)])
-    rows2, notes2 = parse_page(astray, index, rooms_known)
+    rows2, notes2 = parse_page(astray, index)
     eq("a block between two columns is dropped", rows2, [])
     eq("and says so", len(notes2), 1)
 
@@ -669,9 +643,12 @@ def self_check() -> int:
     # real, but the run has to say so.
     stranger = FakePage([(0, 201.0, 289.0,
                           "09:30\n11x w38-43\n50.006, CI01, CBL, 9.999, Someone\n11:30")])
-    rows3, notes3 = parse_page(stranger, index, rooms_known)
-    eq("an unknown room is still written", [r["rooms"] for r in rows3], [["9.999"]])
-    eq("an unknown room is reported", len(notes3), 1)
+    rows3, notes3 = parse_page(stranger, index)
+    # Both doors into /data now agree: a room the catalogue does not hold is
+    # not written. It used to be written here with a warning and dropped in
+    # fold_slots, which is two answers to the same question.
+    eq("an unknown room is not written", [r["rooms"] for r in rows3], [[]])
+    eq("and the block says so", len(notes3), 1)
 
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
@@ -729,7 +706,6 @@ def main() -> int:
     known = {json.loads(f.read_text(encoding="utf-8"))["code"]
              for f in COURSES.glob("*.json")}
     venues = venue_index()
-    rooms_known = venue_codes()
 
     sections: list[str] = []
     per_mod: dict[str, list[dict]] = defaultdict(list)
@@ -746,7 +722,7 @@ def main() -> int:
             legend: list[str] = []
             problems: list[str] = []
             for page in pdf.pages:
-                r, pr = parse_page(page, venues, rooms_known)
+                r, pr = parse_page(page, venues)
                 rows.extend(r)
                 problems.extend(pr)
                 legend.extend(c for c in legend_of(page) if c not in legend)

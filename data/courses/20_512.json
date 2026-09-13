@@ -22,5 +22,7 @@
     "total": 36,
     "source": "official"
   },
-  "sourceUrl": "https://www.sutd.edu.sg/course/20-512-thesis/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/20-512-thesis/",
+  "noBatchChat": true,
+  "noBatchChatReason": "programme core"
 }

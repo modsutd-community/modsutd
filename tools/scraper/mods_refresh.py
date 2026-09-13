@@ -97,9 +97,12 @@ STEPS: list[tuple[str, list[str], str]] = [
     (
         "cores",
         ["gather_no_batch_chat.py"],
-        "each pillar's own core courses, from its published listing -> "
-        "noBatchChat, because a chat for a course everybody in the pillar takes "
-        "has the same membership as the cohort chat they already have",
+        "every core course -> noBatchChat, because a chat for a course "
+        "everybody takes has the same membership as the cohort chat they "
+        "already have. Two halves: each pillar's own core read off its "
+        "published listing, and anything the catalogue already tags Freshmore "
+        "Core or Core. Runs AFTER `mods`, so a course added in this same run "
+        "is flagged in this same run",
     ),
     (
         "prereqs",
@@ -125,8 +128,13 @@ STEPS: list[tuple[str, list[str], str]] = [
 WAVES: list[list[str]] = [
     ["mods", "tracks", "minors", "terms"],
     ["hass"],
-    # Its own wave. It writes data/courses, so it cannot run beside `mods` or
-    # `hass`, and `prereqs` READS those records so it cannot run beside this.
+    # Its own wave, and it has to be AFTER `mods`: that is the step that
+    # creates a record for a course SUTD has just added, and this is the step
+    # that decides whether the new course gets a batch chat. Before it, a new
+    # core would go a month offering one.
+    #
+    # It writes data/courses, so it cannot run beside `mods` or `hass`, and
+    # `prereqs` READS those records so it cannot run beside this.
     ["cores"],
     ["prereqs"],
     ["propose"],
