@@ -88,12 +88,15 @@ jobs:
         working-directory: .
         run: python tools/scraper/gather_no_batch_chat.py --self-check
 
-      # A contributed room that is not a room is invisible: the slot is
-      # written, the heatmap draws, and nothing says the room does not exist.
-      # "Albert", "Lecture" and "Online" all reached /data that way.
-      - name: a contributed venue still resolves to a real room
+      # A room string that is not a room is invisible: the slot is written, the
+      # heatmap draws, and nothing says the room does not exist. "Albert",
+      # "Lecture" and "Online" all reached /data that way. One reader now, so
+      # one check, covering both doors: a pasted timetable and the enrolment
+      # import. It also generates every sub-phrase of every venue name and
+      # asserts none of them resolves to a room that is not its own.
+      - name: a room string still resolves to a real room
         working-directory: .
-        run: python tools/fold_slots.py --self-check
+        run: python tools/venue_resolve.py --self-check
 
       # Where an untermed course lands decides which term filter finds it,
       # where the plan first puts it, and whether it can have a batch chat.

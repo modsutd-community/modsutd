@@ -464,6 +464,27 @@ Two are deliberately not monthly, and say why in their own headers:
   `/venues/<code>` is an ADDITION to `/venues?focus=<code>`, which still works
   and is what every already-shared link uses.
 
+- **A room string becomes a room code in exactly one place**,
+  `tools/venue_resolve.py`, shared by `fold_slots.py` (a pasted timetable) and
+  `tools/enrolment/parse_enrolment_pdfs.py` (the registry's export). There was
+  a copy in each and they disagreed about what a room is, which is how
+  `Albert`, `Lecture` and `Online` came to sit in `/data` as room codes with
+  heatmaps drawn for them. `location` is a key into `data/venues` and nothing
+  else: the room finder, the heatmaps and the `.ics` all look the room up by
+  it, so a string that is not one fails silently everywhere at once.
+  Three things there are load-bearing. A name two rooms really share - 2.209
+  and 2.306 are both "Studio 7" - resolves to NEITHER and does not fall through
+  to fragment matching, or it lands on "Dance Studio 7" in another block. A
+  fragment must be a whole word of exactly one room's name and at least four
+  characters, because a room's name carries its donor and a donor is a person:
+  "Wee" and "Hur" are inside "Think Tank 2 (Wee Hur)". And a code the catalogue
+  does not hold is refused rather than written, on both doors.
+  The remaining hole is upstream and known: `timetableParser.ts` picks the room
+  cell by looking for a bracketed code, and a row that prints none falls back to
+  a lazy capture that truncates at the first word. That is where `Albert` came
+  from. It is caught by the resolver rather than prevented, and fixing it
+  properly needs the venue list in the browser.
+
 - **Vercel does not deploy main; `deploy.yml` does.** `vercel.json` sets
   `git.deploymentEnabled.main: false`, so pushes to main build only through the
   workflow. That is the whole reason the workflow exists: contributed slots
