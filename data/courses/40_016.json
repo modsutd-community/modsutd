@@ -17,5 +17,7 @@
     "Core",
     "ESD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/40-016-the-analytics-edge/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/40-016-the-analytics-edge/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }

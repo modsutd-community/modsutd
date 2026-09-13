@@ -70,6 +70,7 @@ Special leaves:
 The recursive renderer handles arbitrary nesting. Keep it shallow - three levels max - or no one will read it.
 
 - `workload` - OFFICIAL only: it exists solely when the course page publishes a `Workload: a-b-c` line (lecture/cohort - lab/design - independent study, h/wk), which the gatherer maps into the fields and marks `source: "official"`. Never invent or estimate one; a mod without a published workload simply has no `workload` key.
+- `noBatchChat` - no batch Telegram chat is offered for this course. A chat is for a course a student CHOOSES, where the people in it have nothing else in common; a capstone splits into project teams, and a pillar's core is taken by everybody who already shares a cohort chat. `noBatchChatReason` names what set it, and is a closed set of one: `"pillar core"`, written by `tools/scraper/gather_no_batch_chat.py`, which reads each pillar's published core listing and is the only thing allowed to remove a flag carrying that reason (and never more than two in one run, so a half-parsed page cannot quietly unflag a pillar). A flag with no reason was set by hand and no script will touch it.
 - `schedules` - placeholder times are acceptable while the scraper isn't tied to MyPortal. Mark synthetic ones in the commit message.
 
 ## Venue
