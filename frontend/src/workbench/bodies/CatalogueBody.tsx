@@ -4,7 +4,7 @@ import { selectMod } from '@/reducers/timetableReducer';
 import type { Term } from '@/types';
 import { PILLAR_COLORS, PILLAR_ORDER, pillarColor, modPillars } from '../pillars';
 import { useWorkbenchUi, SortKey } from '../uiContext';
-import { useFilteredMods } from '../logic';
+import { useFilteredMods , planKeyFor } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
 import { useTelegramData } from '../telegram';
 import { chatOffered } from '../teleState';
@@ -157,7 +157,9 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
                 holdMs: 450,
                 onEngage: () => { suppressClick.current = true; onPlanDragStart(); },
                 onDrop: (level) => {
-                  if (level !== null) dispatch(selectMod({ mode: freshmoreMode, code: k, level }));
+                  // planKeyFor, so a second 02.XFER dropped on another
+                  // term is a second chip rather than a no-op.
+                  if (level !== null) dispatch(selectMod({ mode: freshmoreMode, code: planKeyFor(k, level), level }));
                   setTimeout(() => { suppressClick.current = false; }, 0);
                 },
               });

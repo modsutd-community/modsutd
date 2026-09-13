@@ -5,6 +5,7 @@ import { exportAsked } from './teleAsked';
 import { exportConsent } from './logic';
 import { exportPrefs } from './prefs';
 import { useAutoBackup } from './autoBackup';
+import { liveBundle } from './backup';
 
 /**
  * Mount the gist autosave over everything this browser knows.
@@ -27,14 +28,10 @@ export function useLiveBackup(): void {
   // every render costs a JSON.stringify and nothing else. Memoising on
   // `exportContributed()` would need its own identity to be stable, which it
   // is not - it reads localStorage.
-  useAutoBackup({
-    records,
-    plans,
-    declared,
-    timetable: events,
+  useAutoBackup(liveBundle({ records, plans, declared, timetable: events }, {
     contributed: exportContributed(),
     teleAsked: exportAsked(),
     consent: exportConsent(),
     prefs: exportPrefs(),
-  });
+  }));
 }

@@ -6,10 +6,14 @@ import {
 } from '@/reducers/recordsReducer';
 import { importPlans } from '@/reducers/timetableReducer';
 import { buildPlanFile, readPlanFile, importableRecords } from '../planFile';
+import { liveBundle } from '../backup';
+import { exportAsked } from '../teleAsked';
+import { exportConsent } from '../logic';
+import { exportPrefs } from '../prefs';
 import type { Curriculum, Mod, RecordsState } from '@/types';
 import { pillarColor } from '../pillars';
 import { unmet, requirementsOf, treeOf } from '@/utils/prereq';
-import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFreshmore, freshmoreFixedSet, freshmoreCoreFor } from '../logic';
+import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFreshmore, freshmoreFixedSet, freshmoreCoreFor, planKeyFor, codeOfKey } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
 import { useGithubLink, startDeviceFlow, pollForToken, pushBackup, DeviceStart } from '../sync';
 import { useAutoState, useAutoSaveSetting, setAutoSave } from '../autoBackup';
@@ -32,6 +36,16 @@ interface Props {
 }
 
 const keyOf = (m: Mod) => m.key ?? m.code;
+
+/**
+ * The Mod behind a plan key, including a repeat the store has no entry for.
+ *
+ * `mods` is keyed by the catalogue's own key, so `02.XFER|T3` is not in it and
+ * a bare lookup rendered no chip at all. Falling back to the code puts one
+ * record behind every chip of it.
+ */
+const modFor = (mods: Record<string, Mod>, key: string): Mod | undefined =>
+  mods[key] ?? mods[codeOfKey(key)];
 
 // Terms 1–3 pin the fixed Freshmore core automatically; the AY2026? toggle
 // switches to a fully SEPARATE plan - the two curricula never bleed into
@@ -118,17 +132,17 @@ export function PlanTree({ onPick }: Props) {
     const m = new Map<string, number>();
     for (const [key, term] of fixed) m.set(key, term);
     for (const key of plan) {
-      if (!m.has(key)) m.set(key, planLevels[key] ?? defaultLevel(mods[key]));
+      if (!m.has(key)) m.set(key, planLevels[key] ?? defaultLevel(modFor(mods, key)));
     }
     return m;
   }, [plan, planLevels, mods, fixed]);
 
   const placed = useMemo(() => {
-    const byLevel = new Map<number, Array<{ mod: Mod; missing: string[]; isFixed: boolean }>>(
+    const byLevel = new Map<number, Array<{ key: string; mod: Mod; missing: string[]; isFixed: boolean }>>(
       LEVELS.map((l) => [l, []]),
     );
     const put = (key: string, isFixed: boolean) => {
-      const mod = mods[key];
+      const mod = modFor(mods, key);
       if (!mod) return;
       const level = Math.min(10, Math.max(1, levelOf.get(key)!));
       // Through the tree, so an "or" is satisfied by either branch. The flat
@@ -147,11 +161,17 @@ export function PlanTree({ onPick }: Props) {
         freshmoreMode,
         mod.pillar,
       );
-      byLevel.get(level)!.push({ mod, missing, isFixed });
+      byLevel.get(level)!.push({ key, mod, missing, isFixed });
     };
     for (const [key] of fixed) put(key, true);
     for (const key of plan) if (!fixed.has(key)) put(key, false);
-    for (const list of byLevel.values()) list.sort((a, b) => chipLabel(a.mod).localeCompare(chipLabel(b.mod)));
+    for (const list of byLevel.values()) {
+      // By key, not label: two 02.XFER chips share a label and a
+      // comparator that returns 0 for both leaves their order to the
+      // engine, which is not stable across renders.
+      list.sort((a, b) => chipLabel(a.mod).localeCompare(chipLabel(b.mod))
+        || a.key.localeCompare(b.key));
+    }
     return byLevel;
   }, [plan, levelOf, mods, fixed, freshmoreMode]);
 
@@ -226,8 +246,20 @@ export function PlanTree({ onPick }: Props) {
       },
       onDrop: (level) => {
         if (level !== null) {
-          if (addOnDrop) dispatch(selectMod({ mode: freshmoreMode, code: key, level }));
-          else dispatch(setPlanLevel({ mode: freshmoreMode, code: key, level }));
+          // A repeat's key CARRIES its term, so moving one is not a level
+          // change: it is this key leaving and another arriving. Calling
+          // setPlanLevel would leave 02.XFER|T3 sitting in T5 and claiming T3.
+          const code = codeOfKey(key);
+          const landing = planKeyFor(code, level);
+          if (addOnDrop) dispatch(selectMod({ mode: freshmoreMode, code: landing, level }));
+          else if (landing !== key) {
+            // Refuse rather than merge. selectMod is guarded by includes, so
+            // dropping T3's copy onto a term that already has one would have
+            // removed the source and added nothing: one chip silently gone.
+            if (plan.includes(landing)) return;
+            dispatch(deselectMod({ mode: freshmoreMode, code: key }));
+            dispatch(selectMod({ mode: freshmoreMode, code: landing, level }));
+          } else dispatch(setPlanLevel({ mode: freshmoreMode, code: key, level }));
         }
         setTimeout(() => { suppressClick.current = false; }, 0);
       },
@@ -316,11 +348,20 @@ export function PlanTree({ onPick }: Props) {
                       setExportOpen(false);
                       try {
                         setSyncStatus('saving…');
-                        await pushBackup({
-                          records, plans, declared,
-                          timetable: events,
-                          contributed: exportContributed(),
-                        });
+                        // The SAME bundle the autosave sends. This used to
+                        // build its own with five sections, and pushBackup
+                        // defaults `changed` to all eight, so the three missing
+                        // ones were written as undefined over the gist: one
+                        // press wiped the consent flag and every setting.
+                        await pushBackup(liveBundle(
+                          { records, plans, declared, timetable: events },
+                          {
+                            contributed: exportContributed(),
+                            teleAsked: exportAsked(),
+                            consent: exportConsent(),
+                            prefs: exportPrefs(),
+                          },
+                        ));
                         setSyncStatus('✓ saved to your private gist');
                       } catch (e) {
                         setSyncStatus(`✗ ${(e as Error).message}`);
@@ -517,7 +558,7 @@ export function PlanTree({ onPick }: Props) {
         // siblings would paint OVER an open hover card, swallowing its
         // clicks, unless the card's row is raised above them.
         const hostsCard = cardKey !== null
-          && (anyOpen || row.some((r) => keyOf(r.mod) === cardKey));
+          && (anyOpen || row.some((r) => r.key === cardKey));
         return (
           <div
             key={level}
@@ -535,25 +576,25 @@ export function PlanTree({ onPick }: Props) {
             </div>
             <div className={styles.levelMods}>
               {row.length === 0 && slots.length === 0 && <span className={styles.levelEmpty}>-</span>}
-              {row.map(({ mod, missing, isFixed }) => (
+              {row.map(({ key: chipKey, mod, missing, isFixed }) => (
                 <span
-                  key={keyOf(mod)}
+                  key={chipKey}
                   className={[
                     styles.chip,
                     missing.length ? styles.chipBad : '',
                     isFixed ? styles.chipFixed : '',
-                    dragGhost?.key === keyOf(mod) ? styles.chipDragging : '',
+                    dragGhost?.key === chipKey ? styles.chipDragging : '',
                   ].join(' ')}
                   style={{ borderLeftColor: missing.length ? undefined : pillarColor(mod.pillar) }}
-                  onPointerDown={isFixed ? undefined : (e) => dragChip(keyOf(mod), chipLabel(mod), e)}
-                  onPointerEnter={(e) => { if (e.pointerType === 'mouse') armOpen(keyOf(mod), 300); }}
+                  onPointerDown={isFixed ? undefined : (e) => dragChip(chipKey, chipLabel(mod), e)}
+                  onPointerEnter={(e) => { if (e.pointerType === 'mouse') armOpen(chipKey, 300); }}
                   onPointerLeave={(e) => { if (e.pointerType === 'mouse') armClose(); }}
-                  onTouchStart={() => armOpen(keyOf(mod), 420)}
+                  onTouchStart={() => armOpen(chipKey, 420)}
                 >
                   <button
                     type="button"
                     className={styles.chipCode}
-                    onClick={() => { if (!suppressClick.current) onPick(keyOf(mod)); }}
+                    onClick={() => { if (!suppressClick.current) onPick(chipKey); }}
                   >
                     {chipLabel(mod)}
                   </button>
@@ -563,13 +604,13 @@ export function PlanTree({ onPick }: Props) {
                       data-nodrag
                       className={styles.chipRemove}
                       aria-label={`remove ${chipLabel(mod)} from plan`}
-                      onClick={() => dispatch(deselectMod({ mode: freshmoreMode, code: keyOf(mod) }))}
+                      onClick={() => dispatch(deselectMod({ mode: freshmoreMode, code: chipKey }))}
                     >
                       ✕
                     </button>
                   )}
 
-                  {cardKey === keyOf(mod) && (
+                  {cardKey === chipKey && (
                     <ChipCard
                       mod={mod}
                       missing={missing}
@@ -587,9 +628,9 @@ export function PlanTree({ onPick }: Props) {
                         // its catalogue term would answer the pick with a chip
                         // that is still red.
                         const wanted = defaultLevel(mods[p]);
-                        const at = levelOf.get(keyOf(mod)) ?? level;
+                        const at = levelOf.get(chipKey) ?? level;
                         const placeAt = Math.max(1, Math.min(wanted, at - 1));
-                        dispatch(selectMod({ mode: freshmoreMode, code: p, level: placeAt }));
+                        dispatch(selectMod({ mode: freshmoreMode, code: planKeyFor(p, placeAt), level: placeAt }));
                       }}
                     />
                   )}

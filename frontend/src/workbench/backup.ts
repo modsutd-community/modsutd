@@ -69,6 +69,30 @@ export const SECTIONS: BundleSection[] = [
   'prefs',
 ];
 
+/**
+ * Everything this browser would put in the gist.
+ *
+ * ONE BUILDER, because there were two and they disagreed. The autosave sent all
+ * eight sections; the manual "save to github now" button sent five, and
+ * pushBackup defaults `changed` to every section - so the three the button left
+ * out were written as undefined OVER the gist. Pressing save wiped teleAsked,
+ * consent and prefs, which is the timetable consent flag and every setting.
+ *
+ * The redux half is passed in because this is not a hook; everything else is
+ * read from its own store.
+ */
+export function liveBundle(
+  from: Pick<BackupBundle, 'records' | 'plans' | 'declared' | 'timetable'>,
+  extras: {
+    contributed: Record<string, unknown>;
+    teleAsked: Record<string, number>;
+    consent: boolean;
+    prefs: Record<string, unknown>;
+  },
+): BackupBundle {
+  return { ...from, ...extras };
+}
+
 export function isBundle(x: unknown): x is BackupBundle {
   return !!x && typeof x === 'object' && 'records' in (x as Record<string, unknown>)
     && 'plans' in (x as Record<string, unknown>);

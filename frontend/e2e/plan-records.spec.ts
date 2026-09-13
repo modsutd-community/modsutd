@@ -226,6 +226,43 @@ test.describe('plan + records', () => {
     await expect(tt.locator('[data-level="4"]').getByText('50.001')).toBeVisible();
   });
 
+  // 02.XFER is the summer or winter HASS transfer, done in whichever term it
+  // was done in, and a student may take several across a degree. Every other mod
+  // is one chip because a course is passed once.
+  test('02.XFER holds a chip in each term it was taken', async ({ page, isMobile }) => {
+    test.skip(!!isMobile, 'drag placement is the desktop affordance');
+
+    const cat = page.locator('[data-panel="cat"]');
+    const ins = page.locator('[data-panel="mod"]');
+    const tt = page.locator('[data-panel="tt"]');
+
+    await page.locator('button[aria-label="Timetable"]').click();
+    await tt.getByRole('button', { name: 'plan', exact: true }).click();
+
+    await cat.getByRole('button', { name: /02\.XFER/ }).click();
+    await ins.getByRole('button', { name: '+ ADD TO PLAN' }).click();
+    await cat.getByRole('button', { name: /02\.XFER/ }).click();
+    await expect(tt.getByText('02.XFER')).toHaveCount(1);
+
+    // Drag it to another term. Its key CARRIES the term, so this is one key
+    // leaving and another arriving, not a level change.
+    const chip = tt.locator('span', { hasText: '02.XFER' }).first();
+    const from = (await chip.boundingBox())!;
+    const to = (await tt.locator('[data-level="1"]').boundingBox())!;
+    await page.mouse.move(from.x + from.width / 2, from.y + from.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(to.x + to.width / 2, to.y + to.height / 2, { steps: 10 });
+    await page.mouse.up();
+    await expect(tt.locator('[data-level="1"]').getByText('02.XFER')).toBeVisible();
+    await expect(tt.getByText('02.XFER')).toHaveCount(1);
+
+    // T1 is taken, so adding again lands its own chip at the catalogue term.
+    await cat.getByRole('button', { name: /02\.XFER/ }).click();
+    await ins.getByRole('button', { name: '+ ADD TO PLAN' }).click();
+    await cat.getByRole('button', { name: /02\.XFER/ }).click();
+    await expect(tt.getByText('02.XFER')).toHaveCount(2);
+  });
+
   test('a chip with unmet prereqs shows only the prereqs - no record form', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'hover cards are the desktop affordance; mobile long-presses');
 

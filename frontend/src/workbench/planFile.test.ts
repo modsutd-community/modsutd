@@ -192,10 +192,28 @@ describe('an export carries what was written, not what was looked at', () => {
     expect(hasContent(touched['10.013'])).toBe(true);
   });
 
-  it('exports only those two, however many chips were opened', () => {
+  // The core is the cohort's, not the student's, so it is written either way
+  // and the same cohort always produces the same set of core codes. A planned
+  // mod is the student's choice, so an untouched one carries nothing.
+  it('writes every core mod, and only the planned mods that were written', () => {
     const core = ['10.013', '10.014', '10.015', '10.018'];
-    const f = buildPlanFile('ay2024', plan([]), [], touched, core);
-    expect(Object.keys(f.records).sort()).toEqual(['10.013', '10.014']);
+    const withPlanned = { ...touched, '50.001': { notes: '', components: [] },
+                          '50.002': { notes: 'mine', components: [] } } as unknown as RecordsState;
+    const f = buildPlanFile('ay2024', plan(['50.001', '50.002']), [], withPlanned, core);
+    expect(Object.keys(f.records).sort())
+      .toEqual(['10.013', '10.014', '10.015', '10.018', '50.002']);
+  });
+
+  it('invents an empty record for a core mod whose card was never opened', () => {
+    const f = buildPlanFile('ay2024', plan([]), [], {} as RecordsState, ['10.013']);
+    expect(f.records['10.013']).toEqual({ notes: '', components: [] });
+  });
+
+  it('is the same file twice, whatever was hovered in between', () => {
+    const core = ['10.013', '10.014'];
+    const a = buildPlanFile('ay2024', plan([]), [], {} as RecordsState, core);
+    const b = buildPlanFile('ay2024', plan([]), [], touched, core);
+    expect(Object.keys(a.records).sort()).toEqual(Object.keys(b.records).sort());
   });
 });
 
@@ -216,5 +234,16 @@ describe('an import may only bring records this cohort can hold', () => {
 
   it('drops everything when the cohort core has not loaded and nothing is planned', () => {
     expect(Object.keys(importableRecords(incoming, [], []))).toEqual([]);
+  });
+});
+
+// On the way IN an empty record is nothing. Inventing one would overwrite what
+// this browser had written against that core mod.
+describe('an import does not invent empty records', () => {
+  it('brings only what the file actually carries', () => {
+    const incoming = { '10.013': { notes: '', components: [] },
+                       '10.014': { notes: 'kept', components: [] } } as unknown as RecordsState;
+    const kept = importableRecords(incoming, [], ['10.013', '10.014', '10.015']);
+    expect(Object.keys(kept)).toEqual(['10.014']);
   });
 });
