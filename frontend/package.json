@@ -10,6 +10,7 @@
     "gen-sitemap": "node scripts/gen-sitemap.mjs",
     "dev": "vite",
     "build": "tsc && vite build",
+    "postbuild": "node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "typecheck": "tsc --noEmit",

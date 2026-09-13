@@ -13,10 +13,12 @@
 // as a site that has neither.
 //
 // THE URL SHAPES ARE THE APP'S, NOT INVENTED
-// Workbench.tsx interprets the inbound path once on boot: `/mods/<code>` is a
-// path segment, and a room is `/venues?focus=<code>` and NOT a path. Listing
-// /venues/<code> here would be listing URLs that answer 200 and then open
-// nothing, which is the one thing a sitemap must not do.
+// Workbench.tsx interprets the inbound path once on boot, and both `/mods/<code>`
+// and `/venues/<code>` are path segments it knows. The path form is what gets
+// listed because it is what the prerendered page declares canonical, and a
+// sitemap that disagreed with the page's own canonical link would be asking a
+// crawler to pick. `/venues?focus=<code>` still works and is what every
+// existing share link uses; it is simply not the address advertised.
 //
 // Run from the prebuild hook, beside sync-data.mjs.
 
@@ -89,7 +91,7 @@ for (const c of courses) {
 
 for (const v of venues) {
   urls.push({
-    loc: `${ORIGIN}/venues?focus=${encodeURIComponent(v.code)}`,
+    loc: `${ORIGIN}/venues/${encodeURIComponent(v.code)}`,
     priority: '0.5',
     changefreq: 'monthly',
   });
