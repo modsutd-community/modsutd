@@ -8,7 +8,30 @@
   "term": "4",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "15:00",
+      "endTime": "18:00",
+      "location": "1.408",
+      "instructors": [],
+      "cohort": "CH01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "Term 4",
     "Term 6",

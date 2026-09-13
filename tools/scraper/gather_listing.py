@@ -279,12 +279,38 @@ def page_tags(soup: BeautifulSoup) -> list[str]:
     return tags
 
 
-def term_from_tags(tags: list[str], default: str = "1") -> str:
+# Where a course goes when its page publishes no "Term N" tag at all, which is
+# most of the elective catalogue. 1 was wrong in a way that showed: it put 154
+# electives, technical electives and 50.5xx graduate subjects into the freshmore
+# term, so the Term 1 filter answered with courses no freshmore can take and the
+# plan dropped every one of them into T8's first slot by way of term 1.
+#
+# 8 is the last undergraduate term, which is where an elective with no published
+# term actually belongs and where defaultLevel() already clamps.
+UNTERMED_ELECTIVE = "8"
+
+# A freshmore subject is the one case where a missing term is not an elective.
+# 10.001 Advanced Mathematics I and its four siblings publish no term tag and
+# are tagged Freshmore Core instead, and they run in terms 1 to 3.
+FRESHMORE_TAG = "Freshmore Core"
+FRESHMORE_DEFAULT = "1"
+
+
+def term_from_tags(tags: list[str], default: str | None = None) -> str:
+    """The term a course page names, or where an untermed one belongs.
+
+    The tag wins whenever there is one. Without it, a Freshmore Core is early
+    and everything else is a late elective: those are the only two shapes the
+    listing produces, and calling both of them term 1 made the freshmore term
+    the dumping ground for the whole elective catalogue.
+    """
     for tag in tags:
         m = TERM_TAG_RE.match(tag)
         if m:
             return str(min(max(int(m.group(1)), 1), 10))
-    return default
+    if default is not None:
+        return default
+    return FRESHMORE_DEFAULT if FRESHMORE_TAG in tags else UNTERMED_ELECTIVE
 
 
 def prefix_precedents() -> dict[str, tuple[str, str]]:
@@ -518,5 +544,49 @@ def main() -> int:
     return 1 if failed else 0
 
 
+def self_check() -> int:
+    """Drive term_from_tags against the tag shapes the listing produces.
+
+    No network. Where an untermed course lands decides which term filter finds
+    it, where the plan first puts it, and whether it can have a batch chat, and
+    the wrong answer is invisible: a course simply sits in a term nobody
+    expects it in.
+    """
+    # Literal terms on the right, never the constants the function reads: an
+    # assertion written against UNTERMED_ELECTIVE moves with it and passes
+    # whatever that is set to.
+    cases = [
+        # (tags, expected term, what it is)
+        (["Term 5", "ESD"], "5", "a page that names its term"),
+        (["Term 12"], "10", "a term past the tenth is clamped"),
+        (["Term 0"], "1", "a term below the first is clamped"),
+        (["Freshmore Core", "SMT"], "1",
+         "10.001 and its siblings publish no term tag"),
+        (["Term 2", "Freshmore Core"], "2", "a tag still wins over the fallback"),
+        (["Elective / Technical Elective", "HASS"], "8",
+         "the shape most of the elective catalogue has"),
+        ([], "8", "no tags at all"),
+        (["ASD", "Core"], "8", "a pillar core is not a freshmore core"),
+    ]
+    fails = []
+    for tags, want, why in cases:
+        got = term_from_tags(tags)
+        if got != want:
+            fails.append(f"{why}: tags {tags} gave {got!r}, want {want!r}")
+    # The caller can still say where an untermed course goes, which is what
+    # keeps this usable from a script that knows better than the default.
+    if term_from_tags([], default="3") != "3":
+        fails.append("an explicit default is ignored")
+    if fails:
+        print(f"self-check: {len(fails)} failure(s)")
+        for f in fails:
+            print(f"  - {f}")
+        return 1
+    print("self-check: term_from_tags behaves")
+    return 0
+
+
 if __name__ == "__main__":
+    if "--self-check" in sys.argv:
+        sys.exit(self_check())
     sys.exit(main())

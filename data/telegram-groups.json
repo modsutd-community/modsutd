@@ -1,4 +1,156 @@
 {
+  "01.101": {
+    "chatId": 5442193879,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:tGxBv1UE2qhWOedm:/LZrL/limK8u7zxVkW1IITjkDplzfAnSy4cgFFmwwowiHAkfBPtB7Ct/txE9LA==",
+    "title": "01.101 Technologies for Sustainable Global Health Sep'26"
+  },
+  "01.107": {
+    "chatId": 5367981067,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:qyTYNOWJ9o+InqYO:T2ksueREACVpYm9MQabLJKKlV+xafXQM3P1mBzD1gRkuy0dg0x/OIEbhv3qsBw==",
+    "title": "01.107 Urban Transportation Sep'26"
+  },
+  "02.003": {
+    "chatId": 5351350339,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:yt9JtbGNu6iyBN8l:QDORyV1jL5ToboNoi4+t+AiRZsAwub+OfM94QqbzizCuVG4pTv2uneXU++uPnw==",
+    "title": "02.003 Social Science: Understanding Behaviour, Culture & Society Sep'26"
+  },
+  "02.143": {
+    "chatId": 5431295182,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:u0KEppAahXQCnjUv:Ts7KVnudqjcLaM8vUMrpT3HNXra/Lm8v7piYrr0ImqwxEUOFItlytrd6xy6kFA==",
+    "title": "02.143 Artificial Intelligence and Ethics Sep'26"
+  },
+  "02.146": {
+    "chatId": 5540109484,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:k09MtUO14hMiM/B/:AGnOBLjso3x90SIN+xHf81MMlaMwqDcRdwytJT0pP8q+rsNoB+pIrhCEfQXF9Q==",
+    "title": "02.146 Financing Cities of the Future: Theory and Practice Sep'26"
+  },
+  "02.152": {
+    "chatId": 5462162017,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:oE9tdGJ1nXX60yDv:/ucAa40tv5HJxuLTN18NxpfFwf4qIil9SS3UmhzXFn2NUlsKEAG0pQlDO/2/SQ==",
+    "title": "02.152 Urban Theory Sep'26"
+  },
+  "02.170": {
+    "chatId": 5485593756,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:+mqbzR6dwQsUEiKR:usL1HqJj6AzHFx4tO1tMIeFEzsENnXZ5r/WAwDJBxJJuDlzzGzpQeV//nMqxDA==",
+    "title": "02.170 History of Surveillance in Modern Asia Sep'26"
+  },
+  "02.180": {
+    "chatId": 5124818596,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:ruAVU+RtQJ9BiZan:sQZAoT6J5/gmw6aqnUgSn1kNcL4tnkKpFDWsMcgqvq0JGlBG3p0sbTlzLpYOHA==",
+    "title": "02.180 Worldbuilding: Critical and Creative Practices Sep'26"
+  },
+  "02.181": {
+    "chatId": 5534561966,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:oBvlRZNHujlCPKZ6:aRpFgtZzoIYgmmBCfxryuOzB8HlnIB0o0nGOdqWHt7SqPFVvLtKlkDPU/lDvVA==",
+    "title": "02.181 AI & Society Sep'26"
+  },
+  "02.183": {
+    "chatId": 5325463236,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:dVwlf5gmrRbqqZ2f:ASj9bIwyZKU9N+hLthxDm4MSumYUGsrshQMtNLK1IFW+gd4ILcs+8PQ45UJ7bw==",
+    "title": "02.183 Philosophy of Artificial Intelligence Sep'26"
+  },
+  "02.208": {
+    "chatId": 5461077560,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:7X4750/SGpW70Wb0:a7GQpKArppg3fHT1I2Ejaynl5/eRk3+5V/xHq0kUOl96k5QXH/QYglMwXcMWYg==",
+    "title": "02.208 Microeconomics Sep'26"
+  },
+  "02.230": {
+    "chatId": 5290597745,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:aK68CCGKE3+HDNai:8ATogzEDfh6azRaWw4bnRhxgvIZMT5bUvV9Q2GjJZktvPCVumnBLEBh2SSkOhw==",
+    "title": "02.230 Health Communication and Behavior Change Sep'26"
+  },
+  "20.302": {
+    "chatId": 5450241140,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:V04tgqwXxphrJ3cK:eW+6293IXYoKEpbBFw3NewCSWKo2BHeUHuNV/Jjj24tw1Le7s8KZcdHB/j2oWw==",
+    "title": "20.302 Advanced Topics in Performative Design: Daylight and Electric Lighting Sep'26"
+  },
+  "20.317": {
+    "chatId": 5311287617,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:Y7RhVEAHE1ZeKunV:IA1IyiYgLgICYowllTo9hBW/68wBLgupR4QJ+MZk3/mOTs50Xf8kcK5AjyTWsw==",
+    "title": "20.317 Augmented Design Sep'26"
+  },
+  "20.322": {
+    "chatId": 5360084109,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:96S43mG8lIDG1nOF:U7VutFh2uDUTh7LduoNK3AjPQiqPZs6DEkj0T6Jh6qwsc77c35syHZcTjGy38Q==",
+    "title": "20.322 Net Zero Design: Case Studies for Whole Life Decarbonisation Sep'26"
+  },
+  "20.323": {
+    "chatId": 5594169811,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:gOhsuNu03PetaL8I:RDWVaqFqi89ULSPWIRD5k6EhPiknMMhPvEzBoA4pTaIRvaNQvZwBgRUwrObSjQ==",
+    "title": "20.323 Forms and Types of Media Representation Sep'26"
+  },
+  "30.114": {
+    "chatId": 5537251283,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:xF83QIA+PfFo1gWJ:I5G3KTsnH57oTL0h8jOxWfpyacP3sS8adZxVh2aAHP/Ng5Xz8vpKgqfAajYDhg==",
+    "title": "30.114 Advanced Feedback and Control Sep'26"
+  },
+  "30.119": {
+    "chatId": 5169732488,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:R/0YGrFSBpMeCWq6:TZIllGev9N5JnAjwG+ll1IQ/G4BDK3p5eGFOfJ3rwQLWg4JANe9i/5LHlSwN/A==",
+    "title": "30.119 Intelligent Robotics Sep'26"
+  },
+  "30.120": {
+    "chatId": 5152018724,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:rz1jvWBYOAayTFNK:GEZjzVNYGhG3U/oyujPGnOzEAmaP1ITxhAcbWUh6f60eiPRcoPSWGThvz5m0QQ==",
+    "title": "30.120 Design & Manufacturing Sep'26"
+  },
   "30.123": {
     "chatId": 5527929240,
     "created": "2026-09",
@@ -6,6 +158,102 @@
     "expires": "2026-12-19",
     "linkEnc": "v1:FJCz/ONs/6Fk9A5c:T3ATppu/6zexMFnK56KCE9fVSaYCfDz/1wWiatEyjR5SLrOqo8GtD+5fgQR3PA==",
     "title": "30.123 Healthcare Product Design Sep'26"
+  },
+  "30.202": {
+    "chatId": 5472378107,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:zO54XqaaO21kOsTX:1CVzNqxjMHClMXh3oqtMJqyYWAfN0EcOxSz3AOkPKBbt59etorPn6c/70GH4+A==",
+    "title": "30.202 Design of Intelligent Digital Integrated Circuits and Systems Sep'26"
+  },
+  "30.303": {
+    "chatId": 5365299628,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:3Ze25OO12+hKXkCy:c3+qCu+0m7fH6PXmtx9EYWOYWeP33o5mstWlBQlblR2LuIYHBXA+oQRNJLHLkg==",
+    "title": "30.303 Industry 4.0 & 3D Printing Sep'26"
+  },
+  "40.242": {
+    "chatId": 5262203168,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:nNtniV0no9KOLsSL:zByoPHgMcxizrbmidzIpObsBgOMZxbL1KwmWbHTANeF+krHciaWNLtftbw1yMg==",
+    "title": "40.242 Derivative Pricing and Risk Management Sep'26"
+  },
+  "40.302": {
+    "chatId": 5328408004,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:we22J8fDugHtysfn:LCo8DRy6BeivgSAjBGRQc28lC2WNx2rdk1UF/GY6EbS8mLPa+YyU52yZFrS38A==",
+    "title": "40.302 Advanced Topics in Optimisation Sep'26"
+  },
+  "40.305": {
+    "chatId": 5450182232,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:qxPWkAurVo1Qm14g:T0yVV6yia5meyxGc1lLk79Pd00z1f7qkVfSGf9OXZQYwBCEwxvU+SDKZVQq1uQ==",
+    "title": "40.305 Advanced Topics in Stochastic Modelling Sep'26"
+  },
+  "40.318": {
+    "chatId": 5300865467,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:tHSei7IUKmIFGO3B:qBNed1DiEPUjDV8nQ1SCx2bm98i9EJ0f2ILTXxqI3eJ0XriTLZzaOLpKchcVpQ==",
+    "title": "40.318 Supply Chain Digitalisation and Design Sep'26"
+  },
+  "40.321": {
+    "chatId": 5539980153,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:bBr6Iq2mZPY3bDNU:HqsPk/IJarKndxYizrxgqyQJvXrgM7+Z8yWaxxW/LSgplWzEJ8FKBmp/WsE2Ug==",
+    "title": "40.321 Airport Systems Modelling and Simulation Sep'26"
+  },
+  "40.323": {
+    "chatId": 5343253251,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:ZOUuLgH3e+plA0xO:IlLUnU8VOkQH5D/rUk8L1LZEgbId+WWzZfTUhg/Ftlg0qLrshyBSjUd4tSdwfg==",
+    "title": "40.323 Equity Valuation Sep'26"
+  },
+  "50.006": {
+    "chatId": 5419880208,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:rNjfOaG6IdKhlDjo:7xOOkpaoALQPJ5RsWiX1et9Xb7y5/2vVxVImZTocRwnisI2Ec2Wkkbds0487ZQ==",
+    "title": "50.006 User Interface Design and Implementation Sep'26"
+  },
+  "50.020": {
+    "chatId": 5303128119,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:iZxbDjlG/YVI4+4t:uf/UNyq8iYa7EpKWSD6IUObPmWrTQDNV8QMeybki7RXmMppBFwWVtuvzALDHgQ==",
+    "title": "50.020 Network Security Sep'26"
+  },
+  "50.033": {
+    "chatId": 5014465282,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:Dx1NecQ2W4gQnmIE:lompDNi8D4XSwdqY6wm8rq4BPG/iUvjUASl8zye1mQo7pOb7oqndwH12Pnepqw==",
+    "title": "50.033 Foundations of Game Design and Development Sep'26"
+  },
+  "50.037": {
+    "chatId": 5361380451,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:gVRhhndvraHqPDr4:6+oxr93wTqkOtLEwtid1oV8hILoX/ucrPS1V7X+DrsXCiVI6xf8rckkOb49yqw==",
+    "title": "50.037 Blockchain Technology Sep'26"
   },
   "50.040": {
     "accessHash": -1258912155172725213,
@@ -17,5 +265,45 @@
     "linkEnc": "v1:6YkVrFz2hyLn/O+z:QBo765PQ8zjR/reGDZtzmBdsGmmneQg1O9rq4HIS87bxd3Qji1ZCf2IGBC9k0g==",
     "supergroup": true,
     "title": "50.040 Natural Language Processing Sep'26"
+  },
+  "50.046": {
+    "chatId": 5359425711,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:zvNNl1hnQcxr9NPC:HZ3atx0IaxzsUYEx1osLtDiQ/OHwJzdQxglzmTlzyBkOljBVqhLhNWfRWJ84/w==",
+    "title": "50.046 Cloud Computing and Internet of Things Sep'26"
+  },
+  "50.047": {
+    "chatId": 5519173178,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:kDq4n1riiW1L62LJ:WjqpQObFh3duIkgygL1BSiiPf3r782x0R6wHGm5JSnXnsdZPgMtbqfkk1SmDig==",
+    "title": "50.047 Mobile Robotics Sep'26"
+  },
+  "50.052": {
+    "chatId": 5377507450,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:FQ0M/HO0iriAsG/n:2g3CyD49whpL838kOPenpnZSEUwmfnuwddc+t8/Xlc4gJFuqq3ODdtPy/DMb5w==",
+    "title": "50.052 Extended Reality Sep'26"
+  },
+  "50.054": {
+    "chatId": 5395628336,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:BQ/5VmfH1mb18qoH:9zydtz0F0C+jOgwVdO4qrj2X71eQjlnbzxRcs8zMRYkk6ZI3dKOkX4JympWoDw==",
+    "title": "50.054 Compiler Design and Program Analysis Sep'26"
+  },
+  "50.057": {
+    "chatId": 5356778966,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:2peoYxtsk1nM8YzA:4CuuplAntA8j9I85pF8tu0Fv9bwdPbxY9nucbqx8zgxSsIvm36M/I6+zSC5VHA==",
+    "title": "50.057 Modern Software Design Studio with Agentic AI Sep'26"
   }
 }

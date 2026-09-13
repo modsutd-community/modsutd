@@ -10,7 +10,100 @@
     "30.101"
   ],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "16:00",
+      "endTime": "18:30",
+      "location": "2.313A",
+      "instructors": [],
+      "cohort": "CP01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "16:00",
+      "endTime": "18:30",
+      "location": "2.313B",
+      "instructors": [],
+      "cohort": "CP01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "16:00",
+      "endTime": "18:30",
+      "location": "2.313A",
+      "instructors": [],
+      "cohort": "CP01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "16:00",
+      "endTime": "18:30",
+      "location": "2.313B",
+      "instructors": [],
+      "cohort": "CP01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
+    }
+  ],
   "tags": [
     "Term 7",
     "Elective / Technical Elective",

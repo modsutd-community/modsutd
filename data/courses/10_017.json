@@ -24,5 +24,7 @@
     "Freshmore Core",
     "SMT"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/10-017-technological-world/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-017-technological-world/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

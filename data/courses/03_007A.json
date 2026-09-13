@@ -8,7 +8,56 @@
   "term": "1",
   "prerequisites": [],
   "corequisites": [],
-  "schedules": [],
+  "schedules": [
+    {
+      "type": "Lecture",
+      "day": "Friday",
+      "startTime": "11:30",
+      "endTime": "13:30",
+      "location": "1.102",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "14:30",
+      "endTime": "17:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "12:30",
+      "endTime": "15:00",
+      "location": "1.414",
+      "instructors": []
+    },
+    {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "15:30",
+      "endTime": "18:30",
+      "location": "1.102",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.414",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "12:30",
+      "endTime": "15:00",
+      "location": "1.413",
+      "instructors": []
+    }
+  ],
   "tags": [
     "ASD",
     "Freshmore Core",
@@ -16,5 +65,7 @@
     "SMT",
     "Term 1"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/03-007a-innovating-with-design-and-ai-1/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/03-007a-innovating-with-design-and-ai-1/",
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
 }

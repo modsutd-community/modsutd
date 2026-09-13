@@ -30,7 +30,22 @@
       "startTime": "13:00",
       "endTime": "15:30",
       "location": "2.406",
-      "instructors": []
+      "instructors": [],
+      "cohort": "CP01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     },
     {
       "type": "Lecture",
@@ -38,7 +53,22 @@
       "startTime": "11:30",
       "endTime": "14:00",
       "location": "2.406",
-      "instructors": []
+      "instructors": [],
+      "cohort": "LP01",
+      "weeks": [
+        38,
+        39,
+        40,
+        41,
+        42,
+        43,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50
+      ]
     }
   ],
   "tags": [

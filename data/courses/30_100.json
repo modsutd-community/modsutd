@@ -20,5 +20,7 @@
     "Core",
     "EPD"
   ],
-  "sourceUrl": "https://www.sutd.edu.sg/course/30-100-computational-and-data-driven-engineering/"
+  "sourceUrl": "https://www.sutd.edu.sg/course/30-100-computational-and-data-driven-engineering/",
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
 }
