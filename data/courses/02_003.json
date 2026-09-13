@@ -23,6 +23,14 @@
       "endTime": "10:00",
       "location": "1.102",
       "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "location": "1.414",
+      "instructors": []
     }
   ],
   "corequisites": [],
