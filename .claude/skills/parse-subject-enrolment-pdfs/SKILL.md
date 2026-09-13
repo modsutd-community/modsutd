@@ -135,7 +135,10 @@ so no chat can be created until this PR is merged. After it is:
   (`createdDay == today >= 6 -> skip=daily-cap`), so a term's worth takes
   several days. Do not read a skipped dispatch as a failure; check
   `data/telegram-groups.json` on main.
-- a chat's link is `https://modsutd.tech/telegram-groups?modCode=<code>`.
+- a mod's page is `https://modsutd.tech/mods/<code>`, and the join button is on
+  it. There is no separate link endpoint: every mod has had a real page since
+  the prerender step, so a redirect for one would be a second address for the
+  same thing.
 
 ## Related
 

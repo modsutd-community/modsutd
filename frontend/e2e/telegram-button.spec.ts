@@ -9,7 +9,11 @@ const LIVE_TERM = { start: '2026-01-01', end: '2099-01-01' };
 
 async function stub(page: Page, codes: string[], registry: Record<string, unknown>) {
   await page.route('**/data/term-window.json', (r) => r.fulfill({ json: LIVE_TERM }));
-  await page.route('**/data/telegram-groups.json', (r) => r.fulfill({ json: registry }));
+  // A regex, not a glob: fetchAll reads the registry twice, the bundled copy
+  // and the one on main through raw.githubusercontent with a cache-busting
+  // query. A glob on the path matches only the first, and the real registry
+  // from main then leaks into a test that meant to supply its own.
+  await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: registry }));
   await page.route('**/data/courses.json', (r) => r.fulfill({
     json: coursesWithSchedules(codes, [{
       type: 'Lecture', day: 'Monday', startTime: '09:00', endTime: '11:00',
@@ -226,23 +230,36 @@ test.describe('telegram batch chat', () => {
     }
   });
 
-  // The catalogue marks the same mods the mod page offers a button for, and
-  // both read chatEligible(), so the list cannot promise a chat that the panel
-  // then declines to offer. Whether one EXISTS needs the registry; whether one
-  // CAN exist is what the column answers.
-  test('the catalogue marks a mod that can have a chat, and only those', async ({ page }) => {
-    await stub(page, ['50.040'], {});
+  // The catalogue marks a chat that EXISTS, not one that could. Eligibility is
+  // a property of the record and would mark every HASS course in the catalogue
+  // whether or not it runs this term; the registry is the only thing that
+  // knows a group was actually made, and "there is a chat to join" is the
+  // question a reader scanning the list is asking.
+  test('the catalogue marks a mod that has a chat, and only those', async ({ page }) => {
+    await stub(page, ['50.040'], ENTRY);
     const only = async (code: string) => {
       await page.goto(`/mods?q=${code}`);
       await expect(page.getByText(code, { exact: false }).first()).toBeVisible();
       return page.locator('[data-act="tele-eligible"]');
     };
 
-    // 50.040 is a T7 elective and gets one. 10.013 is freshmore, whose cohort
-    // already shares a chat. 01.400 is a capstone and splits into teams.
+    // 50.040 is in the stubbed registry. 02.146 is a HASS elective and would
+    // pass every eligibility check, and has no chat, which is the case that
+    // made this the registry's question rather than the record's.
     await expect(await only('50.040')).toHaveCount(1);
+    await expect(await only('02.146')).toHaveCount(0);
     await expect(await only('10.013')).toHaveCount(0);
     await expect(await only('01.400')).toHaveCount(0);
+  });
+
+  // An entry whose term has ended is not a chat anyone can join.
+  test('the catalogue drops the mark when the entry has expired', async ({ page }) => {
+    await stub(page, ['50.040'], {
+      '50.040': { linkEnc: 'v1:stub:stub', title: 'x', created: '2020-01', expires: '2020-06-30' },
+    });
+    await page.goto('/mods?q=50.040');
+    await expect(page.getByText('50.040', { exact: false }).first()).toBeVisible();
+    await expect(page.locator('[data-act="tele-eligible"]')).toHaveCount(0);
   });
 
   // The registry lives on main and is read through raw.githubusercontent,
