@@ -115,6 +115,26 @@ jobs:
             # rebase conflicts and the second run fails after its group already
             # exists on Telegram. That failure is why this workflow could only
             # ever run one at a time.
+            # The group is real and unregistered. Reading a failed job's log
+            # for a chat id is not a recovery path anybody follows, so it goes
+            # in the summary with what to do about it.
+            - name: Say where an orphaned group is
+              if: failure()
+              run: |
+                  [ -f /tmp/orphan.json ] || exit 0
+                  {
+                    echo "### Telegram group created but has no link"
+                    echo
+                    echo "The group exists and the throwaway is in it. Export a"
+                    echo "fresh invite for this chat and add the entry to"
+                    echo '`data/telegram-groups.json` by hand:'
+                    echo
+                    echo '```json'
+                    cat /tmp/orphan.json
+                    echo
+                    echo '```'
+                  } >> "$GITHUB_STEP_SUMMARY"
+
             - name: Commit the registry entry
               if: steps.gate.outputs.skip == ''
               env:
