@@ -122,7 +122,11 @@ test.describe('prerendered pages', () => {
     for (const code of ['Campus Centre', 'Antique House', 'Swimming Pool']) {
       const res = await request.get(`/venues/${encodeURIComponent(code)}`);
       expect(res.status(), `${code} has a page`).toBe(200);
-      expect(title(await res.text())).toContain(code);
+      const html = await res.text();
+      expect(title(html)).toContain(code);
+      // Their code IS their name, so joining the two printed it twice:
+      // "Campus Centre Campus Centre - SUTD room - modSUTD".
+      expect(title(html)).not.toContain(`${code} ${code}`);
     }
   });
 
