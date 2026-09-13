@@ -1,14 +1,55 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import { teleState, type TeleFacts } from './teleState';
+import { teleState, capReached, DAILY_CREATE_CAP, type TeleFacts } from './teleState';
 import {
   askedAt, markAsked, clearAsked, anyAsked, exportAsked, importAsked, CREATING_TTL_MS,
 } from './teleAsked';
 
 const facts = (over: Partial<TeleFacts> = {}): TeleFacts => ({
   chatMod: true, entry: false, askedAt: null,
-  termOk: true, committed: false, committing: false,
+  termOk: true, committed: false, committing: false, capped: false,
   ...over,
+});
+
+// Telegram's own ceiling is 50 groups a day per account, and telegram-group.yml
+// stops at 40. Past it the relay still answers 202, the workflow's gate prints
+// skip=daily-cap and exits green, and nothing reaches the student - so this is
+// the browser working the number out for itself off the registry it already has.
+describe('the daily creation cap', () => {
+  const day = (n: number, createdDay: string) =>
+    Object.fromEntries(
+      Array.from({ length: n }, (_, i) => [`50.${100 + i}`, { createdDay }]),
+    );
+
+  it('is not reached below the cap', () => {
+    expect(capReached(day(DAILY_CREATE_CAP - 1, '2026-09-13'), '2026-09-13')).toBe(false);
+  });
+
+  it('is reached at the cap, not one past it', () => {
+    expect(capReached(day(DAILY_CREATE_CAP, '2026-09-13'), '2026-09-13')).toBe(true);
+  });
+
+  it('counts today only, so yesterday does not hold the button shut', () => {
+    expect(capReached(day(DAILY_CREATE_CAP, '2026-09-12'), '2026-09-13')).toBe(false);
+  });
+
+  it('ignores an entry with no createdDay, which every pre-cap entry is', () => {
+    expect(capReached({ '50.001': { } }, '2026-09-13')).toBe(false);
+  });
+
+  // Above READY and below everything describing a chat already made or asked
+  // for: the cap is about making a NEW one.
+  it('shuts the button that would fire a dispatch', () => {
+    expect(teleState(facts({ committed: true, capped: true }))).toBe('capped');
+  });
+
+  it('leaves a chat that already exists alone', () => {
+    expect(teleState(facts({ entry: true, capped: true }))).toBe('live');
+  });
+
+  it('leaves one already being made alone', () => {
+    expect(teleState(facts({ askedAt: Date.now(), capped: true }))).toBe('creating');
+  });
 });
 
 // The order of the checks IS the design, so each of these pins one step of it.

@@ -19,7 +19,7 @@ import {
     slotsOnMain,
 } from "../telegram";
 import {awaitingDeploy, CONTRIBUTED_EVENT} from "../contributed";
-import {teleState, chatEligible} from "../teleState";
+import {teleState, chatEligible, capReached, DAILY_CREATE_CAP} from "../teleState";
 import {askedAt, markAsked, clearAsked, TELE_ASKED_EVENT} from "../teleAsked";
 import {ReviewForm} from "../ReviewForm";
 import {defaultLevel, useFreshmore, freshmoreFixedSet, planKeyFor} from "../logic";
@@ -116,6 +116,9 @@ function TeleChat({mod}: {mod: Mod}) {
             awaitingDeploy(mod.code, false),
         committed,
         committing: pastedHere && !committed,
+        // Counted off the same registry, so this agrees with the workflow's
+        // own gate rather than guessing at it.
+        capped: capReached(tg?.registry ?? {}, today),
     });
 
     // Watch main until this browser's own paste lands there, so COMMITTING
@@ -205,6 +208,28 @@ function TeleChat({mod}: {mod: Mod}) {
                     data-tip="Please wait a few seconds"
                 >
                     <TelegramIcon /> reading timetable
+                </button>
+            </div>
+        );
+    }
+
+    if (state === "capped") {
+        // The ask would be accepted by the relay and dropped by the workflow's
+        // gate, which exits green having done nothing. Pressed, the button
+        // would say "creating the chat..." for ten minutes and then go back to
+        // offering, with nobody ever told why. Telegram counts per account and
+        // per UTC day, which is 08:00 in Singapore.
+        return (
+            <div className={styles.teleRow}>
+                <button
+                    type="button"
+                    className={`${styles.teleBtn} ${styles.teleWaiting}`}
+                    disabled
+                    data-act="tele-capped"
+                    data-tip-side="block"
+                    data-tip={`${DAILY_CREATE_CAP} chats have been created today, which is all Telegram allows this account in a day. Come back after 08:00 SGT and this works again.`}
+                >
+                    <TelegramIcon /> chat limit reached today
                 </button>
             </div>
         );

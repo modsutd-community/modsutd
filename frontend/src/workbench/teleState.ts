@@ -6,7 +6,39 @@
 import type { Mod } from '@/types';
 import { modPillars } from './pillars';
 
-export type TeleState = 'none' | 'committing' | 'ready' | 'creating' | 'live';
+export type TeleState =
+  | 'none' | 'committing' | 'ready' | 'creating' | 'live' | 'capped';
+
+// Telegram allows 50 groups or channels a day per ACCOUNT and answers a 51st
+// with a flood error, so `telegram-group.yml` stops at 40 and leaves room for
+// the handover sweep and a retry. Named here as well because the workflow
+// cannot be imported and a button that dispatches an ask the gate will drop is
+// a button that lies. Change one, change the other: the gate and its
+// commit-time re-check are the two copies in `.github/workflows/telegram-group.yml`.
+export const DAILY_CREATE_CAP = 40;
+
+/**
+ * Whether today's group creations have used the cap up.
+ *
+ * Counted off the registry the browser already reads from main, because every
+ * entry carries the `createdDay` the workflow's own gate counts. No new file
+ * and nothing to keep in step: it is the same number read from the same place.
+ *
+ * The date is UTC on both sides. A runner's `datetime.date.today()` is UTC and
+ * so is `toISOString()`, which matters: a Singapore-local date would disagree
+ * with the gate for the eight hours after midnight SGT and the button would
+ * promise a chat the workflow refuses.
+ */
+export function capReached(
+  registry: Record<string, { createdDay?: string }>,
+  today = new Date().toISOString().slice(0, 10),
+): boolean {
+  let made = 0;
+  for (const entry of Object.values(registry)) {
+    if (entry.createdDay === today) made += 1;
+  }
+  return made >= DAILY_CREATE_CAP;
+}
 
 // Capstone and thesis mods get no batch chat: students are split across their
 // own project teams, so a cohort-wide group is noise. A fallback for records
@@ -73,6 +105,8 @@ export interface TeleFacts {
   committed: boolean;
   /** This browser pasted for this mod and the commit has not landed yet. */
   committing: boolean;
+  /** Today's group creations have used the daily cap up. */
+  capped: boolean;
 }
 
 /**
@@ -102,5 +136,12 @@ export function teleState(f: TeleFacts): TeleState {
   // termOk gates only READY, which is the only state that fires a dispatch,
   // which is the only place the workflow's own no-live-term gate can bite.
   if (!f.termOk) return 'none';
-  return f.committed ? 'ready' : 'none';
+  if (!f.committed) return 'none';
+
+  // Last, and below every state that describes a chat already made or already
+  // asked for: the cap is about making a NEW one, and it is the only reason
+  // left that the dispatch would be dropped. Above READY because a pressed
+  // button whose ask the gate silently drops leaves the student watching
+  // "creating the chat..." for ten minutes and then back where they started.
+  return f.capped ? 'capped' : 'ready';
 }

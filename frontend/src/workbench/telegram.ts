@@ -14,6 +14,9 @@ export interface TgEntry {
   title: string;
   created: string; // 'YYYY-MM'
   expires: string; // ISO date - the batch term's end, from the timetables
+  // UTC, written by telegram-group.yml. The daily creation cap is counted off
+  // these, on both sides: see capReached in teleState.ts.
+  createdDay?: string;
   adminGranted?: boolean;
 }
 export type TgRegistry = Record<string, TgEntry>;
