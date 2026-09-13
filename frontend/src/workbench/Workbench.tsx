@@ -177,12 +177,22 @@ function WorkbenchInner() {
             // rename - /venues?focus= below still works and is what every
             // existing link and share uses.
             ui.setSelectedRoom(safeDecode(path.slice("/venues/".length)));
+            // The search box is restored from the last visit, and the room
+            // list is narrowed by it, so a saved filter could hide the very
+            // room the link names. A url that names one room outranks whatever
+            // was typed days ago.
+            ui.setFilter("");
             if (isMobile) ui.setMobileTab("rooms");
             else api.open("rooms");
         } else if (path === "/venues") {
             const focus = params.get("focus");
             const q = params.get("q");
-            if (focus) ui.setSelectedRoom(focus);
+            if (focus) {
+                ui.setSelectedRoom(focus);
+                // Same reason as the path form above. An explicit ?q= below
+                // still wins, because that one was asked for in the url.
+                ui.setFilter("");
+            }
             // /venues?q= now feeds the one shared search, same as the mods tab.
             if (q !== null) ui.setFilter(q);
             if (isMobile) ui.setMobileTab("rooms");

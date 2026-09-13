@@ -114,6 +114,18 @@ test.describe('prerendered pages', () => {
     await expect(page.locator('[data-panel="rooms"]')).toContainText('2.507');
   });
 
+  // A venue code is not always code-shaped: Campus Centre, Antique House and
+  // Swimming Pool ARE their names, spaces and all. A path guard written as an
+  // allowlist of code characters dropped all three and said so only in a build
+  // log nobody reads, while the sitemap went on advertising them.
+  test('a room whose code is its name still has a page', async ({ request }) => {
+    for (const code of ['Campus Centre', 'Antique House', 'Swimming Pool']) {
+      const res = await request.get(`/venues/${encodeURIComponent(code)}`);
+      expect(res.status(), `${code} has a page`).toBe(200);
+      expect(title(await res.text())).toContain(code);
+    }
+  });
+
   test('every mod in the sitemap has a page, and every page a mod', async ({ request }) => {
     const xml = await (await request.get('/sitemap.xml')).text();
     const listed = [...xml.matchAll(/<loc>https:\/\/modsutd\.tech\/mods\/([^<]+)<\/loc>/g)]
@@ -128,5 +140,9 @@ test.describe('prerendered pages', () => {
       expect(res.status(), `${code} has a page`).toBe(200);
       expect(title(await res.text())).toContain(code);
     }
+
+    const rooms = [...xml.matchAll(/<loc>https:\/\/modsutd\.tech\/venues\/([^<]+)<\/loc>/g)]
+      .map((m) => m[1]);
+    expect(rooms.length).toBe(venues.length);
   });
 });
