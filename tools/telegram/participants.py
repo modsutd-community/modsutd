@@ -41,8 +41,12 @@ def sort_joiners(parts, users, me_id: int) -> tuple[list[int], list[int]]:
         if user is not None and getattr(user, "deleted", False):
             continue
         humans.append((getattr(part, "date", None), uid))
-    humans.sort(key=lambda h: (h[0] is None, h[0]))
-    return [uid for _, uid in humans], bots
+    # Dated first, in join order, then the undated. Sorted in two passes rather
+    # than on a `(date is None, date)` key so that no comparison ever reaches a
+    # second element of a different type: only dates are compared with dates.
+    dated = sorted((h for h in humans if h[0] is not None), key=lambda h: h[0])
+    undated = [h for h in humans if h[0] is None]
+    return [uid for _, uid in dated + undated], bots
 
 
 def has_human_admin(parts, users, me_id: int) -> bool:
