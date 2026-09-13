@@ -485,6 +485,18 @@ Two are deliberately not monthly, and say why in their own headers:
   from. It is caught by the resolver rather than prevented, and fixing it
   properly needs the venue list in the browser.
 
+- **The device-flow poll is what the link banner's "waiting..." means**, and
+  two things there keep it from meaning forever. `slow_down` is an instruction
+  and not a status: GitHub answers it while a client polls faster than the
+  interval it handed out and keeps answering it until the client actually waits
+  longer, so a poll that treats it as "keep going" can be authorised and never
+  collect the token. Each one adds five seconds. And the loop carries the code's
+  own `expires_in` as a deadline, because a reply with neither an
+  `access_token` nor an `error` - an empty body, an error page - is a `continue`
+  and would otherwise sit on that banner for the rest of the session. The wait
+  also ends early when the tab comes back, since a phone freezes timers in a
+  background tab and typing the code on github.com is exactly that.
+
 - **Vercel does not deploy main; `deploy.yml` does.** `vercel.json` sets
   `git.deploymentEnabled.main: false`, so pushes to main build only through the
   workflow. That is the whole reason the workflow exists: contributed slots

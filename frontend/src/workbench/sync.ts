@@ -72,6 +72,41 @@ export interface DeviceStart {
   user_code: string;
   verification_uri: string;
   interval: number;
+  /** Seconds the user_code is good for. GitHub sends 900. */
+  expires_in?: number;
+}
+
+// GitHub's device flow is the only thing here that asks a person to go
+// somewhere else and come back, and the banner says "waiting..." for exactly
+// as long as the poll below neither resolves nor rejects. Two things used to
+// make that forever.
+const SLOW_DOWN_STEP_MS = 5_000;
+const DEFAULT_EXPIRES_S = 900;
+
+/**
+ * Sleep, but come back early when the tab does.
+ *
+ * A phone freezes timers in a background tab, and going to github.com to type
+ * the code is exactly that. The wake never polls sooner than GitHub's own
+ * interval, because it compares wall-clock time against `until` rather than
+ * trusting the timer to have run.
+ */
+function waitTurn(until: number, now: () => number): Promise<void> {
+  return new Promise((resolve) => {
+    const done = () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      resolve();
+    };
+    // Nothing cancels the timer when the wake wins. A promise resolves once and
+    // removeEventListener on a listener already gone is a no-op, so the late
+    // firing costs one function call and keeping a handle to cancel it would
+    // cost a mutable binding read before it is assigned.
+    const onVisible = () => {
+      if (document.visibilityState === 'visible' && now() >= until) done();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    setTimeout(done, Math.max(0, until - now()));
+  });
 }
 
 export async function startDeviceFlow(): Promise<DeviceStart> {
@@ -81,11 +116,24 @@ export async function startDeviceFlow(): Promise<DeviceStart> {
   return j as DeviceStart;
 }
 
-export async function pollForToken(start: DeviceStart, signal?: AbortSignal): Promise<string> {
-  const interval = Math.max(5, start.interval ?? 5) * 1000;
+export async function pollForToken(
+  start: DeviceStart,
+  signal?: AbortSignal,
+  now: () => number = Date.now,
+): Promise<string> {
+  let interval = Math.max(5, start.interval ?? 5) * 1000;
+  // The code itself dies at this moment whatever the poll does. Without it a
+  // reply carrying neither a token nor an `error` - a Vercel error page, an
+  // empty body - was a `continue`, so the banner said "waiting..." for the
+  // rest of the session.
+  const deadline = now() + (start.expires_in ?? DEFAULT_EXPIRES_S) * 1000;
   for (;;) {
     if (signal?.aborted) throw new Error('cancelled');
-    await new Promise((r) => setTimeout(r, interval));
+    await waitTurn(now() + interval, now);
+    if (signal?.aborted) throw new Error('cancelled');
+    if (now() >= deadline) {
+      throw new Error('that code expired - press Link now for a fresh one');
+    }
     // The student is away on github.com for half a minute or more, and this
     // polls the whole time. One dropped request used to reject the entire
     // link and put the banner back to "Link now" - the "Failed to fetch" that
@@ -107,7 +155,16 @@ export async function pollForToken(start: DeviceStart, signal?: AbortSignal): Pr
       announce();
       return j.access_token;
     }
-    if (j.error && j.error !== 'authorization_pending' && j.error !== 'slow_down') {
+    // slow_down is an instruction, not a status. GitHub answers it when a
+    // client polls faster than the interval it was given, and it keeps
+    // answering it until the client actually slows down - so ignoring it meant
+    // the authorisation could land and never be collected. Each one adds five
+    // seconds, which is what the spec asks for.
+    if (j.error === 'slow_down') {
+      interval += SLOW_DOWN_STEP_MS;
+      continue;
+    }
+    if (j.error && j.error !== 'authorization_pending') {
       throw new Error(j.error_description ?? j.error);
     }
   }
