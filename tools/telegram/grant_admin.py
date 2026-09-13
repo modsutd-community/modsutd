@@ -63,6 +63,11 @@ from participants import has_human_admin, sort_joiners  # noqa: E402
 
 REG = pathlib.Path(__file__).resolve().parents[2] / "data" / "telegram-groups.json"
 
+# Telegram's hard cap on a basic group is 200 and a batch chat is one cohort,
+# so a listing that needs more pages than this is a chat that stopped being
+# what this tool is for.
+MAX_MEMBERS = 500
+
 HANDOVER = (
     "First person to join is now admin, and can make others admin too. "
     "Invite your friends and enjoy!\nCreated by modSUTD"
@@ -115,6 +120,17 @@ def peer_of(client, entry: dict):
             channel_id=moved.channel_id, access_hash=moved.access_hash
         )
     return chat
+
+
+ADMINS = types.ChannelParticipantsAdmins()
+
+# One member read, in the shape the pure readers take. Telethon hangs each
+# user's ChannelParticipant off the User it returns, so the participant
+# carrying the join date and the user carrying `bot` and `deleted` come back
+# from one call and cannot disagree about who is in the chat.
+def listing(client, peer, filt=None) -> tuple[list, list]:
+    users = client.get_participants(peer, limit=MAX_MEMBERS, filter=filt)
+    return [u.participant for u in users], list(users)
 
 
 def migrate(client, chat_id: int) -> types.Channel:
@@ -227,16 +243,16 @@ def main() -> int:
         for code, entry in recheck.items():
             try:
                 peer = peer_of(client, entry)
-                admins = client(functions.channels.GetParticipantsRequest(
-                    channel=peer, filter=types.ChannelParticipantsAdmins(),
-                    offset=0, limit=200, hash=0))
-                if has_human_admin(admins.participants, admins.users, me.id):
+                # get_participants rather than a raw GetParticipantsRequest.
+                # It pages, and its default filter is the searching one rather
+                # than ChannelParticipantsRecent, which Telegram documents as a
+                # recent SLICE: on a chat past a couple of hundred members that
+                # can leave out the very member this is looking for and hand the
+                # chat to the wrong person.
+                if has_human_admin(*listing(client, peer, ADMINS), me.id):
                     continue
 
-                members = client(functions.channels.GetParticipantsRequest(
-                    channel=peer, filter=types.ChannelParticipantsRecent(),
-                    offset=0, limit=200, hash=0))
-                humans, _ = sort_joiners(members.participants, members.users, me.id)
+                humans, _ = sort_joiners(*listing(client, peer), me.id)
                 if not humans:
                     # The screenshot case: the first and only joiner left the
                     # same minute they arrived. Nothing to promote, so the chat

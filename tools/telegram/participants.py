@@ -52,10 +52,16 @@ def sort_joiners(parts, users, me_id: int) -> tuple[list[int], list[int]]:
 def has_human_admin(parts, users, me_id: int) -> bool:
     """Whether anyone but this account still administers the chat.
 
-    Asked of the ADMIN list rather than of one recorded user id, because the
-    two ways a handover comes undone look identical from here: the admin left,
-    or another admin demoted them. Deleted accounts do not count - a deactivated
-    Telegram account keeps its rank and can do nothing with it.
+    `parts` is whatever list the caller asked Telegram for, and the caller asks
+    for the ADMIN list - so every entry in it holds a rank and the only question
+    left is who they are. Asked that way rather than of one recorded user id,
+    because the two ways a handover comes undone look identical from here: the
+    admin left, or another admin demoted them.
+
+    Deleted accounts do not count, because a deactivated Telegram account keeps
+    its rank and can do nothing with it. Nor does the account running the sweep:
+    migration makes it the channel creator, so it is an admin by construction
+    and would answer yes for every chat forever.
     """
     return bool(sort_joiners(parts, users, me_id)[0])
 
