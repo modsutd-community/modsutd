@@ -72,7 +72,16 @@ export interface DeviceStart {
   user_code: string;
   verification_uri: string;
   interval: number;
+  /** Seconds the user_code is good for. GitHub sends 900. */
+  expires_in?: number;
 }
+
+// GitHub's device flow is the only thing here that asks a person to go
+// somewhere else and come back, and the banner says "waiting..." for exactly
+// as long as the poll below neither resolves nor rejects. Two things used to
+// make that forever.
+const SLOW_DOWN_STEP_MS = 5_000;
+const DEFAULT_EXPIRES_S = 900;
 
 export async function startDeviceFlow(): Promise<DeviceStart> {
   const r = await fetch('/api/gh-device-code', { method: 'POST' });
@@ -81,17 +90,36 @@ export async function startDeviceFlow(): Promise<DeviceStart> {
   return j as DeviceStart;
 }
 
-export async function pollForToken(start: DeviceStart, signal?: AbortSignal): Promise<string> {
-  const interval = Math.max(5, start.interval ?? 5) * 1000;
+export async function pollForToken(
+  start: DeviceStart,
+  signal?: AbortSignal,
+  now: () => number = Date.now,
+): Promise<string> {
+  let interval = Math.max(5, start.interval ?? 5) * 1000;
+  // The code itself dies at this moment whatever the poll does. Without it a
+  // reply carrying neither a token nor an `error` - a Vercel error page, an
+  // empty body - was a `continue`, so the banner said "waiting..." for the
+  // rest of the session.
+  const deadline = now() + (start.expires_in ?? DEFAULT_EXPIRES_S) * 1000;
   for (;;) {
     if (signal?.aborted) throw new Error('cancelled');
-    await new Promise((r) => setTimeout(r, interval));
+    // Capped at the deadline. Each slow_down makes the interval longer, so a
+    // plain `interval` would sail over the expiry and poll a code GitHub has
+    // already thrown away, then report it that much late.
+    await new Promise((r) => setTimeout(r, Math.max(0, Math.min(interval, deadline - now()))));
+    if (signal?.aborted) throw new Error('cancelled');
+    if (now() >= deadline) {
+      throw new Error('that code expired - press Link now for a fresh one');
+    }
     // The student is away on github.com for half a minute or more, and this
     // polls the whole time. One dropped request used to reject the entire
     // link and put the banner back to "Link now" - the "Failed to fetch" that
     // worked on a second try. A transient failure is not an answer, so wait
     // and ask again.
-    let j: { access_token?: string; error?: string; error_description?: string };
+    let j: {
+      access_token?: string; error?: string; error_description?: string;
+      interval?: number;
+    };
     try {
       const r = await fetch('/api/gh-device-token', {
         method: 'POST',
@@ -107,7 +135,22 @@ export async function pollForToken(start: DeviceStart, signal?: AbortSignal): Pr
       announce();
       return j.access_token;
     }
-    if (j.error && j.error !== 'authorization_pending' && j.error !== 'slow_down') {
+    // slow_down is an instruction, not a status. GitHub answers it when a
+    // client polls faster than the interval it was given, and it keeps
+    // answering it until the client actually slows down - so ignoring it meant
+    // the authorisation could land and never be collected.
+    //
+    // The new interval it wants comes back in the same body, so take that when
+    // it is there and fall back to the spec's five-second step when it is not.
+    // There is deliberately no ceiling: capping below what GitHub asked for
+    // earns another slow_down, which is the loop this exists to break. In
+    // practice it settles at ten seconds and stops.
+    if (j.error === 'slow_down') {
+      const asked = Number(j.interval) * 1000;
+      interval = asked > interval ? asked : interval + SLOW_DOWN_STEP_MS;
+      continue;
+    }
+    if (j.error && j.error !== 'authorization_pending') {
       throw new Error(j.error_description ?? j.error);
     }
   }

@@ -485,6 +485,25 @@ Two are deliberately not monthly, and say why in their own headers:
   from. It is caught by the resolver rather than prevented, and fixing it
   properly needs the venue list in the browser.
 
+- **The device-flow poll is what the link banner's "waiting..." means**, and
+  two things there keep it from meaning forever. `slow_down` is an instruction
+  and not a status: GitHub answers it while a client polls faster than the
+  interval it handed out and keeps answering it until the client actually waits
+  longer, so a poll that treats it as "keep going" can be authorised and never
+  collect the token. Each one adds five seconds. And the loop carries the code's
+  own `expires_in` as a deadline, because a reply with neither an
+  `access_token` nor an `error` - an empty body, an error page - is a `continue`
+  and would otherwise sit on that banner for the rest of the session. The new interval
+  comes back in the slow_down body, so it is taken from there rather than
+  guessed, and it is deliberately not capped: a ceiling below what GitHub asked
+  for earns another slow_down and rebuilds the loop. The wait IS capped at the
+  deadline, or a stretched interval sails past the expiry. There is
+  deliberately no wake on the tab becoming visible: nothing says the person went
+  to github.com rather than anywhere else, and GitHub pushes nothing when the
+  authorisation lands, so coming back cannot be a signal. What the banner does
+  instead is say it is checking and how long the code lasts, because "waiting..."
+  with no other information is what a reader files as a bug.
+
 - **Vercel does not deploy main; `deploy.yml` does.** `vercel.json` sets
   `git.deploymentEnabled.main: false`, so pushes to main build only through the
   workflow. That is the whole reason the workflow exists: contributed slots
