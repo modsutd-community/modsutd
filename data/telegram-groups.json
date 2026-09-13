@@ -17,5 +17,13 @@
     "linkEnc": "v1:6YkVrFz2hyLn/O+z:QBo765PQ8zjR/reGDZtzmBdsGmmneQg1O9rq4HIS87bxd3Qji1ZCf2IGBC9k0g==",
     "supergroup": true,
     "title": "50.040 Natural Language Processing Sep'26"
+  },
+  "50.046": {
+    "chatId": 5359425711,
+    "created": "2026-09",
+    "createdDay": "2026-09-13",
+    "expires": "2026-12-19",
+    "linkEnc": "v1:zvNNl1hnQcxr9NPC:HZ3atx0IaxzsUYEx1osLtDiQ/OHwJzdQxglzmTlzyBkOljBVqhLhNWfRWJ84/w==",
+    "title": "50.046 Cloud Computing and Internet of Things Sep'26"
   }
 }
