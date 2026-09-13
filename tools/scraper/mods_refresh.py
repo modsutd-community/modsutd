@@ -215,8 +215,13 @@ def timed(script: list[str], dry_run: bool) -> tuple[bool, str, float]:
     return ok, tail, time.time() - t0
 
 
-# Steps whose only product is prose. A change in what they say is the thing
-# worth a human reading, and nothing else in the run records it.
+# Steps whose FINDINGS have no other home. A run that changes no file opens no
+# pull request, so what these say would reach a run summary and stop there.
+# Everything else in WAVES writes /data and its finding IS the diff.
+#
+# `propose` is here despite writing, because the half of it worth reading is
+# the half that did not: a proposal dropped for failing validation changes no
+# file and is exactly what a person needs to see.
 REPORTING = ("canaries", "minors", "prereqs", "propose")
 
 
