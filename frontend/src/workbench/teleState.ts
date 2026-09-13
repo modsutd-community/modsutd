@@ -3,7 +3,32 @@
 // across a `useState`, two localStorage readers and a network probe, and no
 // two of them agreed - so this is a table a test can drive directly.
 
+import type { Mod } from '@/types';
+import { modPillars } from './pillars';
+
 export type TeleState = 'none' | 'committing' | 'ready' | 'creating' | 'live';
+
+// Capstone and thesis mods get no batch chat: students are split across their
+// own project teams, so a cohort-wide group is noise. A fallback for records
+// that predate the flag and for anything SUTD names a capstone before anyone
+// marks it. `noBatchChat` in the data is the real list.
+const SOLO_PROJECT = /capstone|thesis/i;
+
+/**
+ * Whether a chat is the kind of thing this mod gets at all.
+ *
+ * Here rather than in the panel that draws the button, because the catalogue
+ * marks the same mods in its own column and two copies of this rule would
+ * disagree the first time either moved. Nothing is fetched, so it is knowable
+ * on the first render of either.
+ */
+export function chatEligible(mod: Mod): boolean {
+  return (
+    (Number(mod.term) >= 3 || modPillars(mod).includes('HASS'))
+    && !mod.noBatchChat
+    && !SOLO_PROJECT.test(mod.name)
+  );
+}
 
 export interface TeleFacts {
   /** Term >= 3 or HASS, not noBatchChat, not a capstone or thesis. */

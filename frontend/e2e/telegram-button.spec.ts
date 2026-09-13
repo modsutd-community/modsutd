@@ -197,6 +197,25 @@ test.describe('telegram batch chat', () => {
     }
   });
 
+  // The catalogue marks the same mods the mod page offers a button for, and
+  // both read chatEligible(), so the list cannot promise a chat that the panel
+  // then declines to offer. Whether one EXISTS needs the registry; whether one
+  // CAN exist is what the column answers.
+  test('the catalogue marks a mod that can have a chat, and only those', async ({ page }) => {
+    await stub(page, ['50.040'], {});
+    const only = async (code: string) => {
+      await page.goto(`/mods?q=${code}`);
+      await expect(page.getByText(code, { exact: false }).first()).toBeVisible();
+      return page.locator('[data-act="tele-eligible"]');
+    };
+
+    // 50.040 is a T7 elective and gets one. 10.013 is freshmore, whose cohort
+    // already shares a chat. 01.400 is a capstone and splits into teams.
+    await expect(await only('50.040')).toHaveCount(1);
+    await expect(await only('10.013')).toHaveCount(0);
+    await expect(await only('01.400')).toHaveCount(0);
+  });
+
   // The registry lives on main and is read through raw.githubusercontent,
   // which serves `Cache-Control: max-age=300`. `no-store` only stops the
   // BROWSER reusing a response - the CDN in front of it answers with whatever
