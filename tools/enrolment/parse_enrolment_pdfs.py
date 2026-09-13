@@ -441,22 +441,59 @@ def to_schedules(rows: list[dict], instructors: list[str] | None = None) -> list
     return out
 
 
-def slot_key(s: dict) -> tuple:
-    """What makes two schedule entries the same meeting.
+def meeting_key(s: dict) -> tuple:
+    """The meeting itself: one type, one day, one hour, one room.
 
-    The cohort is part of it: 50.046 CI01 and CI02 really do meet in one
-    lecture theatre at one hour, and collapsing them would lose a section. A
-    contributed slot carries no cohort, so it matches an official one only when
-    that one carries none either - the conservative direction, because the cost
-    is a duplicate a reviewer can see rather than a deletion nobody can.
+    Two export rows that differ only by section are two real sections, so this
+    is not what the export dedupes on. It is what an UNSECTIONED entry is
+    matched by, because a contributed slot has no section to compare.
     """
     return (s.get("type"), s.get("day"), s.get("startTime"), s.get("endTime"),
-            s.get("location"), s.get("cohort"))
+            s.get("location"))
+
+
+def slot_key(s: dict) -> tuple:
+    """What makes two schedule entries the same row.
+
+    The cohort is part of it: 50.046 CI01 and CI02 really do meet in one
+    lecture theatre at one hour, and collapsing them would lose a section.
+    """
+    return meeting_key(s) + (s.get("cohort"),)
 
 
 def sort_key(s: dict) -> tuple:
     return (DAYS.index(s["day"]), s["startTime"], s["endTime"], s["location"],
             s.get("cohort", ""))
+
+
+def merge_schedules(existing: list[dict], fresh: list[dict]) -> tuple[list[dict], list[dict]]:
+    """The export's rows, plus whatever the export does not describe.
+
+    Returns the merged list and the entries that were kept from `existing`, so
+    the run can name them.
+
+    This used to be an assignment of `fresh` over the top, and a slot a student
+    had contributed that the export does not list was deleted by the next
+    import without a word. The export is the official timetable and it is not
+    the only true thing: a make-up class or a room change reaches /data through
+    a paste and nowhere else. So the export wins for anything it describes, a
+    contributed slot it does not describe survives and is reported, and a wrong
+    one is then a line in a pull request a person reads rather than a deletion
+    nobody sees.
+
+    A contributed slot carries no cohort: SAMS prints the section on the header
+    row, and a paste of one student's timetable cannot say which of CI01 and
+    CI02 the reader sits in. So "Cohort Tue 14:00-17:00 1.415" with no section
+    and the export's same row with CI01 are one meeting, and keeping both draws
+    the class twice in the grid. Only the unsectioned side folds in. A
+    sectioned entry is matched on the full key, so two real sections survive.
+    """
+    seen = {slot_key(s) for s in fresh}
+    meetings = {meeting_key(s) for s in fresh}
+    kept = [s for s in existing
+            if slot_key(s) not in seen
+            and not (s.get("cohort") is None and meeting_key(s) in meetings)]
+    return sorted(fresh + kept, key=sort_key), kept
 
 
 class FakePage:
@@ -695,6 +732,37 @@ def self_check() -> int:
     eq("an unknown room is not written", [r["rooms"] for r in rows3], [[]])
     eq("and the block says so", len(notes3), 1)
 
+    # The merge. A paste is the only way a make-up class reaches /data, and the
+    # export is the only thing that knows the sections, so neither side can
+    # simply win.
+    def slot(day, room, cohort=None, start="14:00", type_="Cohort"):
+        s = {"type": type_, "day": day, "startTime": start, "endTime": "17:00",
+             "location": room, "instructors": []}
+        if cohort:
+            s["cohort"] = cohort
+        return s
+
+    official = [slot("Tuesday", "1.415", "CI01"), slot("Tuesday", "1.416", "CI01")]
+    merged, kept = merge_schedules([slot("Tuesday", "1.415")], official)
+    eq("an unsectioned paste of a row the export has is not kept twice",
+       len(merged), 2)
+    eq("and nothing is reported as kept", kept, [])
+
+    merged, kept = merge_schedules([slot("Monday", "2.406")], official)
+    eq("a meeting the export does not describe survives", len(merged), 3)
+    eq("and is reported", [s["day"] for s in kept], ["Monday"])
+
+    merged, _ = merge_schedules([slot("Tuesday", "1.415", "CI02")], official)
+    eq("two real sections in one room at one hour both survive", len(merged), 3)
+
+    merged, _ = merge_schedules([slot("Tuesday", "1.415", "CI01")], official)
+    eq("a row the export repeats exactly is not doubled", len(merged), 2)
+
+    merged, _ = merge_schedules([slot("Tuesday", "1.415", type_="Lecture")],
+                                official)
+    eq("a different type in the same room at the same hour survives",
+       len(merged), 3)
+
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
         for f in fails:
@@ -831,20 +899,7 @@ def main() -> int:
         mod = json.loads(f.read_text(encoding="utf-8"))
         fresh = to_schedules(rows)
 
-        # MERGED, not replaced. This used to assign `fresh` over the top, and a
-        # slot a student had contributed that the registry's export does not
-        # list was deleted by the next import without a word - 30.123 lost a
-        # Monday 13:00 cohort exactly that way. The export is the official
-        # timetable and it is not the only true thing: a make-up class or a
-        # room change reaches /data through a paste and nowhere else.
-        #
-        # So the export wins for anything it describes, and a contributed slot
-        # it does not describe survives and is reported. A wrong one is then a
-        # line in a pull request a person reads, rather than a deletion nobody
-        # sees.
-        seen = {slot_key(s) for s in fresh}
-        extra = [s for s in (mod.get("schedules") or []) if slot_key(s) not in seen]
-        merged = sorted(fresh + extra, key=sort_key)
+        merged, extra = merge_schedules(mod.get("schedules") or [], fresh)
         if extra:
             where = ", ".join(f"{s['day'][:3]} {s['startTime']} @ {s['location']}"
                               for s in extra)
