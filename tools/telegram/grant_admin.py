@@ -30,8 +30,19 @@ its members by then. Leaving also deletes the dialog on this side, so the
 throwaway is not left carrying a list of every group it ever made - that
 removes it for us only, never for anyone else.
 
-Reads/updates data/telegram-groups.json (adminGranted flag); prints the
+A handover is not permanent, and `adminGranted` on its own stopped describing
+a chat that has an admin. Telegram takes a member's admin rights with them when
+they leave, and the first joiner is free to join and walk straight back out: a
+chat can be an hour old, handed over, and already unmoderated. So every live
+chat is asked each run whether a human admin is still inside, and one that is
+not goes back in the queue for the next joiner. The throwaway does not count -
+it is the channel creator after the migration, so it is an admin by
+construction and would answer yes forever.
+
+Reads/updates data/telegram-groups.json (adminGranted, adminUserId); prints the
 codes it handed over, one per line.
+
+    python grant_admin.py --self-check   # the two readers, no network
 """
 
 from __future__ import annotations
@@ -48,8 +59,14 @@ from telethon.tl import functions, types
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from linkcrypt import encrypt  # noqa: E402
+from participants import has_human_admin, sort_joiners  # noqa: E402
 
 REG = pathlib.Path(__file__).resolve().parents[2] / "data" / "telegram-groups.json"
+
+# Telegram's hard cap on a basic group is 200 and a batch chat is one cohort,
+# so a listing that needs more pages than this is a chat that stopped being
+# what this tool is for.
+MAX_MEMBERS = 500
 
 HANDOVER = (
     "First person to join is now admin, and can make others admin too. "
@@ -105,6 +122,17 @@ def peer_of(client, entry: dict):
     return chat
 
 
+ADMINS = types.ChannelParticipantsAdmins()
+
+# One member read, in the shape the pure readers take. Telethon hangs each
+# user's ChannelParticipant off the User it returns, so the participant
+# carrying the join date and the user carrying `bot` and `deleted` come back
+# from one call and cannot disagree about who is in the chat.
+def listing(client, peer, filt=None) -> tuple[list, list]:
+    users = client.get_participants(peer, limit=MAX_MEMBERS, filter=filt)
+    return [u.participant for u in users], list(users)
+
+
 def migrate(client, chat_id: int) -> types.Channel:
     """Migrate the basic group and return the Channel it became.
 
@@ -127,11 +155,28 @@ def migrate(client, chat_id: int) -> types.Channel:
 def main() -> int:
     reg = json.loads(REG.read_text(encoding="utf-8") or "{}")
     todo = {c: e for c, e in reg.items() if not e.get("adminGranted") and active(e)}
+    # Handed over by THIS sweep, still running, and addressable as a channel.
+    # Asked every run whether the promotion still holds: a chat whose only human
+    # admin has left is in the state the sweep exists to prevent, and it can
+    # arrive there any day rather than only on the day of the handover.
+    #
+    # The three conditions past `adminGranted` are narrower than "every live
+    # chat" on purpose. `channels.getParticipants` answers for a channel and not
+    # for a basic group, and the handover writes `adminGranted`, `supergroup`
+    # and `accessHash` in one block, so an entry carrying the first without the
+    # other two is one a person edited. A term that is over is the `done` queue
+    # below: the chat belongs to its members by then and this account is walking
+    # out of it.
+    recheck = {
+        c: e for c, e in reg.items()
+        if e.get("adminGranted") and active(e) and not e.get("left")
+        and e.get("supergroup") and e.get("accessHash") is not None
+    }
     # Terms that are over and this account has not yet walked out of. The link
     # is dead weight from here - telegram-prune deletes the ciphertext on the
     # first Saturday anyway - and the chat is the students'.
     done = {c: e for c, e in reg.items() if not active(e) and not e.get("left")}
-    if not todo and not done:
+    if not todo and not done and not recheck:
         return 0
 
     client = TelegramClient(
@@ -153,22 +198,11 @@ def main() -> int:
                     print(f"{code}: already a supergroup, skipping", file=sys.stderr)
                     continue
                 full = client(functions.messages.GetFullChatRequest(chat_id))
-                parts = full.full_chat.participants.participants
-                humans = []
-                bot_ids = []
-                for part in parts:
-                    if part.user_id == me.id:
-                        continue
-                    user = next((u for u in full.users if u.id == part.user_id), None)
-                    if user is not None and user.bot:
-                        bot_ids.append(part.user_id)
-                        continue
-                    humans.append((getattr(part, "date", None), part.user_id))
+                humans, bot_ids = sort_joiners(
+                    full.full_chat.participants.participants, full.users, me.id)
                 if not humans:
                     continue  # nobody joined yet - stay parked, retry next run
-
-                humans.sort(key=lambda h: (h[0] is None, h[0]))
-                first = humans[0][1]
+                first = humans[0]
 
                 for bid in bot_ids:  # defensive: the seed bot leaves at creation
                     client(functions.messages.DeleteChatUserRequest(chat_id=chat_id, user_id=bid))
@@ -200,10 +234,46 @@ def main() -> int:
                 # invite link in the registry belongs to this account and dies
                 # with its membership.
                 entry["adminGranted"] = True
+                entry["adminUserId"] = first
                 changed = True
                 print(code)
             except Exception as exc:  # noqa: BLE001 - one bad group must not stall the sweep
                 print(f"{code}: {type(exc).__name__}: {exc}", file=sys.stderr)
+
+        for code, entry in recheck.items():
+            try:
+                peer = peer_of(client, entry)
+                # get_participants rather than a raw GetParticipantsRequest.
+                # It pages, and its default filter is the searching one rather
+                # than ChannelParticipantsRecent, which Telegram documents as a
+                # recent SLICE: on a chat past a couple of hundred members that
+                # can leave out the very member this is looking for and hand the
+                # chat to the wrong person.
+                if has_human_admin(*listing(client, peer, ADMINS), me.id):
+                    continue
+
+                humans, _ = sort_joiners(*listing(client, peer), me.id)
+                if not humans:
+                    # The screenshot case: the first and only joiner left the
+                    # same minute they arrived. Nothing to promote, so the chat
+                    # waits for the next joiner exactly as an unadopted one does.
+                    print(f"{code}: admin left, nobody inside - parked",
+                          file=sys.stderr)
+                    continue
+
+                client(functions.channels.EditAdminRequest(
+                    channel=peer, user_id=humans[0], admin_rights=RIGHTS, rank=""))
+                # Deliberately NOT re-exporting the link. The handover does it
+                # because migration makes a different peer; nothing migrates
+                # here, and the link belongs to the throwaway, which is still
+                # inside. It is the same link it always was.
+                entry["adminUserId"] = humans[0]
+                note = client.send_message(peer, HANDOVER)
+                client(functions.messages.UpdatePinnedMessageRequest(peer=peer, id=note.id))
+                changed = True
+                print(f"{code}: re-granted")
+            except Exception as exc:  # noqa: BLE001 - one bad group must not stall the sweep
+                print(f"{code}: recheck: {type(exc).__name__}: {exc}", file=sys.stderr)
 
         for code, entry in done.items():
             try:
@@ -227,4 +297,7 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    if "--self-check" in sys.argv:
+        sys.exit("the participant readers live in tools/telegram/participants.py "
+                 "now: run `python tools/telegram/participants.py --self-check`")
     sys.exit(main())
