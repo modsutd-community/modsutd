@@ -9,15 +9,21 @@ import { createDecipheriv, createHmac } from 'node:crypto';
 // the cost of collecting them one authenticated request at a time. Neither can
 // stop a student who has a link from pasting it elsewhere, and nothing can.
 
-const DAILY_LIMIT = 8; // a term is 4-5 mods, so this is generous for real use
+export const DAILY_LIMIT = 5; // a term is 4-5 mods, so this covers a whole timetable
 
 // Throwaway accounts are the obvious bypass, and a fixed threshold tells you
 // exactly how long to age one. So the threshold is drawn from this range - but
 // PER ACCOUNT, never per request: a per-request draw is worse than no gate at
-// all, because a one-day-old account simply retries until it draws a 1. The
+// all, because a brand-new account simply retries until it draws a 0. The
 // draw is an HMAC of the account id under the same key, so it is stable for
 // that account, unguessable without the key, and needs nothing stored.
-const MIN_AGE_DAYS = [1, 7];
+//
+// The range starts at 0, so some accounts face no age gate at all. That is the
+// point of a range: a student who made a GitHub account this morning for this
+// is a real student, and the cost of turning them away is higher than the cost
+// of one throwaway getting through. The ceiling is what a bulk collector has
+// to plan around, and they cannot know which accounts drew it.
+export const MIN_AGE_DAYS = [0, 3];
 
 export function minAccountAgeDays(userId, keyB64) {
   const mac = createHmac('sha256', Buffer.from(keyB64, 'base64'))
@@ -93,11 +99,13 @@ export default async function handler(req, res) {
   const ageDays = (Date.now() - new Date(user.created_at).getTime()) / 86_400_000;
   // The threshold is deliberately absent from the message: telling someone
   // their own draw hands them the exact wait, which is the thing the range is
-  // hiding.
+  // hiding. "ask around" is the way out that always works - a classmate who is
+  // already in the chat can paste the link - and saying so turns a dead end
+  // into a next step.
   if (!(ageDays >= minAccountAgeDays(user.id, keyB64))) {
     res.status(403).json({
       code: 'young',
-      error: 'that GitHub account is too new for join links - try again in a few days',
+      error: 'Security measure: GitHub account too new, try again in a few days or ask around.',
     });
     return;
   }
@@ -105,7 +113,7 @@ export default async function handler(req, res) {
   if (overQuota(user.id)) {
     res.status(429).json({
       code: 'quota',
-      error: `that is ${DAILY_LIMIT} join links today - the rest unlock tomorrow`,
+      error: `Security measure: max ${DAILY_LIMIT} join links today. Try again tomorrow`,
     });
     return;
   }

@@ -103,6 +103,32 @@ unlisted here.
 - **No modSUTD presence in a live chat.** The seed bot (if used) goes at
   creation, the throwaway at handover.
 
+## two gates on the link, and neither is on the chat
+
+Creating a chat is ungated: whoever presses first gets the group made for the
+whole cohort, even if they cannot be shown the link themselves. Revealing the
+link is where the cost of bulk collection is raised, and both gates live in
+`api/telegram-link.js` and nowhere else.
+
+- **Account age.** A threshold between 0 and 3 days, drawn PER ACCOUNT as an
+  HMAC of the GitHub user id under `TG_LINK_KEY`: stable for that account,
+  unguessable without the key, nothing stored. A fixed number would say exactly
+  how long to age a throwaway; a per-request draw would be worse than no gate,
+  because a new account would retry until it drew a 0. The range starts at 0 on
+  purpose, so some accounts face no wait at all: a student who made an account
+  this morning is a real student, and turning them away costs more than one
+  throwaway getting through. The message never names the threshold, since that
+  hands over the exact wait, and it points at the way out that always works:
+  ask a classmate who is already in the chat.
+- **Daily allowance.** Five links per account per day, which covers a whole
+  timetable. Counted in a warm instance's memory, because a shared store is the
+  backend this project does not have: a determined scraper gets more than five
+  by forcing cold starts, a casual one does not.
+
+Neither can stop a student who has a link from pasting it elsewhere, and
+nothing can. `TG_LINK_KEY` rotating between terms is what makes last term's
+ciphertext worthless.
+
 ## failure modes to expect
 
 - **Session invalidated** -> both workflows fail loudly; relink by
