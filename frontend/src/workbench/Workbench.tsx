@@ -171,6 +171,14 @@ function WorkbenchInner() {
                 ui.setTerm(term as Exclude<typeof ui.term, "ALL">);
             if (isMobile) ui.setMobileTab("mods");
             else api.open("cat");
+        } else if (/^\/venues\/[^/]+$/.test(path)) {
+            // A room as a path, so it can be a prerendered file: you cannot
+            // write dist/venues/index.html?focus=2.507. An ADDITION, not a
+            // rename - /venues?focus= below still works and is what every
+            // existing link and share uses.
+            ui.setSelectedRoom(safeDecode(path.slice("/venues/".length)));
+            if (isMobile) ui.setMobileTab("rooms");
+            else api.open("rooms");
         } else if (path === "/venues") {
             const focus = params.get("focus");
             const q = params.get("q");

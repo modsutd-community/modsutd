@@ -27,11 +27,11 @@ test.describe('crawlable files', () => {
     const body = await res.text();
     expect(body).not.toContain('<div id="root">');
     expect(body.startsWith('<?xml')).toBe(true);
-    // A room is /venues?focus=, never /venues/<code>: the boot-time route
-    // reader only knows the query form, so a path would answer 200 and then
-    // open nothing.
-    expect(body).toContain('<loc>https://modsutd.tech/venues?focus=');
-    expect(body).not.toMatch(/<loc>https:\/\/modsutd\.tech\/venues\/[^<]/);
+    // Both are path segments the boot-time reader knows, and both have a
+    // prerendered page whose canonical link says the same. `?focus=` still
+    // works and is what existing shares use; it is not what is advertised.
+    expect(body).toContain('<loc>https://modsutd.tech/venues/');
+    expect(body).not.toContain('<loc>https://modsutd.tech/venues?focus=');
     expect(body).toContain('<loc>https://modsutd.tech/mods/');
     // Every mod and every room, not a sample.
     const urls = body.match(/<loc>/g) ?? [];
@@ -57,6 +57,10 @@ test.describe('crawlable files', () => {
   // is the only thing that knows either.
   test('every shape the sitemap lists opens what it claims', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'same routes, and the mobile sheet is covered elsewhere');
+    await page.goto('/venues/2.507');
+    await expect(page.locator('[data-panel="rooms"]')).toContainText('2.507');
+    // The older query form is not advertised any more and still has to work:
+    // it is in every link anyone has already shared.
     await page.goto('/venues?focus=2.507');
     await expect(page.locator('[data-panel="rooms"]')).toContainText('2.507');
     await page.goto('/mods/50.040');

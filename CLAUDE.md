@@ -445,6 +445,25 @@ Two are deliberately not monthly, and say why in their own headers:
   two meant the same token pasted twice. Vite alone serves no `/api` and every
   call 404s.
 
+- **Every mod and every room has a real HTML file in `dist`**, written by
+  `frontend/scripts/prerender.mjs` in the `postbuild` hook. Nothing renders
+  React: each page is the same shell with its own `<title>`, description,
+  canonical link and `Course`/`Place` JSON-LD, plus a `<noscript>` body
+  carrying that record's facts. `#root` is left empty, so React mounts exactly
+  as before and a reader with JavaScript never sees the static copy.
+  It reads `dist/data/*.json`, the bundle the app itself fetches, so the page
+  and the app cannot describe the same course differently.
+  Two things there are load-bearing. The canonical url is `/mods/50.040` with
+  NO trailing slash, and no static server resolves that to
+  `mods/50.040/index.html` on its own: the last segment has a dot, so it reads
+  as a filename with an extension and falls through to the SPA. `vercel.json`
+  rewrites `/mods/:code` and `/venues/:code` to the file explicitly, ahead of
+  the catch-all, and `prerenderedPaths()` in `vite.config.ts` does the same for
+  `vite preview` so the e2e suite tests what production does. A consequence
+  worth knowing: an unknown code now 404s rather than opening the app empty.
+  `/venues/<code>` is an ADDITION to `/venues?focus=<code>`, which still works
+  and is what every already-shared link uses.
+
 - **Vercel does not deploy main; `deploy.yml` does.** `vercel.json` sets
   `git.deploymentEnabled.main: false`, so pushes to main build only through the
   workflow. That is the whole reason the workflow exists: contributed slots
