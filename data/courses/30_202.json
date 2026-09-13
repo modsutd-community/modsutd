@@ -23,20 +23,7 @@
       "endTime": "15:00",
       "location": "2.514",
       "instructors": [],
-      "cohort": "CP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CP01"
     },
     {
       "type": "Cohort",
@@ -45,20 +32,7 @@
       "endTime": "20:00",
       "location": "2.514",
       "instructors": [],
-      "cohort": "CP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CP01"
     },
     {
       "type": "Cohort",
@@ -67,21 +41,7 @@
       "endTime": "10:30",
       "location": "2.514",
       "instructors": [],
-      "cohort": "CP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CP01"
     }
   ],
   "tags": [

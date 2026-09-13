@@ -15,21 +15,7 @@
       "endTime": "13:30",
       "location": "1.411",
       "instructors": [],
-      "cohort": "CC01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CC01"
     },
     {
       "type": "Cohort",
@@ -38,21 +24,7 @@
       "endTime": "11:30",
       "location": "1.411",
       "instructors": [],
-      "cohort": "CC01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CC01"
     }
   ],
   "tags": [

@@ -16,21 +16,7 @@
       "endTime": "14:30",
       "location": "2.313A",
       "instructors": [],
-      "cohort": "LP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "LP01"
     },
     {
       "type": "Lecture",
@@ -39,21 +25,7 @@
       "endTime": "14:30",
       "location": "2.313B",
       "instructors": [],
-      "cohort": "LP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "LP01"
     },
     {
       "type": "Lecture",
@@ -62,21 +34,7 @@
       "endTime": "13:00",
       "location": "2.313A",
       "instructors": [],
-      "cohort": "LP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "LP01"
     },
     {
       "type": "Lecture",
@@ -85,21 +43,7 @@
       "endTime": "13:00",
       "location": "2.313B",
       "instructors": [],
-      "cohort": "LP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "LP01"
     },
     {
       "type": "Cohort",
@@ -108,21 +52,7 @@
       "endTime": "15:00",
       "location": "2.313A",
       "instructors": [],
-      "cohort": "CP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CP01"
     },
     {
       "type": "Cohort",
@@ -131,21 +61,7 @@
       "endTime": "15:00",
       "location": "2.313B",
       "instructors": [],
-      "cohort": "CP01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CP01"
     }
   ],
   "tags": [

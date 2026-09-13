@@ -19,15 +19,7 @@
       "endTime": "11:00",
       "location": "1.203",
       "instructors": [],
-      "cohort": "LS01",
-      "weeks": [
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "LS01"
     },
     {
       "type": "Lecture",
@@ -36,15 +28,7 @@
       "endTime": "11:00",
       "location": "1.318",
       "instructors": [],
-      "cohort": "LS01",
-      "weeks": [
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "LS01"
     },
     {
       "type": "Cohort",
@@ -53,15 +37,7 @@
       "endTime": "16:00",
       "location": "1.309",
       "instructors": [],
-      "cohort": "CS01",
-      "weeks": [
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CS01"
     },
     {
       "type": "Cohort",
@@ -70,15 +46,7 @@
       "endTime": "16:00",
       "location": "1.310",
       "instructors": [],
-      "cohort": "CS01",
-      "weeks": [
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CS01"
     },
     {
       "type": "Cohort",
@@ -87,15 +55,7 @@
       "endTime": "15:30",
       "location": "1.309",
       "instructors": [],
-      "cohort": "CS02",
-      "weeks": [
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CS02"
     },
     {
       "type": "Cohort",
@@ -104,15 +64,7 @@
       "endTime": "15:30",
       "location": "1.310",
       "instructors": [],
-      "cohort": "CS02",
-      "weeks": [
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CS02"
     }
   ],
   "tags": [

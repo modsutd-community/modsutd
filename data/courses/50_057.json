@@ -44,72 +44,12 @@
   "schedules": [
     {
       "type": "Cohort",
-      "day": "Thursday",
-      "startTime": "16:00",
-      "endTime": "19:00",
-      "location": "1.415",
-      "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
-    },
-    {
-      "type": "Cohort",
-      "day": "Thursday",
-      "startTime": "16:00",
-      "endTime": "19:00",
-      "location": "1.416",
-      "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
-    },
-    {
-      "type": "Cohort",
       "day": "Tuesday",
       "startTime": "14:00",
       "endTime": "17:00",
       "location": "1.415",
       "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CI01"
     },
     {
       "type": "Cohort",
@@ -118,21 +58,7 @@
       "endTime": "17:00",
       "location": "1.416",
       "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CI01"
     },
     {
       "type": "Cohort",
@@ -141,6 +67,24 @@
       "endTime": "17:00",
       "location": "2.505",
       "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "16:00",
+      "endTime": "19:00",
+      "location": "1.415",
+      "instructors": [],
+      "cohort": "CI01"
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "16:00",
+      "endTime": "19:00",
+      "location": "1.416",
+      "instructors": [],
+      "cohort": "CI01"
     }
   ],
   "tags": [

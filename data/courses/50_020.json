@@ -18,21 +18,7 @@
       "endTime": "10:30",
       "location": "1.409",
       "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CI01"
     },
     {
       "type": "Cohort",
@@ -41,21 +27,7 @@
       "endTime": "10:30",
       "location": "1.410",
       "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CI01"
     },
     {
       "type": "Cohort",
@@ -64,21 +36,7 @@
       "endTime": "10:30",
       "location": "1.409",
       "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CI01"
     },
     {
       "type": "Cohort",
@@ -87,21 +45,7 @@
       "endTime": "10:30",
       "location": "1.410",
       "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CI01"
     },
     {
       "type": "Cohort",
@@ -110,21 +54,7 @@
       "endTime": "16:00",
       "location": "1.409",
       "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CI01"
     },
     {
       "type": "Cohort",
@@ -133,21 +63,7 @@
       "endTime": "16:00",
       "location": "1.410",
       "instructors": [],
-      "cohort": "CI01",
-      "weeks": [
-        38,
-        39,
-        40,
-        41,
-        42,
-        43,
-        45,
-        46,
-        47,
-        48,
-        49,
-        50
-      ]
+      "cohort": "CI01"
     }
   ],
   "tags": [
