@@ -83,6 +83,19 @@ describe('device flow polling', () => {
       });
   });
 
+  it('falls back to the five-second step when the interval is missing or junk', async () => {
+    // Number(undefined) and Number('soon') are both NaN, and NaN > interval is
+    // false, so the comparison is what keeps a bad value out rather than a
+    // separate guard. A sub-second value loses the same way.
+    for (const bad of [undefined, 'soon', 0.5]) {
+      replies({ error: 'slow_down', interval: bad }, { access_token: 'gho_n' });
+      const clock = fakeClock();
+      await expect(pollForToken(START, undefined, clock.now)).resolves.toBe('gho_n');
+      expect(clock.gaps.slice(0, 2)).toEqual([5000, 10000]);
+      vi.unstubAllGlobals();
+    }
+  });
+
   it('gives up when the code has expired instead of waiting for good', async () => {
     replies({ error: 'authorization_pending' });
     const clock = fakeClock();
