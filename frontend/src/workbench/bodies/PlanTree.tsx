@@ -240,6 +240,16 @@ export function PlanTree({ onPick }: Props) {
       key,
       label,
       setGhost: setDragGhost,
+      // A touch has to rest on the chip before it becomes a drag. Without it a
+      // chip engaged on the same tiny movement a mouse does, so a finger
+      // scrolling the plan dragged whatever it started on, and the column of
+      // chips could not be scrolled at all - only the term labels down the
+      // left were safe to touch.
+      //
+      // Longer than the catalogue's 450ms on purpose. Dragging OUT of a list is
+      // a deliberate act with nowhere else for the gesture to go; dragging a
+      // chip happens inside the thing a reader is trying to scroll.
+      holdMs: 1000,
       onEngage: () => {
         suppressClick.current = true;
         setCardKey(null);

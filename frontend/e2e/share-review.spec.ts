@@ -54,7 +54,9 @@ test.describe('share - direct review posting', () => {
     expect(calls[1].variables.title).toBe('mod-50.001');
     const posted = calls[2].variables.body as string;
     expect(posted).toMatch(/\*\*Term taken\*\*: T4, \d{4}/);
-    expect(posted).toContain('**Best part**: the labs');
+    // The free-text answers end their label line, so a bulleted answer renders
+    // as a list rather than as one paragraph beside the label.
+    expect(posted).toContain('**Best part**:\nthe labs');
     expect(posted).toContain('would take again');
     // Untouched fields are absent, not present and blank - an empty label
     // reads as an answered question with nothing to say.

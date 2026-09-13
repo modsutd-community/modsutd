@@ -378,7 +378,7 @@ export function TimetableBody({onPickMod}: Props) {
                             }
                             onClick={exportICS}
                         >
-                            ⇣ .ics ({events.length})
+                            ⇣ .ics
                         </button>
                         <button
                             type="button"
