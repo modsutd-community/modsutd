@@ -227,7 +227,7 @@ function TeleChat({mod}: {mod: Mod}) {
                     disabled
                     data-act="tele-capped"
                     data-tip-side="block"
-                    data-tip={`${DAILY_CREATE_CAP} chats have been created today, which is all Telegram allows this account in a day. Come back after 08:00 SGT and this works again.`}
+                    data-tip={`Telegram's max chat creation limit of ${DAILY_CREATE_CAP} reached today, try again tomorrow 08:00 SGT`}
                 >
                     <TelegramIcon /> chat limit reached today
                 </button>
