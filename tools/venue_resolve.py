@@ -57,7 +57,6 @@ from __future__ import annotations
 import json
 import pathlib
 import re
-import sys
 
 VENUES = pathlib.Path(__file__).resolve().parent.parent / "data" / "venues"
 
@@ -208,4 +207,7 @@ def self_check() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(self_check() if "--self-check" in sys.argv else self_check())
+    # One mode. This module is a library that the two importers use; running it
+    # directly is only ever to check it, and `--self-check` is accepted so the
+    # command reads the same as every other tool here.
+    raise SystemExit(self_check())

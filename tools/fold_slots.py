@@ -21,7 +21,7 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 # One reader for every room string that reaches /data, shared with the
 # enrolment import. Two copies disagreed about what a room is.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from venue_resolve import ROOM_CODE_RE, VENUE_RE, room_code, venue_index  # noqa: E402
+from venue_resolve import VENUE_RE, room_code, venue_index  # noqa: E402
 COURSES = DATA / "courses"
 
 TERM_WINDOW = DATA / "term-window.json"
