@@ -20,7 +20,8 @@ import {useFilteredMods, detectConflicts, useNowInfo} from "./logic";
 import {Panel} from "./Panel";
 import {Otto} from "./Otto";
 import {CatalogueBody} from "./bodies/CatalogueBody";
-import {useTelegramData, isActive} from "./telegram";
+import {useTelegramData} from "./telegram";
+import {chatOffered} from "./teleState";
 import {ModBody} from "./bodies/ModBody";
 import {TimetableBody} from "./bodies/TimetableBody";
 import {RoomsBody} from "./bodies/RoomsBody";
@@ -739,10 +740,8 @@ function MobileShell({
     // Shares the module cache with the desktop list and the mod panel, so the
     // mobile shell pays for no extra request of its own.
     const [tg] = useTelegramData();
-    const hasChat = (code: string) => {
-        const entry = tg?.registry[code];
-        return !!entry && isActive(entry);
-    };
+    const offered = (m: (typeof rows)[number]) =>
+        chatOffered(m, tg?.registry[m.code], tg?.term.end);
     const suppressClick = useRef(false);
 
     const TABS: Array<{key: MobileTab; label: string; icon: string}> = [
@@ -949,10 +948,11 @@ function MobileShell({
                                                         desktop list carries
                                                         beside PILR, and the
                                                         same question: is
-                                                        there a chat to join.
+                                                        there a chat, or would
+                                                        the button make one.
                                                         Two lists, different
-                                                        markup, one registry. */}
-                                                    {hasChat(m.code) ? (
+                                                        markup, one rule. */}
+                                                    {offered(m) ? (
                                                         <span
                                                             data-act="tele-eligible"
                                                             aria-label="has a batch chat"
