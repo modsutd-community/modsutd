@@ -275,11 +275,10 @@ def main() -> int:
 
                 client(functions.channels.EditAdminRequest(
                     channel=peer, user_id=humans[0], admin_rights=RIGHTS, rank=""))
-                # Re-exported for the same reason the handover does it: the
-                # registry is what students are handed, so it holds a link this
-                # run read back off the live chat.
-                invite = client(functions.messages.ExportChatInviteRequest(peer=peer))
-                entry["linkEnc"] = encrypt(invite.link)
+                # Deliberately NOT re-exporting the link. The handover does it
+                # because migration makes a different peer; nothing migrates
+                # here, and the link belongs to the throwaway, which is still
+                # inside. It is the same link it always was.
                 entry["adminUserId"] = humans[0]
                 note = client.send_message(peer, HANDOVER)
                 client(functions.messages.UpdatePinnedMessageRequest(peer=peer, id=note.id))

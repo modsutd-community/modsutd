@@ -85,7 +85,9 @@ chatId } }` to the registry (auto-commit, same policy as crowdsourced
    and walk straight back out, so a chat can be an hour old, handed over
    and already unmoderated. If the admin list holds nobody but the
    throwaway, the earliest remaining joiner is promoted and the note is
-   pinned again; if the chat is empty of humans it parks exactly as an
+   pinned again. The link is NOT re-exported: nothing migrates here, and
+   the link belongs to the throwaway, which is still in the chat. If the
+   chat is empty of humans it parks exactly as an
    unadopted one does and waits for the next joiner. The throwaway is
    excluded from that question by construction: migration made it the
    channel creator, so it is an admin forever and would always answer yes.
