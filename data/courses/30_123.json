@@ -17,13 +17,21 @@
   "corequisites": [],
   "schedules": [
     {
-      "type": "Lecture",
-      "day": "Tuesday",
-      "startTime": "11:30",
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "13:00",
       "endTime": "14:00",
       "location": "2.406",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "13:00",
+      "endTime": "15:30",
+      "location": "2.406",
       "instructors": [],
-      "cohort": "LP01",
+      "cohort": "CP01",
       "weeks": [
         38,
         39,
@@ -40,13 +48,13 @@
       ]
     },
     {
-      "type": "Cohort",
-      "day": "Thursday",
-      "startTime": "13:00",
-      "endTime": "15:30",
+      "type": "Lecture",
+      "day": "Tuesday",
+      "startTime": "11:30",
+      "endTime": "14:00",
       "location": "2.406",
       "instructors": [],
-      "cohort": "CP01",
+      "cohort": "LP01",
       "weeks": [
         38,
         39,
