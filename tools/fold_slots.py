@@ -166,4 +166,12 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    # The venue reading this file used to own moved to venue_resolve.py, and
+    # so did its check. Said here because the flag used to work and falling
+    # through to the real mode gives "bad payload: PAYLOAD", which explains
+    # nothing.
+    if "--self-check" in sys.argv:
+        sys.exit("the venue reader lives in tools/venue_resolve.py now:
+"
+                 "    python tools/venue_resolve.py --self-check")
     raise SystemExit(main())
