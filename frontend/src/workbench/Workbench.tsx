@@ -20,7 +20,7 @@ import {useFilteredMods, detectConflicts, useNowInfo} from "./logic";
 import {Panel} from "./Panel";
 import {Otto} from "./Otto";
 import {CatalogueBody} from "./bodies/CatalogueBody";
-import {chatEligible} from "./teleState";
+import {useTelegramData, isActive} from "./telegram";
 import {ModBody} from "./bodies/ModBody";
 import {TimetableBody} from "./bodies/TimetableBody";
 import {RoomsBody} from "./bodies/RoomsBody";
@@ -736,6 +736,13 @@ function MobileShell({
     const ui = useWorkbenchUi();
     const rows = useFilteredMods();
     const dispatch = useAppDispatch();
+    // Shares the module cache with the desktop list and the mod panel, so the
+    // mobile shell pays for no extra request of its own.
+    const [tg] = useTelegramData();
+    const hasChat = (code: string) => {
+        const entry = tg?.registry[code];
+        return !!entry && isActive(entry);
+    };
     const suppressClick = useRef(false);
 
     const TABS: Array<{key: MobileTab; label: string; icon: string}> = [
@@ -940,14 +947,15 @@ function MobileShell({
                                                     {m.pillar}
                                                     {/* The same mark the
                                                         desktop list carries
-                                                        beside PILR. The two
-                                                        lists are different
-                                                        markup and one rule,
-                                                        chatEligible(). */}
-                                                    {chatEligible(m) ? (
+                                                        beside PILR, and the
+                                                        same question: is
+                                                        there a chat to join.
+                                                        Two lists, different
+                                                        markup, one registry. */}
+                                                    {hasChat(m.code) ? (
                                                         <span
                                                             data-act="tele-eligible"
-                                                            aria-label="can have a batch chat"
+                                                            aria-label="has a batch chat"
                                                             style={{
                                                                 marginLeft: 4,
                                                                 color: "rgba(122,162,247,0.65)",

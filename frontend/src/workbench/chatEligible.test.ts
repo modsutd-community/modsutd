@@ -37,10 +37,10 @@ describe('which mods can have a batch chat', () => {
     expect(chatEligible(mod({ name: 'PhD Thesis Defence' }))).toBe(false);
   });
 
-  // The catalogue column and the mod panel's button read the SAME function, so
-  // a mod cannot be marked in the list and then offer nothing when opened.
-  // This is the assertion that would break if either grew its own copy.
-  it('a mod the column does not mark draws no button either', () => {
+  // chatEligible decides whether the mod panel offers a button at all. The
+  // catalogue's mark is a different question, answered by the registry: a HASS
+  // course is eligible forever and only has a chat in the terms it runs.
+  it('a mod this refuses draws no button either', () => {
     const ineligible = mod({ term: '1' });
     expect(chatEligible(ineligible)).toBe(false);
     expect(teleState({

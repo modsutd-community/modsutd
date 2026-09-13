@@ -6,7 +6,7 @@ import { PILLAR_COLORS, PILLAR_ORDER, pillarColor, modPillars } from '../pillars
 import { useWorkbenchUi, SortKey } from '../uiContext';
 import { useFilteredMods } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
-import { chatEligible } from '../teleState';
+import { useTelegramData, isActive } from '../telegram';
 import { Otto } from '../Otto';
 import wb from '../wb.module.scss';
 import styles from './CatalogueBody.module.scss';
@@ -16,7 +16,7 @@ import styles from './CatalogueBody.module.scss';
 // different stroke weights; the path is Telegram's own mark.
 function TeleMark() {
   return (
-    <svg viewBox="0 0 24 24" width="11" height="11" aria-label="can have a batch chat" role="img">
+    <svg viewBox="0 0 24 24" width="11" height="11" aria-label="has a batch chat" role="img">
       <path
         fill="currentColor"
         d="M21.9 4.3 18.9 19c-.2 1-.8 1.2-1.6.8l-4.5-3.3-2.2 2.1c-.2.2-.4.4-.9.4l.3-4.6 8.3-7.5c.4-.3-.1-.5-.6-.2L7.4 13.1 2.9 11.7c-1-.3-1-1 .2-1.5l17.5-6.8c.8-.3 1.5.2 1.3 1z"
@@ -54,6 +54,15 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
   const loading = useAppSelector((s) => s.mods.loading);
   const error = useAppSelector((s) => s.mods.error);
   const rows = useFilteredMods();
+  // Module-cached and already fetched by the mod panel, so this is a read
+  // rather than a request. Null until it lands, which draws no mark: a row
+  // that gains one a moment later is better than one that promises a chat
+  // and takes it away.
+  const [tg] = useTelegramData();
+  const hasChat = (code: string) => {
+    const entry = tg?.registry[code];
+    return !!entry && isActive(entry);
+  };
   const suppressClick = useRef(false);
 
   return (
@@ -158,17 +167,19 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
           >
             <span className={styles.code} style={{ color: selected === k && selectedOpen ? '#fff' : undefined }}>{m.code}</span>
             <span className={styles.name}>{m.name}</span>
-            {/* A mod that can have a batch chat, marked in the list rather
-                than only on the mod page. Whether one EXISTS yet needs the
-                registry, which is a fetch; whether one can exist is knowable
-                from the record, and that is the question a reader scanning
-                the catalogue is asking. */}
+            {/* A chat that EXISTS, not one that could. Eligibility is a
+                property of the record and marks every HASS course in the
+                catalogue whether or not it runs this term; the registry is
+                the only thing that knows a group was actually made, and
+                "there is a chat to join" is what a reader scanning this is
+                asking. Costs no extra request: useTelegramData is
+                module-cached and the mod panel already pays for it. */}
             <span
               className={styles.tele}
-              data-act={chatEligible(m) ? 'tele-eligible' : undefined}
-              aria-hidden={!chatEligible(m)}
+              data-act={hasChat(m.code) ? 'tele-eligible' : undefined}
+              aria-hidden={!hasChat(m.code)}
             >
-              {chatEligible(m) ? <TeleMark /> : null}
+              {hasChat(m.code) ? <TeleMark /> : null}
             </span>
             <span className={styles.pillar} style={{ color: pillarColor(m.pillar) }}>
               {m.pillar}
