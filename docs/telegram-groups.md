@@ -107,8 +107,10 @@ unlisted here.
 
 - **Session invalidated** -> both workflows fail loudly; relink by
   re-running `login.py` and replacing `TG_SESSION`.
-- **Flood limits on creation**: the daily cap spreads a burst of
-  first-clicks across days. The button copy must never promise instant.
+- **Flood limits on creation**: Telegram allows 50 groups or channels a day
+  per account, so the gate in `telegram-group.yml` caps a day at 40 and a
+  burst past that spreads across days. The button copy must never promise
+  instant.
 - **Unadopted groups**: a group nobody joins keeps the throwaway inside
   until it expires. Harmless, but it is why the account must be muted.
 - **A full chat**: 200 members is the hard basic-group cap; further joins
