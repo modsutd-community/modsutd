@@ -27,7 +27,8 @@ export function GithubLinkBanner() {
                     >
                         {device.verification_uri}
                     </a>{" "}
-                    - waiting…
+                    - checking every few seconds, code good for{" "}
+                    {Math.round((device.expires_in ?? 900) / 60)} minutes
                 </span>
             ) : (
                 <span>

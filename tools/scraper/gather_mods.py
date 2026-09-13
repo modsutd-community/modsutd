@@ -102,7 +102,7 @@ PILLAR_TAG_NAMES = {"smt", "hass", "istd", "epd", "esd", "asd", "dai"}
 def fetch(url: str, *, delay: float, ttl_hours: float) -> str:
     """_http.get with a polite delay whenever the cache will miss.
 
-    The freshness test that decides whether to sleep lives in `_http` beside
+    The staleness test that decides whether to sleep lives in `_http` beside
     the one that decides whether to fetch. Two copies of it drift, and the
     copy that drifts is the one that sleeps for every cache hit.
     """
@@ -280,10 +280,10 @@ def page_tags(soup: BeautifulSoup) -> list[str]:
 
 
 # Where a course goes when its page publishes no "Term N" tag at all, which is
-# most of the elective catalogue. 1 was wrong in a way that showed: it put 154
-# electives, technical electives and 50.5xx graduate subjects into the freshmore
-# term, so the Term 1 filter answered with courses no freshmore can take and the
-# plan dropped every one of them into T8's first slot by way of term 1.
+# most of the elective catalogue. 1 was wrong in a way that showed: it swept
+# every elective and technical elective into the freshmore term, so the Term 1
+# filter answered with courses no freshmore can take and the plan dropped every
+# one of them into T8's first slot by way of term 1.
 #
 # 8 is the last undergraduate term, which is where an elective with no published
 # term actually belongs and where defaultLevel() already clamps.

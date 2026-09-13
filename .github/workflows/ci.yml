@@ -106,6 +106,15 @@ jobs:
         working-directory: tools/scraper
         run: python gather_mods.py --self-check
 
+      # Who gets promoted decides who can remove spam from a cohort's chat for
+      # a term, and a chat handed to the wrong person looks exactly like one
+      # that is fine. Both readings live in participants.py, which imports no
+      # telethon and needs no session, so this installs nothing and calls
+      # nothing.
+      - name: the handover still picks the earliest human
+        working-directory: .
+        run: python tools/telegram/participants.py --self-check
+
       # The home-screen icon is geometry, not taste: the maskable safe zone is
       # a circle of radius 2/5 of the icon, and artwork past it is clipped by a
       # launcher mask. It shipped over that line twice, because nothing here

@@ -1,6 +1,6 @@
 ---
 name: gather-specialisations
-description: Refresh data/specializations.json (specialisation-track criteria that power the plan badges) from sutd.edu.sg via tools/scraper/gather_specialisations.py. Use when the freshness issue reports track drift, a new AY restructures tracks, or on "update specialisations".
+description: Refresh data/specializations.json (specialisation-track criteria that power the plan badges) from sutd.edu.sg via tools/scraper/gather_specialisations.py. Use when a scrape pull request shows track drift, a new AY restructures tracks, or on "update specialisations".
 ---
 
 # Refreshing specialisation-track criteria
@@ -16,7 +16,7 @@ machine-checked carry `requirements: []` + verbatim `notes` and never badge
 ```bash
 tools/scraper/.venv/bin/python tools/scraper/gather_specialisations.py
 #   --refresh    bypass the 24h HTML cache
-#   --out PATH   write elsewhere (freshness uses this for drift checks)
+#   --out PATH   write elsewhere, to diff against the committed file
 ```
 
 The script self-validates (code format, `count ≤ len(anyOf)`, unique ids,
@@ -71,6 +71,7 @@ calendar]" - it applies to those intakes). When EPD publishes a newer PDF:
    copied into `public/data/`).
 3. PR title `data: specialisation tracks <date>`.
 
-The monthly freshness workflow re-runs this gatherer with `--out` and diffs
-track ids + requirements, filing an issue on drift; this skill is the fix
-procedure it points to.
+The monthly `scrape` workflow runs this gatherer for real and commits what it
+returns, so track drift arrives as a diff in that pull request rather than as a
+report about one. `--out` is for running it by hand against the committed file
+without touching `/data`.

@@ -48,15 +48,26 @@ jobs:
                   import datetime
                   reg = json.loads(pathlib.Path("data/telegram-groups.json").read_text() or "{}")
                   today = datetime.date.today().isoformat()
-                  # Two jobs now: hand a chat over to its first human, and walk
-                  # out of one whose term is done. Gating on handover alone
-                  # meant the leaving half never ran.
+                  # Three jobs: hand a chat over to its first human, look again
+                  # at one already handed over in case that admin has left, and
+                  # walk out of one whose term is done. Gating on the first
+                  # alone meant neither of the others ran.
                   pending = any(not e.get("adminGranted") for e in reg.values())
                   leaving = any(
                       not e.get("left") and str(e.get("expires") or "") and str(e["expires"]) < today
                       for e in reg.values()
                   )
-                  print(f"run={'yes' if pending or leaving else 'no'}")
+                  # A live chat this account can still address is re-checked
+                  # every run. Telegram takes a member's admin rights with them
+                  # when they leave, so a handover recorded months ago says
+                  # nothing about whether the chat has an admin today.
+                  recheck = any(
+                      e.get("adminGranted") and not e.get("left") and e.get("supergroup")
+                      and e.get("accessHash") is not None
+                      and str(e.get("expires") or "") >= today
+                      for e in reg.values()
+                  )
+                  print(f"run={'yes' if pending or leaving or recheck else 'no'}")
                   PY
 
             - name: Hand over to the first joiner

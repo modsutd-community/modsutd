@@ -215,8 +215,14 @@ jobs:
               with:
                   llm_url: https://api.groq.com/openai/v1/chat/completions
                   llm_auth_token: ${{ secrets.GROQ_TOKEN }}
-                  # llm_model: ${{ vars.GROQ_MODEL || 'openai/gpt-oss-120b' }}
-                  llm_model: ${{ vars.GROQ_MODEL || 'openai/gpt-oss-20b' }}
+                  # 120b, not 20b. The reviewer reads a diff hunk and nothing
+                  # else, so the whole job is judging an unfamiliar change from
+                  # a keyhole, and the smaller model spent that budget
+                  # re-proposing decisions the rules already name rather than
+                  # finding defects. 20b is one line below if a rate limit ever
+                  # makes it the only one that answers.
+                  llm_model: ${{ vars.GROQ_MODEL || 'openai/gpt-oss-120b' }}
+                  # llm_model: ${{ vars.GROQ_MODEL || 'openai/gpt-oss-20b' }}
                   llm_use_anthropic: "false"
                   # The action defaults extra_body to {"thinking": ...}, which
                   # none of these three accept: Gemini answers 400 "Unknown name
