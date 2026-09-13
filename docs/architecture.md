@@ -141,7 +141,7 @@ a mirror can return 200 with almost nothing.
 
 | Mode                        | What happens                                | Recovery                                                                   |
 | --------------------------- | ------------------------------------------- | -------------------------------------------------------------------------- |
-| SUTD redesigns a page       | the scraper returns nothing for that source | it skips, and the monthly freshness workflow opens an issue naming the gap |
+| SUTD redesigns a page       | the scraper returns nothing for that source | it skips, and the monthly `scrape` run opens no pull request for it, so the step's failure is the signal |
 | A relay's secret is missing | `/api/*` answers 503                        | the static site is unaffected, which is why relays hold no data            |
 | Vercel bandwidth exhausted  | the site 503s                               | mirror to Cloudflare Pages, same shape                                     |
 | Giscus rate-limited         | reviews fail to post                        | the Discussions UI stays reachable, and the panel links to it              |

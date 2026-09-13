@@ -170,7 +170,7 @@ is [docs/osm-instructions.md](docs/osm-instructions.md).
 
 Scheduled workflows default to **the first Saturday of the month, 00:00
 Singapore**, because a runner that finds nothing changed still costs a runner.
-`osm-refresh`, `telegram-prune`, `freshness` and `scrape` all run then.
+`osm-refresh`, `telegram-prune` and `scrape` all run then.
 
 cron cannot express "first Saturday" - with day-of-month and day-of-week both
 set it fires when EITHER matches - so each is scheduled Fridays 16:00 UTC and
@@ -187,6 +187,18 @@ Two are deliberately not monthly, and say why in their own headers:
 ## Things that look like bugs but aren't
 
 - `frontend/public/data/` is generated (gitignored) - edit `/data` instead.
+- **There is no freshness job, and that is the point.** A sentinel that only
+  reported drift ran twenty minutes before `scrape`, which fixes it: both
+  compared the HASS listing and the course sitemaps against `/data`, and the
+  specialisation check re-ran `gather_specialisations.py` into a temp file to
+  diff a result `scrape` wrote in the same hour. A finding you have to act on
+  by hand, beside a job that already acted, teaches a reader to skim both.
+  What it did that `scrape` does not is one thing, and it is now the `canaries`
+  step: the hosts `/data` points at that no gatherer fetches. Every other host
+  already has a step that fails loudly when it goes.
+  The deployed-site comparison went with it. `deploy.yml` runs four times a day
+  and goes red when a build fails, so a report saying a merge had not shipped
+  said what a failed workflow had already said.
 - `scrape.py` reads **hass.sutd.edu.sg and nothing else**, which is why the step
   is called `hass`. It used to also fetch epd/esd/istd/asd.sutd.edu.sg through
   `sources/pillar.py`, whose selectors were a best-effort guess that returned

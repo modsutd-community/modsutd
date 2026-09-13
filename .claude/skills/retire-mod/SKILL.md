@@ -17,7 +17,7 @@ all four and cannot be undone from the app.
 ## 1. Prove it is actually gone
 
 A course missing from one page is not retired. Check the sitemaps, which are
-what `freshness.py` compares against:
+what the `mods` step compares against:
 
 ```bash
 curl -s https://www.sutd.edu.sg/course-sitemap.xml \
