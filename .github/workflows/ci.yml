@@ -107,16 +107,13 @@ jobs:
         run: python gather_mods.py --self-check
 
       # Who gets promoted decides who can remove spam from a cohort's chat for
-      # a term. The decision is two readings of a participant list, and neither
-      # is reachable without a Telegram session, so both are pure functions
-      # with the list handed in. The check makes no Telegram call; telethon is
-      # installed only because the module imports it at the top, the same way
-      # Pillow is installed for the icon step below.
+      # a term, and a chat handed to the wrong person looks exactly like one
+      # that is fine. Both readings live in participants.py, which imports no
+      # telethon and needs no session, so this installs nothing and calls
+      # nothing.
       - name: the handover still picks the earliest human
         working-directory: .
-        run: |
-          pip install --quiet telethon cryptography
-          python tools/telegram/grant_admin.py --self-check
+        run: python tools/telegram/participants.py --self-check
 
       # The home-screen icon is geometry, not taste: the maskable safe zone is
       # a circle of radius 2/5 of the icon, and artwork past it is clipped by a

@@ -90,7 +90,9 @@ chatId } }` to the registry (auto-commit, same policy as crowdsourced
    chat is empty of humans it parks exactly as an
    unadopted one does and waits for the next joiner. The throwaway is
    excluded from that question by construction: migration made it the
-   channel creator, so it is an admin forever and would always answer yes.
+   channel creator, so it is an admin forever and would always answer yes. The
+   two readings that decide it are `tools/telegram/participants.py`, which
+   imports no telethon and so is checked on every pull request.
 
 **Subsequent clicks**: the registry already holds the link, so the button
 is a plain `t.me` link - no relay, no workflow, no Telegram API.
