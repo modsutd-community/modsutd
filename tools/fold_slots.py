@@ -29,7 +29,20 @@ TERM_CALENDAR = DATA / "term-calendar.json"
 MAX_SLOTS = 80
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
-DAYS = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"}
+DAY_ORDER = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
+             "Saturday", "Sunday")
+DAYS = set(DAY_ORDER)
+
+
+def sort_key(entry: dict) -> tuple:
+    """Week order, then time. Sorting on the day NAME put Friday before Monday
+    and Thursday before Tuesday, so adding one slot reshuffled the whole list
+    and a one-line contribution came out as a diff that rewrote every entry."""
+    day = str(entry.get("day", ""))
+    return (DAY_ORDER.index(day) if day in DAYS else len(DAY_ORDER),
+            str(entry.get("startTime", "")),
+            str(entry.get("endTime", "")),
+            str(entry.get("location", "")))
 TYPES = {"Lecture", "Cohort", "Tutorial", "Lab", "Studio", "Seminar", "Recitation"}
 # Letters allowed: 03.007A and 03.007B are one course split in two, and
 # dropping the suffix threw away every slot for both.
@@ -144,7 +157,7 @@ def main() -> int:
             skipped += 1
             continue
         schedules.append(entry)
-        schedules.sort(key=lambda s: (s.get("day", ""), s.get("startTime", "")))
+        schedules.sort(key=sort_key)
         path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
         added.append(f"{slot['mod']} {slot['day']} {slot['start']}-{slot['end']} @ {room}")
 

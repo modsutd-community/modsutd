@@ -10,22 +10,6 @@
   "corequisites": [],
   "schedules": [
     {
-      "type": "Lecture",
-      "day": "Friday",
-      "startTime": "11:30",
-      "endTime": "13:30",
-      "location": "1.102",
-      "instructors": []
-    },
-    {
-      "type": "Cohort",
-      "day": "Friday",
-      "startTime": "14:30",
-      "endTime": "17:00",
-      "location": "1.413",
-      "instructors": []
-    },
-    {
       "type": "Cohort",
       "day": "Monday",
       "startTime": "12:30",
@@ -54,6 +38,22 @@
       "day": "Thursday",
       "startTime": "12:30",
       "endTime": "15:00",
+      "location": "1.413",
+      "instructors": []
+    },
+    {
+      "type": "Lecture",
+      "day": "Friday",
+      "startTime": "11:30",
+      "endTime": "13:30",
+      "location": "1.102",
+      "instructors": []
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "14:30",
+      "endTime": "17:00",
       "location": "1.413",
       "instructors": []
     }

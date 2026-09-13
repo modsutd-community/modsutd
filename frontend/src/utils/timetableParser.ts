@@ -47,6 +47,11 @@ function venueCode(raw: string): string {
 }
 
 const TIME_RE = /\d{1,2}:\d{2}(?:\s?[AP]M)?/;
+// The cell that carries the day and the time range, which is the one the room
+// always follows. Anchored so a stray time inside a room name cannot match.
+const DAY_TIME_CELL_RE = new RegExp(
+  `^(?:Mo|Tu|We|Th|Fr|Sa|Su)\\b.*${TIME_RE.source}\\s*-\\s*${TIME_RE.source}`,
+);
 const DATE_RE = /\d{2}\/\d{2}\/\d{4}/;
 
 const COURSE_RE = /(\d{2}\s*\.\s*\d{3}\w*)\s+-\s+([^\n]+)/g;
@@ -160,10 +165,23 @@ export function parseTimetableText(input: string): TimetableEvent[] {
       const cells = row[0].split(/[\t\n]/).map((c) => c.trim()).filter(Boolean);
       // Not a fixed offset from the end: a class can list two instructors on
       // two lines, which pushed the room two cells further back and made the
-      // location a person's name. The room is the cell carrying a bracketed
-      // code; everything between it and the dates is the teaching staff.
-      const roomAt = cells.findIndex((c) => ROOM_CODE_RE.test(c));
-      const enough = cells.length >= 4 && roomAt > 0;
+      // location a person's name.
+      //
+      // The room is the cell AFTER the one carrying the day and time. That is
+      // positional and always true, where the old rule - the cell carrying a
+      // bracketed code - was only true for rooms that print one. A row reading
+      // "Mo 10:30AM - 1:30PM | Studio 7 | Prof A | dates" has no bracket
+      // anywhere, so it fell through to row[4], the lazy capture, which stops
+      // at the first space and sent "Studio" as the location. "Albert" reached
+      // /data exactly that way, from "Albert Hong Lecture Theatre 1".
+      //
+      // The bracketed cell is still preferred when there is one: it is the
+      // stronger signal, and a timetable that prints the code is telling us
+      // the code.
+      const coded = cells.findIndex((c) => ROOM_CODE_RE.test(c));
+      const timeAt = cells.findIndex((c) => DAY_TIME_CELL_RE.test(c));
+      const roomAt = coded > 0 ? coded : timeAt >= 0 ? timeAt + 1 : -1;
+      const enough = cells.length >= 4 && roomAt > 0 && roomAt < cells.length - 1;
       const rawRoom = enough ? cells[roomAt] : row[4];
       const rawInstructors = enough
         ? cells.slice(roomAt + 1, cells.length - 1).join(', ')

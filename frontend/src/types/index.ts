@@ -21,7 +21,6 @@ export interface Schedule {
   location: string;
   instructors: string[];
   cohort?: string;
-  weeks?: number[];
 }
 
 export interface GradingComponent {

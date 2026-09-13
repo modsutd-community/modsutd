@@ -27,7 +27,9 @@ Two traps in reading them, both hit here before this settled:
     hours calibration is needed, and a half-hour start cannot be rounded wrong.
 
 WHAT A BLOCK SAYS
-    11x w38-43, 45, 47-50                 <- repeats and teaching weeks
+    11x w38-43, 45, 47-50                 <- repeats and teaching weeks, read
+                                             only to find where the record
+                                             starts; nothing reads them after
     50.006, CI01, CBL, Think Tank 10, Think Tank 9, 1.416, 1.415, CHOO Tsu Wei Kenny
       code   sect  kind  <---- venues, named then coded ---->  <- instructors
 
@@ -121,6 +123,26 @@ sys.path.insert(0, str(ROOT / "tools"))
 from venue_resolve import room_code, venue_index  # noqa: E402
 
 
+def split_at_last_room(fields: list[str], venues) -> tuple[list[str], list[str]]:
+    """(the venue fields, the instructor fields).
+
+    A record's tail reads `room, room, Firstname Lastname, Firstname Lastname`
+    and nothing marks the boundary. The last field that names a room is it:
+    everything before is a venue, everything after is a person.
+
+    Scanning from the RIGHT, because a person's name can resolve by accident
+    and a room cannot be a person: the first field from the end that names a
+    room is the last room, and anything that resolved later was a coincidence.
+    """
+    last = -1
+    for i, f in enumerate(fields):
+        if room_code(f, venues) is not None:
+            last = i
+    if last < 0:
+        return fields, []          # no room at all; let the caller report it
+    return fields[:last + 1], fields[last + 1:]
+
+
 def resolve_named(fields: list[str], venues) -> tuple[list[str], list[str]]:
     """Room codes for the venue strings in a record's tail, and what is left.
 
@@ -136,13 +158,18 @@ def resolve_named(fields: list[str], venues) -> tuple[list[str], list[str]]:
     i = 0
     while i < len(fields):
         f = fields[i]
-        hit = room_code(f, venues)
-        if hit is None and i + 1 < len(fields):
+        # The PAIR first, not as a fallback. One venue name carries a comma of
+        # its own - "Humanities, Arts and Social Sciences (HASS) office" - and
+        # its first half resolves on its own through the word rule, so trying
+        # the single field first consumed "Humanities" and left the rest
+        # stranded as an unplaced field.
+        if i + 1 < len(fields):
             pair = room_code(f"{f}, {fields[i + 1]}", venues)
             if pair is not None:
                 rooms.append(pair)
                 i += 2
                 continue
+        hit = room_code(f, venues)
         if hit is not None:
             rooms.append(hit)
         else:
@@ -191,37 +218,6 @@ def split_record(lines: list[str]) -> tuple[str, str]:
     if not m:
         return joined, ""
     return joined[: m.start()].strip(), joined[m.start():].strip()
-
-
-def resolve_named(fields: list[str], venues: dict[str, str]) -> tuple[list[str], list[str]]:
-    """Room codes for venue names, and the names that stayed unplaced.
-
-    A field at a time, except that one venue name carries a comma of its own
-    ("Humanities, Arts and Social Sciences (HASS) office"), so a field that
-    does not resolve is retried joined to the one after it. Instructor names
-    are in this same tail and resolve to nothing, which is how they are told
-    apart from rooms: there is no separator in the record that marks where the
-    venues stop.
-    """
-    rooms: list[str] = []
-    unresolved: list[str] = []
-    i = 0
-    while i < len(fields):
-        f = fields[i]
-        hit = venues.get(f.lower())
-        if hit is None and i + 1 < len(fields):
-            pair = f"{f}, {fields[i + 1]}"
-            hit = venues.get(pair.lower())
-            if hit is not None:
-                rooms.append(hit)
-                i += 2
-                continue
-        if hit is not None:
-            rooms.append(hit)
-        else:
-            unresolved.append(f)
-        i += 1
-    return rooms, unresolved
 
 
 def r_day(block, day_x) -> str:
@@ -301,7 +297,14 @@ def parse_page(page, venues) -> tuple[list[dict], list[str]]:
         # which is how they are told from rooms: nothing in the record says
         # where the venues stop. Checked against every teaching name in these
         # six files, and none of them resolves.
-        rooms, unresolved = resolve_named(rest, venues)
+        # The tail is `<venues...>, <instructors...>` with no separator, and
+        # the split is where the LAST room is: everything after it is a person.
+        # Resolving the whole tail would work on these six files because no
+        # teaching name here resolves, but that is luck rather than a rule -
+        # a lecturer named Albert would become 1.102. Cutting at the last room
+        # means a name only has to survive being a name.
+        venue_fields, staff = split_at_last_room(rest, venues)
+        rooms, unresolved = resolve_named(venue_fields, venues)
         if not rooms:
             problems.append(f"{code}: no room in {rest!r}")
         # `unresolved` is deliberately NOT reported. The instructors are in this
@@ -429,15 +432,26 @@ def to_schedules(rows: list[dict], instructors: list[str] | None = None) -> list
             }
             if r["section"]:
                 s["cohort"] = r["section"]
-            if r["weeks"]:
-                s["weeks"] = r["weeks"]
             key = (s["type"], s["day"], s["startTime"], s["endTime"],
-                   s["location"], s.get("cohort"), tuple(s.get("weeks", ())))
+                   s["location"], s.get("cohort"))
             if key in seen:
                 continue
             seen.add(key)
             out.append(s)
     return out
+
+
+def slot_key(s: dict) -> tuple:
+    """What makes two schedule entries the same meeting.
+
+    The cohort is part of it: 50.046 CI01 and CI02 really do meet in one
+    lecture theatre at one hour, and collapsing them would lose a section. A
+    contributed slot carries no cohort, so it matches an official one only when
+    that one carries none either - the conservative direction, because the cost
+    is a duplicate a reviewer can see rather than a deletion nobody can.
+    """
+    return (s.get("type"), s.get("day"), s.get("startTime"), s.get("endTime"),
+            s.get("location"), s.get("cohort"))
 
 
 def sort_key(s: dict) -> tuple:
@@ -554,7 +568,7 @@ def self_check() -> int:
     got = to_schedules(rows)
     eq("one slot per room", [s["location"] for s in got], ["1.416", "1.415"])
     eq("the section is the cohort", got[0]["cohort"], "CI01")
-    eq("weeks carried", got[0]["weeks"], [38, 39])
+    eq("weeks are read and not written", "weeks" in got[0], False)
 
     # 01.400 Capstone 1 is printed in five of the six files, identical each
     # time, because every pillar's cohort takes it.
@@ -577,11 +591,41 @@ def self_check() -> int:
     # A block prints its rooms as names when it prints no code, and the
     # instructors sit in the same tail with no separator marking where the
     # venues stop. Anything that does not resolve is named rather than dropped.
-    index = {"lecture theatre 4": "2.404", "think tank 2": "1.309",
-             "humanities, arts and social sciences (hass) office": "1.402"}
+    # Sets, the shape venue_index() returns: a name is a question that
+    # sometimes has two answers. Built as bare strings before, which made
+    # room_code refuse every one of them (len("2.404") is 5, not 1) and let the
+    # cases below pass for the wrong reason.
+    index = {"lecture theatre 4": {"2.404"}, "think tank 2": {"1.309"},
+             "1.416": {"1.416"}, "1.415": {"1.415"}, "2.404": {"2.404"},
+             "think tank 10": {"1.416"}, "think tank 9": {"1.415"},
+             "humanities, arts and social sciences (hass) office": {"1.402"}}
     eq("names resolve to codes",
        resolve_named(["Lecture Theatre 4", "KOEK Hui Xia Christina"], index),
        (["2.404"], ["KOEK Hui Xia Christina"]))
+
+    # The tail is `<venues...>, <instructors...>` and nothing marks the join.
+    # The last field that names a room is it. Scanned from the right, so a
+    # teaching name that resolves by accident cannot move the boundary.
+    eq("rooms then people",
+       split_at_last_room(["Think Tank 10", "Think Tank 9", "1.416", "1.415",
+                           "CHOO Tsu Wei Kenny"], index),
+       (["Think Tank 10", "Think Tank 9", "1.416", "1.415"], ["CHOO Tsu Wei Kenny"]))
+    eq("two instructors",
+       split_at_last_room(["1.416", "Kurniawan,Oka", "LU Zhuoming Kenny"], index),
+       (["1.416"], ["Kurniawan,Oka", "LU Zhuoming Kenny"]))
+    eq("one room, one person",
+       split_at_last_room(["2.404", "Jihong Park"], index),
+       (["2.404"], ["Jihong Park"]))
+    # A lecturer whose name happens to name a room does not extend the venues:
+    # the scan takes the LAST match, and "Albert" here sits after 1.416.
+    # A field after the rooms that itself names a room moves the boundary,
+    # which is why the scan takes the LAST match rather than the first gap.
+    eq("the last room wins, not the first",
+       split_at_last_room(["1.416", "Prof A", "2.404"], index),
+       (["1.416", "Prof A", "2.404"], []))
+    eq("no room at all is handed back whole",
+       split_at_last_room(["Someone", "Someone Else"], index),
+       (["Someone", "Someone Else"], []))
     eq("a venue whose own name has a comma is rejoined",
        resolve_named(["Humanities", "Arts and Social Sciences (HASS) office"], index),
        (["1.402"], []))
@@ -605,8 +649,9 @@ def self_check() -> int:
     # parse_page, driven end to end. Everything above is a reader; this is the
     # geometry that decides which day a block belongs to and where the grid
     # stops, and it was unreachable without opening a file.
-    index = {"think tank 10": "1.416", "think tank 9": "1.415",
-             "lecture theatre 4": "2.404"}
+    index = {"think tank 10": {"1.416"}, "think tank 9": {"1.415"},
+             "lecture theatre 4": {"2.404"}, "1.416": {"1.416"},
+             "1.415": {"1.415"}, "2.404": {"2.404"}, "9.999": set()}
 
     page = FakePage([
         (0, 201.0, 289.0,
@@ -780,13 +825,34 @@ def main() -> int:
 
     # ---- write ----------------------------------------------------------
     written: list[str] = []
+    kept: list[str] = []
     for code, rows in sorted(per_mod.items()):
         f = COURSES / f"{code.replace('.', '_')}.json"
         mod = json.loads(f.read_text(encoding="utf-8"))
-        fresh = sorted(to_schedules(rows), key=sort_key)
-        if mod.get("schedules") == fresh:
+        fresh = to_schedules(rows)
+
+        # MERGED, not replaced. This used to assign `fresh` over the top, and a
+        # slot a student had contributed that the registry's export does not
+        # list was deleted by the next import without a word - 30.123 lost a
+        # Monday 13:00 cohort exactly that way. The export is the official
+        # timetable and it is not the only true thing: a make-up class or a
+        # room change reaches /data through a paste and nowhere else.
+        #
+        # So the export wins for anything it describes, and a contributed slot
+        # it does not describe survives and is reported. A wrong one is then a
+        # line in a pull request a person reads, rather than a deletion nobody
+        # sees.
+        seen = {slot_key(s) for s in fresh}
+        extra = [s for s in (mod.get("schedules") or []) if slot_key(s) not in seen]
+        merged = sorted(fresh + extra, key=sort_key)
+        if extra:
+            where = ", ".join(f"{s['day'][:3]} {s['startTime']} @ {s['location']}"
+                              for s in extra)
+            kept.append(f"{code}: {len(extra)} contributed slot(s) not in the "
+                        f"export ({where})")
+        if mod.get("schedules") == merged:
             continue
-        mod["schedules"] = fresh
+        mod["schedules"] = merged
         if not args.dry_run:
             f.write_text(json.dumps(mod, indent=2, ensure_ascii=False) + "\n",
                          encoding="utf-8")
@@ -816,6 +882,13 @@ def main() -> int:
                       f"{', '.join(sorted(absent))}**\n")
     report.append(f"{tag}{len(written)} course file(s) rewritten: "
                   f"{', '.join(written) or 'none'}")
+    if kept:
+        report.append("")
+        report.append("Kept, because the export does not list them and a paste "
+                      "is the only way a make-up class or a room change reaches "
+                      "/data:")
+        for k in kept:
+            report.append(f"- {k}")
 
     text = "\n".join(report)
     print(text)
