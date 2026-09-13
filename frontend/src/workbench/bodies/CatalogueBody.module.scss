@@ -1,6 +1,6 @@
 .headRow {
   display: grid;
-  grid-template-columns: 66px 1fr 56px 32px 38px;
+  grid-template-columns: 66px 1fr 14px 56px 32px 38px;
   padding: 0 12px;
   height: 30px;
   align-items: center;
@@ -24,7 +24,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 66px 1fr 56px 32px 38px;
+  grid-template-columns: 66px 1fr 14px 56px 32px 38px;
   padding: 0 12px;
   min-height: 33px;
   width: 100%;
@@ -85,4 +85,15 @@
 
   input { accent-color: var(--wb-amber); cursor: pointer; margin: 0; }
   &:hover { color: var(--wb-ink); }
+}
+
+// The batch-chat mark. Its column exists on every row so the ones without a
+// chat keep the grid aligned; only the mark itself is conditional. Dimmed,
+// because it is a property of the mod and not a call to action: the button
+// that does something lives on the mod page.
+.tele {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(122, 162, 247, 0.55);
 }
