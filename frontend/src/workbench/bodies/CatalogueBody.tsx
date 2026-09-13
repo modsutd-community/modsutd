@@ -6,7 +6,8 @@ import { PILLAR_COLORS, PILLAR_ORDER, pillarColor, modPillars } from '../pillars
 import { useWorkbenchUi, SortKey } from '../uiContext';
 import { useFilteredMods } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
-import { useTelegramData, isActive } from '../telegram';
+import { useTelegramData } from '../telegram';
+import { chatOffered } from '../teleState';
 import { Otto } from '../Otto';
 import wb from '../wb.module.scss';
 import styles from './CatalogueBody.module.scss';
@@ -59,10 +60,8 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
   // that gains one a moment later is better than one that promises a chat
   // and takes it away.
   const [tg] = useTelegramData();
-  const hasChat = (code: string) => {
-    const entry = tg?.registry[code];
-    return !!entry && isActive(entry);
-  };
+  const offered = (m: (typeof rows)[number]) =>
+    chatOffered(m, tg?.registry[m.code], tg?.term.end);
   const suppressClick = useRef(false);
 
   return (
@@ -167,19 +166,19 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
           >
             <span className={styles.code} style={{ color: selected === k && selectedOpen ? '#fff' : undefined }}>{m.code}</span>
             <span className={styles.name}>{m.name}</span>
-            {/* A chat that EXISTS, not one that could. Eligibility is a
-                property of the record and marks every HASS course in the
-                catalogue whether or not it runs this term; the registry is
-                the only thing that knows a group was actually made, and
-                "there is a chat to join" is what a reader scanning this is
-                asking. Costs no extra request: useTelegramData is
-                module-cached and the mod panel already pays for it. */}
+            {/* A chat to point at: one that exists, or one the button on
+                that mod's page would actually make. Eligibility alone marks
+                every HASS course forever, including the ones not offered this
+                term; the registry alone misses the row worth marking most,
+                a mod running now whose chat nobody has asked for yet. Costs
+                no extra request: useTelegramData is module-cached and the mod
+                panel already pays for it. */}
             <span
               className={styles.tele}
-              data-act={hasChat(m.code) ? 'tele-eligible' : undefined}
-              aria-hidden={!hasChat(m.code)}
+              data-act={offered(m) ? 'tele-eligible' : undefined}
+              aria-hidden={!offered(m)}
             >
-              {hasChat(m.code) ? <TeleMark /> : null}
+              {offered(m) ? <TeleMark /> : null}
             </span>
             <span className={styles.pillar} style={{ color: pillarColor(m.pillar) }}>
               {m.pillar}

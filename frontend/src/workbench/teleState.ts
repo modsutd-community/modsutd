@@ -30,6 +30,36 @@ export function chatEligible(mod: Mod): boolean {
   );
 }
 
+
+/**
+ * Whether there is a chat to point at: one that exists, or one the button
+ * would actually make.
+ *
+ * Eligibility alone is a property of the record and stays true forever, so it
+ * marked every HASS course in the catalogue including the ones not offered
+ * this term. The registry alone is too narrow the other way: a mod running
+ * this term whose chat nobody has asked for yet is exactly the row worth
+ * marking, because one click makes it.
+ *
+ * So it is the workflow's own gate, minus the parts only the server can know:
+ * eligible, running this term (which is what a non-empty `schedules` means,
+ * since slots only arrive from a contributed timetable), and inside the term
+ * window. Plus anything already in the registry and unexpired.
+ */
+export function chatOffered(
+  mod: Mod,
+  entry: { expires?: string } | undefined,
+  termEnd: string | undefined,
+  today = new Date().toISOString().slice(0, 10),
+): boolean {
+  if (entry?.expires && today <= entry.expires) return true;
+  if (!chatEligible(mod)) return false;
+  // No slots means nobody is taking it this term as far as this repo knows,
+  // and `telegram-group.yml` refuses it with skip=not-offered.
+  if (!mod.schedules?.length) return false;
+  return !!termEnd && today <= termEnd;
+}
+
 export interface TeleFacts {
   /** Term >= 3 or HASS, not noBatchChat, not a capstone or thesis. */
   chatMod: boolean;

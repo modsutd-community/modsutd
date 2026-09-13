@@ -235,30 +235,50 @@ test.describe('telegram batch chat', () => {
   // whether or not it runs this term; the registry is the only thing that
   // knows a group was actually made, and "there is a chat to join" is the
   // question a reader scanning the list is asking.
-  test('the catalogue marks a mod that has a chat, and only those', async ({ page }) => {
-    await stub(page, ['50.040'], ENTRY);
-    const only = async (code: string) => {
-      await page.goto(`/mods?q=${code}`);
-      await expect(page.getByText(code, { exact: false }).first()).toBeVisible();
-      return page.locator('[data-act="tele-eligible"]');
-    };
+  test('the catalogue marks a chat that exists or one the button would make',
+    async ({ page }) => {
+      // 50.040 and 10.013 get slots, so both "run this term"; the registry is
+      // empty, so nothing here has a chat yet.
+      await stub(page, ['50.040', '10.013'], {});
+      const only = async (code: string) => {
+        await page.goto(`/mods?q=${code}`);
+        await expect(page.getByText(code, { exact: false }).first()).toBeVisible();
+        return page.locator('[data-act="tele-eligible"]');
+      };
 
-    // 50.040 is in the stubbed registry. 02.146 is a HASS elective and would
-    // pass every eligibility check, and has no chat, which is the case that
-    // made this the registry's question rather than the record's.
-    await expect(await only('50.040')).toHaveCount(1);
-    await expect(await only('02.146')).toHaveCount(0);
-    await expect(await only('10.013')).toHaveCount(0);
-    await expect(await only('01.400')).toHaveCount(0);
-  });
-
-  // An entry whose term has ended is not a chat anyone can join.
-  test('the catalogue drops the mark when the entry has expired', async ({ page }) => {
-    await stub(page, ['50.040'], {
-      '50.040': { linkEnc: 'v1:stub:stub', title: 'x', created: '2020-01', expires: '2020-06-30' },
+      // Eligible AND running, with no chat yet: one click would make one, so
+      // the row is marked. This is the case the registry alone misses.
+      await expect(await only('50.040')).toHaveCount(1);
+      // Running this term, and freshmore, whose cohort already shares a chat.
+      await expect(await only('10.013')).toHaveCount(0);
+      // Eligible forever, HASS, and not offered this term: no slots, so
+      // nothing anyone could create. This is the case that prompted the rule.
+      await expect(await only('02.153')).toHaveCount(0);
+      // And its sibling that IS offered this term is marked, on the strength
+      // of one slot and no registry entry at all.
+      await expect(await only('02.146')).toHaveCount(1);
+      // A capstone, running or not.
+      await expect(await only('01.400')).toHaveCount(0);
     });
+
+  // A chat that exists is joinable whatever the catalogue says about the
+  // course, so an entry outranks the rest of the rule.
+  test('the catalogue marks a live chat for a mod with no slots', async ({ page }) => {
+    await stub(page, [], ENTRY);
     await page.goto('/mods?q=50.040');
     await expect(page.getByText('50.040', { exact: false }).first()).toBeVisible();
+    await expect(page.locator('[data-act="tele-eligible"]')).toHaveCount(1);
+  });
+
+  // An entry whose term has ended is not a chat anyone can join. Asserted on
+  // 02.153, which has no slots: for a mod that IS running, the other half of
+  // the rule marks the row whatever the old entry says, and rightly so.
+  test('the catalogue drops the mark when the entry has expired', async ({ page }) => {
+    await stub(page, [], {
+      '02.153': { linkEnc: 'v1:stub:stub', title: 'x', created: '2020-01', expires: '2020-06-30' },
+    });
+    await page.goto('/mods?q=02.153');
+    await expect(page.getByText('02.153', { exact: false }).first()).toBeVisible();
     await expect(page.locator('[data-act="tele-eligible"]')).toHaveCount(0);
   });
 
