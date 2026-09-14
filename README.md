@@ -32,6 +32,9 @@ One workbench of draggable panels (desktop) / four tabs (mobile):
 - **Plan** - up to a 10-term degree plan with the freshmore core pinned (one plan per matriculation cohort, kept separate), drag-and-drop placement, automatic prerequisite checks, choice slots that count down, specialisation-track badges, and per-mod records (your own scores, computed grade, notes - stored locally, optional private-gist backup on Github).
 - **Navigation** - all 225 rooms with a weekly availability heatmap, probe-a-time search, and a map that goes indoors and names the lift lobby to use. Availability comes from crowdsourced timetable contributions.
 - **Reviews & suggestions** - honest module reviews and feature suggestions via GitHub Discussions (Giscus). Every engineering SUTDent would need to have one sooner or later.
+- **Monthly data refresh pipeline** - little to no maintenance
+
+[![monthly-pipeline](marketing/monthly_pipeline.png)](marketing/monthly_pipeline.png)
 
 ## Quick start
 
