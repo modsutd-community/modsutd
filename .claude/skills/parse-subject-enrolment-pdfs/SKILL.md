@@ -108,6 +108,22 @@ row, so one student's paste cannot say which of CI01 and CI02 they are in. So
 an unsectioned entry is matched on type, day, times and room alone, and folds
 into the export's sectioned row rather than drawing the class twice. A
 sectioned entry is matched on the full key, so two real sections both survive.
+
+**An hour a student has pasted is an hour the export does not get to describe.**
+Every entry carries a `source`, and `contributed` beats `subject-enrolment` for
+that whole hour of the week: the PDFs are published before the term starts and
+never republished, so rooms move and sections appear under them. 50.057 is the
+case this is written from. The export had Tuesday 14:00 as a CI01 cohort in
+1.415 AND 1.416; it is a lecture in 2.505, and a CI02 section meets Wednesday
+18:00 in 2.308 that the export does not mention at all.
+
+The override is keyed on the HOUR - day, start, end - and not on the room. An
+export row that disagrees about where a class is disagrees about the room, so
+matching on the room would keep both and draw the hour in two places. It also
+drops every export row at that hour, which is the intended reach and the thing
+to watch: if two sections genuinely meet at one hour in different rooms and only
+one student has pasted, the other section's row goes until the next export. The
+run lists what it replaced.
 Check the Kept list in the report: it is short, and every line in it is either a
 real change the registry has not published or a slot to correct.
 

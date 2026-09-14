@@ -280,6 +280,12 @@ export function TimetableBody({onPickMod}: Props) {
                                 endTime: s.end,
                                 location: s.venue,
                                 instructors: [],
+                                // This overlay IS the paste, so it carries the
+                                // same source fold_slots will write when the
+                                // same slots reach /data. A local row and the
+                                // committed one must not disagree about where
+                                // they came from.
+                                source: "contributed",
                             });
                         }
                         rememberContributed(

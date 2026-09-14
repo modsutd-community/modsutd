@@ -8,6 +8,7 @@ const slot = (over: Partial<Schedule> = {}): Schedule => ({
   startTime: '11:30',
   endTime: '13:00',
   location: '2.404',
+  source: 'subject-enrolment',
   instructors: [],
   ...over,
 });

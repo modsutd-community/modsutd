@@ -15,7 +15,8 @@
       "endTime": "19:00",
       "location": "2.406",
       "instructors": [],
-      "cohort": "CD01"
+      "cohort": "CD01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -24,7 +25,8 @@
       "endTime": "19:00",
       "location": "2.306",
       "instructors": [],
-      "cohort": "CD01"
+      "cohort": "CD01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

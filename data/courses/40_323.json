@@ -19,7 +19,8 @@
       "endTime": "18:00",
       "location": "2.305",
       "instructors": [],
-      "cohort": "CS01"
+      "cohort": "CS01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -28,7 +29,8 @@
       "endTime": "17:30",
       "location": "2.305",
       "instructors": [],
-      "cohort": "CS01"
+      "cohort": "CS01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

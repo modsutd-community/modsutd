@@ -15,7 +15,8 @@
       "endTime": "18:00",
       "location": "2.404",
       "instructors": [],
-      "cohort": "LH01"
+      "cohort": "LH01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -24,7 +25,8 @@
       "endTime": "20:00",
       "location": "1.308",
       "instructors": [],
-      "cohort": "CH01"
+      "cohort": "CH01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -33,7 +35,8 @@
       "endTime": "11:00",
       "location": "2.507",
       "instructors": [],
-      "cohort": "CH02"
+      "cohort": "CH02",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -42,7 +45,8 @@
       "endTime": "13:30",
       "location": "1.308",
       "instructors": [],
-      "cohort": "CH03"
+      "cohort": "CH03",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

@@ -18,7 +18,8 @@
       "endTime": "10:30",
       "location": "1.409",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -27,7 +28,8 @@
       "endTime": "10:30",
       "location": "1.410",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -36,7 +38,8 @@
       "endTime": "10:30",
       "location": "1.409",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -45,7 +48,8 @@
       "endTime": "10:30",
       "location": "1.410",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -54,7 +58,8 @@
       "endTime": "16:00",
       "location": "1.409",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -63,7 +68,8 @@
       "endTime": "16:00",
       "location": "1.410",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

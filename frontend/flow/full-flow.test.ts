@@ -29,6 +29,11 @@ function schedulesOf(file: string): Array<Record<string, string>> {
 
 describe('contribution flow: paste -> slots -> fold_slots -> /data', () => {
   let before = 0;
+  // Set the instant /data is known clean, and read by the restore below. The
+  // guard threw while afterAll ran anyway, so a run refused for dirty /data
+  // discarded the very changes it refused to run over: a `source` field added
+  // across 45 course files went exactly that way.
+  let ours = false;
 
   beforeAll(() => {
     const dirty = git('status', '--porcelain', 'data');
@@ -38,13 +43,18 @@ describe('contribution flow: paste -> slots -> fold_slots -> /data', () => {
         `discarding them. Commit or stash first:\n${dirty}`,
       );
     }
+    ours = true;
     expect(existsSync(COURSE)).toBe(true);
     before = schedulesOf(COURSE).length;
   });
 
   afterAll(() => {
-    // Restore whether or not the assertions passed. Untracked files (a
-    // term-window.json created from nothing) need the clean, not the checkout.
+    // Only what this test wrote. Whether the assertions passed does not matter
+    // - a half-written /data still has to go - but whether the tree was clean
+    // when we started very much does.
+    if (!ours) return;
+    // Untracked files (a term-window.json created from nothing) need the
+    // clean, not the checkout.
     git('checkout', '--', 'data');
     git('clean', '-fd', 'data');
   });

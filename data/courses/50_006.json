@@ -20,7 +20,8 @@
       "endTime": "11:30",
       "location": "1.415",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -29,7 +30,8 @@
       "endTime": "11:30",
       "location": "1.416",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -38,7 +40,8 @@
       "endTime": "14:00",
       "location": "1.415",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -47,7 +50,8 @@
       "endTime": "14:00",
       "location": "1.416",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

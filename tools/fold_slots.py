@@ -146,6 +146,10 @@ def main() -> int:
             "endTime": slot["end"],
             "location": room,
             "instructors": [],
+            # What this is, and therefore what it beats. The enrolment import
+            # reads it: a paste is one student's live timetable and the export
+            # is a PDF published before the term started.
+            "source": "contributed",
         }
         if any(
             s.get("day") == entry["day"]

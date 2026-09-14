@@ -429,6 +429,7 @@ def to_schedules(rows: list[dict], instructors: list[str] | None = None) -> list
                 "endTime": r["end"],
                 "location": room,
                 "instructors": list(instructors or ()),
+                "source": "subject-enrolment",
             }
             if r["section"]:
                 s["cohort"] = r["section"]
@@ -441,6 +442,10 @@ def to_schedules(rows: list[dict], instructors: list[str] | None = None) -> list
     return out
 
 
+CONTRIBUTED = "contributed"
+ENROLMENT = "subject-enrolment"
+
+
 def meeting_key(s: dict) -> tuple:
     """The meeting itself: one type, one day, one hour, one room.
 
@@ -450,6 +455,18 @@ def meeting_key(s: dict) -> tuple:
     """
     return (s.get("type"), s.get("day"), s.get("startTime"), s.get("endTime"),
             s.get("location"))
+
+
+def hour_key(s: dict) -> tuple:
+    """The hour of the week, with no room and no section.
+
+    Coarser than meeting_key on purpose, and it is what a contributed slot
+    overrides. 50.057's export put Tuesday 14:00 in 1.415 AND 1.416 for CI01;
+    the class actually meets in 2.505, which a student pasted. Matching on the
+    room would have kept all three, and the mod would show one hour in three
+    places.
+    """
+    return (s.get("day"), s.get("startTime"), s.get("endTime"))
 
 
 def slot_key(s: dict) -> tuple:
@@ -466,11 +483,14 @@ def sort_key(s: dict) -> tuple:
             s.get("cohort", ""))
 
 
-def merge_schedules(existing: list[dict], fresh: list[dict]) -> tuple[list[dict], list[dict]]:
-    """The export's rows, plus whatever the export does not describe.
+def merge_schedules(
+    existing: list[dict], fresh: list[dict],
+) -> tuple[list[dict], list[dict], list[dict]]:
+    """The export's rows, minus the hours a paste already answered, plus
+    whatever the export does not describe.
 
-    Returns the merged list and the entries that were kept from `existing`, so
-    the run can name them.
+    Returns the merged list, the entries kept from `existing`, and the export
+    rows a paste displaced, so the run can name both.
 
     This used to be an assignment of `fresh` over the top, and a slot a student
     had contributed that the export does not list was deleted by the next
@@ -488,12 +508,27 @@ def merge_schedules(existing: list[dict], fresh: list[dict]) -> tuple[list[dict]
     the class twice in the grid. Only the unsectioned side folds in. A
     sectioned entry is matched on the full key, so two real sections survive.
     """
+    # An hour a student has pasted is an hour the export does not get to
+    # describe. The PDFs are published before the term starts and are not
+    # republished: rooms move, sections are added, and the paste is what
+    # somebody is actually being told to attend this week. 50.057 is the case
+    # this is written from - the export had Tuesday 14:00 as a CI01 cohort in
+    # 1.415 and 1.416, and it is a lecture in 2.505.
+    #
+    # By the HOUR, not the room: an export row that disagrees about where a
+    # class is disagrees about the room, so matching on the room would keep
+    # both and draw the hour twice.
+    contributed_hours = {hour_key(s) for s in existing
+                         if s.get("source") == CONTRIBUTED}
+    replaced = [s for s in fresh if hour_key(s) in contributed_hours]
+    fresh = [s for s in fresh if hour_key(s) not in contributed_hours]
+
     seen = {slot_key(s) for s in fresh}
     meetings = {meeting_key(s) for s in fresh}
     kept = [s for s in existing
             if slot_key(s) not in seen
             and not (s.get("cohort") is None and meeting_key(s) in meetings)]
-    return sorted(fresh + kept, key=sort_key), kept
+    return sorted(fresh + kept, key=sort_key), kept, replaced
 
 
 class FakePage:
@@ -735,33 +770,59 @@ def self_check() -> int:
     # The merge. A paste is the only way a make-up class reaches /data, and the
     # export is the only thing that knows the sections, so neither side can
     # simply win.
-    def slot(day, room, cohort=None, start="14:00", type_="Cohort"):
+    def slot(day, room, cohort=None, start="14:00", type_="Cohort",
+             source=ENROLMENT):
         s = {"type": type_, "day": day, "startTime": start, "endTime": "17:00",
-             "location": room, "instructors": []}
+             "location": room, "instructors": [], "source": source}
         if cohort:
             s["cohort"] = cohort
         return s
 
     official = [slot("Tuesday", "1.415", "CI01"), slot("Tuesday", "1.416", "CI01")]
-    merged, kept = merge_schedules([slot("Tuesday", "1.415")], official)
+    merged, kept, _ = merge_schedules([slot("Tuesday", "1.415")], official)
     eq("an unsectioned paste of a row the export has is not kept twice",
        len(merged), 2)
     eq("and nothing is reported as kept", kept, [])
 
-    merged, kept = merge_schedules([slot("Monday", "2.406")], official)
+    merged, kept, _ = merge_schedules([slot("Monday", "2.406")], official)
     eq("a meeting the export does not describe survives", len(merged), 3)
     eq("and is reported", [s["day"] for s in kept], ["Monday"])
 
-    merged, _ = merge_schedules([slot("Tuesday", "1.415", "CI02")], official)
+    merged, _, _ = merge_schedules([slot("Tuesday", "1.415", "CI02")], official)
     eq("two real sections in one room at one hour both survive", len(merged), 3)
 
-    merged, _ = merge_schedules([slot("Tuesday", "1.415", "CI01")], official)
+    merged, _, _ = merge_schedules([slot("Tuesday", "1.415", "CI01")], official)
     eq("a row the export repeats exactly is not doubled", len(merged), 2)
 
-    merged, _ = merge_schedules([slot("Tuesday", "1.415", type_="Lecture")],
+    merged, _, _ = merge_schedules([slot("Tuesday", "1.415", type_="Lecture")],
                                 official)
     eq("a different type in the same room at the same hour survives",
        len(merged), 3)
+
+    # 50.057, which is why any of this exists. The export put Tuesday 14:00 in
+    # two rooms for CI01; the class meets in 2.505 and a student pasted that.
+    pasted = slot("Tuesday", "2.505", type_="Lecture", source=CONTRIBUTED)
+    merged, kept, _ = merge_schedules([pasted], official)
+    eq("a pasted hour replaces every export row for that hour",
+       [(s["location"], s["source"]) for s in merged],
+       [("2.505", CONTRIBUTED)])
+    eq("and the paste is not reported as an extra, it is the answer", kept, [pasted])
+
+    # Only that hour. The export still owns every other one.
+    merged, _, _ = merge_schedules(
+        [slot("Tuesday", "2.505", type_="Lecture", source=CONTRIBUTED)],
+        official + [slot("Thursday", "1.415", "CI01", start="16:00")])
+    eq("an hour nobody pasted keeps its export rows",
+       sorted({s["day"] for s in merged}), ["Thursday", "Tuesday"])
+    eq("and only the pasted room survives on the pasted day",
+       sorted(s["location"] for s in merged if s["day"] == "Tuesday"), ["2.505"])
+
+    # A leftover contributed slot the export does not mention at all is still
+    # kept, which is the behaviour the hour rule must not eat.
+    merged, kept, _ = merge_schedules(
+        [slot("Monday", "2.406", start="13:00", source=CONTRIBUTED)], official)
+    eq("a pasted hour the export never mentions survives", len(merged), 3)
+    eq("and is reported", [s["day"] for s in kept], ["Monday"])
 
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
@@ -894,12 +955,19 @@ def main() -> int:
     # ---- write ----------------------------------------------------------
     written: list[str] = []
     kept: list[str] = []
+    dropped: list[str] = []
     for code, rows in sorted(per_mod.items()):
         f = COURSES / f"{code.replace('.', '_')}.json"
         mod = json.loads(f.read_text(encoding="utf-8"))
         fresh = to_schedules(rows)
 
-        merged, extra = merge_schedules(mod.get("schedules") or [], fresh)
+        merged, extra, displaced = merge_schedules(mod.get("schedules") or [], fresh)
+        if displaced:
+            where = ", ".join(
+                f"{d['day'][:3]} {d['startTime']} @ {d['location']}"
+                f"{' ' + d['cohort'] if d.get('cohort') else ''}" for d in displaced)
+            dropped.append(f"{code}: {len(displaced)} export row(s) at an hour a "
+                           f"paste already answered ({where})")
         if extra:
             where = ", ".join(f"{s['day'][:3]} {s['startTime']} @ {s['location']}"
                               for s in extra)
@@ -944,6 +1012,12 @@ def main() -> int:
                       "/data:")
         for k in kept:
             report.append(f"- {k}")
+    if dropped:
+        report.append("")
+        report.append("Dropped, because a contributed slot already answers that "
+                      "hour and the export is published before the term starts:")
+        for d in dropped:
+            report.append(f"- {d}")
 
     text = "\n".join(report)
     print(text)

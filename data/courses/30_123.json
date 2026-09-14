@@ -22,7 +22,8 @@
       "startTime": "13:00",
       "endTime": "14:00",
       "location": "2.406",
-      "instructors": []
+      "instructors": [],
+      "source": "subject-enrolment"
     },
     {
       "type": "Lecture",
@@ -31,7 +32,8 @@
       "endTime": "14:00",
       "location": "2.406",
       "instructors": [],
-      "cohort": "LP01"
+      "cohort": "LP01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -40,7 +42,8 @@
       "endTime": "15:30",
       "location": "2.406",
       "instructors": [],
-      "cohort": "CP01"
+      "cohort": "CP01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [
