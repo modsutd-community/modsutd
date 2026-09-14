@@ -146,3 +146,22 @@ describe('which cohort the reader is in', () => {
     expect(events.map((e) => e.section).sort()).toEqual(['CI01', 'CI02']);
   });
 });
+
+// A course can print a cohort group and then a team group. The section is
+// recomputed from the nearest preceding header for every row, so the second
+// group must not inherit the first one's.
+describe('two groups under one course', () => {
+  const mixed = [
+    '01 .400 - Capstone 1',
+    'Class Nbr\tSection\tComponent\tDays & Times\tRoom\tInstructor\tStart/End Date',
+    '1001\tCI01\tCBL\tTu 2:00PM - 5:00PM\tThink Tank 9 (1.415)\tProf A\t15/09/2026 - 15/09/2026',
+    '1207\tCC01\tCBL\tWe 10:30AM - 1:30PM\tCapstone 1 (1.411)\tProf B\t16/09/2026 - 16/09/2026',
+  ].join('\n');
+
+  it('a team group after a cohort group inherits nothing', () => {
+    const events = parseTimetableText(mixed);
+    const byDay = (d: string) => events.find((e) => e.day === d);
+    expect(byDay('Tuesday')?.section).toBe('CI01');
+    expect(byDay('Wednesday')?.section).toBeUndefined();
+  });
+});
