@@ -70,7 +70,7 @@ MAX_MEMBERS = 500
 
 HANDOVER = (
     "First person to join is now admin, and can make others admin too. "
-    "Invite your friends and enjoy!\nCreated by modSUTD"
+    "Invite your friends and enjoy!\nCreated by modSUTD.tech"
 )
 
 # Everything a cohort needs to run its own chat, and nothing that only makes
