@@ -247,3 +247,53 @@ describe('an import does not invent empty records', () => {
     expect(Object.keys(kept)).toEqual(['10.014']);
   });
 });
+
+// The plan holds `02.XFER|T7`, because a repeatable mod's key carries the term
+// it sits in. The RECORD is keyed by the store's key for that mod, which is the
+// bare `02.XFER`. Filtering the export on the plan's keys alone never matched
+// it, so the notes left the file without a word and the import dropped them
+// again on the way back.
+describe('a repeatable mod carries its record through the file', () => {
+  const plan = {
+    selectedMods: ['02.XFER|T7', '50.001'],
+    planLevels: { '02.XFER|T7': 7, '50.001': 4 },
+  } as unknown as PlanState;
+  const records = {
+    '02.XFER': { notes: 'summer transfer, NUS', components: [] },
+    '50.001': { notes: 'tough', components: [] },
+  } as unknown as RecordsState;
+
+  it('exports it', () => {
+    const f = buildPlanFile('ay2024', plan, [], records, []);
+    expect(Object.keys(f.records).sort()).toEqual(['02.XFER', '50.001']);
+    expect((f.records as Record<string, { notes: string }>)['02.XFER'].notes)
+      .toBe('summer transfer, NUS');
+  });
+
+  it('imports it', () => {
+    const kept = importableRecords(records, plan.selectedMods, []);
+    expect(Object.keys(kept).sort()).toEqual(['02.XFER', '50.001']);
+  });
+
+  it('does not pull in a record for a mod the plan does not hold', () => {
+    const stranger = {
+      ...records, '30.111': { notes: 'not mine', components: [] },
+    } as unknown as RecordsState;
+    const kept = importableRecords(stranger, plan.selectedMods, []);
+    expect(Object.keys(kept)).not.toContain('30.111');
+  });
+
+  it('still tells the 99.999 placeholders apart', () => {
+    // Their store key already carries its own suffix, so it appears in the
+    // plan unchanged and widening must not collapse two of them into one.
+    const placeholders = {
+      selectedMods: ['99.999|Calculus', '99.999|Physics'], planLevels: {},
+    } as unknown as PlanState;
+    const both = {
+      '99.999|Calculus': { notes: 'calc', components: [] },
+      '99.999|Physics': { notes: 'phys', components: [] },
+    } as unknown as RecordsState;
+    const f = buildPlanFile('ay2026', placeholders, [], both, []);
+    expect(Object.keys(f.records).sort()).toEqual(['99.999|Calculus', '99.999|Physics']);
+  });
+});

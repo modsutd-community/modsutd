@@ -1,4 +1,5 @@
 import type { Curriculum, PlanState, RecordsState } from '@/types';
+import { codeOfKey } from './logic';
 
 // What the plan panel's "download .json" actually produces.
 //
@@ -115,8 +116,19 @@ export function recordsFor(
   codes: string[],
   pinned: string[] = [],
 ): RecordsState {
-  const keep = new Set(codes);
-  const core = new Set(pinned);
+  // Two namespaces meet here, and they are not the same namespace.
+  //
+  // `codes` are PLAN keys, and a repeatable mod's plan key carries the term it
+  // sits in: `02.XFER|T7`. A RECORD is keyed by the store's key for that mod,
+  // which for a repeatable is the bare `02.XFER` - both the T3 and the T7 chip
+  // write there. So a set built from the plan alone never matched the record,
+  // and a student who had written notes against their HASS transfer exported a
+  // file with them silently missing, then imported it and lost them again.
+  //
+  // Not a problem for the 99.999 placeholders, whose store key already carries
+  // its own suffix and so appears in `codes` unchanged.
+  const keep = new Set(codes.flatMap((c) => [c, codeOfKey(c)]));
+  const core = new Set(pinned.flatMap((c) => [c, codeOfKey(c)]));
   const out: RecordsState = {} as RecordsState;
   for (const [code, v] of Object.entries(records ?? {})) {
     if (keep.has(code) && (core.has(code) || hasContent(v))) {
@@ -124,9 +136,12 @@ export function recordsFor(
     }
   }
   // A core mod whose card was never opened has no record at all, and leaving it
-  // out would make the file depend on that again.
-  for (const code of core) {
-    if (!(code in out)) (out as Record<string, unknown>)[code] = { ...EMPTY_RECORD };
+  // out would make the file depend on that again. Seeded under the key a record
+  // would really be written at, so `pinned` widening above cannot invent a
+  // second empty record beside a real one.
+  for (const code of pinned) {
+    const at = codeOfKey(code);
+    if (!(at in out)) (out as Record<string, unknown>)[at] = { ...EMPTY_RECORD };
   }
   return out;
 }

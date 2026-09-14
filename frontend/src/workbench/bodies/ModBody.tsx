@@ -19,10 +19,22 @@ import {
     slotsOnMain,
 } from "../telegram";
 import {awaitingDeploy, CONTRIBUTED_EVENT} from "../contributed";
-import {teleState, chatEligible, capReached, DAILY_CREATE_CAP} from "../teleState";
+import {
+    teleState,
+    chatEligible,
+    capReached,
+    DAILY_CREATE_CAP,
+} from "../teleState";
 import {askedAt, markAsked, clearAsked, TELE_ASKED_EVENT} from "../teleAsked";
 import {ReviewForm} from "../ReviewForm";
-import {defaultLevel, useFreshmore, freshmoreFixedSet, planKeyFor, codeOfKey, modOfKey} from "../logic";
+import {
+    defaultLevel,
+    useFreshmore,
+    freshmoreFixedSet,
+    planKeyFor,
+    codeOfKey,
+    modOfKey,
+} from "../logic";
 import {useWorkbenchUi} from "../uiContext";
 import {Otto} from "../Otto";
 import {ExtIcon} from "../ExtLink";
@@ -184,7 +196,7 @@ function TeleChat({mod}: {mod: Mod}) {
                     disabled
                     data-act="tele-never"
                     data-tip-side="block"
-                    data-tip="Batch chats are for electives and HASS from T3 onwards. Capstones and thesis mods split students across their own project teams, so a cohort-wide group would be noise."
+                    data-tip="Only for HASS or electives, T3 onwards."
                 >
                     <TelegramIcon /> won&apos;t create tele chat
                 </button>
