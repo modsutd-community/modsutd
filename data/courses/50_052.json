@@ -18,7 +18,8 @@
       "endTime": "14:30",
       "location": "2.607",
       "instructors": [],
-      "cohort": "LI01"
+      "cohort": "LI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Lecture",
@@ -27,7 +28,8 @@
       "endTime": "13:30",
       "location": "2.607",
       "instructors": [],
-      "cohort": "LI01"
+      "cohort": "LI01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -36,7 +38,8 @@
       "endTime": "16:00",
       "location": "2.607",
       "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

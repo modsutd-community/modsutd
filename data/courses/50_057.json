@@ -43,30 +43,23 @@
   "corequisites": [],
   "schedules": [
     {
-      "type": "Cohort",
-      "day": "Tuesday",
-      "startTime": "14:00",
-      "endTime": "17:00",
-      "location": "1.415",
-      "instructors": [],
-      "cohort": "CI01"
-    },
-    {
-      "type": "Cohort",
-      "day": "Tuesday",
-      "startTime": "14:00",
-      "endTime": "17:00",
-      "location": "1.416",
-      "instructors": [],
-      "cohort": "CI01"
-    },
-    {
-      "type": "Cohort",
+      "type": "Lecture",
       "day": "Tuesday",
       "startTime": "14:00",
       "endTime": "17:00",
       "location": "2.505",
-      "instructors": []
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "18:00",
+      "endTime": "21:00",
+      "location": "2.308",
+      "instructors": [],
+      "cohort": "CI02",
+      "source": "contributed"
     },
     {
       "type": "Cohort",
@@ -75,16 +68,8 @@
       "endTime": "19:00",
       "location": "1.415",
       "instructors": [],
-      "cohort": "CI01"
-    },
-    {
-      "type": "Cohort",
-      "day": "Thursday",
-      "startTime": "16:00",
-      "endTime": "19:00",
-      "location": "1.416",
-      "instructors": [],
-      "cohort": "CI01"
+      "cohort": "CI01",
+      "source": "contributed"
     }
   ],
   "tags": [

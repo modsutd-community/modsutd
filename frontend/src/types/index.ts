@@ -13,6 +13,20 @@ export interface Workload {
   source?: string;
 }
 
+/**
+ * Where a schedule entry came from, which is what decides who wins a
+ * disagreement about one hour of a week.
+ *
+ * `subject-enrolment` is the registry's own export, parsed from the six PDFs.
+ * It covers a whole term on day one and is PROVISIONAL: the rooms and the
+ * sections move after it is published, and nothing republishes it.
+ *
+ * `contributed` is a student's own timetable, pasted from MyPortal. It covers
+ * only what somebody has taken the trouble to paste, and it is what that
+ * person is actually being told to attend this week.
+ */
+export type ScheduleSource = 'subject-enrolment' | 'contributed';
+
 export interface Schedule {
   type: LessonType;
   day: 'Monday' | 'Tuesday' | 'Wednesday' | 'Thursday' | 'Friday' | 'Saturday' | 'Sunday';
@@ -21,6 +35,7 @@ export interface Schedule {
   location: string;
   instructors: string[];
   cohort?: string;
+  source: ScheduleSource;
 }
 
 export interface GradingComponent {

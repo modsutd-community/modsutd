@@ -16,7 +16,8 @@
       "endTime": "11:30",
       "location": "1.308",
       "instructors": [],
-      "cohort": "CH01"
+      "cohort": "CH01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

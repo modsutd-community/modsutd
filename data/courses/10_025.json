@@ -15,7 +15,8 @@
       "startTime": "09:00",
       "endTime": "11:30",
       "location": "1.413",
-      "instructors": []
+      "instructors": [],
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -23,7 +24,8 @@
       "startTime": "10:30",
       "endTime": "13:00",
       "location": "1.413",
-      "instructors": []
+      "instructors": [],
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -31,7 +33,8 @@
       "startTime": "11:00",
       "endTime": "13:00",
       "location": "1.414",
-      "instructors": []
+      "instructors": [],
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -39,7 +42,8 @@
       "startTime": "16:30",
       "endTime": "18:30",
       "location": "1.413",
-      "instructors": []
+      "instructors": [],
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -47,7 +51,8 @@
       "startTime": "10:30",
       "endTime": "13:00",
       "location": "1.414",
-      "instructors": []
+      "instructors": [],
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -55,7 +60,8 @@
       "startTime": "15:30",
       "endTime": "18:00",
       "location": "1.413",
-      "instructors": []
+      "instructors": [],
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -63,7 +69,8 @@
       "startTime": "09:00",
       "endTime": "11:30",
       "location": "1.414",
-      "instructors": []
+      "instructors": [],
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

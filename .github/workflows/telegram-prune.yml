@@ -84,7 +84,7 @@ jobs:
                   # expired entry waits - but not indefinitely: this file is public
                   # and the ciphertext is the thing being removed, so after the grace
                   # period the security win beats the tidiness one.
-                  LEAVE_GRACE_DAYS = 60
+                  LEAVE_GRACE_DAYS = 20
 
                   def stale(entry):
                       exp = str(entry.get('expires') or '')

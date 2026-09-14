@@ -17,7 +17,8 @@
       "endTime": "18:00",
       "location": "2.607",
       "instructors": [],
-      "cohort": "CH01"
+      "cohort": "CH01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -26,7 +27,8 @@
       "endTime": "11:30",
       "location": "2.607",
       "instructors": [],
-      "cohort": "CH02"
+      "cohort": "CH02",
+      "source": "subject-enrolment"
     }
   ],
   "corequisites": [],

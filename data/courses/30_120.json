@@ -18,7 +18,8 @@
       "endTime": "13:00",
       "location": "2.505",
       "instructors": [],
-      "cohort": "LP01"
+      "cohort": "LP01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -27,7 +28,8 @@
       "endTime": "16:00",
       "location": "2.313A",
       "instructors": [],
-      "cohort": "CP01"
+      "cohort": "CP01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -36,7 +38,8 @@
       "endTime": "16:00",
       "location": "2.313B",
       "instructors": [],
-      "cohort": "CP01"
+      "cohort": "CP01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -45,7 +48,8 @@
       "endTime": "10:30",
       "location": "2.313A",
       "instructors": [],
-      "cohort": "CP02"
+      "cohort": "CP02",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -54,7 +58,8 @@
       "endTime": "10:30",
       "location": "2.313B",
       "instructors": [],
-      "cohort": "CP02"
+      "cohort": "CP02",
+      "source": "subject-enrolment"
     },
     {
       "type": "Lecture",
@@ -63,7 +68,8 @@
       "endTime": "13:00",
       "location": "2.505",
       "instructors": [],
-      "cohort": "LP01"
+      "cohort": "LP01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

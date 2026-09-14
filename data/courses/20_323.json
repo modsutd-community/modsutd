@@ -18,7 +18,8 @@
       "endTime": "13:30",
       "location": "2.413",
       "instructors": [],
-      "cohort": "CA01"
+      "cohort": "CA01",
+      "source": "subject-enrolment"
     },
     {
       "type": "Cohort",
@@ -27,7 +28,8 @@
       "endTime": "13:30",
       "location": "2.605",
       "instructors": [],
-      "cohort": "CA01"
+      "cohort": "CA01",
+      "source": "subject-enrolment"
     }
   ],
   "tags": [

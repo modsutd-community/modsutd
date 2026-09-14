@@ -26,7 +26,8 @@ The TypeScript types in [`frontend/src/types/index.ts`](../frontend/src/types/in
       "startTime": "09:00",
       "endTime": "11:00",
       "location": "2.101",
-      "instructors": ["Prof. Wong Ee Hou"]
+      "instructors": ["Prof. Wong Ee Hou"],
+      "source": "subject-enrolment"
     }
   ],
   "grading": {
@@ -72,6 +73,7 @@ The recursive renderer handles arbitrary nesting. Keep it shallow - three levels
 - `workload` - OFFICIAL only: it exists solely when the course page publishes a `Workload: a-b-c` line (lecture/cohort - lab/design - independent study, h/wk), which the gatherer maps into the fields and marks `source: "official"`. Never invent or estimate one; a mod without a published workload simply has no `workload` key.
 - `noBatchChat` - no batch Telegram chat is offered for this course. A chat is for a course a student CHOOSES, where the people in it have nothing else in common; a capstone splits into project teams, and a pillar's core is taken by everybody who already shares a cohort chat. `noBatchChatReason` names what set it, and every value is written by `tools/scraper/gather_cores.py`, which removes only flags carrying a reason it wrote itself. `"pillar core"` comes from each pillar's published core listing, and that half never removes more than two flags in one run, so a half-parsed page cannot quietly unflag a pillar. `"freshmore core"`, `"core"` and `"core elective"` are the course's own tag, lowercased, and nothing is inferred past what the tag says: `"core"` is vague because the page is. A flag with no reason was set by hand and no script will touch it.
 - `schedules[].location` - a room code `data/venues` actually has, and never a name. A contributed timetable prints whichever the registry felt like, so `tools/fold_slots.py` resolves it: a code, then the full printed name, then the name with its donor bracket dropped, then a fragment that appears inside exactly one room's name (which is how `Albert` becomes `1.102`, `Lecture Theatre 1 (Albert Hong)`). A half of a divisible classroom becomes the room, so `2.507A` is `2.507`. Anything that resolves to nothing is **left out and reported**, because a location that is not a venue key is a room the finder, the heatmaps and the .ics all fail to place, and nothing says so. `Lecture` and `Online` are the two that got in before this.
+- `schedules[].source` - **required on every entry**, and one of two values. `"subject-enrolment"` is the registry's own export, parsed from the six PDFs by `tools/enrolment/parse_enrolment_pdfs.py`: it covers a whole term on day one and is PROVISIONAL, because rooms move and sections are added after it is published and nothing republishes it. `"contributed"` is a student's own MyPortal timetable, written by `tools/fold_slots.py`: it covers only what somebody pasted, and it is what that person is actually being told to attend this week. On a disagreement the paste wins, by the HOUR rather than the room - 50.057's export had Tuesday 14:00 as a CI01 cohort in both 1.415 and 1.416, and the class is a lecture in 2.505. Matching on the room would have kept all three and drawn one hour in three places.
 - `schedules` - placeholder times are acceptable while the scraper isn't tied to MyPortal. Mark synthetic ones in the commit message.
 
 ## Venue
