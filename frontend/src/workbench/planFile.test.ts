@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect } from 'vitest';
 import {
-  buildPlanFile, readPlanFile, migratePlans, migrateCurriculum, hasContent,
+  buildPlanFile, readPlanFile, migrateCurriculum, hasContent,
   importableRecords, PLAN_FILE_KIND,
 } from './planFile';
 import type { PlanState, RecordsState } from '@/types';
@@ -51,7 +51,7 @@ describe('files written before this format', () => {
     declared: ['csd-ai'],
     timetable: [{ modCode: '50.040' }],
     contributed: { '50.040': {} },
-    plans: { ay2026: plan([]), ay2025: plan(['50.007']), classic: plan(['10.013']) },
+    plans: { ay2026: plan([]), ay2025: plan(['50.007']), ay2024: plan(['10.013']) },
   };
 
   it('reads a whole-browser backup into the tab you are on', () => {
@@ -61,18 +61,18 @@ describe('files written before this format', () => {
     expect(read.plan.selectedMods).toEqual(['50.007']);
   });
 
-  // `classic` was renamed to `ay2024`. A plan stored under the old key has to
-  // keep working, in a file and in a synced gist alike.
-  it('finds a plan saved under the old `classic` key', () => {
+  it('finds the AY2024 plan in it', () => {
     const read = readPlanFile(oldBackup, 'ay2024')!;
     expect(read.plan.selectedMods).toEqual(['10.013']);
   });
 
-  it('renames the key without disturbing the others', () => {
-    expect(migratePlans({ classic: 1, ay2025: 2 })).toEqual({ ay2024: 1, ay2025: 2 });
-    expect(migratePlans({ ay2025: 2 })).toEqual({ ay2025: 2 });
-    expect(migrateCurriculum('classic')).toBe('ay2024');
-    expect(migrateCurriculum('ay2026')).toBe('ay2026');
+  // `classic` was this cohort's key before the rename. The one-way migration
+  // that read it is gone, so it is now a key this app does not have, and the
+  // rule for those is the one below: an empty plan, never another cohort's.
+  it('treats the retired `classic` key as a cohort it does not have', () => {
+    const ancient = { ...oldBackup, plans: { classic: plan(['10.013']) } };
+    expect(readPlanFile(ancient, 'ay2024')!.plan.selectedMods).toEqual([]);
+    expect(migrateCurriculum('classic')).toBeUndefined();
   });
 
   it('refuses something that is not a plan at all', () => {
@@ -165,7 +165,7 @@ describe('a cohort key this app does not have', () => {
     expect(migrateCurriculum('ay2099')).toBeUndefined();
     expect(migrateCurriculum('')).toBeUndefined();
     expect(migrateCurriculum(undefined)).toBeUndefined();
-    expect(migrateCurriculum('classic')).toBe('ay2024');
+    expect(migrateCurriculum('classic')).toBeUndefined();
     expect(migrateCurriculum('ay2026')).toBe('ay2026');
   });
 });

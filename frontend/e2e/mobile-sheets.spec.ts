@@ -12,12 +12,15 @@ test.describe('mobile · sheets', () => {
     // rather than clicked, because the cohort dropdown lives in the desktop
     // plan header - and seeded BEFORE navigation, because the app writes that
     // key on a 300ms debounce and would overwrite a value set afterwards.
+    //
+    // This used to seed `classic`, the key AY2024 had before the cohorts were
+    // all spelled the same way, and assert that it still selected AY2024. The
+    // one-way migration that made that true is deleted, so the cohort is named
+    // the way the app names it and this is back to testing the sheet.
     await page.addInitScript(() => {
       localStorage.setItem(
         'modsutd.workbench.ui.v1',
-        // Deliberately the OLD key. A returning student has this in their
-        // browser right now, and it has to keep selecting the same cohort.
-        JSON.stringify({ freshmoreMode: 'classic' }),
+        JSON.stringify({ freshmoreMode: 'ay2024' }),
       );
     });
     await page.goto('/mods');
