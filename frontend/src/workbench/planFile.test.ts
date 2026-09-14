@@ -247,3 +247,39 @@ describe('an import does not invent empty records', () => {
     expect(Object.keys(kept)).toEqual(['10.014']);
   });
 });
+
+// A repeatable mod's record is filed under its PLAN key, so the summer transfer
+// in T3 and the winter one in T7 carry their own notes. They used to share one:
+// ChipCard filed against `mod.key ?? mod.code`, which is the store's key and for
+// a repeatable is the bare code - which also meant the filter here, reading plan
+// keys, never matched it and the export dropped it without a word.
+describe('two transfers of the same repeatable mod', () => {
+  const plan = {
+    selectedMods: ['02.XFER|T3', '02.XFER|T7', '50.001'],
+    planLevels: { '02.XFER|T3': 3, '02.XFER|T7': 7, '50.001': 4 },
+  } as unknown as PlanState;
+  const records = {
+    '02.XFER|T3': { notes: 'summer, NUS', components: [] },
+    '02.XFER|T7': { notes: 'winter, NTU', components: [] },
+    '50.001': { notes: 'tough', components: [] },
+  } as unknown as RecordsState;
+
+  it('each keeps its own notes through an export', () => {
+    const f = buildPlanFile('ay2024', plan, [], records, []);
+    const out = f.records as Record<string, { notes: string }>;
+    expect(Object.keys(out).sort()).toEqual(['02.XFER|T3', '02.XFER|T7', '50.001']);
+    expect(out['02.XFER|T3'].notes).toBe('summer, NUS');
+    expect(out['02.XFER|T7'].notes).toBe('winter, NTU');
+  });
+
+  it('and through an import', () => {
+    const kept = importableRecords(records, plan.selectedMods, []);
+    expect(Object.keys(kept).sort()).toEqual(['02.XFER|T3', '02.XFER|T7', '50.001']);
+  });
+
+  it('a record for a term the plan no longer holds is left behind', () => {
+    const dragged = { ...plan, selectedMods: ['02.XFER|T7', '50.001'] } as unknown as PlanState;
+    const f = buildPlanFile('ay2024', dragged, [], records, []);
+    expect(Object.keys(f.records)).not.toContain('02.XFER|T3');
+  });
+});

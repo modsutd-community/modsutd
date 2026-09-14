@@ -625,6 +625,7 @@ export function PlanTree({ onPick }: Props) {
                       mod={mod}
                       missing={missing}
                       levelOf={levelOf}
+                      planKey={chipKey}
                       cohort={freshmoreMode}
                       pillar={currentPillar ?? undefined}
                       onHold={holdOpen}
@@ -768,9 +769,18 @@ function ScoreInput({ value, max, ariaLabel, onCommit }: {
 // While the mod still has unmet prerequisites the card shows ONLY those -
 // the record form unlocks once they're settled.
 function ChipCard({
-  mod, missing, levelOf, cohort, pillar, onHold, onRelease, onFocusChange, onClose, beginPrereqDrag, addPrereq,
+  mod, planKey, missing, levelOf, cohort, pillar, onHold, onRelease, onFocusChange, onClose, beginPrereqDrag, addPrereq,
 }: {
   mod: Mod;
+  /**
+   * The key this chip sits under in the plan, which is what its record is
+   * filed against.
+   *
+   * Not `mod.key`: that is the STORE's key, and for a repeatable mod it is the
+   * bare code, so every 02.XFER chip shared one record and the plan file's
+   * filter - which reads plan keys - never matched it at all.
+   */
+  planKey: string;
   missing: string[];
   levelOf: Map<string, number>;
   cohort: Curriculum;
@@ -784,7 +794,7 @@ function ChipCard({
   addPrereq: (code: string) => void;
 }) {
   const dispatch = useAppDispatch();
-  const rkey = mod.key ?? mod.code;
+  const rkey = planKey;
   const record = useAppSelector((s) => s.records[rkey]);
   const unlocked = missing.length === 0;
 

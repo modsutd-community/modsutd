@@ -55,11 +55,21 @@ const DAY_TIME_CELL_RE = new RegExp(
 const DATE_RE = /\d{2}\/\d{2}\/\d{4}/;
 
 const COURSE_RE = /(\d{2}\s*\.\s*\d{3}\w*)\s+-\s+([^\n]+)/g;
-// The component sits between the section and the day code on the same row, so
-// it is bounded by the day code rather than by the end of the line - a greedy
-// [^\n]+ swallows the whole rest of a tab-separated row.
+// The group header: Class Nbr, Section, Component, then the first row's day.
+// MyPortal prints it once per group and the rows under it inherit both
+// captures.
+//
+// The component is bounded by the day code rather than by the end of the line -
+// a greedy [^\n]+ swallows the whole rest of a tab-separated row. The section
+// used to be matched and thrown away, and it is the only place the export says
+// WHICH cohort of a course the reader is in.
 const TYPE_HEADER_RE =
-  /\b\d{3,4}\s+[A-Z]{2}\d{2}\s+([A-Za-z][A-Za-z-]*(?: [A-Za-z-]+)*?)\s+(?=(?:Mo|Tu|We|Th|Fr|Sa|Su)\b)/g;
+  /\b\d{3,4}\s+([A-Z]{2}\d{2})\s+([A-Za-z][A-Za-z-]*(?: [A-Za-z-]+)*?)\s+(?=(?:Mo|Tu|We|Th|Fr|Sa|Su)\b)/g;
+
+// CC is a capstone's project team, not a cohort. Everything else is a section
+// whose members sit in one room together, which is what makes it worth putting
+// on a calendar.
+const TEAM_SECTION = /^CC\d+$/;
 const CLASS_RE = new RegExp(
   `\\b(Mo|Tu|We|Th|Fr|Sa|Su)\\s+(${TIME_RE.source})\\s*-\\s*(${TIME_RE.source})` +
   `\\s+([^\\n]+?)\\s+([\\s\\S]*?)\\s+(${DATE_RE.source})\\s*-\\s*(${DATE_RE.source})`,
@@ -90,7 +100,8 @@ function isoDate(raw: string): string {
 function collapseWeeklyRows(rows: TimetableEvent[]): TimetableEvent[] {
   const groups = new Map<string, TimetableEvent[]>();
   for (const e of rows) {
-    const key = [e.modCode, e.type, e.day, e.startTime, e.endTime, e.location].join('|');
+    const key = [e.modCode, e.type, e.day, e.startTime, e.endTime, e.location,
+      e.section ?? ''].join('|');
     const g = groups.get(key);
     if (g) g.push(e);
     else groups.set(key, [e]);
@@ -142,6 +153,7 @@ export function parseTimetableText(input: string): TimetableEvent[] {
     // Walk type headers and class rows in order; the most recent type label
     // applies to the rows that follow it.
     let currentType = 'Lecture';
+    let currentSection: string | undefined;
     const types = [...slice.matchAll(TYPE_HEADER_RE)];
     const rows = [...slice.matchAll(CLASS_RE)];
 
@@ -149,7 +161,11 @@ export function parseTimetableText(input: string): TimetableEvent[] {
       const rowAt = row.index!;
       // Pick the closest preceding type header.
       const t = types.filter((tm) => tm.index! < rowAt).pop();
-      if (t) currentType = t[1].trim();
+      if (t) {
+        currentType = t[2].trim();
+        const sec = t[1].trim();
+        currentSection = TEAM_SECTION.test(sec) ? undefined : sec;
+      }
 
       const day = DAY_CODE[row[1]] ?? 'Monday';
       const startTime = normaliseTime(row[2]);
@@ -204,6 +220,7 @@ export function parseTimetableText(input: string): TimetableEvent[] {
         endTime,
         location,
         venueName: rawRoom.trim() || undefined,
+        section: currentSection,
         instructors,
         startDate,
         endDate,
