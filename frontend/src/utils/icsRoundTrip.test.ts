@@ -306,9 +306,19 @@ describe('a reminder that moves week stays one event', () => {
 
 describe('the section reaches the calendar', () => {
   it('rides with the type in SUMMARY', () => {
-    const events = parseTimetableText(SAMPLE_LIST_VIEW);
-    const ics = buildICS(events);
-    expect(ics).toContain('SUMMARY:30.111 Entrepreneurship · Cohort CP02');
+    const one = [
+      '50 .040 - Natural Language Processing',
+      'Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date',
+      '1077	CI03	CBL	Th 2:00PM - 3:00PM	Cohort Classroom 14 (2.507)	Prof A	17/09/2026 - 17/09/2026',
+    ].join('\n');
+    expect(buildICS(parseTimetableText(one)))
+      .toContain('SUMMARY:50.040 Natural Language Processing · Cohort CI03');
+  });
+
+  it('and leaves the title alone when there is no cohort to name', () => {
+    const ics = buildICS(parseTimetableText(SAMPLE_LIST_VIEW));
+    expect(ics).toContain('SUMMARY:30.111 Entrepreneurship · Cohort');
+    expect(ics).not.toContain('CP02');
   });
 
   it('and the payload that leaves the browser is unchanged', () => {

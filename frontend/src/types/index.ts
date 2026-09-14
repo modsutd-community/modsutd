@@ -234,9 +234,10 @@ export interface TimetableEvent {
    * widening that payload changes what leaves the browser, which CLAUDE.md
    * invariant 5 makes a Discussion rather than a pull request.
    *
-   * Capstone sections are left out. CC01 is a project team rather than a
-   * cohort, and a team number on a calendar tells a reader nothing they can
-   * act on.
+   * Only `CI` sections are kept. A real export also prints CC (a capstone's
+   * project team), LI (a lecture section, which is everybody), CH and CD -
+   * none of which names a group a reader shares a room with all term, and a
+   * label that distinguishes nothing is worse on a calendar than none.
    */
   section?: string;
   /**
