@@ -13,7 +13,7 @@ import { exportPrefs } from '../prefs';
 import type { Curriculum, Mod, RecordsState } from '@/types';
 import { pillarColor } from '../pillars';
 import { unmet, requirementsOf, treeOf } from '@/utils/prereq';
-import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFreshmore, freshmoreFixedSet, freshmoreCoreFor, planKeyFor, codeOfKey } from '../logic';
+import { defaultLevel, useSpecializations, useMinors, earliestAchieved, useFreshmore, freshmoreFixedSet, freshmoreCoreFor, planKeyFor, codeOfKey, modOfKey } from '../logic';
 import { beginModDrag, chipLabel } from '../modDrag';
 import { useGithubLink, startDeviceFlow, pollForToken, pushBackup, DeviceStart } from '../sync';
 import { useAutoState, useAutoSaveSetting, setAutoSave } from '../autoBackup';
@@ -37,15 +37,6 @@ interface Props {
 
 const keyOf = (m: Mod) => m.key ?? m.code;
 
-/**
- * The Mod behind a plan key, including a repeat the store has no entry for.
- *
- * `mods` is keyed by the catalogue's own key, so `02.XFER|T3` is not in it and
- * a bare lookup rendered no chip at all. Falling back to the code puts one
- * record behind every chip of it.
- */
-const modFor = (mods: Record<string, Mod>, key: string): Mod | undefined =>
-  mods[key] ?? mods[codeOfKey(key)];
 
 // Terms 1–3 pin the fixed Freshmore core automatically; the AY2026? toggle
 // switches to a fully SEPARATE plan - the two curricula never bleed into
@@ -132,7 +123,7 @@ export function PlanTree({ onPick }: Props) {
     const m = new Map<string, number>();
     for (const [key, term] of fixed) m.set(key, term);
     for (const key of plan) {
-      if (!m.has(key)) m.set(key, planLevels[key] ?? defaultLevel(modFor(mods, key)));
+      if (!m.has(key)) m.set(key, planLevels[key] ?? defaultLevel(modOfKey(mods, key)));
     }
     return m;
   }, [plan, planLevels, mods, fixed]);
@@ -142,7 +133,7 @@ export function PlanTree({ onPick }: Props) {
       LEVELS.map((l) => [l, []]),
     );
     const put = (key: string, isFixed: boolean) => {
-      const mod = modFor(mods, key);
+      const mod = modOfKey(mods, key);
       if (!mod) return;
       const level = Math.min(10, Math.max(1, levelOf.get(key)!));
       // Through the tree, so an "or" is satisfied by either branch. The flat

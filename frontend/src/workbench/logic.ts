@@ -325,6 +325,24 @@ export function codeOfKey(key: string): string {
   return cut === -1 ? key : key.slice(0, cut);
 }
 
+/**
+ * The mod a plan key names, by key first and then by the code inside it.
+ *
+ * The store is keyed by code, except the AY2026 placeholders which all share
+ * 99.999 and are keyed `code|name`. The PLAN is keyed differently again: a
+ * repeatable mod carries the term it sits in, so T7's chip is `02.XFER|T7`,
+ * and that string is in neither the store nor the catalogue.
+ *
+ * Key first, then the code, and in that order: `99.999|Calculus` IS a store
+ * key and has to win before anything strips its suffix.
+ */
+export function modOfKey(
+  mods: Record<string, Mod>,
+  key: string,
+): Mod | undefined {
+  return mods[key] ?? mods[codeOfKey(key)];
+}
+
 // ---- skill-tree placement ---------------------------------------------------
 
 // Catalogue term, clamped to the 8-term undergraduate span.
