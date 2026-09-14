@@ -725,6 +725,23 @@ ${ev.startTime}-${ev.endTime}`}
                                                                 }
                                                             >
                                                                 {ev.modCode}
+                                                                {/* A one-hour
+                                                                block holds two
+                                                                lines, and the
+                                                                kind line is the
+                                                                one that goes -
+                                                                so the cohort
+                                                                rides up here
+                                                                rather than
+                                                                being readable
+                                                                only in the
+                                                                tooltip. Exactly
+                                                                the size a
+                                                                one-hour CI
+                                                                class is. */}
+                                                                {lines < 3 &&
+                                                                    ev.section &&
+                                                                    ` ${ev.section}`}
                                                             </span>
                                                             {lines >= 3 && (
                                                                 <span

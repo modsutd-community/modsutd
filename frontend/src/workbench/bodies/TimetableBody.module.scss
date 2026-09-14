@@ -162,6 +162,12 @@
     font-size: 10px;
     font-weight: 700;
     color: #fff;
+    // Clipped rather than wrapped, the same as .evMeta below. A short block
+    // carries its cohort up here, and "50.040 CI03" wrapping on a narrow column
+    // would push the room off a chip that only has room for two lines.
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .evMeta {
