@@ -1,18 +1,26 @@
 {
   "01.101": {
-    "chatId": 5442193879,
+    "accessHash": 7332164231179636482,
+    "adminGranted": true,
+    "adminUserId": 1277681285,
+    "chatId": 4371406603,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:tGxBv1UE2qhWOedm:/LZrL/limK8u7zxVkW1IITjkDplzfAnSy4cgFFmwwowiHAkfBPtB7Ct/txE9LA==",
+    "linkEnc": "v1:q2ubp/2wEUM6UURc:47p+2No2um/7+dgCVdo+Gk5S59iqbUOFyMThiEWBCLp41UQGitgzZqeiKsGnMQ==",
+    "supergroup": true,
     "title": "01.101 Technologies for Sustainable Global Health Sep'26"
   },
   "01.107": {
-    "chatId": 5367981067,
+    "accessHash": -4921038630791471754,
+    "adminGranted": true,
+    "adminUserId": 1492084617,
+    "chatId": 4494814399,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:qyTYNOWJ9o+InqYO:T2ksueREACVpYm9MQabLJKKlV+xafXQM3P1mBzD1gRkuy0dg0x/OIEbhv3qsBw==",
+    "linkEnc": "v1:j7SFQB+ZjaOlymni:nrhojgc0zG4zG6qw/ua6K7OKd6EEj65Xn/VQ4iO4gJCFi6q/ZmRo3d/rytcclQ==",
+    "supergroup": true,
     "title": "01.107 Urban Transportation Sep'26"
   },
   "02.003": {
@@ -40,27 +48,39 @@
     "title": "02.146 Financing Cities of the Future: Theory and Practice Sep'26"
   },
   "02.152": {
-    "chatId": 5462162017,
+    "accessHash": 6441444941389945900,
+    "adminGranted": true,
+    "adminUserId": 5704564700,
+    "chatId": 4324820278,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:oE9tdGJ1nXX60yDv:/ucAa40tv5HJxuLTN18NxpfFwf4qIil9SS3UmhzXFn2NUlsKEAG0pQlDO/2/SQ==",
+    "linkEnc": "v1:GaX+zvQSo/FIH6Jf:pQYtmwXREXr4ld14oRQERK7SnUHwnoYoBgeq2apwFDPUXTG+TC5lUXTKXfjldA==",
+    "supergroup": true,
     "title": "02.152 Urban Theory Sep'26"
   },
   "02.170": {
-    "chatId": 5485593756,
+    "accessHash": 9099088011450295575,
+    "adminGranted": true,
+    "adminUserId": 6527304631,
+    "chatId": 3722342425,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:+mqbzR6dwQsUEiKR:usL1HqJj6AzHFx4tO1tMIeFEzsENnXZ5r/WAwDJBxJJuDlzzGzpQeV//nMqxDA==",
+    "linkEnc": "v1:DnsFL7C36UAel/LR:+2lolwMBdW4rh6DhOJwhMc3vXDz5eCg9mrlKfAbdLDC3FltzDf/0rn4z6iEoPA==",
+    "supergroup": true,
     "title": "02.170 History of Surveillance in Modern Asia Sep'26"
   },
   "02.180": {
-    "chatId": 5124818596,
+    "accessHash": 8378415533883867630,
+    "adminGranted": true,
+    "adminUserId": 1730776359,
+    "chatId": 3953042965,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:ruAVU+RtQJ9BiZan:sQZAoT6J5/gmw6aqnUgSn1kNcL4tnkKpFDWsMcgqvq0JGlBG3p0sbTlzLpYOHA==",
+    "linkEnc": "v1:Td199pVUqE0wwnzR:9g7rFOfCxs377sBro5DGDzhfvhtupyAS7D0r4Xx43Hp2sx974jkvojMDgFElsQ==",
+    "supergroup": true,
     "title": "02.180 Worldbuilding: Critical and Creative Practices Sep'26"
   },
   "02.181": {
@@ -120,11 +140,15 @@
     "title": "20.322 Net Zero Design: Case Studies for Whole Life Decarbonisation Sep'26"
   },
   "20.323": {
-    "chatId": 5594169811,
+    "accessHash": -7584730081386621662,
+    "adminGranted": true,
+    "adminUserId": 841281895,
+    "chatId": 3695684381,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:gOhsuNu03PetaL8I:RDWVaqFqi89ULSPWIRD5k6EhPiknMMhPvEzBoA4pTaIRvaNQvZwBgRUwrObSjQ==",
+    "linkEnc": "v1:5GGHdhAgRQtSiczc:ng3dhADRJ7Vng3uCz8hS9roEEW/ZOANqqpDDUIg0VeM687wmV0RK04kp7wCIog==",
+    "supergroup": true,
     "title": "20.323 Forms and Types of Media Representation Sep'26"
   },
   "30.114": {
@@ -160,11 +184,15 @@
     "title": "30.123 Healthcare Product Design Sep'26"
   },
   "30.202": {
-    "chatId": 5472378107,
+    "accessHash": -7602694272259284579,
+    "adminGranted": true,
+    "adminUserId": 6598747844,
+    "chatId": 4422541191,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:zO54XqaaO21kOsTX:1CVzNqxjMHClMXh3oqtMJqyYWAfN0EcOxSz3AOkPKBbt59etorPn6c/70GH4+A==",
+    "linkEnc": "v1:seX4ypQUUuoZ3o7Z:71g+aqY66yVnFYeh1yeJKqU18RwdDgOFjJaY+Pipuk5kIWx6/tWlMce9Ef2I1A==",
+    "supergroup": true,
     "title": "30.202 Design of Intelligent Digital Integrated Circuits and Systems Sep'26"
   },
   "30.303": {
@@ -184,27 +212,39 @@
     "title": "40.242 Derivative Pricing and Risk Management Sep'26"
   },
   "40.302": {
-    "chatId": 5328408004,
+    "accessHash": 5177812038375022330,
+    "adminGranted": true,
+    "adminUserId": 1423195540,
+    "chatId": 4355868501,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:we22J8fDugHtysfn:LCo8DRy6BeivgSAjBGRQc28lC2WNx2rdk1UF/GY6EbS8mLPa+YyU52yZFrS38A==",
+    "linkEnc": "v1:MU9YksbT+KOu+dqr:mxEZ1/pq6APK1RQGak58TjAV35LOUL+BzErAas6nLblbmixjoR+i7SwkEGHi2Q==",
+    "supergroup": true,
     "title": "40.302 Advanced Topics in Optimisation Sep'26"
   },
   "40.305": {
-    "chatId": 5450182232,
+    "accessHash": -7733981505374167895,
+    "adminGranted": true,
+    "adminUserId": 1423195540,
+    "chatId": 3918033265,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:qxPWkAurVo1Qm14g:T0yVV6yia5meyxGc1lLk79Pd00z1f7qkVfSGf9OXZQYwBCEwxvU+SDKZVQq1uQ==",
+    "linkEnc": "v1:Ed5AmcbgVeqCwuBj:cZ4BmGo8VdGIbCWapq52H4gvrj6kkJQdqVScEuAEWuPTejKPre8AeHDFoYUGDg==",
+    "supergroup": true,
     "title": "40.305 Advanced Topics in Stochastic Modelling Sep'26"
   },
   "40.318": {
-    "chatId": 5300865467,
+    "accessHash": 6551830851831340213,
+    "adminGranted": true,
+    "adminUserId": 1423195540,
+    "chatId": 4410494486,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:tHSei7IUKmIFGO3B:qBNed1DiEPUjDV8nQ1SCx2bm98i9EJ0f2ILTXxqI3eJ0XriTLZzaOLpKchcVpQ==",
+    "linkEnc": "v1:OuuG0xhEG41CahGK:8yPEb/VRUI5o8qgEphOWDujz63siOZVRjaFNe7ISQHlr4T3JadaxChCW1OM2AA==",
+    "supergroup": true,
     "title": "40.318 Supply Chain Digitalisation and Design Sep'26"
   },
   "40.321": {
@@ -224,35 +264,43 @@
     "title": "40.323 Equity Valuation Sep'26"
   },
   "50.006": {
-    "chatId": 5419880208,
+    "accessHash": -4621822560048180290,
+    "chatId": 4428180429,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:rNjfOaG6IdKhlDjo:7xOOkpaoALQPJ5RsWiX1et9Xb7y5/2vVxVImZTocRwnisI2Ec2Wkkbds0487ZQ==",
+    "linkEnc": "v1:hbxM6xSok6gSD2jG:TEqmq0wAYv0BFCKW5o8B3mcNo5j/yTMQTuHDILPd416AjcUZS81JVcn4tbmoRw==",
+    "supergroup": true,
     "title": "50.006 User Interface Design and Implementation Sep'26"
   },
   "50.020": {
-    "chatId": 5303128119,
+    "accessHash": -4016683948820702182,
+    "chatId": 4384029715,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:iZxbDjlG/YVI4+4t:uf/UNyq8iYa7EpKWSD6IUObPmWrTQDNV8QMeybki7RXmMppBFwWVtuvzALDHgQ==",
+    "linkEnc": "v1:GSHpGlhOXWmCqFTZ:R+tJrXOetySgBHvnIQsvw9x0OZejxFBhE/CaZ1MFUJ5br88X8fb+utxs7UBvFA==",
+    "supergroup": true,
     "title": "50.020 Network Security Sep'26"
   },
   "50.033": {
-    "chatId": 5014465282,
+    "accessHash": -1765984213354051067,
+    "chatId": 3602776415,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:Dx1NecQ2W4gQnmIE:lompDNi8D4XSwdqY6wm8rq4BPG/iUvjUASl8zye1mQo7pOb7oqndwH12Pnepqw==",
+    "linkEnc": "v1:r3LXPJOOmfBPwbSl:VHH1Krxt5lDwacyhVRfsUgYnDjBhGcOlTYhyrWY+Ui6A8cHvmOU99Qyo5eE8Cg==",
+    "supergroup": true,
     "title": "50.033 Foundations of Game Design and Development Sep'26"
   },
   "50.037": {
-    "chatId": 5361380451,
+    "accessHash": 5054306582877661209,
+    "chatId": 4365018346,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:gVRhhndvraHqPDr4:6+oxr93wTqkOtLEwtid1oV8hILoX/ucrPS1V7X+DrsXCiVI6xf8rckkOb49yqw==",
+    "linkEnc": "v1:b8mfahRirHzqc2XY:As7CAYX7e7ZcWRTp1WnsbW8eJ9TxZUIk7w8dq8xxVHRQRCVvhWGml+HoH0Rldw==",
+    "supergroup": true,
     "title": "50.037 Blockchain Technology Sep'26"
   },
   "50.040": {
@@ -267,19 +315,23 @@
     "title": "50.040 Natural Language Processing Sep'26"
   },
   "50.046": {
-    "chatId": 5359425711,
+    "accessHash": -4675093372439210609,
+    "chatId": 3590389787,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:zvNNl1hnQcxr9NPC:HZ3atx0IaxzsUYEx1osLtDiQ/OHwJzdQxglzmTlzyBkOljBVqhLhNWfRWJ84/w==",
+    "linkEnc": "v1:BiT0+oSOs3Y3MGc3:k7+OjHEzgj06rpQWKlOS/8bE7oAGr+jJGEgSDrrIgWv9TKuF63aUAcLBVPR10g==",
+    "supergroup": true,
     "title": "50.046 Cloud Computing and Internet of Things Sep'26"
   },
   "50.047": {
-    "chatId": 5519173178,
+    "accessHash": -132914714603369691,
+    "chatId": 4468849989,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:kDq4n1riiW1L62LJ:WjqpQObFh3duIkgygL1BSiiPf3r782x0R6wHGm5JSnXnsdZPgMtbqfkk1SmDig==",
+    "linkEnc": "v1:HKkJ8tZ2U6zbsu5y:HJU/IqoKcJU/0EQhkBrljmApp0k/ietqreKfYsV2Yazn+UYmYZR5eS/Y5jn91A==",
+    "supergroup": true,
     "title": "50.047 Mobile Robotics Sep'26"
   },
   "50.052": {
@@ -291,11 +343,13 @@
     "title": "50.052 Extended Reality Sep'26"
   },
   "50.054": {
-    "chatId": 5395628336,
+    "accessHash": -8074635410227200839,
+    "chatId": 4385522066,
     "created": "2026-09",
     "createdDay": "2026-09-13",
     "expires": "2026-12-19",
-    "linkEnc": "v1:BQ/5VmfH1mb18qoH:9zydtz0F0C+jOgwVdO4qrj2X71eQjlnbzxRcs8zMRYkk6ZI3dKOkX4JympWoDw==",
+    "linkEnc": "v1:7UyoUuto6qS0swa2:dmBaijW0zTpWWXs0sb9oXoUyM6WCKJ26KRoZxM/sdZjNUdcCbWvNPb7IViop+Q==",
+    "supergroup": true,
     "title": "50.054 Compiler Design and Program Analysis Sep'26"
   },
   "50.057": {
