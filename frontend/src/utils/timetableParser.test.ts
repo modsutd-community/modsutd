@@ -113,12 +113,21 @@ describe('parseTimetableText on SAMS List View shape', () => {
 // and the Component, and it was matched and discarded - so a reader with two
 // cohorts of one course in a week had nothing telling them which was which.
 describe('which cohort the reader is in', () => {
-  it('carries the section off the group header', () => {
+  it('carries a CI section off the group header', () => {
+    const one = [
+      '50 .040 - Natural Language Processing',
+      'Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date',
+      '1077	CI03	CBL	Th 2:00PM - 3:00PM	Cohort Classroom 14 (2.507)	Prof A	17/09/2026 - 17/09/2026',
+    ].join('\n');
+    expect(parseTimetableText(one)[0].section).toBe('CI03');
+  });
+
+  it('keeps nothing else, because nothing else names a group you sit with', () => {
+    // The sample's sections are CP02, LE01, LA01 and TU01 - a lecture section
+    // is everybody, and the rest name no room-sharing group either.
     const events = parseTimetableText(SAMPLE_LIST_VIEW);
-    const byCode = (c: string) => events.find((e) => e.modCode === c);
-    expect(byCode('30.111')?.section).toBe('CP02');
-    expect(byCode('10.013')?.section).toBe('LE01');
-    expect(byCode('50.002X')?.section).toBe('LA01');
+    expect(events.length).toBeGreaterThan(0);
+    expect(events.every((e) => e.section === undefined)).toBe(true);
   });
 
   it('drops a capstone project team, which is not a cohort', () => {

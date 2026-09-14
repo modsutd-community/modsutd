@@ -66,10 +66,17 @@ const COURSE_RE = /(\d{2}\s*\.\s*\d{3}\w*)\s+-\s+([^\n]+)/g;
 const TYPE_HEADER_RE =
   /\b\d{3,4}\s+([A-Z]{2}\d{2})\s+([A-Za-z][A-Za-z-]*(?: [A-Za-z-]+)*?)\s+(?=(?:Mo|Tu|We|Th|Fr|Sa|Su)\b)/g;
 
-// CC is a capstone's project team, not a cohort. Everything else is a section
-// whose members sit in one room together, which is what makes it worth putting
-// on a calendar.
-const TEAM_SECTION = /^CC\d+$/;
+// CI is the only prefix worth carrying. A real export prints CI, CH, CD, LI and
+// CC, and only CI names the cohort a reader shares a room with all term:
+//
+//   CC  a capstone's project team, which is four people and not a cohort
+//   LI  a lecture section, which is everybody, so naming it says nothing
+//   CH  the HASS slot's own grouping
+//   CD  a design studio's
+//
+// A label a reader cannot act on is worse on a calendar than no label, because
+// it reads as though it distinguishes something.
+const COHORT_SECTION = /^CI\d+$/;
 const CLASS_RE = new RegExp(
   `\\b(Mo|Tu|We|Th|Fr|Sa|Su)\\s+(${TIME_RE.source})\\s*-\\s*(${TIME_RE.source})` +
   `\\s+([^\\n]+?)\\s+([\\s\\S]*?)\\s+(${DATE_RE.source})\\s*-\\s*(${DATE_RE.source})`,
@@ -164,7 +171,7 @@ export function parseTimetableText(input: string): TimetableEvent[] {
       if (t) {
         currentType = t[2].trim();
         const sec = t[1].trim();
-        currentSection = TEAM_SECTION.test(sec) ? undefined : sec;
+        currentSection = COHORT_SECTION.test(sec) ? sec : undefined;
       }
 
       const day = DAY_CODE[row[1]] ?? 'Monday';
