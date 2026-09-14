@@ -1,3 +1,4 @@
+import { kindLabel } from './timetableParser';
 import type { TimetableEvent } from '@/types';
 import { serverNow } from './serverTime';
 
@@ -206,7 +207,7 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
     // reader with two cohorts of one course in a week needs to know which of
     // them this is, and the type alone says both are cohorts. Capstone teams
     // are already dropped in the parser.
-    const kind = [e.type, e.section].filter(Boolean).join(' ');
+    const kind = kindLabel(e);
     const summary = escapeText(
       [e.modCode, e.modName].filter(Boolean).join(' ') + (kind ? ` · ${kind}` : ''),
     );
