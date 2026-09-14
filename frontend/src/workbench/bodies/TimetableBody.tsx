@@ -1,7 +1,7 @@
 import {useEffect, useMemo, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {setTimetableEvents, clearTimetable} from "@/reducers/timetableReducer";
-import {parseTimetableText} from "@/utils/timetableParser";
+import {parseTimetableText, kindLabel} from "@/utils/timetableParser";
 import {
     parseWeeklyHtml,
     looksWeekly,
@@ -711,7 +711,7 @@ export function TimetableBody({onPickMod}: Props) {
                                                                 background: `${color}26`,
                                                             }}
                                                             data-tip={`${ev.modName}
-${ev.type} · ${ev.venueName ?? ev.location}
+${kindLabel(ev)} · ${ev.venueName ?? ev.location}
 ${ev.startTime}-${ev.endTime}`}
                                                             onClick={() =>
                                                                 onPickMod?.(
@@ -732,7 +732,7 @@ ${ev.startTime}-${ev.endTime}`}
                                                                         styles.evMeta
                                                                     }
                                                                 >
-                                                                    {ev.type}
+                                                                    {kindLabel(ev)}
                                                                 </span>
                                                             )}
                                                             {lines >= 2 && (

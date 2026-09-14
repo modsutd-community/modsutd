@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseTimetableText } from './timetableParser';
+import { parseTimetableText, kindLabel } from './timetableParser';
 import { SAMPLE_LIST_VIEW } from './sampleTimetable';
 
 const SAMPLE = `
@@ -189,5 +189,23 @@ describe('two groups under one course', () => {
     const byDay = (d: string) => events.find((e) => e.day === d);
     expect(byDay('Tuesday')?.section).toBe('CI01');
     expect(byDay('Wednesday')?.section).toBeUndefined();
+  });
+});
+
+// One home for the join, because the grid chip, its tooltip and the .ics
+// summary all print it and a calendar naming a cohort the grid does not is
+// worse than neither naming it.
+describe('the kind label', () => {
+  it('names the cohort after the type', () => {
+    expect(kindLabel({ type: 'Cohort', section: 'CI03' })).toBe('Cohort CI03');
+  });
+
+  it('reads exactly as before when there is no cohort to name', () => {
+    expect(kindLabel({ type: 'Cohort' })).toBe('Cohort');
+    expect(kindLabel({ type: 'Lecture', section: undefined })).toBe('Lecture');
+  });
+
+  it('leaves no dangling space for a reminder, which has neither', () => {
+    expect(kindLabel({})).toBe('');
   });
 });

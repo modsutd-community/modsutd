@@ -32,6 +32,17 @@ const TYPE_ALIASES: Record<string, LessonType> = {
   rec: 'Recitation', recitation: 'Recitation',
 };
 
+/**
+ * What kind of class this is, and which one of it: "Cohort CI03".
+ *
+ * One home for the join, because three of them - the grid chip, its tooltip and
+ * the .ics summary - have to agree or the calendar names a cohort the grid does
+ * not. A mod with no CI section reads exactly as it did before.
+ */
+export function kindLabel(e: { type?: string; section?: string }): string {
+  return [e.type, e.section].filter(Boolean).join(' ');
+}
+
 export function normaliseType(raw: string): string {
   const key = raw.trim().toLowerCase().replace(/\s+/g, ' ');
   return TYPE_ALIASES[key] ?? raw.trim();
