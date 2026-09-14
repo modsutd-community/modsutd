@@ -1,4 +1,5 @@
 import type { Pillar, Term } from '@/types';
+import { COHORTS } from './uiContext';
 import type { SortKey, MobileTab, TtMode, FreshmoreMode, HomePillar } from './uiContext';
 
 export interface PersistedUi {
@@ -69,17 +70,23 @@ export function importPrefs(prefs: unknown): boolean {
 
 
 /**
- * A stored `freshmoreMode` from before the cohorts were all spelled `ay<year>`.
+ * A stored `freshmoreMode`, or undefined when it names a cohort this app does
+ * not have.
  *
- * Read here and written straight back, so the old spelling leaves this browser
- * on the first load rather than living on until the student happens to change
- * cohort. The same value also arrives from a gist written by a device that has
- * not loaded since, which is why the read has to keep working after the store
- * is clean.
+ * This was the one-way rename of `classic` to `ay2024`, and deleting that left
+ * a hole rather than nothing: `plans` has exactly three keys, so any other
+ * string reaching `freshmoreMode` makes the next render read
+ * `plans['classic'].selectedMods` and throw. `freshmoreMode` is persisted, so
+ * the crash comes back on every reload and the panel stays dead - which is the
+ * same failure `migrateCurriculum` in planFile.ts guards against, arriving
+ * through the other door.
+ *
+ * So it validates instead of translating. A value it rejects is written back as
+ * undefined and the context falls to its default, which is a cohort the reader
+ * can change rather than a blank panel.
  */
 export function migrateMode(m: unknown): FreshmoreMode | undefined {
-  if (m === 'classic') return 'ay2024';
-  return m as FreshmoreMode | undefined;
+  return COHORTS.some((c) => c.value === m) ? (m as FreshmoreMode) : undefined;
 }
 
 export function loadUi(): PersistedUi {

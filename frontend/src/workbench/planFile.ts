@@ -30,24 +30,6 @@ export interface PlanFile {
 }
 
 /**
- * `classic` was the name for AY2024 and earlier before the cohorts were all
- * spelled `ay<year>`.
- *
- * READ ONLY, and one-way. Nothing writes this name any more: a browser that
- * loads the app rewrites its storage and its gist under `ay2024` on the way in,
- * so the old spelling leaves as people arrive rather than being carried
- * forever. What still has to be read is what is already out there: a plan in a
- * gist last written before the rename, and a `.json` a student exported and
- * kept.
- *
- * Deletable when neither of those can exist, which is a judgement about how
- * long an unopened gist and a file on disk stay interesting, not a release
- * date. Everything that reads it is named here and in `migrateMode`.
- */
-export const LEGACY_CURRICULUM = 'classic';
-export const CURRENT_FOR_LEGACY: Curriculum = 'ay2024';
-
-/**
  * Every cohort key the app knows. Kept here beside the migration rather than
  * imported from `uiContext`, because this module is what decides whether a
  * string off a stranger's disk is allowed to become one.
@@ -66,16 +48,7 @@ const KNOWN: readonly string[] = ['ay2024', 'ay2025', 'ay2026'];
  * stayed dead.
  */
 export function migrateCurriculum(c: string | undefined): Curriculum | undefined {
-  if (c === LEGACY_CURRICULUM) return CURRENT_FOR_LEGACY;
   return c !== undefined && KNOWN.includes(c) ? (c as Curriculum) : undefined;
-}
-
-/** Rename the `classic` key in a plans map, leaving everything else alone. */
-export function migratePlans<T>(plans: Record<string, T>): Record<string, T> {
-  if (!plans || !(LEGACY_CURRICULUM in plans)) return plans;
-  const { [LEGACY_CURRICULUM]: legacy, ...rest } = plans;
-  // A plan already under the new name wins: it is the one being edited.
-  return { [CURRENT_FOR_LEGACY]: legacy, ...rest } as Record<string, T>;
 }
 
 /**
@@ -215,16 +188,15 @@ export function readPlanFile(raw: unknown, into: Curriculum): ReadPlan | null {
     };
   }
 
-  // The old full backup: { records, plans: { ay2026, ay2025, classic }, ... }
+  // The old full backup: { records, plans: { ay2026, ay2025, ay2024 }, ... }
   const plans = o.plans as Record<string, PlanState> | undefined;
   if (plans && typeof plans === 'object') {
-    const migrated = migratePlans(plans);
     // EMPTY, never another cohort's. `Object.values(migrated)[0]` was here, so
     // a backup holding only an AY2025 plan, imported on the AY2026 tab, quietly
     // installed the AY2025 plan as though it were yours. Whichever key happened
     // to be first in the file decided it. A cohort you have no plan for
     // imports as no plan.
-    const plan = migrated[into] ?? { selectedMods: [], planLevels: {} };
+    const plan = plans[into] ?? { selectedMods: [], planLevels: {} };
     return {
       curriculum: into,
       plan,
