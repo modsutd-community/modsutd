@@ -463,6 +463,54 @@ test.describe('plan + records', () => {
     await expect(page.locator('[data-act="cohort"]')).toHaveValue('ay2025');
   });
 
+  // 50.007 needs 50.001 AND 50.004, except for a DAI student matriculated
+  // AY2024 or earlier: the leaf carries notForPillar ["DAI"] with notForCohort
+  // ["ay2024"]. The evaluator had always read that correctly and the panel
+  // handed it the COURSE's pillar, which is CSD, so the exemption was compared
+  // against the wrong person and never fired. Here rather than in prereq.test
+  // because that one passes 'DAI' in by hand and stayed green throughout.
+  test("a DAI student on AY2024 does not need 50.001 for 50.007", async ({ page, isMobile }) => {
+    test.skip(!!isMobile, 'the plan header is desktop-only chrome');
+    const cat = page.locator('[data-panel="cat"]');
+    const ins = page.locator('[data-panel="mod"]');
+    const tt = page.locator('[data-panel="tt"]');
+
+    await ensurePanel(page, 'Timetable', 'tt');
+    await tt.getByRole('button', { name: 'plan', exact: true }).click();
+
+    // The cohort FIRST. Each one has its own plan, so adding a mod and then
+    // switching years puts the chip in the plan you just left.
+    const cohort = page.locator('[data-act="cohort"]');
+    const pillar = page.getByLabel('your pillar');
+    const list = tt.locator('[data-act="prereq-list"]');
+    const add = async () => {
+      await cat.getByRole('button', { name: /50\.007/ }).click();
+      await ins.getByRole('button', { name: '+ ADD TO PLAN' }).click();
+      await cat.getByRole('button', { name: /50\.007/ }).click();
+    };
+
+    await cohort.selectOption('ay2024');
+    await pillar.selectOption('CSD');
+    await add();
+
+    // Any pillar but DAI: the exemption does not apply and 50.001 is asked for.
+    await hoverUntil(tt.getByText('50.007', { exact: true }), list);
+    await expect(list).toContainText('50.001');
+
+    // Same plan, same year, DAI instead: 50.001 goes and 50.004 remains.
+    await pillar.selectOption('DAI');
+    await hoverUntil(tt.getByText('50.007', { exact: true }), list);
+    await expect(list).not.toContainText('50.001');
+    await expect(list).toContainText('50.004');
+
+    // The year is the other half of the exemption, so a DAI student who
+    // matriculated later needs it again.
+    await cohort.selectOption('ay2026');
+    await add();
+    await hoverUntil(tt.getByText('50.007', { exact: true }), list);
+    await expect(list).toContainText('50.001');
+  });
+
   // 40.321 needs one of 40.002 / 60.008 - neither is freshmore core, so the
   // choice is the student's to make. The chip used to read the flat
   // prerequisites array, which cannot say "either": it demanded both codes and

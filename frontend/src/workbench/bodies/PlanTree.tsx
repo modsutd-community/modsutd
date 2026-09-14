@@ -159,7 +159,16 @@ export function PlanTree({ onPick }: Props) {
           return pl !== undefined && pl < level;
         },
         freshmoreMode,
-        mod.pillar,
+        // The STUDENT's pillar, not the course's. `notForPillar` names who is
+        // exempt from a leaf, so 50.007 carries `notForPillar: ["DAI"]` and
+        // 50.007's own pillar is CSD: passing the course's meant the exemption
+        // was compared against the wrong person and never fired, and a DAI
+        // student on AY2024 was told to take 50.001.
+        //
+        // `?? undefined` because the context stores "no pillar chosen" as null
+        // and the evaluator reads undefined as "do not apply any exemption",
+        // which is the same answer and the one it is written against.
+        currentPillar ?? undefined,
       );
       byLevel.get(level)!.push({ key, mod, missing, isFixed });
     };
@@ -173,7 +182,7 @@ export function PlanTree({ onPick }: Props) {
         || a.key.localeCompare(b.key));
     }
     return byLevel;
-  }, [plan, levelOf, mods, fixed, freshmoreMode]);
+  }, [plan, levelOf, mods, fixed, freshmoreMode, currentPillar]);
 
   // One hook for every choice slot: only one card is open at a time, and the
   // id of that card is what tells it to re-measure when the reader moves from
@@ -626,6 +635,7 @@ export function PlanTree({ onPick }: Props) {
                       missing={missing}
                       levelOf={levelOf}
                       cohort={freshmoreMode}
+                      pillar={currentPillar ?? undefined}
                       onHold={holdOpen}
                       onRelease={armClose}
                       onFocusChange={(f) => { cardHasFocus.current = f; if (!f) armClose(); }}
@@ -767,12 +777,14 @@ function ScoreInput({ value, max, ariaLabel, onCommit }: {
 // While the mod still has unmet prerequisites the card shows ONLY those -
 // the record form unlocks once they're settled.
 function ChipCard({
-  mod, missing, levelOf, cohort, onHold, onRelease, onFocusChange, onClose, beginPrereqDrag, addPrereq,
+  mod, missing, levelOf, cohort, pillar, onHold, onRelease, onFocusChange, onClose, beginPrereqDrag, addPrereq,
 }: {
   mod: Mod;
   missing: string[];
   levelOf: Map<string, number>;
   cohort: Curriculum;
+  /** The student's pillar, which is what `notForPillar` exempts. */
+  pillar: string | undefined;
   onHold: () => void;
   onRelease: () => void;
   onFocusChange: (focused: boolean) => void;
@@ -809,7 +821,9 @@ function ChipCard({
     treeOf(mod.prereqTree, mod.prerequisites),
     (p) => { const at = levelOf.get(p); return at !== undefined && at < here; },
     cohort,
-    mod.pillar,
+    // The student's pillar, as above. The card and the chip border have to ask
+    // the same question or one says met while the other says missing.
+    pillar,
   );
 
   const comps = record?.components ?? [];

@@ -348,6 +348,16 @@ Two are deliberately not monthly, and say why in their own headers:
 - The giscus themes are `data:` URIs built in `config/giscus.ts`, and they carry
   the workbench palette as Primer variables. Without it the frame keeps GitHub's
   near-white on GitHub's navy and reads as a window from another site.
+- **`notForPillar` names the STUDENT, never the course.** `utils/prereq.ts`
+  takes the reader's own pillar and cohort, and the plan panel handed it
+  `mod.pillar` for a while: 50.007's leaf carries `notForPillar: ["DAI"]` and
+  50.007 is a CSD course, so the exemption was compared against the wrong person
+  and a DAI student on AY2024 was told to take 50.001. The unit tests never saw
+  it, because they pass `'DAI'` in by hand - the seam was the call site, so the
+  regression test is in `e2e/plan-records.spec.ts`. `currentPillar` also belongs
+  in the deps of the memo that computes what is missing, or switching pillar
+  leaves every chip border reading the old answer.
+
 - **The batch-chat button has four states, and one function decides between
   them.** `workbench/teleState.ts` is a pure table: COMMITTING (dotted, this
   browser's paste has not reached main yet), READY (solid, no share link),
