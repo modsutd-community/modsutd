@@ -22,7 +22,7 @@ import {awaitingDeploy, CONTRIBUTED_EVENT} from "../contributed";
 import {teleState, chatEligible, capReached, DAILY_CREATE_CAP} from "../teleState";
 import {askedAt, markAsked, clearAsked, TELE_ASKED_EVENT} from "../teleAsked";
 import {ReviewForm} from "../ReviewForm";
-import {defaultLevel, useFreshmore, freshmoreFixedSet, planKeyFor} from "../logic";
+import {defaultLevel, useFreshmore, freshmoreFixedSet, planKeyFor, codeOfKey, modOfKey} from "../logic";
 import {useWorkbenchUi} from "../uiContext";
 import {Otto} from "../Otto";
 import {ExtIcon} from "../ExtLink";
@@ -374,7 +374,11 @@ export function ModBody({code, onPick, onFocusRoom}: Props) {
     );
     const freshmore = useFreshmore(freshmoreMode);
     const fixed = useMemo(() => freshmoreFixedSet(freshmore), [freshmore]);
-    const mod: Mod | undefined = code ? allMods[code] : undefined;
+    // The plan hands this panel a KEY, and a repeatable mod's key carries the
+    // term it sits in, so opening T7's 02.XFER chip asked for `02.XFER|T7` -
+    // a string the store has never held - and the panel said the course does
+    // not exist. Same reader as the plan tree uses.
+    const mod: Mod | undefined = code ? modOfKey(allMods, code) : undefined;
 
     // giscus resolves the mod's discussion; the unlinked review path uses it to
     // avoid opening a duplicate thread that would never render here.
@@ -401,7 +405,7 @@ export function ModBody({code, onPick, onFocusRoom}: Props) {
                     {loading && code
                         ? `dredging the catalogue for ${code}…`
                         : code
-                          ? `nothing called ${code} in the catalogue.`
+                          ? `nothing called ${codeOfKey(code)} in the catalogue.`
                           : "pick a module from the catalogue."}
                 </span>
             </div>
