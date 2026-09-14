@@ -6,10 +6,13 @@ full access to the throwaway account and belongs in two workflows' secrets and
 nowhere else - so a CI job that could run the sweep would be a third place that
 token lives, on every pull request including one from a fork.
 
-These two functions are the half that can be wrong in a way nobody notices. A
-chat handed to the wrong person, or one left with no admin for a term, looks
-exactly like a chat that is fine. The Telegram calls around them either raise or
-do not.
+This is the half that can be wrong in a way nobody notices. A chat handed to the
+wrong person, or one left with no admin for a term, looks exactly like a chat
+that is fine. The Telegram calls around it either raise or do not.
+
+One reading, asked of two different lists. Given the members it names who should
+be promoted; given the admins it names who already holds the chat, and an empty
+answer there is a chat with nobody but this account in charge.
 
     python participants.py --self-check   # no network, no telethon, no session
 """
@@ -47,23 +50,6 @@ def sort_joiners(parts, users, me_id: int) -> tuple[list[int], list[int]]:
     dated = sorted((h for h in humans if h[0] is not None), key=lambda h: h[0])
     undated = [h for h in humans if h[0] is None]
     return [uid for _, uid in dated + undated], bots
-
-
-def has_human_admin(parts, users, me_id: int) -> bool:
-    """Whether anyone but this account still administers the chat.
-
-    `parts` is whatever list the caller asked Telegram for, and the caller asks
-    for the ADMIN list - so every entry in it holds a rank and the only question
-    left is who they are. Asked that way rather than of one recorded user id,
-    because the two ways a handover comes undone look identical from here: the
-    admin left, or another admin demoted them.
-
-    Deleted accounts do not count, because a deactivated Telegram account keeps
-    its rank and can do nothing with it. Nor does the account running the sweep:
-    migration makes it the channel creator, so it is an admin by construction
-    and would answer yes for every chat forever.
-    """
-    return bool(sort_joiners(parts, users, me_id)[0])
 
 
 def self_check() -> int:
@@ -108,12 +94,12 @@ def self_check() -> int:
     eq("the only joiner left, so nobody is promotable",
        sort_joiners([P(1)], users, ME)[0], [])
 
-    # ChannelParticipantsAdmins after that: the throwaway is the creator of the
-    # migrated channel, so it is always in this list and never an answer.
-    eq("the creator alone is not a human admin",
-       has_human_admin([P(1)], users, ME), False)
-    eq("a promoted student is", has_human_admin([P(1), P(2, 20)], users, ME), True)
-    eq("a bot admin is not", has_human_admin([P(1), P(4, 20)], users, ME), False)
+    # The same reading, asked of the ADMIN list. The throwaway is the creator of
+    # the migrated channel, so it is in that list for every chat it ever handed
+    # over and must never be the answer to "does this chat have an admin".
+    eq("the creator alone leaves no admin", sort_joiners([P(1)], users, ME)[0], [])
+    eq("a promoted student is one", sort_joiners([P(1), P(2, 20)], users, ME)[0], [2])
+    eq("a bot admin is not", sort_joiners([P(1), P(4, 20)], users, ME)[0], [])
 
     if fails:
         print(f"self-check: {len(fails)} failure(s)")

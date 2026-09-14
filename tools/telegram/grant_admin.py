@@ -59,7 +59,7 @@ from telethon.tl import functions, types
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from linkcrypt import encrypt  # noqa: E402
-from participants import has_human_admin, sort_joiners  # noqa: E402
+from participants import sort_joiners  # noqa: E402
 
 REG = pathlib.Path(__file__).resolve().parents[2] / "data" / "telegram-groups.json"
 
@@ -155,21 +155,26 @@ def migrate(client, chat_id: int) -> types.Channel:
 def main() -> int:
     reg = json.loads(REG.read_text(encoding="utf-8") or "{}")
     todo = {c: e for c, e in reg.items() if not e.get("adminGranted") and active(e)}
-    # Handed over by THIS sweep, still running, and addressable as a channel.
-    # Asked every run whether the promotion still holds: a chat whose only human
-    # admin has left is in the state the sweep exists to prevent, and it can
-    # arrive there any day rather than only on the day of the handover.
+    # Every live chat this account can address as a channel. Asked each run
+    # whether a human admin is still inside: one can leave on any day, so
+    # "handed over" is not a state that stays true, and only Telegram knows.
     #
-    # The three conditions past `adminGranted` are narrower than "every live
-    # chat" on purpose. `channels.getParticipants` answers for a channel and not
-    # for a basic group, and the handover writes `adminGranted`, `supergroup`
-    # and `accessHash` in one block, so an entry carrying the first without the
-    # other two is one a person edited. A term that is over is the `done` queue
-    # below: the chat belongs to its members by then and this account is walking
-    # out of it.
+    # Deliberately NOT gated on `adminGranted`. The flag records what a run did;
+    # this queue is about what the chat IS. A chat that migrated and promoted
+    # and then failed somewhere after is a supergroup with no flag, and gating
+    # on the flag left it in a gap no queue could reach - `todo` sees the
+    # supergroup and skips it, because nothing there can promote into a channel.
+    # Asking Telegram answers for both, and heals the record on the way past.
+    #
+    # The two conditions that remain are not decoration.
+    # `channels.getParticipants` answers for a channel and not for a basic
+    # group, so an entry without `accessHash` has nothing this path could ask;
+    # that one is still waiting for its first joiner, which is `todo`. And a
+    # term that is over is the `done` queue below: the chat belongs to its
+    # members by then and this account is walking out of it.
     recheck = {
         c: e for c, e in reg.items()
-        if e.get("adminGranted") and active(e) and not e.get("left")
+        if active(e) and not e.get("left")
         and e.get("supergroup") and e.get("accessHash") is not None
     }
     # Terms that are over and this account has not yet walked out of. The link
@@ -227,15 +232,22 @@ def main() -> int:
                 entry["chatId"] = channel.id
                 entry["accessHash"] = channel.access_hash
                 entry["supergroup"] = True
+                # Recorded HERE, not after the note. The handover is the
+                # promotion; the note is decoration on top of it. Written last,
+                # a chat that promoted fine and then failed to pin was left with
+                # `supergroup` and no `adminGranted`, which is a state neither
+                # queue could pick up again: `todo` sees the supergroup and
+                # skips, `recheck` used to want the flag. Seven chats reached it.
+                entry["adminGranted"] = True
+                entry["adminUserId"] = first
+                changed = True
 
+                # Below the flag on purpose, so neither can undo it.
                 note = client.send_message(channel, HANDOVER)
                 client(functions.messages.UpdatePinnedMessageRequest(peer=channel, id=note.id))
                 # Deliberately NOT leaving here: see the module docstring. The
                 # invite link in the registry belongs to this account and dies
                 # with its membership.
-                entry["adminGranted"] = True
-                entry["adminUserId"] = first
-                changed = True
                 print(code)
             except Exception as exc:  # noqa: BLE001 - one bad group must not stall the sweep
                 print(f"{code}: {type(exc).__name__}: {exc}", file=sys.stderr)
@@ -249,7 +261,19 @@ def main() -> int:
                 # recent SLICE: on a chat past a couple of hundred members that
                 # can leave out the very member this is looking for and hand the
                 # chat to the wrong person.
-                if has_human_admin(*listing(client, peer, ADMINS), me.id):
+                admins, admin_users = listing(client, peer, ADMINS)
+                humans, _ = sort_joiners(admins, admin_users, me.id)
+                if humans:
+                    # Nothing to do, and the cheap part of the run. Heal the
+                    # record on the way past: a chat whose handover never got
+                    # written down is indistinguishable from here, and leaving
+                    # it unflagged means `todo` prints "already a supergroup,
+                    # skipping" for it every day for the rest of the term.
+                    if not entry.get("adminGranted"):
+                        entry["adminGranted"] = True
+                        entry["adminUserId"] = humans[0]
+                        changed = True
+                        print(f"{code}: already had an admin, record healed")
                     continue
 
                 humans, _ = sort_joiners(*listing(client, peer), me.id)

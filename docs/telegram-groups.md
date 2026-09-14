@@ -80,7 +80,11 @@ chatId } }` to the registry (auto-commit, same policy as crowdsourced
 
 7. Every live chat this account can still address is then asked whether a
    human admin is still inside, because `adminGranted` describes what
-   happened once and not what is true now. Telegram takes a member's admin
+   happened once and not what is true now. Deliberately not gated on that
+   flag: a chat that migrated and promoted and then failed on the note is a
+   supergroup with no flag, which `todo` skips because nothing there can
+   promote into a channel. Asking Telegram answers for both and writes the
+   flag back on the way past. Telegram takes a member's admin
    rights with them when they leave, and the first joiner is free to join
    and walk straight back out, so a chat can be an hour old, handed over
    and already unmoderated. If the admin list holds nobody but the
