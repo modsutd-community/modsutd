@@ -116,8 +116,8 @@ describe('which cohort the reader is in', () => {
   it('carries a CI section off the group header', () => {
     const one = [
       '50 .040 - Natural Language Processing',
-      'Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date',
-      '1077	CI03	CBL	Th 2:00PM - 3:00PM	Cohort Classroom 14 (2.507)	Prof A	17/09/2026 - 17/09/2026',
+      'Class Nbr\tSection\tComponent\tDays & Times\tRoom\tInstructor\tStart/End Date',
+      '1077\tCI03\tCBL\tTh 2:00PM - 3:00PM\tCohort Classroom 14 (2.507)\tProf A\t17/09/2026 - 17/09/2026',
     ].join('\n');
     expect(parseTimetableText(one)[0].section).toBe('CI03');
   });
@@ -128,6 +128,23 @@ describe('which cohort the reader is in', () => {
     const events = parseTimetableText(SAMPLE_LIST_VIEW);
     expect(events.length).toBeGreaterThan(0);
     expect(events.every((e) => e.section === undefined)).toBe(true);
+  });
+
+  it('collapses two non-CI sections that share an hour and a room', () => {
+    // Dropping the label means the collapse key no longer tells them apart,
+    // which is the behaviour before any section was read: two rows with the
+    // same type, day, hour and room describe one thing a reader walks to, and
+    // a second copy of it carries nothing they can act on. Two CI sections
+    // still stay apart, which is the case below.
+    const twoLectures = [
+      '10 .013 - Modelling and Analysis',
+      'Class Nbr\tSection\tComponent\tDays & Times\tRoom\tInstructor\tStart/End Date',
+      '2201\tLI01\tLEC\tMo 9:00AM - 11:00AM\tLecture Theatre 5 (1.510)\tProf A\t14/09/2026 - 14/09/2026',
+      '2202\tLI02\tLEC\tMo 9:00AM - 11:00AM\tLecture Theatre 5 (1.510)\tProf A\t14/09/2026 - 14/09/2026',
+    ].join('\n');
+    const events = parseTimetableText(twoLectures);
+    expect(events).toHaveLength(1);
+    expect(events[0].section).toBeUndefined();
   });
 
   it('drops a capstone project team, which is not a cohort', () => {
