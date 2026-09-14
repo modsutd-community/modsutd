@@ -225,6 +225,21 @@ export interface TimetableEvent {
   // where "at 2.406" tells a reader less than the name does.
   venueName?: string;
   /**
+   * The Section column: which cohort of this course the reader is in - CI03,
+   * LI01, CD01. Printed once per group in MyPortal's List View, beside the
+   * Class Nbr and the Component.
+   *
+   * LOCAL ONLY, like `venueName`. It is drawn in the grid and written into the
+   * .ics, and it is deliberately NOT in what `eventsToSlots` contributes:
+   * widening that payload changes what leaves the browser, which CLAUDE.md
+   * invariant 5 makes a Discussion rather than a pull request.
+   *
+   * Capstone sections are left out. CC01 is a project team rather than a
+   * cohort, and a team number on a calendar tells a reader nothing they can
+   * act on.
+   */
+  section?: string;
+  /**
    * Overrides the UID key for this event, which is otherwise
    * `modCode|type|date`.
    *

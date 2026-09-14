@@ -202,8 +202,13 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
   const blocks = events.flatMap((e) => {
     // Parts, not a template: a reminder carries no code and no type, and the
     // template left it with a leading space and a dangling separator.
+    // The section rides with the type - "50.040 NLP · Cohort CI03" - because a
+    // reader with two cohorts of one course in a week needs to know which of
+    // them this is, and the type alone says both are cohorts. Capstone teams
+    // are already dropped in the parser.
+    const kind = [e.type, e.section].filter(Boolean).join(' ');
     const summary = escapeText(
-      [e.modCode, e.modName].filter(Boolean).join(' ') + (e.type ? ` · ${e.type}` : ''),
+      [e.modCode, e.modName].filter(Boolean).join(' ') + (kind ? ` · ${kind}` : ''),
     );
     // Every event signs itself, so one search finds the whole batch. On Android
     // that is the only recovery available: its importer writes to the primary

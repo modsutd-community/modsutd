@@ -10,6 +10,30 @@ own timetable, so a mod nobody has pasted has no rooms, no heatmap and no batch
 chat. These six PDFs are the registry's export of the same timetable for every
 mod at once.
 
+## What these PDFs are NOT
+
+They are a snapshot taken before the term starts, and nothing republishes them.
+Treat every row as provisional, and never as the reason to overwrite something a
+student pasted.
+
+What the export gets wrong, in the order you will meet it:
+
+- **Rooms move.** 50.057's export put Tuesday 14:00 in 1.415 AND 1.416 as a CI01
+  cohort. It is a lecture in 2.505, which is what a paste said.
+- **Sections appear under it.** That same course has a CI02 meeting Wednesday
+  18:00 in 2.308. The export names no such section.
+- **An instructor may add a cohort class**, move one, or run one fortnightly
+  rather than weekly. None of that reaches the PDF, and none of it is expressible
+  in what this writes either: a schedule entry is one weekday and one time, with
+  no notion of which weeks it meets. A class that runs on alternate weeks is
+  stored as though it runs every week, and there is nowhere to say otherwise.
+- **TBA is a real answer.** A row can carry `TBA` for both the time and the room
+  all term.
+
+So the import merges rather than replaces, and a `contributed` entry owns its
+hour of the week - see below. When the export and a student disagree, the
+student is the one sitting in the room this week.
+
 ## What you need
 
 One folder holding **exactly six** PDFs, one per pillar. Each filename has to

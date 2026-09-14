@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import ICAL from 'ical.js';
 import { buildICS, clockSequence, SIGNATURE } from './icsGenerator';
+import { eventsToSlots } from './contributeTimetable';
 import { parseTimetableText } from './timetableParser';
 import { buildTermReminderEvents } from './termReminders';
 import { SAMPLE_LIST_VIEW } from './sampleTimetable';
@@ -300,5 +301,25 @@ describe('a reminder that moves week stays one event', () => {
   it('leaves a repeating class with one UID per occurrence', () => {
     const uids = uidsOf(buildICS(events));
     expect(new Set(uids).size).toBe(uids.length);
+  });
+});
+
+describe('the section reaches the calendar', () => {
+  it('rides with the type in SUMMARY', () => {
+    const events = parseTimetableText(SAMPLE_LIST_VIEW);
+    const ics = buildICS(events);
+    expect(ics).toContain('SUMMARY:30.111 Entrepreneurship · Cohort CP02');
+  });
+
+  it('and the payload that leaves the browser is unchanged', () => {
+    // CLAUDE.md invariant 5: what eventsToSlots sends is the contract. The
+    // section is local, so widening this is a Discussion and not a quiet edit.
+    const slots = eventsToSlots(parseTimetableText(SAMPLE_LIST_VIEW));
+    expect(slots.length).toBeGreaterThan(0);
+    for (const s of slots) {
+      expect(Object.keys(s).sort()).toEqual(
+        ['day', 'end', 'mod', 'start', 'type', 'venue'],
+      );
+    }
   });
 });
