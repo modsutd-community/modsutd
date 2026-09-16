@@ -22,6 +22,22 @@ from __future__ import annotations
 import sys
 
 
+def members_of(participants):
+    """The member list inside a ChatFull.participants, or None when there is none.
+
+    `messages.getFullChat` answers with `ChatParticipants`, which carries a
+    list, or `ChatParticipantsForbidden`, which carries no `participants`
+    attribute at all. Telegram answers the second one for the TOMBSTONE a basic
+    group leaves behind when it is upgraded to a supergroup - at 200 members, or
+    the moment anyone reaches for a supergroup-only setting.
+
+    Reading straight through raised AttributeError once a day for every chat in
+    that state, so they were never handed over: no admin, no note, nothing
+    pinned. Asked rather than assumed.
+    """
+    return getattr(participants, "participants", None)
+
+
 def sort_joiners(parts, users, me_id: int) -> tuple[list[int], list[int]]:
     """(humans earliest first, bots) out of a participant list.
 
@@ -81,6 +97,17 @@ def self_check() -> int:
     eq("and is reported so it can be removed", bots, [4])
 
     eq("a deleted account is neither", sort_joiners([P(5, 10)], users, ME)[0], [])
+
+    # ChatParticipants carries a list; ChatParticipantsForbidden does not, and
+    # that is what a chat Telegram upgraded under us answers with.
+    class Allowed:
+        participants = [P(2, 20)]
+
+    class Forbidden:
+        pass
+
+    eq("a readable chat hands over its members", members_of(Allowed()), Allowed.participants)
+    eq("an unreadable one says so rather than raising", members_of(Forbidden()), None)
 
     # A chat somebody migrated from a Telegram client has a creator that is not
     # this account, and ChannelParticipantCreator carries no join date. Sorting

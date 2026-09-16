@@ -59,7 +59,7 @@ from telethon.tl import functions, types
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from linkcrypt import encrypt  # noqa: E402
-from participants import sort_joiners  # noqa: E402
+from participants import members_of, sort_joiners  # noqa: E402
 
 REG = pathlib.Path(__file__).resolve().parents[2] / "data" / "telegram-groups.json"
 
@@ -133,6 +133,53 @@ def listing(client, peer, filt=None) -> tuple[list, list]:
     return [u.participant for u in users], list(users)
 
 
+def hand_over(client, entry: dict, channel, user_id: int) -> None:
+    """Promote, record it, then say so in the chat.
+
+    The registry writes sit ABOVE the note on purpose. The handover is the
+    promotion; the note is decoration on top of it. Written last, a chat that
+    promoted fine and then failed to send left `supergroup` set and
+    `adminGranted` unset, which is a state neither queue could pick up again.
+    """
+    client(functions.channels.EditAdminRequest(
+        channel=channel, user_id=user_id, admin_rights=RIGHTS, rank=""))
+
+    # Re-exported rather than trusted. The link does survive migration, but the
+    # registry is what students are handed, so it should hold one this run read
+    # back off the live chat.
+    invite = client(functions.messages.ExportChatInviteRequest(peer=channel))
+    entry["linkEnc"] = encrypt(invite.link)
+    # Both halves of the peer. A channel id alone is not addressable: resolving
+    # it needs the access hash, and the session that leaves months later may not
+    # have this chat in its entity cache any more.
+    entry["chatId"] = channel.id
+    entry["accessHash"] = channel.access_hash
+    entry["supergroup"] = True
+    entry["adminGranted"] = True
+    entry["adminUserId"] = user_id
+
+    note = client.send_message(channel, HANDOVER)
+    client(functions.messages.UpdatePinnedMessageRequest(peer=channel, id=note.id))
+
+
+def moved_to(client, chat_id: int):
+    """The channel a basic group became, or None if it is still a basic group.
+
+    Telegram upgrades a group to a supergroup on its own - at 200 members, or
+    the moment anyone reaches for a supergroup-only setting - and the old id
+    survives as a TOMBSTONE carrying `migrated_to`. `messages.getFullChat` on a
+    tombstone answers `ChatParticipantsForbidden`, which has no `.participants`
+    at all, so reading through it raised AttributeError once a day forever and
+    the chat was never handed over: no admin, no note, nothing pinned.
+    """
+    moved = getattr(client.get_entity(types.PeerChat(chat_id=chat_id)),
+                    "migrated_to", None)
+    if moved is None:
+        return None
+    return client.get_entity(types.InputPeerChannel(
+        channel_id=moved.channel_id, access_hash=moved.access_hash))
+
+
 def migrate(client, chat_id: int) -> types.Channel:
     """Migrate the basic group and return the Channel it became.
 
@@ -195,16 +242,36 @@ def main() -> int:
         for code, entry in todo.items():
             try:
                 chat_id = entry["chatId"]
-                if entry.get("supergroup"):
-                    # Migrated by hand between runs. Nothing here can promote
-                    # into it blind, and guessing the first joiner from a
-                    # channel's participant list is a different query with
-                    # different ordering - leave it for a person.
-                    print(f"{code}: already a supergroup, skipping", file=sys.stderr)
+                if entry.get("supergroup") and entry.get("accessHash") is None:
+                    # Marked a supergroup by hand with no access hash beside it,
+                    # so there is no peer to resolve. A person put it in this
+                    # state and a person can take it out.
+                    print(f"{code}: supergroup with no accessHash, skipping",
+                          file=sys.stderr)
                     continue
+                # Upgraded under us: hand over on the channel it became rather
+                # than dying on the tombstone's participant list.
+                channel = moved_to(client, chat_id)
+                if channel is not None:
+                    humans, _ = sort_joiners(*listing(client, channel), me.id)
+                    if not humans:
+                        continue  # nobody inside yet - retry next run
+                    hand_over(client, entry, channel, humans[0])
+                    changed = True
+                    print(f"{code} (upgraded before we got to it)")
+                    continue
+
                 full = client(functions.messages.GetFullChatRequest(chat_id))
-                humans, bot_ids = sort_joiners(
-                    full.full_chat.participants.participants, full.users, me.id)
+                # ChatParticipants or ChatParticipantsForbidden, and only one of
+                # them has a list. Asked rather than assumed, because the shape
+                # that does not is the one a migrated chat answers with.
+                parts = members_of(full.full_chat.participants)
+                if parts is None:
+                    print(f"{code}: cannot read the members of this chat "
+                          f"({type(full.full_chat.participants).__name__})",
+                          file=sys.stderr)
+                    continue
+                humans, bot_ids = sort_joiners(parts, full.users, me.id)
                 if not humans:
                     continue  # nobody joined yet - stay parked, retry next run
                 first = humans[0]
@@ -216,35 +283,8 @@ def main() -> int:
                 # granular rights do not exist on a basic group, so the promotion
                 # has to land on a channel or it silently degrades to the legacy
                 # flag, which cannot appoint anyone.
-                channel = migrate(client, chat_id)
-                client(functions.channels.EditAdminRequest(
-                    channel=channel, user_id=first, admin_rights=RIGHTS, rank=""))
-
-                # Re-export rather than trust the old one. The link does survive
-                # migration, but the registry is what students are handed, and it
-                # should hold something this run has read back off the live chat.
-                invite = client(functions.messages.ExportChatInviteRequest(peer=channel))
-                entry["linkEnc"] = encrypt(invite.link)
-                # Both halves of the peer. A channel id alone is not
-                # addressable: resolving it needs the access hash, and the
-                # session that leaves months later may not have this chat in
-                # its entity cache any more.
-                entry["chatId"] = channel.id
-                entry["accessHash"] = channel.access_hash
-                entry["supergroup"] = True
-                # Recorded HERE, not after the note. The handover is the
-                # promotion; the note is decoration on top of it. Written last,
-                # a chat that promoted fine and then failed to pin was left with
-                # `supergroup` and no `adminGranted`, which is a state neither
-                # queue could pick up again: `todo` sees the supergroup and
-                # skips, `recheck` used to want the flag. Seven chats reached it.
-                entry["adminGranted"] = True
-                entry["adminUserId"] = first
+                hand_over(client, entry, migrate(client, chat_id), first)
                 changed = True
-
-                # Below the flag on purpose, so neither can undo it.
-                note = client.send_message(channel, HANDOVER)
-                client(functions.messages.UpdatePinnedMessageRequest(peer=channel, id=note.id))
                 # Deliberately NOT leaving here: see the module docstring. The
                 # invite link in the registry belongs to this account and dies
                 # with its membership.

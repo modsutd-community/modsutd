@@ -185,6 +185,13 @@ ciphertext worthless.
   invite for that chat and add the entry by hand. Without the entry nothing
   finds it again: the button, the cap and the end-of-term sweep all read the
   registry.
+- **Telegram upgrades a group without asking**, at 200 members or the moment
+  anyone reaches for a supergroup-only setting. The old id survives as a
+  TOMBSTONE carrying `migrated_to`, and `messages.getFullChat` on a tombstone
+  answers `ChatParticipantsForbidden`, which has no member list at all. The
+  sweep follows `migrated_to` and hands over on the channel it became, so a
+  chat upgraded before the first joiner arrived is handed over normally rather
+  than raising once a day and never being touched.
 - **Unadopted groups**: a group nobody joins keeps the throwaway inside
   until it expires. Harmless, but it is why the account must be muted.
 - **The admin who left**: a student can join, take the promotion and leave,
