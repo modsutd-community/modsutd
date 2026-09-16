@@ -95,20 +95,26 @@ PILLAR_DEPARTMENT = {
 # and the two are meant to diverge.
 VALID_PREFIXES = {"01", "02", "03", "10", "20", "30", "40", "50", "60"}
 
-# The off-space codes whose own page says an undergraduate may take them, with
-# the pillar and term to file them under.
+# The off-space codes whose own page says an undergraduate may take them:
+# (pillar, term, the words on the page that justify the entry).
 #
-# Both halves are pinned rather than derived, and neither could be. The page
-# publishes no Term tag, so term_from_tags would answer 8 - the untermed
+# The pillar and term are pinned rather than derived, and neither could be. The
+# page publishes no Term tag, so term_from_tags would answer 8 - the untermed
 # elective fallback, which is not what the page said. And prefix_precedents()
 # has no honest vote for "99": its majority comes from the 99.999 placeholders,
 # which exist only until SUTD publishes AY2026 codes, so a couple more of those
 # would silently move a real course to another pillar.
-OFF_SPACE_ADMIT: dict[str, tuple[str, str]] = {
-    # "This is a course intended for PhD students and for term 6 or term 8
-    # undergraduate students." The only one of the 22 off-space slugs whose own
-    # page names an undergraduate audience.
-    "99.504": ("SMT", "6"),
+#
+# The third field is checked against the scraped description on every run,
+# because the reason a code is admitted lives on a page SUTD can rewrite, and an
+# allowlist keyed on a number alone would go on importing a course as a term-6
+# undergraduate elective long after its page stopped saying so. Reported and not
+# refused: a copy-edit must not silently drop a course from the catalogue.
+#
+# 99.504's page: "This is a course intended for PhD students and for term 6 or
+# term 8 undergraduate students."
+OFF_SPACE_ADMIT: dict[str, tuple[str, str, str]] = {
+    "99.504": ("SMT", "6", "undergraduate students"),
 }
 
 # SUTD re-lists three SMT electives in the PhD catalogue under a 99.5xx code
@@ -519,6 +525,7 @@ def main() -> int:
 
     skipped_excluded: list[str] = []
     refused_dup: list[str] = []
+    admit_stale: list[str] = []
     new_written: list[str] = []
     tag_updated: list[str] = []
     unchanged: list[str] = []
@@ -586,12 +593,20 @@ def main() -> int:
             failed.append(code)
             continue
 
+        # Above the merge branch, so it runs for an admitted course that is
+        # already in /data. A page is rewritten long after its record is
+        # written, and checking only on the way in would mean checking once.
+        admit = OFF_SPACE_ADMIT.get(code)
+        if admit and admit[2].lower() not in parsed["description"].lower():
+            print(f"[!] {code} is admitted because its page said {admit[2]!r} "
+                  f"and it no longer does - check whether it is still an "
+                  f"undergraduate course", file=sys.stderr)
+            admit_stale.append(code)
+
         if path.exists():
             status = merge_existing(path, parsed, args.dry_run)
             (tag_updated if status == "tags-updated" else unchanged).append(code)
             continue
-
-        admit = OFF_SPACE_ADMIT.get(code)
 
         # The allowlist wins. It is a person saying "this code is a real course,
         # write it", and the guard below is a pattern match on a title - so if
@@ -650,6 +665,8 @@ def main() -> int:
     # the run output is the same silence this change is about.
     admitted = sorted(c for c in OFF_SPACE_ADMIT if c in chosen)
     print(f"admitted off-space codes   : {len(admitted)} {admitted}")
+    if admit_stale:
+        print(f"    !! page no longer says why : {admit_stale}")
     for prefix in sorted(off_space):
         print(f"    {prefix}.* : {[slug_of(u) for u in off_space[prefix]]}")
     print(f"processed this run         : {len(items)}")
@@ -743,7 +760,7 @@ def self_check() -> int:
     # Literals, not the constant: a case that reads OFF_SPACE_ADMIT cannot
     # tell a policy change from a bug, and it crashes rather than failing
     # when the entry is removed.
-    if OFF_SPACE_ADMIT.get("99.504") != ("SMT", "6"):
+    if OFF_SPACE_ADMIT.get("99.504") != ("SMT", "6", "undergraduate students"):
         fails.append("99.504 is no longer admitted as SMT term 6")
     if term_from_tags(["Core", "SMT"], default="6") != "6":
         fails.append("the pinned term for an admitted off-space code is ignored")
