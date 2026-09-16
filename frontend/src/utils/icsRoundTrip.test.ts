@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import ICAL from 'ical.js';
-import { buildICS, clockSequence, SIGNATURE } from './icsGenerator';
+import { buildICS, clockSequence, SIGNATURE, weeklyRuns } from './icsGenerator';
 import { eventsToSlots } from './contributeTimetable';
 import { parseTimetableText } from './timetableParser';
 import { buildTermReminderEvents } from './termReminders';
@@ -331,5 +331,75 @@ describe('the section reaches the calendar', () => {
         ['day', 'end', 'mod', 'start', 'type', 'venue'],
       );
     }
+  });
+});
+
+// A term is not one unbroken run: recess week and public holidays mean a class
+// has no row that week. Each run becomes its own recurring event, and the dates
+// it swallowed are retracted by name - a downloaded .ics cannot delete anything,
+// so an orphaned UID from an older export would sit under the new recurrence and
+// show every later week twice.
+describe('a weekly class exports as a recurrence', () => {
+  const ev = (occurrences: string[]): TimetableEvent => ({
+    modCode: '50.040', modName: 'NLP', type: 'Cohort',
+    day: 'Thursday', startTime: '14:00', endTime: '15:00',
+    location: '2.507', instructors: [],
+    startDate: occurrences[0], endDate: occurrences[occurrences.length - 1],
+    occurrences,
+  });
+
+  it('splits on the weeks that are missing', () => {
+    expect(weeklyRuns(['2026-09-17', '2026-09-24', '2026-10-08', '2026-10-15']))
+      .toEqual([['2026-09-17', '2026-09-24'], ['2026-10-08', '2026-10-15']]);
+  });
+
+  it('keeps a lone date a lone date', () => {
+    expect(weeklyRuns(['2026-09-17'])).toEqual([['2026-09-17']]);
+  });
+
+  it('carries an RRULE with the run length, not one event per week', () => {
+    const ics = buildICS([ev(['2026-09-17', '2026-09-24', '2026-10-01'])]);
+    const real = ICAL.parse(ics)[2].filter((c: unknown[]) => c[0] === 'vevent');
+    const live = real.filter((c: [string, [string, object, string, string][]]) =>
+      !c[1].some((prop) => prop[0] === 'status'));
+    expect(live).toHaveLength(1);
+    expect(ics).toContain('RRULE:FREQ=WEEKLY;COUNT=3');
+    expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20260917T140000');
+  });
+
+  it('retracts every date the recurrence swallowed', () => {
+    const ics = buildICS([ev(['2026-09-17', '2026-09-24', '2026-10-01'])]);
+    // Two cancellations: the run head keeps its own UID and becomes the
+    // recurrence, so only the dates that lost their VEVENT are named.
+    expect(ics.match(/STATUS:CANCELLED/g)).toHaveLength(2);
+    expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20260924T140000');
+    expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20261001T140000');
+  });
+
+  it('gives a gapped term one recurrence per run', () => {
+    const ics = buildICS([ev(['2026-09-17', '2026-09-24', '2026-10-08', '2026-10-15'])]);
+    expect(ics.match(/RRULE:/g)).toHaveLength(2);
+    expect(ics).toContain('COUNT=2');
+  });
+
+  it('leaves a single week as a plain event, with no RRULE and nothing retracted', () => {
+    const ics = buildICS([ev(['2026-09-17'])]);
+    expect(ics).not.toContain('RRULE:');
+    expect(ics).not.toContain('STATUS:CANCELLED');
+  });
+
+  it('repeats on its own start date, naming no weekday', () => {
+    // BYDAY would be a second opinion about which day this is, and a run is
+    // built from seven-day spacing rather than from e.day. If the two ever
+    // disagreed the rule would expand onto dates the run does not contain
+    // while the cancellations retracted the ones it does.
+    const ics = buildICS([ev(['2026-09-17', '2026-09-24'])]);
+    expect(ics).not.toContain('BYDAY');
+    expect(ics).toContain('RRULE:FREQ=WEEKLY;COUNT=2');
+  });
+
+  it('still parses as a calendar', () => {
+    const ics = buildICS([ev(['2026-09-17', '2026-09-24', '2026-10-01'])]);
+    expect(() => new ICAL.Component(ICAL.parse(ics))).not.toThrow();
   });
 });

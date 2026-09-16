@@ -158,6 +158,29 @@ export interface ICSOptions {
 // every schedule in /data - but if one ever appears, silently overwriting a
 // class is worse than showing two, so those fall back to including the start
 // time. Only the colliding pair is affected.
+/**
+ * Split dates into maximal runs of exactly-weekly spacing.
+ *
+ * A term is not one unbroken run: recess week and public holidays mean a class
+ * simply has no row that week, so 13 Thursdays with one missing is two runs and
+ * not one RRULE with a hole in it. Splitting is what lets each run carry an
+ * honest COUNT, which is better than UNTIL plus EXDATE - a calendar shows the
+ * reader "repeats weekly, 6 times" rather than "repeats weekly until December,
+ * except one date you have to go and check".
+ *
+ * Input must be sorted, which every caller's is: collapseWeeklyRows sorts and
+ * expandWeekToTerm walks the calendar in order.
+ */
+export function weeklyRuns(dates: string[]): string[][] {
+  const runs: string[][] = [];
+  for (const d of dates) {
+    const run = runs[runs.length - 1];
+    if (run && shiftDate(run[run.length - 1], 7) === d) run.push(d);
+    else runs.push([d]);
+  }
+  return runs;
+}
+
 // The exact dates buildICS will emit for an event - must mirror its branching,
 // or a key is missing for the date actually written out.
 function emitDates(e: TimetableEvent): string[] {
@@ -242,8 +265,49 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
         'END:VEVENT',
       ].map(foldLine).join('\r\n');
 
+    // A dated VEVENT that retracts the one an older export wrote for this date.
+    //
+    // Collapsing a run into one recurring event keeps only the run head's UID,
+    // and a downloaded .ics cannot delete anything: absence is not cancellation.
+    // So a student who imported the one-off version and imports again would get
+    // the head updated in place AND expanded over every later week, with the
+    // old one-offs still sitting under it - the duplicate term the UID rule at
+    // the top of this file exists to prevent. Naming each orphaned UID and
+    // cancelling it is the only in-band way to retract one.
+    const cancelled = (date: string) =>
+      [
+        'BEGIN:VEVENT',
+        `DTSTAMP:${dtstamp}`,
+        `UID:${stableUid([keys.get(e)!.get(date)!])}`,
+        `SEQUENCE:${sequence}`,
+        `DTSTART;TZID=Asia/Singapore:${localStamp(date, e.startTime)}`,
+        `DTEND;TZID=Asia/Singapore:${localStamp(date, e.endTime)}`,
+        'STATUS:CANCELLED',
+        `SUMMARY:${summary}`,
+        // Signed like any other. A client that materialises a cancellation as a
+        // greyed entry has put something in the reader's calendar, and the
+        // SIGNATURE search is the only way to find an import again on Android.
+        `DESCRIPTION:${desc}`,
+        'END:VEVENT',
+      ].map(foldLine).join('\r\n');
+
     if (e.occurrences?.length) {
-      return e.occurrences.map((date) => vevent(date));
+      // One recurring event per unbroken weekly run, and the dates it swallowed
+      // are retracted by name. A run of one stays a one-off: RRULE;COUNT=1 says
+      // the same thing in more words and reads as recurring in a calendar's UI.
+      return weeklyRuns(e.occurrences).flatMap((run) =>
+        run.length > 1
+          ? [
+              // No BYDAY. FREQ=WEEKLY already repeats on DTSTART's own weekday,
+              // so naming one adds nothing except a way to disagree: a run is
+              // built from seven-day spacing, and if a date in it ever failed
+              // to land on `e.day` the rule would expand onto dates the run
+              // does not contain while the cancellations below retracted the
+              // ones it does - and the class would leave the calendar entirely.
+              vevent(run[0], `RRULE:FREQ=WEEKLY;COUNT=${run.length}`),
+              ...run.slice(1).map(cancelled),
+            ]
+          : [vevent(run[0])]);
     }
     if (e.startDate === e.endDate) {
       return [vevent(e.startDate)];
