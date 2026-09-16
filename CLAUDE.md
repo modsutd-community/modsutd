@@ -443,6 +443,20 @@ Two are deliberately not monthly, and say why in their own headers:
   timetable: a Wednesday class read as Tuesday. A weekly paste also covers one
   week and carries no term end, so it renders but never contributes - a 5-day
   span would anchor the batch-chat window and expiry wrongly.
+- **A weekly class exports as a recurrence, and what it swallows is retracted
+  by name.** Each unbroken run of exactly-weekly dates becomes one VEVENT with
+  `RRULE;FREQ=WEEKLY;COUNT=n`; a term is not one run, because recess week and
+  public holidays leave a class with no row that week, so 13 Thursdays with one
+  missing is two runs and not one rule with a hole in it. COUNT rather than
+  UNTIL plus EXDATE: a calendar can say "repeats weekly, 6 times" and cannot
+  usefully say "until December except one date".
+  The dates a run swallows lose their own VEVENT, and a downloaded `.ics` cannot
+  delete anything - absence is not cancellation. So each orphaned UID is named
+  in a `STATUS:CANCELLED` VEVENT, or a student who imported the one-off version
+  and imported again would keep the old one-offs UNDER the new recurrence and
+  see every later week twice. That is the duplicate term the UID rule below
+  exists to prevent. Those tombstones carry the SIGNATURE too, because a client
+  that materialises one has put something in the reader's calendar.
 - The `.ics` UID is keyed on mod + type + date only. Room and time are left out
   on purpose: they are what gets corrected, and including them turned a fix into
   a duplicate term. SEQUENCE comes from the server's clock, not the device's -
