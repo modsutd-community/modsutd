@@ -449,7 +449,11 @@ Two are deliberately not monthly, and say why in their own headers:
   public holidays leave a class with no row that week, so 13 Thursdays with one
   missing is two runs and not one rule with a hole in it. COUNT rather than
   UNTIL plus EXDATE: a calendar can say "repeats weekly, 6 times" and cannot
-  usefully say "until December except one date".
+  usefully say "until December except one date". No BYDAY either: FREQ=WEEKLY
+  already repeats on DTSTART's own weekday, and naming one is a second opinion
+  about which day this is - a run is built from seven-day spacing, so a date
+  that failed to land on `e.day` would expand the rule onto dates the run does
+  not contain while the cancellations retracted the ones it does.
   The dates a run swallows lose their own VEVENT, and a downloaded `.ics` cannot
   delete anything - absence is not cancellation. So each orphaned UID is named
   in a `STATUS:CANCELLED` VEVENT, or a student who imported the one-off version

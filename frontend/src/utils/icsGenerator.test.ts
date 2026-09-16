@@ -133,7 +133,7 @@ describe('buildICS · explicit per-week occurrences', () => {
 
   it('makes the run recurring and the lone date its own event', () => {
     expect(ics.match(/RRULE:/g)).toHaveLength(1);
-    expect(ics).toContain('RRULE:FREQ=WEEKLY;BYDAY=WE;COUNT=2');
+    expect(ics).toContain('RRULE:FREQ=WEEKLY;COUNT=2');
     // 09-09 is inside the run, so its own event is retracted. 09-23 is not.
     expect(ics.match(/STATUS:CANCELLED/g)).toHaveLength(1);
   });

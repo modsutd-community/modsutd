@@ -298,8 +298,13 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
       return weeklyRuns(e.occurrences).flatMap((run) =>
         run.length > 1
           ? [
-              vevent(run[0],
-                `RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[e.day]};COUNT=${run.length}`),
+              // No BYDAY. FREQ=WEEKLY already repeats on DTSTART's own weekday,
+              // so naming one adds nothing except a way to disagree: a run is
+              // built from seven-day spacing, and if a date in it ever failed
+              // to land on `e.day` the rule would expand onto dates the run
+              // does not contain while the cancellations below retracted the
+              // ones it does - and the class would leave the calendar entirely.
+              vevent(run[0], `RRULE:FREQ=WEEKLY;COUNT=${run.length}`),
               ...run.slice(1).map(cancelled),
             ]
           : [vevent(run[0])]);

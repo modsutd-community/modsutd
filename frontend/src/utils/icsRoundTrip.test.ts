@@ -363,7 +363,7 @@ describe('a weekly class exports as a recurrence', () => {
     const live = real.filter((c: [string, [string, object, string, string][]]) =>
       !c[1].some((prop) => prop[0] === 'status'));
     expect(live).toHaveLength(1);
-    expect(ics).toContain('RRULE:FREQ=WEEKLY;BYDAY=TH;COUNT=3');
+    expect(ics).toContain('RRULE:FREQ=WEEKLY;COUNT=3');
     expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20260917T140000');
   });
 
@@ -386,6 +386,16 @@ describe('a weekly class exports as a recurrence', () => {
     const ics = buildICS([ev(['2026-09-17'])]);
     expect(ics).not.toContain('RRULE:');
     expect(ics).not.toContain('STATUS:CANCELLED');
+  });
+
+  it('repeats on its own start date, naming no weekday', () => {
+    // BYDAY would be a second opinion about which day this is, and a run is
+    // built from seven-day spacing rather than from e.day. If the two ever
+    // disagreed the rule would expand onto dates the run does not contain
+    // while the cancellations retracted the ones it does.
+    const ics = buildICS([ev(['2026-09-17', '2026-09-24'])]);
+    expect(ics).not.toContain('BYDAY');
+    expect(ics).toContain('RRULE:FREQ=WEEKLY;COUNT=2');
   });
 
   it('still parses as a calendar', () => {
