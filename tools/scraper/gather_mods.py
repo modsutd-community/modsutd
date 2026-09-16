@@ -807,6 +807,11 @@ def self_check() -> int:
         fails.append("99.504 is no longer admitted as SMT term 6")
     if term_from_tags(["Core", "SMT"], default="6") != "6":
         fails.append("the pinned term for an admitted off-space code is ignored")
+    # And the pin is a fallback, not an override. It was written because the
+    # page publishes no Term tag; the day SUTD publishes one, the page is a
+    # better answer than a number typed into this file a year earlier.
+    if term_from_tags(["Term 8", "SMT"], default="6") != "8":
+        fails.append("a Term tag on an admitted page no longer wins over the pin")
 
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
