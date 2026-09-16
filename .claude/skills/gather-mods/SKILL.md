@@ -38,9 +38,28 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   `Number of credits:\s*(\d+)` (absent on many pages → default 12); tags
   from `section.js-page-tags a`; term from the first `Term N` tag, and with
   no such tag **8** for an elective or **1** for a `Freshmore Core`, because
-  calling both of them term 1 put 149 electives and graduate subjects in the
-  freshmore term. `python gather_mods.py --self-check` pins that table and
-  runs in CI.
+  calling both of them term 1 made the freshmore term the dumping ground for
+  the whole elective catalogue. `python gather_mods.py --self-check` pins that
+  table and runs in CI.
+- **Which codes it walks, and what it says about the rest.** `VALID_PREFIXES`
+  is the code space of SUTD's own undergraduate listing, checked rather than
+  guessed: that listing yields 219 course links carrying exactly those nine
+  prefixes. Everything else in the sitemap is a graduate catalogue (51.5xx is
+  MSSD, 99.5xx the SMT PhD programme) or an orphan CMS record (41.5xx, 45.2xx:
+  no programme lists them and their pages carry no prose at all). Those used to
+  be dropped by a bare `continue` that printed nothing, so a real course could
+  sit unlisted with no way to find out. The run now prints them by prefix with
+  their slugs.
+  `OFF_SPACE_ADMIT` is the exception list and it holds one code: **99.504**,
+  whose page says "intended for PhD students and for term 6 or term 8
+  undergraduate students". Its pillar and term are pinned there because neither
+  can be derived - the page publishes no `Term` tag, and `prefix_precedents()`
+  would vote on "99" using the 99.999 placeholders.
+  `ELECTIVE_SUFFIX_RE` is what makes widening the set safe: SUTD re-lists three
+  SMT electives in the PhD catalogue as `<name> (Elective)` under a 99.5xx
+  code, and 99.502 is 01.117 with a different number on it. Only that exact
+  suffix is stripped before comparing, because the repo keeps pairs that share
+  a bare name on purpose - 50.007 and 50.570 are both "Machine Learning".
 - **Merge policy - never degrade**: existing repo files get a surgical
   `tags` update (pillar tags are unioned in from suffix-variant pages like
   03-007a/b), description fill when the repo one is empty, and grading +

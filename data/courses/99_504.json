@@ -1,0 +1,16 @@
+{
+  "code": "99.504",
+  "name": "High Performance Computing in Science and Engineering",
+  "description": "The High Performance Computing in Science and Engineering course aims to enable students to operate effectively on high performance computers. The students will first be introduced to High Performance Computers, and to the main programming language used in the course: Julia. The students will learn how to effectively submit jobs to computing servers, to parallelize their codes and to use numerical libraries such as OpenBLAS, BLAS, LAPACK, MKL, CUDA. Advanced numerical methods will be another focus of the course, including eigensolvers (e.g. Lanczos), numerical integrators (including Burlisch-Stoer and symplectic methods), and optimization methods based on (linear) tensor networks and (nonlinear) neural networks. This is a course intended for PhD students and for term 6 or term 8 undergraduate students.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "6",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "Core",
+    "SMT"
+  ]
+}

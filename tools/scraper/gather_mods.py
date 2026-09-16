@@ -83,9 +83,41 @@ PILLAR_DEPARTMENT = {
     "DAI": "Design and Artificial Intelligence",
 }
 
-# The real undergraduate code space. Anything else in the sitemap (e.g. the
-# stale 99-502 duplicate of 01.117) is not a course we track.
+# The code space of SUTD's own undergraduate listing, and not a guess: walking
+# /education/undergraduate/courses/ to its last page yields 219 course links
+# carrying exactly these nine prefixes. A sitemap slug outside them is a
+# graduate catalogue (51.5xx is MSSD, 99.5xx the SMT PhD programme) or an orphan
+# CMS record (41.5xx and 45.2xx: no programme lists them, their page body holds
+# no prose at all, and two of them say "Non-credit course").
+#
+# A second copy of this set lives in gather_minors.py for a different purpose -
+# keeping phone and reference numbers out of a minor page's code extraction -
+# and the two are meant to diverge.
 VALID_PREFIXES = {"01", "02", "03", "10", "20", "30", "40", "50", "60"}
+
+# The off-space codes whose own page says an undergraduate may take them, with
+# the pillar and term to file them under.
+#
+# Both halves are pinned rather than derived, and neither could be. The page
+# publishes no Term tag, so term_from_tags would answer 8 - the untermed
+# elective fallback, which is not what the page said. And prefix_precedents()
+# has no honest vote for "99": its majority comes from the 99.999 placeholders,
+# which exist only until SUTD publishes AY2026 codes, so a couple more of those
+# would silently move a real course to another pillar.
+OFF_SPACE_ADMIT: dict[str, tuple[str, str]] = {
+    # "This is a course intended for PhD students and for term 6 or term 8
+    # undergraduate students." The only one of the 22 off-space slugs whose own
+    # page names an undergraduate audience.
+    "99.504": ("SMT", "6"),
+}
+
+# SUTD re-lists three SMT electives in the PhD catalogue under a 99.5xx code
+# with "(Elective)" appended: 99.502 is 01.117 with a different number on it.
+# ONLY that exact suffix is stripped before comparing. The repo deliberately
+# keeps pairs that share a bare name - 50.007 and 50.570 are both "Machine
+# Learning", one undergraduate and one graduate - so a guard matching on the
+# bare name would refuse to write half of them.
+ELECTIVE_SUFFIX_RE = re.compile(r"(?i)\s*\(elective\)\s*$")
 
 ASSESSMENT_HEADING_RE = re.compile(r"(?i)^learning assessment\b")
 
@@ -121,19 +153,31 @@ def slug_of(url: str) -> str:
     return unquote(url).rstrip("/").rsplit("/course/", 1)[-1]
 
 
-def undergrad_urls(course_urls: list[str]) -> tuple[dict[str, str], dict[str, list[str]], list[str]]:
+def undergrad_urls(
+    course_urls: list[str],
+) -> tuple[dict[str, str], dict[str, list[str]], list[str], dict[str, list[str]]]:
     """Map dotted code -> URL. When several slugs share a code (03-007 /
     03-007a / 03-007b) prefer the plain, suffix-less slug; the other
     variants are kept so their pillar tags can be unioned in (each
-    suffix page carries its own pillar's tags)."""
+    suffix page carries its own pillar's tags).
+
+    A slug whose prefix is outside VALID_PREFIXES comes back in `off_space`,
+    keyed by prefix, rather than being dropped where nobody sees it. Which
+    codes SUTD publishes outside the undergraduate space is a decision, and a
+    decision the run does not print is one the next maintainer has to
+    re-derive from the sitemap by hand - which is how a real course sat
+    unlisted with nothing saying so.
+    """
     by_code: dict[str, list[tuple[str, str]]] = {}
+    off_space: dict[str, list[str]] = {}
     for url in course_urls:
         m = SLUG_CODE_RE.match(slug_of(url))
         if not m:
             continue
-        if m.group(1) not in VALID_PREFIXES:
-            continue
         code = f"{m.group(1)}.{m.group(2)}"
+        if m.group(1) not in VALID_PREFIXES and code not in OFF_SPACE_ADMIT:
+            off_space.setdefault(m.group(1), []).append(url)
+            continue
         by_code.setdefault(code, []).append((m.group(3), url))
 
     chosen: dict[str, str] = {}
@@ -145,7 +189,7 @@ def undergrad_urls(course_urls: list[str]) -> tuple[dict[str, str], dict[str, li
         if len(variants) > 1:
             extras[code] = [u for _, u in variants[1:]]
         dropped.extend(u for _, u in variants[1:])
-    return chosen, extras, dropped
+    return chosen, extras, dropped, off_space
 
 
 def parse_page(html: str, code: str, slug_suffix: str) -> dict:
@@ -277,6 +321,51 @@ def page_tags(soup: BeautifulSoup) -> list[str]:
         if t and t not in tags:
             tags.append(t)
     return tags
+
+
+def norm_title(name: str) -> str:
+    """A course name reduced to what two listings of it would share."""
+    s = name.lower().replace("&", " and ")
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", s).split())
+
+
+def repo_names() -> dict[str, str]:
+    """normalised name -> the code that already owns it.
+
+    A name several records share is dropped rather than picked between: the
+    repo keeps such pairs on purpose - 50.007 and 50.570 are both "Machine
+    Learning" - and answering one of them would make the guard's verdict
+    depend on the order the glob happened to return.
+    """
+    seen: dict[str, str] = {}
+    clash: set[str] = set()
+    for path in sorted(COURSES_DIR.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            continue
+        code, name = data.get("code"), data.get("name")
+        if not code or not name:
+            continue
+        key = norm_title(name)
+        if key in seen and seen[key] != code:
+            clash.add(key)
+        seen.setdefault(key, code)
+    for key in clash:
+        seen.pop(key, None)
+    return seen
+
+
+def elective_duplicate(title: str, owners: dict[str, str]) -> str | None:
+    """The code this "<name> (Elective)" title re-lists, or None.
+
+    Returns None for a title that does not carry the suffix, so a name the repo
+    keeps twice on purpose can never trip it.
+    """
+    stripped = ELECTIVE_SUFFIX_RE.sub("", title)
+    if stripped == title:
+        return None
+    return owners.get(norm_title(stripped))
 
 
 # Where a course goes when its page publishes no "Term N" tag at all, which is
@@ -420,14 +509,16 @@ def main() -> int:
     args = ap.parse_args()
 
     course_urls = sitemap_course_urls(delay=args.delay, ttl_hours=args.ttl_hours)
-    chosen, extras, dropped_dups = undergrad_urls(course_urls)
+    chosen, extras, dropped_dups, off_space = undergrad_urls(course_urls)
     precedents = prefix_precedents()
+    owners = repo_names()
 
     items = sorted(chosen.items())
     if args.limit:
         items = items[: args.limit]
 
     skipped_excluded: list[str] = []
+    refused_dup: list[str] = []
     new_written: list[str] = []
     tag_updated: list[str] = []
     unchanged: list[str] = []
@@ -500,12 +591,24 @@ def main() -> int:
             (tag_updated if status == "tags-updated" else unchanged).append(code)
             continue
 
-        pd = pillar_department(code, parsed["tags"], precedents)
-        if pd is None:
-            print(f"[!] {code} no pillar precedent and no pillar tag", file=sys.stderr)
-            failed.append(code)
+        dup = elective_duplicate(parsed["name"], owners)
+        if dup:
+            print(f"[!] {code} {parsed['name']!r} is {dup} re-listed with "
+                  f"'(Elective)' appended - not writing a second record",
+                  file=sys.stderr)
+            refused_dup.append(f"{code}->{dup}")
             continue
-        pillar, department = pd
+
+        admit = OFF_SPACE_ADMIT.get(code)
+        if admit:
+            pillar, department = admit[0], PILLAR_DEPARTMENT[admit[0]]
+        else:
+            pd = pillar_department(code, parsed["tags"], precedents)
+            if pd is None:
+                print(f"[!] {code} no pillar precedent and no pillar tag", file=sys.stderr)
+                failed.append(code)
+                continue
+            pillar, department = pd
         try:
             mod = Mod(
                 code=code,
@@ -514,7 +617,8 @@ def main() -> int:
                 credits=parsed["credits"],
                 department=department,
                 pillar=pillar,
-                term=term_from_tags(parsed["tags"]),
+                term=term_from_tags(parsed["tags"],
+                                    default=admit[1] if admit else None),
                 prerequisites=parsed["prerequisites"],
                 corequisites=parsed["corequisites"],
                 schedules=[],
@@ -533,8 +637,14 @@ def main() -> int:
     print(f"undergrad courses kept     : {len(chosen)}"
           f" ({len(dropped_dups)} duplicate-code slugs dropped: "
           f"{[slug_of(u) for u in dropped_dups]})")
+    off_total = sum(len(v) for v in off_space.values())
+    print(f"outside the code space     : {off_total} "
+          f"{ {p: len(v) for p, v in sorted(off_space.items())} }")
+    for prefix in sorted(off_space):
+        print(f"    {prefix}.* : {[slug_of(u) for u in off_space[prefix]]}")
     print(f"processed this run         : {len(items)}")
     print(f"skipped (LKYCIC/NAMIC)     : {len(skipped_excluded)} {skipped_excluded}")
+    print(f"refused as (Elective) dup  : {len(refused_dup)} {refused_dup}")
     print(f"new mods written           : {len(new_written)}")
     print(f"existing mods tag-updated  : {len(tag_updated)}")
     print(f"existing mods unchanged    : {len(unchanged)}")
@@ -577,12 +687,63 @@ def self_check() -> int:
     # keeps this usable from a script that knows better than the default.
     if term_from_tags([], default="3") != "3":
         fails.append("an explicit default is ignored")
+
+    # The (Elective) guard, against a fixed table rather than the repo: a check
+    # that reads data/courses starts passing the day somebody deletes 01.117.
+    owners = {
+        "brain inspired computing and its applications": "01.117",
+        "machine learning": "50.007",
+        "empathy an interdisciplinary concept": "02.165",
+    }
+    for title, want, why in [
+        ("Brain-inspired Computing and its Applications (Elective)", "01.117",
+         "the 99.5xx re-listing this guard exists for"),
+        ("Science of Sound: Acoustics, Audio & Music (Elective)", None,
+         "an (Elective) title whose base name the repo does not own"),
+        ("Brain-inspired Computing and its Applications", None,
+         "without the suffix it is a different record, not a duplicate"),
+        ("Machine Learning", None,
+         "50.007 and 50.570 share a name on purpose - a bare name never matches"),
+        ("Machine Learning (elective)", "50.007",
+         "the suffix is matched whatever its case"),
+        ("Empathy: An interdisciplinary concept (Special Topics)", None,
+         "only '(Elective)' is stripped, never any parenthetical"),
+    ]:
+        got = elective_duplicate(title, owners)
+        if got != want:
+            fails.append(f"{why}: {title!r} gave {got!r}, want {want!r}")
+
+    # The prefix gate and its one admitted exception, off a fixed URL list so it
+    # needs no network. Literal codes here, never the constants being tested.
+    kept, _, _, off = undergrad_urls([
+        "https://www.sutd.edu.sg/course/50-043-database-systems/",
+        "https://www.sutd.edu.sg/course/99-504-high-performance-computing-in-science-and-engineering/",
+        "https://www.sutd.edu.sg/course/99-580-research-project/",
+        "https://www.sutd.edu.sg/course/51-505-foundations-of-cybersecurity/",
+    ])
+    if "99.504" not in kept:
+        fails.append("the admitted off-space code 99.504 is no longer kept")
+    if "99.580" in kept or "51.505" in kept:
+        fails.append("a graduate code outside the admit list was kept")
+    if sorted(off) != ["51", "99"] or len(off.get("99", [])) != 1:
+        fails.append(f"off-space report wrong: { {k: len(v) for k, v in off.items()} }")
+
+    # 99.504's page names term 6 and publishes no Term tag. Without the pin it
+    # lands in 8, the untermed-elective fallback, which is not what it said.
+    # Literals, not the constant: a case that reads OFF_SPACE_ADMIT cannot
+    # tell a policy change from a bug, and it crashes rather than failing
+    # when the entry is removed.
+    if OFF_SPACE_ADMIT.get("99.504") != ("SMT", "6"):
+        fails.append("99.504 is no longer admitted as SMT term 6")
+    if term_from_tags(["Core", "SMT"], default="6") != "6":
+        fails.append("the pinned term for an admitted off-space code is ignored")
+
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
         for f in fails:
             print(f"  - {f}")
         return 1
-    print("self-check: term_from_tags behaves")
+    print("self-check: term_from_tags, the (Elective) guard and the prefix gate behave")
     return 0
 
 
