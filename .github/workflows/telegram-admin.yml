@@ -82,10 +82,18 @@ jobs:
                   TG_LINK_KEY: ${{ secrets.TG_LINK_KEY }}
               run: |
                   pip install --quiet telethon cryptography
+                  # Exits 1 when any chat failed, and names them in the job
+                  # summary. It still finishes the sweep first: one bad group
+                  # must not stall the rest, and a caught error that reads as
+                  # "completed success" is how five chats sat migrated and
+                  # unhanded-over for days.
                   python3 tools/telegram/grant_admin.py
 
+            # always(), so a run that reported a failed chat still commits the
+            # handovers that DID land. The exit code is the signal; the registry
+            # writes are not hostage to it.
             - name: Commit registry updates
-              if: steps.check.outputs.run == 'yes'
+              if: always() && steps.check.outputs.run == 'yes'
               run: |
                   if git diff --quiet; then
                     echo "no handovers today"
