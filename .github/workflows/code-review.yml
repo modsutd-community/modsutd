@@ -166,6 +166,7 @@ jobs:
               with:
                   go-version: '1.25.5'
             - name: Build the reviewer with the unreleased Gemini fix
+              id: build
               continue-on-error: true
               env:
                   # Both pinned to a commit, never to a branch. The fix sits on
@@ -186,6 +187,17 @@ jobs:
                   go build -trimpath -ldflags "-X main.Version=$OCR_STAMP"                       -o "$RUNNER_TEMP/ocr-bin/ocr" ./cmd/opencodereview
                   echo "$RUNNER_TEMP/ocr-bin" >> "$GITHUB_PATH"
                   "$RUNNER_TEMP/ocr-bin/ocr" version
+            # Which binary this run got, in the run summary. The fallback
+            # above is deliberate, but a silent one would make a build that
+            # stopped working look like a provider having a bad day.
+            - name: Name the reviewer this run will use
+              run: |
+                  if [ "${{ steps.build.outcome }}" = "success" ]; then
+                      echo "reviewer: $(ocr version | head -1)" >> "$GITHUB_STEP_SUMMARY"
+                  else
+                      echo "::warning::the patched reviewer did not build, so this run uses the published binary, which cannot complete a Gemini review"
+                      echo "reviewer: published binary (build failed)" >> "$GITHUB_STEP_SUMMARY"
+                  fi
             - id: review
               continue-on-error: true
               uses: alibaba/open-code-review@main
