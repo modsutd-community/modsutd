@@ -108,8 +108,9 @@ VALID_PREFIXES = {"01", "02", "03", "10", "20", "30", "40", "50", "60"}
 # The third field is checked against the scraped description on every run,
 # because the reason a code is admitted lives on a page SUTD can rewrite, and an
 # allowlist keyed on a number alone would go on importing a course as a term-6
-# undergraduate elective long after its page stopped saying so. Reported and not
-# refused: a copy-edit must not silently drop a course from the catalogue.
+# undergraduate elective long after its page stopped saying so. A course already
+# in the catalogue is reported and kept, because a copy-edit must not silently
+# drop one; a code admitted here that has never been written is refused.
 #
 # 99.504's page: "This is a course intended for PhD students and for term 6 or
 # term 8 undergraduate students."
@@ -374,6 +375,20 @@ def elective_duplicate(title: str, owners: dict[str, str]) -> str | None:
     return owners.get(norm_title(stripped))
 
 
+def stale_admission(code: str, description: str) -> str | None:
+    """The words OFF_SPACE_ADMIT was written on, when the page has lost them.
+
+    Case-insensitive because the only thing being asked is whether the sentence
+    that admitted this code is still on the page; SUTD capitalises headings and
+    sentence starts differently across the catalogue.
+    """
+    admit = OFF_SPACE_ADMIT.get(code)
+    if not admit:
+        return None
+    marker = admit[2]
+    return None if marker.lower() in description.lower() else marker
+
+
 # Where a course goes when its page publishes no "Term N" tag at all, which is
 # most of the elective catalogue. 1 was wrong in a way that showed: it swept
 # every elective and technical elective into the freshmore term, so the Term 1
@@ -597,8 +612,9 @@ def main() -> int:
         # already in /data. A page is rewritten long after its record is
         # written, and checking only on the way in would mean checking once.
         admit = OFF_SPACE_ADMIT.get(code)
-        if admit and admit[2].lower() not in parsed["description"].lower():
-            print(f"[!] {code} is admitted because its page said {admit[2]!r} "
+        stale = stale_admission(code, parsed["description"])
+        if stale:
+            print(f"[!] {code} is admitted because its page said {stale!r} "
                   f"and it no longer does - check whether it is still an "
                   f"undergraduate course", file=sys.stderr)
             admit_stale.append(code)
@@ -606,6 +622,15 @@ def main() -> int:
         if path.exists():
             status = merge_existing(path, parsed, args.dry_run)
             (tag_updated if status == "tags-updated" else unchanged).append(code)
+            continue
+
+        # A course already in /data keeps its record and its tag updates
+        # whatever the page now says. One that has never been written is the
+        # opposite case: nothing is dropped by refusing it, and writing it
+        # would file a course into the undergraduate catalogue on a sentence
+        # that is not on its page any more.
+        if stale:
+            failed.append(code)
             continue
 
         # The allowlist wins. It is a person saying "this code is a real course,
@@ -755,6 +780,24 @@ def self_check() -> int:
     if sorted(off) != ["51", "99"] or len(off.get("99", [])) != 1:
         fails.append(f"off-space report wrong: { {k: len(v) for k, v in off.items()} }")
 
+    # The admission's own justification, checked on every run because the page
+    # it was read off is SUTD's to rewrite. Literal marker text here: a case
+    # that reads OFF_SPACE_ADMIT[code][2] passes whatever that is set to.
+    for code, description, want, why in [
+        ("99.504",
+         "This is a course intended for PhD students and for term 6 or term 8 "
+         "undergraduate students.",
+         None, "the sentence the admission was written on"),
+        ("99.504", "This is a course intended for PhD students.",
+         "undergraduate students", "the page dropped the words that admitted it"),
+        ("99.504", "Open to UNDERGRADUATE STUDENTS in their final year.",
+         None, "the marker is matched whatever its case"),
+        ("50.043", "", None, "a code nobody admitted is never stale"),
+    ]:
+        got = stale_admission(code, description)
+        if got != want:
+            fails.append(f"{why}: {code} gave {got!r}, want {want!r}")
+
     # 99.504's page names term 6 and publishes no Term tag. Without the pin it
     # lands in 8, the untermed-elective fallback, which is not what it said.
     # Literals, not the constant: a case that reads OFF_SPACE_ADMIT cannot
@@ -770,7 +813,8 @@ def self_check() -> int:
         for f in fails:
             print(f"  - {f}")
         return 1
-    print("self-check: term_from_tags, the (Elective) guard and the prefix gate behave")
+    print("self-check: term_from_tags, the (Elective) guard, the prefix gate "
+          "and the admission re-check behave")
     return 0
 
 

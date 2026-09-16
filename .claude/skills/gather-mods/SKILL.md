@@ -54,7 +54,11 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   whose page says "intended for PhD students and for term 6 or term 8
   undergraduate students". Its pillar and term are pinned there because neither
   can be derived - the page publishes no `Term` tag, and `prefix_precedents()`
-  would vote on "99" using the 99.999 placeholders.
+  would vote on "99" using the 99.999 placeholders. The third field is the
+  sentence that justified the entry, re-read on every run: a course already in
+  `/data` is reported and kept when the page loses it, because a copy-edit must
+  not silently drop a course, and a code admitted there that has never been
+  written is refused.
   `ELECTIVE_SUFFIX_RE` is what makes widening the set safe: SUTD re-lists three
   SMT electives in the PhD catalogue as `<name> (Elective)` under a 99.5xx
   code, and 99.502 is 01.117 with a different number on it. Only that exact
