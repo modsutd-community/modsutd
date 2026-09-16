@@ -4,7 +4,15 @@
 #
 # pull_request_target runs with base-repo secrets against untrusted PR
 # code - safe only because the action never executes PR code, it just
-# reads the diff. Do not add build/test steps to THIS workflow.
+# reads the diff. Do not add build/test steps to THIS workflow: no step here
+# may compile, install or run anything that came out of the pull request,
+# including its package manifests.
+#
+# The gemini job's Go build is not that, and the line is worth stating because
+# it looks like it. It clones a pinned commit of the reviewer's own upstream
+# and builds that; it never reads the checkout the action makes of the PR. The
+# job already ran third-party code before it existed, since the action installs
+# @alibaba-group/open-code-review@latest from npm, unpinned, on every run.
 name: OpenCodeReview PR Review
 
 concurrency:
