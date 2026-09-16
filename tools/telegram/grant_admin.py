@@ -59,7 +59,7 @@ from telethon.tl import functions, types
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from linkcrypt import encrypt  # noqa: E402
-from participants import members_of, sort_joiners  # noqa: E402
+from participants import members_of, record_peer, sort_joiners  # noqa: E402
 
 REG = pathlib.Path(__file__).resolve().parents[2] / "data" / "telegram-groups.json"
 
@@ -140,6 +140,10 @@ def hand_over(client, entry: dict, channel, user_id: int) -> None:
     promotion; the note is decoration on top of it. Written last, a chat that
     promoted fine and then failed to send left `supergroup` set and
     `adminGranted` unset, which is a state neither queue could pick up again.
+
+    Where the chat LIVES is written earlier still, by record_peer, because that
+    is true the moment the migration lands and is what makes a failure here
+    recoverable rather than terminal.
     """
     client(functions.channels.EditAdminRequest(
         channel=channel, user_id=user_id, admin_rights=RIGHTS, rank=""))
@@ -149,12 +153,7 @@ def hand_over(client, entry: dict, channel, user_id: int) -> None:
     # back off the live chat.
     invite = client(functions.messages.ExportChatInviteRequest(peer=channel))
     entry["linkEnc"] = encrypt(invite.link)
-    # Both halves of the peer. A channel id alone is not addressable: resolving
-    # it needs the access hash, and the session that leaves months later may not
-    # have this chat in its entity cache any more.
-    entry["chatId"] = channel.id
-    entry["accessHash"] = channel.access_hash
-    entry["supergroup"] = True
+    record_peer(entry, channel)
     entry["adminGranted"] = True
     entry["adminUserId"] = user_id
 
@@ -237,6 +236,7 @@ def main() -> int:
         os.environ["TG_API_HASH"],
     )
     changed = False
+    failed: list[str] = []
     with client:
         me = client.get_me()
         for code, entry in todo.items():
@@ -283,14 +283,19 @@ def main() -> int:
                 # granular rights do not exist on a basic group, so the promotion
                 # has to land on a channel or it silently degrades to the legacy
                 # flag, which cannot appoint anyone.
-                hand_over(client, entry, migrate(client, chat_id), first)
+                channel = migrate(client, chat_id)
+                # Before the promotion, not after. The migration has already
+                # committed on Telegram's side and it is what moved the chat.
+                record_peer(entry, channel)
                 changed = True
+                hand_over(client, entry, channel, first)
                 # Deliberately NOT leaving here: see the module docstring. The
                 # invite link in the registry belongs to this account and dies
                 # with its membership.
                 print(code)
             except Exception as exc:  # noqa: BLE001 - one bad group must not stall the sweep
                 print(f"{code}: {type(exc).__name__}: {exc}", file=sys.stderr)
+                failed.append(f"{code}: {type(exc).__name__}: {exc}")
 
         for code, entry in recheck.items():
             try:
@@ -338,6 +343,7 @@ def main() -> int:
                 print(f"{code}: re-granted")
             except Exception as exc:  # noqa: BLE001 - one bad group must not stall the sweep
                 print(f"{code}: recheck: {type(exc).__name__}: {exc}", file=sys.stderr)
+                failed.append(f"{code}: {type(exc).__name__}: {exc}")
 
         for code, entry in done.items():
             try:
@@ -357,6 +363,24 @@ def main() -> int:
                     changed = True
     if changed:
         REG.write_text(json.dumps(reg, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    # Loudly, and on the job's own status. Every per-chat error above is caught
+    # so one bad group cannot stall the sweep, and for a while that also meant a
+    # chat could fail the same way every day with the run still reading
+    # "completed success". Five did, for days: migrated, never handed over, and
+    # nothing said so anywhere a person looks. A caught error is still an error.
+    if failed:
+        print()
+        print(f"{len(failed)} chat(s) failed. The sweep finished for the rest.")
+        for line in failed:
+            print(f"- {line}")
+        summary = os.environ.get("GITHUB_STEP_SUMMARY")
+        if summary:
+            with open(summary, "a", encoding="utf-8") as fh:
+                fh.write(f"## Telegram sweep: {len(failed)} chat(s) failed\n\n")
+                for line in failed:
+                    fh.write(f"- `{line}`\n")
+        return 1
     return 0
 
 

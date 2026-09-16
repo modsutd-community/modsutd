@@ -22,6 +22,28 @@ from __future__ import annotations
 import sys
 
 
+def record_peer(entry: dict, channel) -> None:
+    """Where this chat now lives, written the instant it moves.
+
+    Called immediately after the migration and BEFORE the promotion is
+    attempted, because the migration is the only step in a handover that cannot
+    be undone and the only one that changes the chat's address. A promotion
+    refused after it - `UserRestrictedError` on a spam-reported account is the
+    one that happened - used to leave the registry pointing at a basic-group id
+    that no longer resolves, with no `supergroup` and no `accessHash`. Neither
+    queue could reach the chat after that: `todo` asked for the tombstone's
+    members and `recheck` wants both fields, so five live groups sat upgraded,
+    unpromoted and unreachable, failing once a day.
+
+    Both halves of the peer, because a channel id alone is not addressable:
+    resolving it needs the access hash, and the session that leaves months later
+    may not have this chat in its entity cache any more.
+    """
+    entry["chatId"] = channel.id
+    entry["accessHash"] = channel.access_hash
+    entry["supergroup"] = True
+
+
 def members_of(participants):
     """The member list inside a ChatFull.participants, or None when there is none.
 
@@ -108,6 +130,19 @@ def self_check() -> int:
 
     eq("a readable chat hands over its members", members_of(Allowed()), Allowed.participants)
     eq("an unreadable one says so rather than raising", members_of(Forbidden()), None)
+
+    # A promotion refused after the migration must still leave an addressable
+    # chat behind, or nothing can reach it again. This is what the five stranded
+    # groups did not have.
+    class Chan:
+        id, access_hash = 777, 12345
+
+    half = {"chatId": 111, "linkEnc": "v1:old"}
+    record_peer(half, Chan())
+    eq("the new peer is recorded", (half["chatId"], half["accessHash"]), (777, 12345))
+    eq("and it is a supergroup now", half["supergroup"], True)
+    eq("but nobody has been promoted", half.get("adminGranted"), None)
+    eq("and the link is left alone until one is", half["linkEnc"], "v1:old")
 
     # A chat somebody migrated from a Telegram client has a creator that is not
     # this account, and ChannelParticipantCreator carries no join date. Sorting
