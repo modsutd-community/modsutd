@@ -640,6 +640,11 @@ def main() -> int:
     off_total = sum(len(v) for v in off_space.values())
     print(f"outside the code space     : {off_total} "
           f"{ {p: len(v) for p, v in sorted(off_space.items())} }")
+    # The admitted ones do not appear above, because they were not dropped -
+    # which is exactly why they are named here. An exception nobody can see in
+    # the run output is the same silence this change is about.
+    admitted = sorted(c for c in OFF_SPACE_ADMIT if c in chosen)
+    print(f"admitted off-space codes   : {len(admitted)} {admitted}")
     for prefix in sorted(off_space):
         print(f"    {prefix}.* : {[slug_of(u) for u in off_space[prefix]]}")
     print(f"processed this run         : {len(items)}")
