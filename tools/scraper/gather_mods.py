@@ -591,7 +591,13 @@ def main() -> int:
             (tag_updated if status == "tags-updated" else unchanged).append(code)
             continue
 
-        dup = elective_duplicate(parsed["name"], owners)
+        admit = OFF_SPACE_ADMIT.get(code)
+
+        # The allowlist wins. It is a person saying "this code is a real course,
+        # write it", and the guard below is a pattern match on a title - so if
+        # the two ever disagreed, the heuristic would be overruling the decision
+        # that exists to overrule it.
+        dup = None if admit else elective_duplicate(parsed["name"], owners)
         if dup:
             print(f"[!] {code} {parsed['name']!r} is {dup} re-listed with "
                   f"'(Elective)' appended - not writing a second record",
@@ -599,7 +605,6 @@ def main() -> int:
             refused_dup.append(f"{code}->{dup}")
             continue
 
-        admit = OFF_SPACE_ADMIT.get(code)
         if admit:
             pillar, department = admit[0], PILLAR_DEPARTMENT[admit[0]]
         else:
