@@ -121,9 +121,12 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 30
         needs: context
-        # No secret to gate on any more: the proxy needs no credential, so this
-        # provider is always the first attempt and costs nothing when it fails.
-        if: always() && needs.context.result == 'success'
+        # No `if` at all, which is the point: this used to be gated on
+        # GEMINI_TOKEN being set and the proxy needs no credential. A job with
+        # one `needs` and no condition runs exactly when that job succeeded,
+        # so `always() && needs.context.result == 'success'` would be the same
+        # sentence written twice. Whether a review HAPPENED is the verdict
+        # step's question, not this one's.
         # An attempt, not the verdict. The next provider takes over when this
         # one is unreachable - Gemini answers 503 often enough - and a red
         # check nobody can act on would block branch protection for no reason.
