@@ -208,6 +208,20 @@ Two are deliberately not monthly, and say why in their own headers:
   and it is gone. Everything else about a mod, in every pillar, comes from the
   `mods` step, because sutd.edu.sg's own course sitemap covers all of them.
   The "never wipe on empty" rule in `scrape.py` stays and is a safety feature.
+- **`VALID_PREFIXES` in `gather_mods.py` is the undergraduate listing's own code
+  space**, not a guess: that listing yields 219 course links carrying exactly
+  those nine prefixes. What the sitemap holds beyond them is a graduate
+  catalogue (51.5xx is MSSD, 99.5xx the SMT PhD programme) or an orphan CMS
+  record (41.5xx, 45.2xx - no programme lists them, their pages carry no prose,
+  two say "Non-credit course"). Those are REPORTED by prefix now, not dropped by
+  a bare `continue`: a decision the run does not print is one the next
+  maintainer re-derives from the sitemap by hand, which is how 99.504 sat
+  unlisted. `OFF_SPACE_ADMIT` is the exception list, holding the one code whose
+  page names an undergraduate audience, with its pillar and term pinned because
+  neither can be derived. Widening the set is guarded by `ELECTIVE_SUFFIX_RE`:
+  SUTD re-lists three SMT electives in the PhD catalogue as `<name> (Elective)`,
+  and only that exact suffix is stripped, because the repo keeps pairs sharing a
+  bare name on purpose.
 - `semanticSearch.ts` is a documented stub behind `ENABLED = false`.
 - Room search behaviour that looks like a bug - every think tank for `tt`, no
   fuzziness at four characters or less - is deliberate and explained once, in
