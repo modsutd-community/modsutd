@@ -23,6 +23,11 @@ function prerenderedPaths() {
       server.middlewares.use((req, _res, next) => {
         const m = /^\/(mods|venues)\/([^/?#]+)$/.exec(req.url ?? '');
         if (m) req.url = `/${m[1]}/${m[2]}/index.html`;
+        // The index pages are real files too, and without this the preview
+        // server hands /mods to the SPA fallback while production serves the
+        // list of every course.
+        const i = /^\/(mods|venues)\/?$/.exec(req.url ?? '');
+        if (i) req.url = `/${i[1]}/index.html`;
         next();
       });
     },

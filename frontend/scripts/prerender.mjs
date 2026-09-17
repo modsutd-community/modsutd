@@ -115,7 +115,7 @@ function noscriptBody(rows, heading, lead, sourceUrl) {
           ${facts}
         </ul>
         ${source}
-        <p><a href="/" style="color:#7aa2f7">Open modSUTD</a> &middot; <a href="/faq.html" style="color:#7aa2f7">FAQ</a></p>
+        <p><a href="/" style="color:#7aa2f7">Open modSUTD</a> &middot; <a href="/mods" style="color:#7aa2f7">All courses</a> &middot; <a href="/venues" style="color:#7aa2f7">All rooms</a> &middot; <a href="/faq.html" style="color:#7aa2f7">FAQ</a></p>
         ${NOT_AFFILIATED}
       </div>`;
 }
@@ -271,7 +271,68 @@ for (const v of venues) {
   rooms += 1;
 }
 
-console.log(`  prerendered ${mods + rooms} pages (${mods} mods, ${rooms} rooms)`);
+// The index pages, and the reason this file writes any: nothing on this site
+// links to a course page. The app is one canvas with no anchors in it, so a
+// crawler arriving from sitemap.xml found several hundred urls that nothing
+// pointed at, which Google files as "Discovered - currently not indexed" and
+// does not spend crawl budget on. These two pages are the crawl graph: one
+// real <a> per record, on a page the home page's own noscript links to.
+//
+// They are the SAME shell as every other page, so a reader with JavaScript
+// gets the app at /mods exactly as before and never sees the list. Vercel
+// serves a real file ahead of the SPA rewrite, and vite.config's preview
+// middleware does the same so the e2e suite tests what production does.
+function indexPage(kind, heading, lead, rows) {
+  const items = rows
+    .map(({ href, text }) =>
+      `<li><a href="${esc(href)}" style="color:#7aa2f7">${esc(text)}</a></li>`)
+    .join('\n          ');
+  return page(shell, {
+    title: `${heading} - modSUTD`,
+    description: lead,
+    canonical: `${ORIGIN}/${kind}`,
+    jsonld: {
+      '@context': 'https://schema.org',
+      '@type': 'CollectionPage',
+      name: heading,
+      description: lead,
+      url: `${ORIGIN}/${kind}`,
+      isPartOf: { '@type': 'WebSite', name: 'modSUTD', url: ORIGIN },
+    },
+    body: `      <div style="max-width:40rem;margin:3rem auto;padding:0 1.25rem;color:#e9eaed;font:16px/1.6 system-ui,sans-serif">
+        <h1 style="font-size:1.4rem">${esc(heading)}</h1>
+        <p>${esc(lead)}</p>
+        <ul>
+          ${items}
+        </ul>
+        <p><a href="/" style="color:#7aa2f7">Open modSUTD</a> &middot; <a href="/faq.html" style="color:#7aa2f7">FAQ</a></p>
+        ${NOT_AFFILIATED}
+      </div>`,
+  });
+}
+
+write('mods', indexPage(
+  'mods',
+  'Every SUTD course',
+  'One link per course in the catalogue, with the code and the title SUTD '
+  + 'publishes. Each page carries that course\'s pillar, term, credits, '
+  + 'prerequisites and schedule.',
+  courses
+    .filter((c) => typeof c.code === 'string' && c.code && safeSegment(c.code))
+    .map((c) => ({ href: `/mods/${c.code}`, text: `${c.code} ${c.name}${c.retired ? ' (no longer offered)' : ''}` })),
+));
+
+write('venues', indexPage(
+  'venues',
+  'Every room on the SUTD campus',
+  'One link per room, with its code and the name on its door. Each page says '
+  + 'the building, the level, the room type and what is timetabled there.',
+  venues
+    .filter((v) => typeof v.code === 'string' && v.code && safeSegment(v.code))
+    .map((v) => ({ href: `/venues/${v.code}`, text: `${v.code} ${v.name}` })),
+));
+
+console.log(`  prerendered ${mods + rooms + 2} pages (${mods} mods, ${rooms} rooms, 2 indexes)`);
 if (rejected.length) {
   console.warn(`  prerender: ${rejected.length} code(s) are not a plain path `
     + `segment and got no page: ${rejected.join(', ')}`);
