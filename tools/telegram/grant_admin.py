@@ -16,6 +16,13 @@ Migration keeps the exported invite link working (tested on a live chat), and
 this re-exports it afterwards regardless, so the registry never holds a link
 that has not just been read back off the migrated chat.
 
+Migration is also the only step that cannot be undone, which is why the
+promotion being refused is treated as an answer about the ACCOUNT and not
+about the chat. Telegram refuses EditAdminRequest outright for a restricted
+one, and every later chat in the queue would be refused the same way, after
+being migrated. So the queue stops at the first such refusal and leaves the
+groups behind it exactly as they are.
+
 It does NOT leave at handover, and that is load-bearing. Telegram revokes the
 invite links of a user who leaves, so the link the registry stores died the
 moment the throwaway walked out - every chat served "This invite link has
@@ -53,6 +60,7 @@ import os
 import pathlib
 import sys
 
+from telethon import errors
 from telethon.sync import TelegramClient
 from telethon.sessions import StringSession
 from telethon.tl import functions, types
@@ -237,6 +245,10 @@ def main() -> int:
     )
     changed = False
     failed: list[str] = []
+    # Set by the first promotion Telegram refuses on account-wide grounds. It
+    # ends the queue below rather than the run: the other two queues promote
+    # nothing that has to be migrated first.
+    refused = False
     with client:
         me = client.get_me()
         for code, entry in todo.items():
@@ -293,6 +305,19 @@ def main() -> int:
                 # invite link in the registry belongs to this account and dies
                 # with its membership.
                 print(code)
+            except errors.UserRestrictedError as exc:
+                # Account-wide, and nothing to do with this chat: Telegram
+                # refuses EditAdminRequest for a restricted account, and the
+                # next chat in this queue would be refused the same way - after
+                # being migrated, which is the one step here that cannot be
+                # undone. A chat left that way is a supergroup nobody can be
+                # made admin of until the restriction lifts, so the queue stops
+                # at the first refusal instead of upgrading the rest of the
+                # term's groups to prove the same point.
+                print(f"{code}: {type(exc).__name__}: {exc}", file=sys.stderr)
+                failed.append(f"{code}: {type(exc).__name__}: {exc}")
+                refused = True
+                break
             except Exception as exc:  # noqa: BLE001 - one bad group must not stall the sweep
                 print(f"{code}: {type(exc).__name__}: {exc}", file=sys.stderr)
                 failed.append(f"{code}: {type(exc).__name__}: {exc}")
@@ -369,6 +394,12 @@ def main() -> int:
     # chat could fail the same way every day with the run still reading
     # "completed success". Five did, for days: migrated, never handed over, and
     # nothing said so anywhere a person looks. A caught error is still an error.
+    if refused:
+        print()
+        print("Telegram refused a promotion for this account, not for that "
+              "chat. The handover queue stopped there; the groups behind it "
+              "are untouched and still basic groups. Ask @SpamBot what the "
+              "restriction is, then re-run this workflow.")
     if failed:
         print()
         print(f"{len(failed)} chat(s) failed. The sweep finished for the rest.")
