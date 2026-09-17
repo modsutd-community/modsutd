@@ -10,6 +10,33 @@
   "corequisites": [],
   "schedules": [
     {
+      "type": "Lecture",
+      "day": "Monday",
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "location": "1.102",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "11:00",
+      "endTime": "13:00",
+      "location": "1.609",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "12:30",
+      "endTime": "15:00",
+      "location": "1.609",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
       "type": "Cohort",
       "day": "Monday",
       "startTime": "14:00",
@@ -39,11 +66,29 @@
     {
       "type": "Cohort",
       "day": "Tuesday",
+      "startTime": "10:30",
+      "endTime": "13:00",
+      "location": "1.609",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
       "startTime": "15:30",
       "endTime": "18:00",
       "location": "1.414",
       "instructors": [],
       "source": "subject-enrolment"
+    },
+    {
+      "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.609",
+      "instructors": [],
+      "source": "contributed"
     },
     {
       "type": "Cohort",
@@ -62,6 +107,15 @@
       "location": "1.413",
       "instructors": [],
       "source": "subject-enrolment"
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "1.609",
+      "instructors": [],
+      "source": "contributed"
     },
     {
       "type": "Cohort",
