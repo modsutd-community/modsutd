@@ -318,11 +318,10 @@ write('mods', indexPage(
   + 'publishes. Each page carries that course\'s pillar, term, credits, '
   + 'prerequisites and schedule.',
   courses
+    // The same filter the loop above writes pages under, so the index cannot
+    // link a page that was never written: a code safeSegment refuses has no
+    // page and is already reported by name in `rejected`.
     .filter((c) => typeof c.code === 'string' && c.code && safeSegment(c.code))
-    // encodeURIComponent, the same as the canonical each course page carries.
-    // safeSegment is a traversal check and not a code-shaped allowlist, so a
-    // space reaches here on purpose: six venues have no room number and use
-    // their name as their code.
     .map((c) => ({ href: `/mods/${encodeURIComponent(c.code)}`, text: `${c.code} ${c.name}${c.retired ? ' (no longer offered)' : ''}` })),
 ));
 
@@ -333,6 +332,10 @@ write('venues', indexPage(
   + 'the building, the level, the room type and what is timetabled there.',
   venues
     .filter((v) => typeof v.code === 'string' && v.code && safeSegment(v.code))
+    // encodeURIComponent, the same as the canonical each room page carries.
+    // safeSegment screens a path escape and nothing else, so a space reaches
+    // here on purpose: six venues have no room number and use their name as
+    // their code, which is why "Campus Centre" has to encode.
     .map((v) => ({ href: `/venues/${encodeURIComponent(v.code)}`, text: `${v.code} ${v.name}` })),
 ));
 
