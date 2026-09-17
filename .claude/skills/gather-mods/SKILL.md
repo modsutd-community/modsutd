@@ -64,6 +64,23 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   code, and 99.502 is 01.117 with a different number on it. Only that exact
   suffix is stripped before comparing, because the repo keeps pairs that share
   a bare name on purpose - 50.007 and 50.570 are both "Machine Learning".
+- **A course's level is not in its number.** The eleven courses under `02.5`
+  tag themselves `Term 1` to `Term 3` and read like a master's programme. Two
+  of their pages say so in their own words, and `GRADUATE_PAGE` holds those two
+  with the words that say it: 02.563 is "a Masters Research Project", 02.522
+  "provides a strong foundation for the Master's Research Project". Those are
+  filed under 8, beside every other graduate course in the catalogue, and the
+  marker is re-read on every run like an admission's.
+  The other nine name no audience at all, so they keep the term they publish
+  and there is no prefix rule. The same ban is why the 5xx-means-graduate
+  reading came out of this repo.
+  SUTD does classify all eleven, and the classification is visible but not
+  readable: `course-level-sitemap.xml` holds exactly two terms, `graduate` and
+  `undergraduate`. The archive behind each renders in the browser, the
+  listing's own `?course-level=` filter is applied in the browser too (the
+  server returns the unfiltered first page), the course page HTML carries no
+  trace of it, and `/wp-json/wp/v2/course` answers 403. If a way in appears,
+  that taxonomy is the signal to key on, and the number never is.
 - **Merge policy - never degrade**: existing repo files get a surgical
   `tags` update (pillar tags are unioned in from suffix-variant pages like
   03-007a/b), description fill when the repo one is empty, and grading +
