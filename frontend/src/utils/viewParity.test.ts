@@ -64,9 +64,13 @@ describe('weekly view and list view agree on event identity', () => {
 
   // The guarantee: paste weekly now, list view later, and the second import
   // updates the first in place instead of duplicating the term.
-  it('produce byte-identical UIDs with no cancellations', () => {
+  it('produce byte-identical UIDs, so the second import updates the first', () => {
     expect(uidsOf(buildICS(fromWeekly))).toEqual(uidsOf(buildICS(fromList)));
-    expect(uidsOf(buildICS(fromList))).toHaveLength(13);
+    // Two UIDs for thirteen meetings. Recess week splits the term into two
+    // unbroken runs and each run is one recurring event, so this counts runs
+    // and not classes - the classes are counted by expanding the rule, in
+    // icsRoundTrip.test.ts.
+    expect(uidsOf(buildICS(fromList))).toHaveLength(2);
   });
 
   // Room is deliberately outside the UID, so the later paste corrects the room

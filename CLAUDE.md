@@ -457,24 +457,29 @@ Two are deliberately not monthly, and say why in their own headers:
   timetable: a Wednesday class read as Tuesday. A weekly paste also covers one
   week and carries no term end, so it renders but never contributes - a 5-day
   span would anchor the batch-chat window and expiry wrongly.
-- **A weekly class exports as a recurrence, and what it swallows is retracted
-  by name.** Each unbroken run of exactly-weekly dates becomes one VEVENT with
-  `RRULE;FREQ=WEEKLY;COUNT=n`; a term is not one run, because recess week and
-  public holidays leave a class with no row that week, so 13 Thursdays with one
-  missing is two runs and not one rule with a hole in it. COUNT rather than
+- **A weekly class exports as a recurrence, and the file is written for a
+  first import.** Each unbroken run of exactly-weekly dates becomes one VEVENT
+  with `RRULE;FREQ=WEEKLY;COUNT=n`; a term is not one run, because recess week
+  and public holidays leave a class with no row that week, so 13 Thursdays with
+  one missing is two runs and not one rule with a hole in it. COUNT rather than
   UNTIL plus EXDATE: a calendar can say "repeats weekly, 6 times" and cannot
   usefully say "until December except one date". No BYDAY either: FREQ=WEEKLY
   already repeats on DTSTART's own weekday, and naming one is a second opinion
   about which day this is - a run is built from seven-day spacing, so a date
   that failed to land on `e.day` would expand the rule onto dates the run does
-  not contain while the cancellations retracted the ones it does.
-  The dates a run swallows lose their own VEVENT, and a downloaded `.ics` cannot
-  delete anything - absence is not cancellation. So each orphaned UID is named
-  in a `STATUS:CANCELLED` VEVENT, or a student who imported the one-off version
-  and imported again would keep the old one-offs UNDER the new recurrence and
-  see every later week twice. That is the duplicate term the UID rule below
-  exists to prevent. Those tombstones carry the SIGNATURE too, because a client
-  that materialises one has put something in the reader's calendar.
+  not contain.
+  The dates a run swallows lose their own VEVENT and nothing stands in for
+  them. They were named in `STATUS:CANCELLED` VEVENTs for a while, because a
+  downloaded `.ics` cannot delete anything and a browser holding the one-off
+  export would otherwise keep those one-offs UNDER the new recurrence. The file
+  cannot tell who is importing it, so every reader paid a tombstone per
+  swallowed week for that, and a client that materialises one shows a greyed
+  class that never met. A reader still holding an import from before deletes
+  those events and imports again; that is the whole migration, and it is a
+  choice about who the export is for rather than a gap.
+  Counting VEVENTs is no longer counting classes, which is what
+  `meetings()` in `icsRoundTrip.test.ts` exists for: it expands the rule with
+  ical.js and compares the dates, so a rule that covers the wrong weeks fails.
 - The `.ics` UID is keyed on mod + type + date only. Room and time are left out
   on purpose: they are what gets corrected, and including them turned a fix into
   a duplicate term. SEQUENCE comes from the server's clock, not the device's -
