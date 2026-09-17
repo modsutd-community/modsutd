@@ -319,7 +319,11 @@ write('mods', indexPage(
   + 'prerequisites and schedule.',
   courses
     .filter((c) => typeof c.code === 'string' && c.code && safeSegment(c.code))
-    .map((c) => ({ href: `/mods/${c.code}`, text: `${c.code} ${c.name}${c.retired ? ' (no longer offered)' : ''}` })),
+    // encodeURIComponent, the same as the canonical each course page carries.
+    // safeSegment is a traversal check and not a code-shaped allowlist, so a
+    // space reaches here on purpose: six venues have no room number and use
+    // their name as their code.
+    .map((c) => ({ href: `/mods/${encodeURIComponent(c.code)}`, text: `${c.code} ${c.name}${c.retired ? ' (no longer offered)' : ''}` })),
 ));
 
 write('venues', indexPage(
@@ -329,7 +333,7 @@ write('venues', indexPage(
   + 'the building, the level, the room type and what is timetabled there.',
   venues
     .filter((v) => typeof v.code === 'string' && v.code && safeSegment(v.code))
-    .map((v) => ({ href: `/venues/${v.code}`, text: `${v.code} ${v.name}` })),
+    .map((v) => ({ href: `/venues/${encodeURIComponent(v.code)}`, text: `${v.code} ${v.name}` })),
 ));
 
 console.log(`  prerendered ${mods + rooms + 2} pages (${mods} mods, ${rooms} rooms, 2 indexes)`);

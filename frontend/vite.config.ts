@@ -21,12 +21,16 @@ function prerenderedPaths() {
     name: 'prerendered-paths',
     configurePreviewServer(server: { middlewares: { use: (fn: (req: { url?: string }, res: unknown, next: () => void) => void) => void } }) {
       server.middlewares.use((req, _res, next) => {
-        const m = /^\/(mods|venues)\/([^/?#]+)$/.exec(req.url ?? '');
+        // The path alone. A url carrying ?focus= or a fragment is the same
+        // file request, and matching the whole string sent those to the SPA
+        // fallback while production served the page.
+        const path = (req.url ?? '').split(/[?#]/)[0];
+        const m = /^\/(mods|venues)\/([^/]+)$/.exec(path);
         if (m) req.url = `/${m[1]}/${m[2]}/index.html`;
         // The index pages are real files too, and without this the preview
         // server hands /mods to the SPA fallback while production serves the
         // list of every course.
-        const i = /^\/(mods|venues)\/?$/.exec(req.url ?? '');
+        const i = /^\/(mods|venues)\/?$/.exec(path);
         if (i) req.url = `/${i[1]}/index.html`;
         next();
       });
