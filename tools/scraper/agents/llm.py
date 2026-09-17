@@ -39,6 +39,15 @@ import httpx
 WEB2API_ENV = "GEMINI_WEB2API_URL"
 WEB2API_MODEL = "gemini-3.7-flash"
 
+# Latched off for the rest of the process by the first call that fails against
+# it. configured() is rebuilt on every call and the environment variable stays
+# set, so without this a proxy that died mid-run is tried again by every later
+# call: three round trips and the proxy's own retry sleeps each time, or a full
+# timeout when it hangs, inside a job that has one. One failure is enough to
+# know, because it is a process on this machine rather than a service having a
+# bad minute.
+_web2api_failed = False
+
 # In order. The first provider that answers with parseable JSON wins.
 PROVIDERS = (
     ("GEMINI", "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",
@@ -83,7 +92,7 @@ def configured() -> list[tuple[str, str, str]]:
     """(provider, url, model) for every provider that has a token, in order."""
     load_local_env()
     out = []
-    web2api = os.environ.get(WEB2API_ENV, "").strip()
+    web2api = "" if _web2api_failed else os.environ.get(WEB2API_ENV, "").strip()
     if web2api:
         out.append(("WEB2API", web2api,
                     os.environ.get("WEB2API_MODEL", "").strip() or WEB2API_MODEL))
@@ -153,6 +162,9 @@ def chat(
             r.raise_for_status()
             text = r.json()["choices"][0]["message"]["content"]
         except Exception:  # noqa: BLE001
+            if provider == "WEB2API":
+                global _web2api_failed
+                _web2api_failed = True
             continue
         parsed = first_json_object(text or "")
         if parsed is not None:
