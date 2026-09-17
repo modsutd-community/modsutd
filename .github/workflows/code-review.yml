@@ -154,22 +154,28 @@ jobs:
             # is no longer read here (the scraper still uses it, see
             # tools/scraper/agents/llm.py).
             #
-            # Pinned to a commit and fetched over https: it runs in the same
-            # job as the reviewer, which holds a token that can post comments.
-            # A tag or a branch would be whatever it points at on the morning
-            # of the run.
+            # Vendored at tools/ci/gemini_web2api.py rather than fetched: it
+            # runs in the same job as the reviewer, which holds a token that
+            # can post comments, so the bytes that run are bytes a pull request
+            # reviewed. Nothing executable is downloaded at review time.
             #
             # Two things to know when it breaks. Google can start refusing
             # datacentre addresses, and the upstream file goes stale when
             # Google changes the web app; either way this provider fails and
             # Groq picks the review up, which is what the chain is for.
+            # The BASE ref, which is what pull_request_target checks out by
+            # default and the only thing this job may execute. persist-credentials
+            # is off so no token is left in the workspace git config while a
+            # third-party process is running beside it.
+            - uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
             - name: Start gemini-web2api
               id: proxy
               continue-on-error: true
               run: |
                   pip install httpx
-                  curl -fsSL -o "$RUNNER_TEMP/proxy.py"                     https://raw.githubusercontent.com/Sophomoresty/gemini-web2api/2bb988bfcbb82a7fab5d2c99aa5560ff40d64f7e/gemini_web2api.py
-                  python "$RUNNER_TEMP/proxy.py" > "$RUNNER_TEMP/proxy.log" 2>&1 &
+                  python tools/ci/gemini_web2api.py > "$RUNNER_TEMP/proxy.log" 2>&1 &
                   for i in $(seq 1 30); do
                       curl -sf http://127.0.0.1:8081/v1/models >/dev/null 2>&1 && break
                       sleep 1
