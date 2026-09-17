@@ -38,9 +38,49 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   `Number of credits:\s*(\d+)` (absent on many pages → default 12); tags
   from `section.js-page-tags a`; term from the first `Term N` tag, and with
   no such tag **8** for an elective or **1** for a `Freshmore Core`, because
-  calling both of them term 1 put 149 electives and graduate subjects in the
-  freshmore term. `python gather_mods.py --self-check` pins that table and
-  runs in CI.
+  calling both of them term 1 made the freshmore term the dumping ground for
+  the whole elective catalogue. `python gather_mods.py --self-check` pins that
+  table and runs in CI.
+- **Which codes it walks, and what it says about the rest.** `VALID_PREFIXES`
+  is the code space of SUTD's own undergraduate listing, checked rather than
+  guessed: that listing yields 219 course links carrying exactly those nine
+  prefixes. Everything else in the sitemap is a graduate catalogue (51.5xx is
+  MSSD, 99.5xx the SMT PhD programme) or an orphan CMS record (41.5xx, 45.2xx:
+  no programme lists them and their pages carry no prose at all). Those used to
+  be dropped by a bare `continue` that printed nothing, so a real course could
+  sit unlisted with no way to find out. The run now prints them by prefix with
+  their slugs.
+  `OFF_SPACE_ADMIT` is the exception list and it holds one code: **99.504**,
+  whose page says "intended for PhD students and for term 6 or term 8
+  undergraduate students". Its pillar and term are pinned there because neither
+  can be derived - the page publishes no `Term` tag, and `prefix_precedents()`
+  would vote on "99" using the 99.999 placeholders. The third field is the
+  sentence that justified the entry, re-read on every run: a course already in
+  `/data` is reported and kept when the page loses it, because a copy-edit must
+  not silently drop a course, and a code admitted there that has never been
+  written is refused.
+  `ELECTIVE_SUFFIX_RE` is what makes widening the set safe: SUTD re-lists three
+  SMT electives in the PhD catalogue as `<name> (Elective)` under a 99.5xx
+  code, and 99.502 is 01.117 with a different number on it. Only that exact
+  suffix is stripped before comparing, because the repo keeps pairs that share
+  a bare name on purpose - 50.007 and 50.570 are both "Machine Learning".
+- **A course's level is not in its number.** The eleven courses under `02.5`
+  tag themselves `Term 1` to `Term 3` and read like a master's programme. Two
+  of their pages say so in their own words, and `GRADUATE_PAGE` holds those two
+  with the words that say it: 02.563 is "a Masters Research Project", 02.522
+  "provides a strong foundation for the Master's Research Project". Those are
+  filed under 8, beside every other graduate course in the catalogue, and the
+  marker is re-read on every run like an admission's.
+  The other nine name no audience at all, so they keep the term they publish
+  and there is no prefix rule. The same ban is why the 5xx-means-graduate
+  reading came out of this repo.
+  SUTD does classify all eleven, and the classification is visible but not
+  readable: `course-level-sitemap.xml` holds exactly two terms, `graduate` and
+  `undergraduate`. The archive behind each renders in the browser, the
+  listing's own `?course-level=` filter is applied in the browser too (the
+  server returns the unfiltered first page), the course page HTML carries no
+  trace of it, and `/wp-json/wp/v2/course` answers 403. If a way in appears,
+  that taxonomy is the signal to key on, and the number never is.
 - **Merge policy - never degrade**: existing repo files get a surgical
   `tags` update (pillar tags are unioned in from suffix-variant pages like
   03-007a/b), description fill when the repo one is empty, and grading +
@@ -62,6 +102,56 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
 3. Mods that vanish from the sitemap are RETIRED, not deleted - keep their
    files (history + reviews); the `scrape` run lists them as notes.
 4. PR title `data: listing refresh <date>`, one concern per PR.
+
+
+## A course nothing links to
+
+Some courses are reachable only by their own URL. SUTD's undergraduate listing
+does not carry them, so no amount of clicking finds them, and 99.504 sat
+unlisted that way.
+
+They are in the sitemaps, which is how this gatherer sees them at all:
+`course-sitemap.xml` and `course-sitemap2.xml` hold every course post, far more
+than the listing does. `undergrad_urls` buckets anything whose prefix is
+outside `VALID_PREFIXES` into `off_space`, and the run prints it:
+
+```
+outside the code space     : 21 {'41': 2, '45': 4, '51': 9, '99': 6}
+admitted off-space codes   : 1 ['99.504']
+    41.* : ['41-500-real-analysis', '41-520-discrete-mathematics']
+    51.* : ['51-501-computer-networks', ...]
+    99.* : ['99-580-research-project', ...]
+```
+
+To check one, open its page and look for a sentence naming who takes it. That
+sentence is the whole test, and the page is the only thing that can pass it:
+a code prefix is not evidence, and 51.5xx or 99.5xx says nothing on its own.
+Of the 22 codes outside the space today, exactly one page names an
+undergraduate audience:
+
+```
+99.504   This is a course intended for PhD students and for term 6 or term 8
+         undergraduate students.
+```
+
+To admit one:
+
+1. Add it to `OFF_SPACE_ADMIT` as `code: (pillar, term, the words)`. The third
+   field is the phrase you just read, and the run re-checks it against the
+   scraped description every time, because SUTD can rewrite a page long after
+   a record is written. Pillar and term are pinned because nothing can derive
+   them: the page publishes no `Term` tag, and `prefix_precedents()` has no
+   honest vote for a prefix the repo barely holds.
+2. Run the gatherer. It writes `data/courses/XX_YYY.json` like any other new
+   record, through the same schema validation.
+3. Nothing else is by hand. `frontend/scripts/gen-sitemap.mjs` writes
+   `sitemap.xml` from `/data` at build time and `prerender.mjs` writes the
+   course's own HTML page, so the deploy after the merge is what puts
+   `/mods/XX.YYY` in front of a crawler.
+
+A code whose page says nothing stays out and stays reported. That is the point
+of printing them: a decision the run does not print is one the next maintainer
+re-derives from the sitemap by hand.
 
 
 ## Verify the harvest, do not trust it
