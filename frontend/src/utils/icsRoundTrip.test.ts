@@ -22,6 +22,20 @@ function reparse(ics: string) {
   return comp.getAllSubcomponents('vevent').map((v) => new ICAL.Event(v));
 }
 
+// Every meeting the file actually puts in a calendar, as YYYY-MM-DD. A run of
+// weeks is one VEVENT carrying an RRULE, so counting VEVENTs counts rules and
+// not classes; this expands them with somebody else's expander, which is the
+// only way to check that the rule we wrote covers the dates the paste had.
+function meetings(ics: string): string[] {
+  return reparse(ics).flatMap((ev) => {
+    if (!ev.isRecurring()) return [ev.startDate.toString().slice(0, 10)];
+    const it = ev.iterator();
+    const out: string[] = [];
+    for (let t = it.next(); t; t = it.next()) out.push(t.toString().slice(0, 10));
+    return out;
+  });
+}
+
 describe('an independent parser reads our export', () => {
   it('parses at all - a malformed file throws here', () => {
     expect(() => ICAL.parse(buildICS(events))).not.toThrow();
@@ -29,7 +43,7 @@ describe('an independent parser reads our export', () => {
 
   it('round-trips every class the parser found', () => {
     const expected = events.reduce((n, e) => n + (e.occurrences?.length || 1), 0);
-    expect(reparse(buildICS(events))).toHaveLength(expected);
+    expect(meetings(buildICS(events))).toHaveLength(expected);
   });
 
   it('keeps the local wall-clock time and the Singapore zone', () => {
@@ -48,7 +62,7 @@ describe('an independent parser reads our export', () => {
 
   it('leaves recess week out, because the source did', () => {
     const ent = events.find((e) => e.modCode === '30.111')!;
-    const days = reparse(buildICS([ent])).map((v) => v.startDate.toString().slice(0, 10));
+    const days = meetings(buildICS([ent]));
     expect(days).toContain('2026-10-22');
     expect(days).not.toContain('2026-10-29');
     expect(days).toContain('2026-11-05');
@@ -189,7 +203,8 @@ describe('review reminders ride along with the timetable', () => {
     expect(summaries.some((s) => /Mid-term eval/.test(s))).toBe(true);
     expect(summaries.some((s) => /Final eval/.test(s))).toBe(true);
     // and they must not displace any class
-    expect(out.length).toBe(events.reduce((n, e) => n + (e.occurrences?.length || 1), 0) + 2);
+    expect(meetings(buildICS([...events, ...reminders]))).toHaveLength(
+      events.reduce((n, e) => n + (e.occurrences?.length || 1), 0) + 2);
   });
 
   it('points back at the share page so the reminder is actionable', () => {
@@ -367,13 +382,15 @@ describe('a weekly class exports as a recurrence', () => {
     expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20260917T140000');
   });
 
-  it('retracts every date the recurrence swallowed', () => {
+  it('writes nothing for the dates the recurrence swallowed', () => {
     const ics = buildICS([ev(['2026-09-17', '2026-09-24', '2026-10-01'])]);
-    // Two cancellations: the run head keeps its own UID and becomes the
-    // recurrence, so only the dates that lost their VEVENT are named.
-    expect(ics.match(/STATUS:CANCELLED/g)).toHaveLength(2);
-    expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20260924T140000');
-    expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20261001T140000');
+    // One VEVENT for three meetings. The other two dates come out of the
+    // RRULE, and nothing else in the file mentions them: a tombstone would be
+    // a greyed entry in the calendar of everyone importing for the first time.
+    expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(1);
+    expect(ics).not.toContain('STATUS:CANCELLED');
+    expect(ics).not.toContain('20260924T140000');
+    expect(ics).not.toContain('20261001T140000');
   });
 
   it('gives a gapped term one recurrence per run', () => {

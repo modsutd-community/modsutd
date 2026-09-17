@@ -265,48 +265,28 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
         'END:VEVENT',
       ].map(foldLine).join('\r\n');
 
-    // A dated VEVENT that retracts the one an older export wrote for this date.
-    //
-    // Collapsing a run into one recurring event keeps only the run head's UID,
-    // and a downloaded .ics cannot delete anything: absence is not cancellation.
-    // So a student who imported the one-off version and imports again would get
-    // the head updated in place AND expanded over every later week, with the
-    // old one-offs still sitting under it - the duplicate term the UID rule at
-    // the top of this file exists to prevent. Naming each orphaned UID and
-    // cancelling it is the only in-band way to retract one.
-    const cancelled = (date: string) =>
-      [
-        'BEGIN:VEVENT',
-        `DTSTAMP:${dtstamp}`,
-        `UID:${stableUid([keys.get(e)!.get(date)!])}`,
-        `SEQUENCE:${sequence}`,
-        `DTSTART;TZID=Asia/Singapore:${localStamp(date, e.startTime)}`,
-        `DTEND;TZID=Asia/Singapore:${localStamp(date, e.endTime)}`,
-        'STATUS:CANCELLED',
-        `SUMMARY:${summary}`,
-        // Signed like any other. A client that materialises a cancellation as a
-        // greyed entry has put something in the reader's calendar, and the
-        // SIGNATURE search is the only way to find an import again on Android.
-        `DESCRIPTION:${desc}`,
-        'END:VEVENT',
-      ].map(foldLine).join('\r\n');
-
     if (e.occurrences?.length) {
-      // One recurring event per unbroken weekly run, and the dates it swallowed
-      // are retracted by name. A run of one stays a one-off: RRULE;COUNT=1 says
-      // the same thing in more words and reads as recurring in a calendar's UI.
+      // One recurring event per unbroken weekly run, and nothing at all for
+      // the dates it swallowed. A run of one stays a one-off: RRULE;COUNT=1
+      // says the same thing in more words and reads as recurring in a
+      // calendar's UI.
+      //
+      // Those dates used to come back as STATUS:CANCELLED VEVENTs, to retract
+      // the orphaned UIDs of a browser that had imported the one-off version.
+      // The file cannot tell who is importing it, so every reader paid for
+      // that: a first import carried a tombstone per swallowed week, and a
+      // client that materialises one puts a greyed entry in the reader's
+      // calendar for a class that was never there. This export is written for
+      // the person importing for the first time. Anyone holding an import
+      // from before deletes those events and imports again.
       return weeklyRuns(e.occurrences).flatMap((run) =>
         run.length > 1
-          ? [
-              // No BYDAY. FREQ=WEEKLY already repeats on DTSTART's own weekday,
-              // so naming one adds nothing except a way to disagree: a run is
-              // built from seven-day spacing, and if a date in it ever failed
-              // to land on `e.day` the rule would expand onto dates the run
-              // does not contain while the cancellations below retracted the
-              // ones it does - and the class would leave the calendar entirely.
-              vevent(run[0], `RRULE:FREQ=WEEKLY;COUNT=${run.length}`),
-              ...run.slice(1).map(cancelled),
-            ]
+          // No BYDAY. FREQ=WEEKLY already repeats on DTSTART's own weekday,
+          // so naming one adds nothing except a way to disagree: a run is
+          // built from seven-day spacing, and a date in it that failed to
+          // land on `e.day` would expand the rule onto dates the run does
+          // not contain.
+          ? [vevent(run[0], `RRULE:FREQ=WEEKLY;COUNT=${run.length}`)]
           : [vevent(run[0])]);
     }
     if (e.startDate === e.endDate) {

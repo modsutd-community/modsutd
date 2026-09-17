@@ -375,6 +375,41 @@ def elective_duplicate(title: str, owners: dict[str, str]) -> str | None:
     return owners.get(norm_title(stripped))
 
 
+# Courses whose own page says they belong to a master's programme, with the
+# words that say it and the term to file them under. Read off the page and not
+# off the number: the 02.5xx block looks like one programme and nine of its
+# eleven pages name no audience at all, so they keep the term they publish.
+#
+# 8 is where every other graduate course in this catalogue already sits, having
+# arrived there through the untermed-elective fallback. It is not a claim that
+# these are eighth-term undergraduate courses; nothing in the schema can say
+# "not an undergraduate term", and inventing a value here would be a second
+# reader's problem every time.
+GRADUATE_PAGE: dict[str, tuple[str, str]] = {
+    # "...providing a strong foundation for the Master's Research Project."
+    # The apostrophe on that page is a curly one, so the marker stops short of
+    # it: a straight-quote copy would silently stop matching.
+    "02.522": ("8", "Research Project"),
+    # "The final term is dedicated for students to complete a Masters Research
+    # Project."
+    "02.563": ("8", "Masters Research Project"),
+}
+
+
+def graduate_term(code: str, description: str) -> str | None:
+    """The term for a course whose own page calls it a master's course.
+
+    None when the code is not in the table, and also when it is but the page no
+    longer carries the words: the entry is a reading of one sentence, and SUTD
+    can rewrite the sentence. The caller reports that rather than guessing.
+    """
+    pin = GRADUATE_PAGE.get(code)
+    if not pin:
+        return None
+    term, marker = pin
+    return term if marker.lower() in description.lower() else None
+
+
 def stale_admission(code: str, description: str) -> str | None:
     """The words OFF_SPACE_ADMIT was written on, when the page has lost them.
 
@@ -541,6 +576,7 @@ def main() -> int:
     skipped_excluded: list[str] = []
     refused_dup: list[str] = []
     admit_stale: list[str] = []
+    grad_stale: list[str] = []
     new_written: list[str] = []
     tag_updated: list[str] = []
     unchanged: list[str] = []
@@ -612,6 +648,13 @@ def main() -> int:
         # already in /data. A page is rewritten long after its record is
         # written, and checking only on the way in would mean checking once.
         admit = OFF_SPACE_ADMIT.get(code)
+        # Same shape as the admission below: a pin read off a page is re-read
+        # against that page every run, because the page is SUTD's to rewrite.
+        if code in GRADUATE_PAGE and graduate_term(code, parsed["description"]) is None:
+            print(f"[!] {code} is filed as a graduate course because its page "
+                  f"said {GRADUATE_PAGE[code][1]!r} and it no longer does",
+                  file=sys.stderr)
+            grad_stale.append(code)
         stale = stale_admission(code, parsed["description"])
         if stale:
             print(f"[!] {code} is admitted because its page said {stale!r} "
@@ -662,8 +705,9 @@ def main() -> int:
                 credits=parsed["credits"],
                 department=department,
                 pillar=pillar,
-                term=term_from_tags(parsed["tags"],
-                                    default=admit[1] if admit else None),
+                term=graduate_term(code, parsed["description"])
+                or term_from_tags(parsed["tags"],
+                                  default=admit[1] if admit else None),
                 prerequisites=parsed["prerequisites"],
                 corequisites=parsed["corequisites"],
                 schedules=[],
@@ -692,6 +736,8 @@ def main() -> int:
     print(f"admitted off-space codes   : {len(admitted)} {admitted}")
     if admit_stale:
         print(f"    !! page no longer says why : {admit_stale}")
+    if grad_stale:
+        print(f"    !! no longer says master's : {grad_stale}")
     for prefix in sorted(off_space):
         print(f"    {prefix}.* : {[slug_of(u) for u in off_space[prefix]]}")
     print(f"processed this run         : {len(items)}")
@@ -779,6 +825,23 @@ def self_check() -> int:
         fails.append("a graduate code outside the admit list was kept")
     if sorted(off) != ["51", "99"] or len(off.get("99", [])) != 1:
         fails.append(f"off-space report wrong: { {k: len(v) for k, v in off.items()} }")
+
+    # A master's course, read off its page. Literal codes, terms and words
+    # here: a case built from GRADUATE_PAGE passes whatever that is set to.
+    for code, description, want, why in [
+        ("02.563", "The final term is dedicated for students to complete a "
+                   "Masters Research Project.", "8",
+         "the page that files 02.563 as a graduate course"),
+        ("02.563", "The final term is dedicated to independent work.", None,
+         "the page dropped the words, so the pin stops answering"),
+        ("02.522", "...a strong foundation for the Master's Research Project.",
+         "8", "02.522 says what it prepares you for"),
+        ("02.501", "Humans have the innate desire to live well.", None,
+         "a course nobody pinned keeps its own tag"),
+    ]:
+        got = graduate_term(code, description)
+        if got != want:
+            fails.append(f"{why}: {code} gave {got!r}, want {want!r}")
 
     # The admission's own justification, checked on every run because the page
     # it was read off is SUTD's to rewrite. Literal marker text here: a case
