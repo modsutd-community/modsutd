@@ -43,6 +43,12 @@
     "with a decision the repo has already made, and keep the reason in the",
     "rule so a reader knows why it is there.",
     "",
+    "tools/ci/ is EXCLUDED because it is vendored: third-party files kept",
+    "at a named upstream commit and never edited here. A finding in one of",
+    "them is addressed by refreshing the file or by dropping the dependency,",
+    "never by patching it in place, so reviewing them produces work nobody",
+    "can do.",
+    "",
     "Check any pattern with `ocr rules check <path>`, and check a whole diff",
     "with `ocr review --preview --from main --to <branch>`, which prints the",
     "verdict per file (user_exclude, unsupported_ext, ...) and calls no LLM."
@@ -51,7 +57,8 @@
     "data/**",
     "frontend/public/data/**",
     "**/package-lock.json",
-    "**/*.geojson"
+    "**/*.geojson",
+    "tools/ci/**"
   ],
   "rules": [
     {

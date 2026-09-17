@@ -68,6 +68,33 @@ jobs:
             # The model tokens are optional. Without them the `propose` step
             # says so and the drift report is still committed, so the PR opens
             # either way.
+            # The same proxy the reviewer uses, for the same reason: the free
+            # Gemini API tier is 5 requests a minute and 20 a day, and a refresh
+            # asks a model about every course whose prerequisites read as prose.
+            # It needs no credential. When it fails to start, nothing here
+            # changes: GEMINI_WEB2API_URL stays unset and agents/llm.py falls
+            # through to the token providers exactly as before.
+            - name: start gemini-web2api
+              id: proxy
+              if: steps.when.outputs.go == 'true'
+              run: |
+                  pip install httpx
+                  python tools/ci/gemini_web2api.py > /tmp/web2api.log 2>&1 &
+                  for i in $(seq 1 30); do
+                      curl -sf http://127.0.0.1:8081/v1/models >/dev/null 2>&1 && break
+                      sleep 1
+                  done
+                  # No `continue-on-error`: the step cannot fail, and says so
+                  # out loud instead. A silent empty url would look like a
+                  # refresh that chose the token providers rather than one that
+                  # never had the choice.
+                  if curl -sf http://127.0.0.1:8081/v1/models >/dev/null; then
+                      echo "url=http://127.0.0.1:8081/v1/chat/completions" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "::warning::gemini-web2api did not start; this refresh falls back to the token providers"
+                      tail -20 /tmp/web2api.log || true
+                  fi
+
             - name: refresh the mods
               id: refresh
               if: steps.when.outputs.go == 'true'
@@ -76,6 +103,9 @@ jobs:
               # healthy. With a plain redirect the step's exit code is the
               # scraper's, and there is no shell setting to get wrong.
               env:
+                  # Empty when the proxy did not start, which is what turns the
+                  # web route off in agents/llm.py.
+                  GEMINI_WEB2API_URL: ${{ steps.proxy.outputs.url }}
                   # Optional. `propose` says so in its own report when none
                   # is set, and the rest of the refresh is unaffected.
                   GEMINI_TOKEN: ${{ secrets.GEMINI_TOKEN }}
