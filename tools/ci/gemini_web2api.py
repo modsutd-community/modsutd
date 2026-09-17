@@ -12,6 +12,11 @@
 # Read before vendoring: no eval, no exec, no subprocess, no socket handling of
 # its own, and the only outbound host in it is gemini.google.com. The base64
 # calls are image payloads.
+#
+# One dormant edge: upload_images() imports gemini_web2api.multimodal, a
+# sibling module that is NOT vendored, so an image part in a request would
+# raise ImportError rather than being uploaded. Both callers here send text
+# only. Vendor that module too if anything ever sends an image.
 
 #!/usr/bin/env python3
 """
