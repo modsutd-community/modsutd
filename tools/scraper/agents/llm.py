@@ -139,15 +139,16 @@ def chat(
             "response_format": {"type": "json_object"},
         }
         try:
-            # WEB2API has no token and the proxy accepts any bearer, so the
-            # header is sent either way rather than branched on: a missing
-            # Authorization is a shape some proxies refuse outright.
-            token = os.environ.get(f"{provider}_TOKEN", "").strip() or "unused"
+            # No Authorization for WEB2API: it has no token, and a placeholder
+            # bearer is a credential-shaped string sent to whatever that url
+            # points at. The proxy runs with no api_keys and accepts the
+            # request without one.
+            token = os.environ.get(f"{provider}_TOKEN", "").strip()
             r = httpx.post(
                 url,
                 json=body,
                 timeout=timeout,
-                headers={"Authorization": f"Bearer {token}"},
+                headers={"Authorization": f"Bearer {token}"} if token else {},
             )
             r.raise_for_status()
             text = r.json()["choices"][0]["message"]["content"]
