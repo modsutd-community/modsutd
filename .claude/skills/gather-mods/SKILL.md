@@ -87,6 +87,56 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
 4. PR title `data: listing refresh <date>`, one concern per PR.
 
 
+## A course nothing links to
+
+Some courses are reachable only by their own URL. SUTD's undergraduate listing
+does not carry them, so no amount of clicking finds them, and 99.504 sat
+unlisted that way.
+
+They are in the sitemaps, which is how this gatherer sees them at all:
+`course-sitemap.xml` and `course-sitemap2.xml` hold every course post, far more
+than the listing does. `undergrad_urls` buckets anything whose prefix is
+outside `VALID_PREFIXES` into `off_space`, and the run prints it:
+
+```
+outside the code space     : 21 {'41': 2, '45': 4, '51': 9, '99': 6}
+admitted off-space codes   : 1 ['99.504']
+    41.* : ['41-500-real-analysis', '41-520-discrete-mathematics']
+    51.* : ['51-501-computer-networks', ...]
+    99.* : ['99-580-research-project', ...]
+```
+
+To check one, open its page and look for a sentence naming who takes it. That
+sentence is the whole test, and the page is the only thing that can pass it:
+a code prefix is not evidence, and 51.5xx or 99.5xx says nothing on its own.
+Of the 22 codes outside the space today, exactly one page names an
+undergraduate audience:
+
+```
+99.504   This is a course intended for PhD students and for term 6 or term 8
+         undergraduate students.
+```
+
+To admit one:
+
+1. Add it to `OFF_SPACE_ADMIT` as `code: (pillar, term, the words)`. The third
+   field is the phrase you just read, and the run re-checks it against the
+   scraped description every time, because SUTD can rewrite a page long after
+   a record is written. Pillar and term are pinned because nothing can derive
+   them: the page publishes no `Term` tag, and `prefix_precedents()` has no
+   honest vote for a prefix the repo barely holds.
+2. Run the gatherer. It writes `data/courses/XX_YYY.json` like any other new
+   record, through the same schema validation.
+3. Nothing else is by hand. `frontend/scripts/gen-sitemap.mjs` writes
+   `sitemap.xml` from `/data` at build time and `prerender.mjs` writes the
+   course's own HTML page, so the deploy after the merge is what puts
+   `/mods/XX.YYY` in front of a crawler.
+
+A code whose page says nothing stays out and stays reported. That is the point
+of printing them: a decision the run does not print is one the next maintainer
+re-derives from the sitemap by hand.
+
+
 ## Verify the harvest, do not trust it
 
 `gather_mods.py` reads the listing and keeps the codes. It cannot read a
