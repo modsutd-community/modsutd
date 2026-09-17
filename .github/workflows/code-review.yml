@@ -4,7 +4,15 @@
 #
 # pull_request_target runs with base-repo secrets against untrusted PR
 # code - safe only because the action never executes PR code, it just
-# reads the diff. Do not add build/test steps to THIS workflow.
+# reads the diff. Do not add build/test steps to THIS workflow: no step here
+# may compile, install or run anything that came out of the pull request,
+# including its package manifests.
+#
+# The gemini job's Go build is not that, and the line is worth stating because
+# it looks like it. It clones a pinned commit of the reviewer's own upstream
+# and builds that; it never reads the checkout the action makes of the PR. The
+# job already ran third-party code before it existed, since the action installs
+# @alibaba-group/open-code-review@latest from npm, unpinned, on every run.
 name: OpenCodeReview PR Review
 
 concurrency:
@@ -129,6 +137,67 @@ jobs:
         outputs:
             ok: ${{ steps.verdict.outputs.ok }}
         steps:
+            # Gemini's OpenAI-compatible endpoint rejects a follow-up turn that
+            # does not echo the opaque fields it put on a tool call, so every
+            # review this provider ran ended as a failed subtask. The fix is
+            # written and not released: alibaba/open-code-review#1233.
+            #
+            # Pinning that pull request through `uses:` would change nothing.
+            # The action is composite and its one real step is
+            # `npm install -g @alibaba-group/open-code-review`, a launcher that
+            # downloads a PUBLISHED binary from their releases, so a fork of
+            # the action installs the same engine. Building the engine is the
+            # only way to run the fix.
+            #
+            # A path entry is prepended, so this binary answers `ocr` for the
+            # action's own steps ahead of the shim npm puts in the global bin.
+            # The action is otherwise untouched, including its install step.
+            #
+            # DELETE THIS STEP, and the setup-go above it, once
+            # `npm view @alibaba-group/open-code-review version` reports
+            # anything past 1.12.4 that carries the fix.
+            # Both steps continue on error. A build that breaks - upstream
+            # moves, the merge conflicts, Go is unreachable - leaves no path
+            # entry, so `ocr` resolves to the npm binary and this provider
+            # fails the way it does today, which is by falling through to
+            # Groq. A red job here would stop that.
+            - uses: actions/setup-go@v5
+              continue-on-error: true
+              with:
+                  go-version: '1.25.5'
+            - name: Build the reviewer with the unreleased Gemini fix
+              id: build
+              continue-on-error: true
+              env:
+                  # Both pinned to a commit, never to a branch. The fix sits on
+                  # a fork branch that its author can force-push, and a name
+                  # would mean whatever it pointed at on the morning of a run.
+                  OCR_BASE: e556dfad56f11afe15cce9b1a0ca7f8993a65134
+                  OCR_FIX: 468f90af8b090c5170b2a3d5a2eb933db5a5f346
+                  # The action refuses to run unless `ocr version` parses as a
+                  # stable release of 1.9.6 or newer. The build metadata after
+                  # the plus is what says this is not that release.
+                  OCR_STAMP: v1.12.4+pr1233
+              run: |
+                  git clone --filter=blob:none --no-checkout                       https://github.com/alibaba/open-code-review ocr-src
+                  cd ocr-src
+                  git checkout --detach "$OCR_BASE"
+                  git fetch --no-tags origin refs/pull/1233/head
+                  git -c user.name=modsutd -c user.email=ci@modsutd.tech                       merge --no-edit "$OCR_FIX"
+                  go build -trimpath -ldflags "-X main.Version=$OCR_STAMP"                       -o "$RUNNER_TEMP/ocr-bin/ocr" ./cmd/opencodereview
+                  echo "$RUNNER_TEMP/ocr-bin" >> "$GITHUB_PATH"
+                  "$RUNNER_TEMP/ocr-bin/ocr" version
+            # Which binary this run got, in the run summary. The fallback
+            # above is deliberate, but a silent one would make a build that
+            # stopped working look like a provider having a bad day.
+            - name: Name the reviewer this run will use
+              run: |
+                  if [ "${{ steps.build.outcome }}" = "success" ]; then
+                      echo "reviewer: $(ocr version | head -1)" >> "$GITHUB_STEP_SUMMARY"
+                  else
+                      echo "::warning::the patched reviewer did not build, so this run uses the published binary, which cannot complete a Gemini review"
+                      echo "reviewer: published binary (build failed)" >> "$GITHUB_STEP_SUMMARY"
+                  fi
             - id: review
               continue-on-error: true
               uses: alibaba/open-code-review@main
