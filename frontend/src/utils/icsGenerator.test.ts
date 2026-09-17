@@ -108,8 +108,8 @@ describe('buildICS · explicit per-week occurrences', () => {
   // DOM-captured timetables know the exact dates (holidays, reschedules), and
   // each unbroken weekly run becomes one recurring event. 09-02 and 09-09 are
   // seven days apart and 09-23 is fourteen days after 09-09, so this is a run
-  // of two and a lone date: the run's second week is retracted by name, and the
-  // lone one stays a plain event.
+  // of two and a lone date: the run becomes one recurring event and the lone
+  // one stays a plain event.
   const captured: TimetableEvent = {
     modCode: '50.001',
     modName: 'Information Systems',
@@ -125,17 +125,22 @@ describe('buildICS · explicit per-week occurrences', () => {
   };
   const ics = buildICS([captured]);
 
-  it('still carries every occurrence date', () => {
+  it('carries every occurrence, the middle one through the rule', () => {
+    // 09-09 has no DTSTART of its own: it is the second week of the run that
+    // starts on 09-02, and COUNT=2 is what puts it in the calendar.
     expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20260902T130000');
-    expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20260909T130000');
+    expect(ics).toContain('RRULE:FREQ=WEEKLY;COUNT=2');
+    expect(ics).not.toContain('20260909T130000');
     expect(ics).toContain('DTSTART;TZID=Asia/Singapore:20260923T130000');
   });
 
   it('makes the run recurring and the lone date its own event', () => {
     expect(ics.match(/RRULE:/g)).toHaveLength(1);
     expect(ics).toContain('RRULE:FREQ=WEEKLY;COUNT=2');
-    // 09-09 is inside the run, so its own event is retracted. 09-23 is not.
-    expect(ics.match(/STATUS:CANCELLED/g)).toHaveLength(1);
+    // 09-09 is inside the run and has no VEVENT of its own. Nothing stands in
+    // for it either: the export is written for a first import.
+    expect(ics).not.toContain('STATUS:CANCELLED');
+    expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(2);
   });
 
   it('ends each occurrence the same day', () => {
