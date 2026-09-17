@@ -88,6 +88,17 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   assessment table / a `Workload: a-b-c` line - official beats anything
   hand-written; workload exists ONLY in that official form).
   Schedules/credits/term/prerequisites are never touched.
+- **A re-title is PROPOSED, in the diff.** SUTD renames course pages, and
+  `name` is what a student searches by and what their plan shows, so the run
+  writes the page's title into the record and stops there: the pull request
+  carries the before and the after, and a reviewer accepts it by merging or
+  edits it back out. The scraper cannot tell a rename from a replacement, and
+  that is the judgement being handed over rather than a gap.
+  Whitespace is normalised before comparing (HTML line breaks are not
+  re-titles), a name under four characters never wins (an empty h1 is a broken
+  parse), and over `RENAME_CAP` in one run NONE are written: a redesign that
+  changes every h1 must not rewrite the catalogue in one pull request. The run
+  prints each pair with the page it came from.
   Empty scraped tags are never written. New mods get pillar/department from
   a majority-vote precedent map per 2-digit code prefix, are validated
   through `tools/scraper/schema.py` Mod, and written with 2-space indent.

@@ -441,6 +441,29 @@ FRESHMORE_TAG = "Freshmore Core"
 FRESHMORE_DEFAULT = "1"
 
 
+# A page SUTD re-titles against a catalogue that cannot tell a rename from a
+# replacement. Over this many in one run, none are written: a redesign that
+# changes every h1 would otherwise rewrite the catalogue in a single pull
+# request, and a reviewer cannot read 300 re-titles. A real bulk rename is
+# merged by raising this deliberately, in a pull request that says why.
+RENAME_CAP = 10
+
+
+def name_change(current: str, scraped: str) -> str | None:
+    """The page's title for this course, when it is really a different one.
+
+    Whitespace is normalised on both sides before comparing, because the page
+    is read out of HTML where a line break is a space and a run of spaces is
+    one space, and neither is a re-title. A page that parsed to nothing, or to
+    something too short to be a course name, never wins: an empty h1 is a
+    broken parse and this is the field a student searches by.
+    """
+    a, b = " ".join(current.split()), " ".join(scraped.split())
+    if len(b) < 4 or a == b:
+        return None
+    return b
+
+
 def term_from_tags(tags: list[str], default: str | None = None) -> str:
     """The term a course page names, or where an untermed one belongs.
 
@@ -577,6 +600,8 @@ def main() -> int:
     refused_dup: list[str] = []
     admit_stale: list[str] = []
     grad_stale: list[str] = []
+    # (path, code, the name in the repo, the name on the page, the page url)
+    renames: list[tuple[Path, str, str, str, str]] = []
     new_written: list[str] = []
     tag_updated: list[str] = []
     unchanged: list[str] = []
@@ -663,8 +688,13 @@ def main() -> int:
             admit_stale.append(code)
 
         if path.exists():
+            before = json.loads(path.read_text(encoding="utf-8")).get("name", "")
             status = merge_existing(path, parsed, args.dry_run)
             (tag_updated if status == "tags-updated" else unchanged).append(code)
+            retitle = name_change(before, parsed["name"])
+            if retitle:
+                renames.append((path, code, before, retitle,
+                                parsed.get("sourceUrl") or ""))
             continue
 
         # A course already in /data keeps its record and its tag updates
@@ -721,6 +751,20 @@ def main() -> int:
         write_new(path, mod, args.dry_run)
         new_written.append(code)
 
+    # A re-title is PROPOSED and never merged quietly. The name is written into
+    # the record so the pull request carries the before and the after as a diff
+    # a person can read, and a reviewer accepts it by merging or takes it back
+    # out. The scraper cannot tell SUTD renaming a course from SUTD replacing
+    # one, and the name is what a student searches by and what their plan shows,
+    # so the decision is the reviewer's rather than this file's.
+    applied = len(renames) <= RENAME_CAP
+    if renames and applied and not args.dry_run:
+        for path, _, _, after, _ in renames:
+            data = json.loads(path.read_text(encoding="utf-8"))
+            data["name"] = after
+            path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + chr(10),
+                            encoding="utf-8")
+
     print()
     print(f"sitemap /course/ URLs      : {len(course_urls)}")
     print(f"undergrad courses kept     : {len(chosen)}"
@@ -745,6 +789,12 @@ def main() -> int:
     print(f"refused as (Elective) dup  : {len(refused_dup)} {refused_dup}")
     print(f"new mods written           : {len(new_written)}")
     print(f"existing mods tag-updated  : {len(tag_updated)}")
+    if renames:
+        over = "" if applied else f" - over the cap of {RENAME_CAP}, none written"
+        print(f"re-titled by their page    : {len(renames)}{over}")
+        for _, code, before, after, url in renames:
+            print(f"    {code} {before!r}")
+            print(f"        -> {after!r}  {url}")
     print(f"existing mods unchanged    : {len(unchanged)}")
     print(f"failed to parse            : {len(failed)} {failed}")
     if args.dry_run:
@@ -785,6 +835,26 @@ def self_check() -> int:
     # keeps this usable from a script that knows better than the default.
     if term_from_tags([], default="3") != "3":
         fails.append("an explicit default is ignored")
+
+    # A re-title, against literal strings rather than a record in /data: a case
+    # built from a course file starts passing the day somebody edits that file.
+    for before, after, want, why in [
+        ("Theory and Dynamics of Urban Social Processes",
+         "Urban Theory I: Dynamics of Urban Systems and Social Change",
+         "Urban Theory I: Dynamics of Urban Systems and Social Change",
+         "a page SUTD re-titled"),
+        ("Modelling and Analysis", "Modelling and Analysis", None,
+         "the same name is not a change"),
+        ("Modelling  and\n Analysis", "Modelling and Analysis", None,
+         "HTML whitespace is not a re-title"),
+        ("Machine Learning", "", None, "an empty h1 is a broken parse"),
+        ("Machine Learning", "ML", None, "and so is a name too short to be one"),
+    ]:
+        got = name_change(before, after)
+        if got != want:
+            fails.append(f"{why}: {before!r} -> {after!r} gave {got!r}, want {want!r}")
+
+
 
     # The (Elective) guard, against a fixed table rather than the repo: a check
     # that reads data/courses starts passing the day somebody deletes 01.117.
