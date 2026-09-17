@@ -449,6 +449,15 @@ FRESHMORE_DEFAULT = "1"
 RENAME_CAP = 10
 
 
+def rename_batch_ok(count: int) -> bool:
+    """Whether a run's re-titles are written at all.
+
+    All or none, deliberately: half a redesign applied is worse than none of
+    it, because the half that landed looks reviewed.
+    """
+    return count <= RENAME_CAP
+
+
 def name_change(current: str, scraped: str) -> str | None:
     """The page's title for this course, when it is really a different one.
 
@@ -757,10 +766,19 @@ def main() -> int:
     # out. The scraper cannot tell SUTD renaming a course from SUTD replacing
     # one, and the name is what a student searches by and what their plan shows,
     # so the decision is the reviewer's rather than this file's.
-    applied = len(renames) <= RENAME_CAP
+    applied = rename_batch_ok(len(renames))
     if renames and applied and not args.dry_run:
-        for path, _, _, after, _ in renames:
+        for path, _, before, after, _ in renames:
             data = json.loads(path.read_text(encoding="utf-8"))
+            # The name is re-read and compared here, not taken on trust from
+            # the loop above. merge_existing rewrites the same file in between
+            # for tags and description, and a record whose name is no longer
+            # the one this proposal was measured against is somebody else's
+            # edit: proposing over it would hide a change rather than show one.
+            if data.get("name") != before:
+                print(f"[!] {path.name} was renamed while this ran, leaving it",
+                      file=sys.stderr)
+                continue
             data["name"] = after
             path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + chr(10),
                             encoding="utf-8")
@@ -853,6 +871,19 @@ def self_check() -> int:
         got = name_change(before, after)
         if got != want:
             fails.append(f"{why}: {before!r} -> {after!r} gave {got!r}, want {want!r}")
+
+    # The cap, in literal numbers. A run at the cap writes; one past it writes
+    # nothing at all, which is the branch a reader is most likely to undo by
+    # "fixing" it to write the first ten.
+    for count, want, why in [
+        (0, True, "a run with no re-titles"),
+        (1, True, "one re-title"),
+        (10, True, "a run exactly at the cap"),
+        (11, False, "a run past the cap writes none of them"),
+        (390, False, "a redesign that re-titles the whole catalogue"),
+    ]:
+        if rename_batch_ok(count) is not want:
+            fails.append(f"{why}: {count} gave {not want}, want {want}")
 
 
 
