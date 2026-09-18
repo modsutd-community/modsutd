@@ -55,6 +55,15 @@
       "source": "subject-enrolment"
     },
     {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "2.307",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
       "type": "Lecture",
       "day": "Friday",
       "startTime": "11:30",
