@@ -7,7 +7,8 @@
   "pillar": "CSD",
   "term": "3",
   "prerequisites": [
-    "10.014"
+    "10.014",
+    "10.025"
   ],
   "corequisites": [],
   "schedules": [],
@@ -16,5 +17,24 @@
     "Freshmore Elective",
     "ISTD"
   ],
+  "prereqTree": {
+    "or": [
+      {
+        "code": "10.014",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "ay2024"
+        ]
+      },
+      {
+        "code": "10.025",
+        "name": "Computational Thinking for Design",
+        "cohort": [
+          "ay2025",
+          "ay2026"
+        ]
+      }
+    ]
+  },
   "sourceUrl": "https://www.sutd.edu.sg/course/10-020-data-driven-world-elective/"
 }
