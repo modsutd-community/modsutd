@@ -60,6 +60,15 @@
     },
     {
       "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "location": "1.415",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
       "day": "Thursday",
       "startTime": "14:00",
       "endTime": "15:00",
