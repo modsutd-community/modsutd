@@ -160,6 +160,13 @@
   line-height: 1;
 }
 
+.codeRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
 .landmarks {
   display: flex;
   flex-wrap: wrap;
