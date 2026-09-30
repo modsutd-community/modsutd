@@ -1,0 +1,56 @@
+.shareBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(255, 176, 0, 0.35);
+  color: var(--wb-amber, #ffb000);
+  padding: 4px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1;
+  position: relative;
+
+  // WCAG 2.5.5 minimum touch area on coarse pointers without enlarging visual bounds.
+  @media (pointer: coarse) {
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+    }
+  }
+
+  &:hover {
+    background: rgba(255, 176, 0, 0.12);
+    border-color: rgba(255, 176, 0, 0.7);
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
+
+  &[data-copied='true'] {
+    border-color: rgba(60, 168, 122, 0.7);
+    color: var(--wb-green, #3ca87a);
+    background: rgba(60, 168, 122, 0.15);
+  }
+}
+
+.icon {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.check {
+  font-size: 12px;
+  line-height: 14px;
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}

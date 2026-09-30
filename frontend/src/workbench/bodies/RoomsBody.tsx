@@ -8,6 +8,7 @@ import { normaliseHHMM, useNowInfo } from '../logic';
 import { codeMatches, looksLikeCode, queryVariants } from '@/utils/search';
 import wb from '../wb.module.scss';
 import { panoFor } from '@/utils/pano';
+import { ShareButton } from '../ShareButton';
 import styles from './RoomsBody.module.scss';
 
 const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'] as const;
@@ -303,10 +304,17 @@ export function RoomsBody() {
           </button>
           <div className={styles.detailHead}>
             <div>
-              <div className={styles.detailCode}>
-                {detail.facility
-                  ? detail.code === detail.name ? detail.name : `${detail.name} · ${detail.code}`
-                  : `${detail.code} · ${detail.name}`}
+              <div className={styles.codeRow}>
+                <div className={styles.detailCode}>
+                  {detail.facility
+                    ? detail.code === detail.name ? detail.name : `${detail.name} · ${detail.code}`
+                    : `${detail.code} · ${detail.name}`}
+                </div>
+                <ShareButton
+                  url={`https://modsutd.tech/venues/${encodeURIComponent(detail.code)}`}
+                  data-act="share-venue-btn"
+                  data-tip-side="left"
+                />
               </div>
               {detail.altNames && detail.altNames.length > 0 && (
                 <div className={wb.faint} style={{ fontSize: 11 }}>aka: {detail.altNames.join(' · ')}</div>
