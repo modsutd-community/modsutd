@@ -26,7 +26,6 @@ import {defaultLevel, useFreshmore, freshmoreFixedSet, planKeyFor, codeOfKey, mo
 import {useWorkbenchUi} from "../uiContext";
 import {Otto} from "../Otto";
 import {ExtIcon} from "../ExtLink";
-import {ShareIcon} from "../ShareButton";
 import wb from "../wb.module.scss";
 import styles from "./ModBody.module.scss";
 
@@ -41,6 +40,30 @@ function TelegramIcon() {
             aria-hidden
         >
             <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z" />
+        </svg>
+    );
+}
+
+// A share glyph rather than a copy one: what a reader wants to do with a chat
+// link is send it to their cohort, and "copy" is only the mechanism. Clicking
+// still copies - the Web Share API is a phone affordance and would be a dead
+// button on the desktop this panel mostly runs on.
+function ShareIcon() {
+    return (
+        <svg
+            className={styles.teleIcon}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden
+        >
+            <circle cx="18" cy="5" r="3" />
+            <circle cx="6" cy="12" r="3" />
+            <circle cx="18" cy="19" r="3" />
+            <path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4" />
         </svg>
     );
 }
