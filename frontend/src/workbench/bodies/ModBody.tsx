@@ -282,7 +282,7 @@ function TeleChat({mod}: {mod: Mod}) {
                             })
                         }
                     >
-                        {copied ? "✓" : <ShareIcon />}
+                        {copied ? "✓" : <ShareIcon className={styles.teleIcon} />}
                     </button>
                 </div>
             </div>
