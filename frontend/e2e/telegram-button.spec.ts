@@ -40,6 +40,11 @@ test.describe('telegram batch chat', () => {
     await expect(join).toBeVisible();
     await expect(join.locator('svg')).toBeVisible();
     await expect(join).toHaveCSS('color', 'rgb(255, 255, 255)');
+
+    const copy = page.locator('[data-panel="mod"]').getByRole('button', { name: 'copy invite link' });
+    await expect(copy).toBeVisible();
+    await expect(copy.locator('svg')).toBeVisible();
+
     // The registry is public, so it must never carry a usable link.
     expect(await page.content()).not.toContain('t.me/+');
 
