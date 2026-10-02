@@ -6,6 +6,14 @@ there is nothing left to say. It carries no timestamp on purpose, so a
 month that finds the same drift as the last changes no file and opens no
 pull request.
 
+## canaries
+
+the SUTD hosts nothing else in this run fetches. Every other step is a canary for its own host and fails loudly when it goes; this covers what is left, which is virtualtour.sutd.edu.sg - asked for every tile data/venues names, not its front page. REPORTS ONLY, and never fails the run
+
+```
+26/26 panorama tiles still served
+```
+
 ## minors
 
 each minor against its own page. REPORTS ONLY - the requirements are prose, and the repo expands 'any HASS elective' into a real list
@@ -13,11 +21,12 @@ each minor against its own page. REPORTS ONLY - the requirements are prose, and 
 ```
 10 minors in the repo, gathered 2026-07-23
 
-SUTD lists 12 minor pages; the repo carries 10.
-  NOT IN THE REPO   Minor in Analytics
-                    https://www.sutd.edu.sg/esd/education/undergraduate/minors/analytics
-  NOT IN THE REPO   Minor in Engineering Systems (ES)
-                    https://www.sutd.edu.sg/esd/education/undergraduate/minors/engineering-systems
+SUTD lists 12 minor pages; the repo carries 10 and deliberately skips 2.
+  SKIPPED           Minor in Analytics
+                    Retired. SUTD's own index labels it 'For students enrolled in AY2022', and keeps the page up for
+  SKIPPED           Minor in Engineering Systems (ES)
+                    Retired. SUTD's index labels it 'For students enrolled before AY2022'. Same reason as Minor in A
+  every published page has a record, and every record is published
 
   minor-aai      new codes            page names  21 codes  | page names, repo does not: 10.020
   minor-ai       new codes            page names  29 codes  | page names, repo does not: 10.020, 30.106, 50.006, 50.017, 50.020, 50.037, 50.043, 50.044, 50.057
@@ -39,7 +48,7 @@ SUTD lists 12 minor pages; the repo carries 10.
   minor-sbd      ok                   page names  11 codes
                                     repo requires, page does not name: 02.104, 02.147, 02.153, 02.154, 02.155, 02.166, 02.167, 02.219, 02.222, 02.228, 02.231
 
-7 thing(s) need a look, across 10 records and 12 published pages.
+5 thing(s) need a look, across 10 records and 12 published pages.
 Read the page before editing data/minors.json. The requirements are prose, and a code appearing on a page is not always a requirement - it can be an example, or a prerequisite of one.
 ```
 
@@ -49,7 +58,7 @@ prerequisites against each mod's own page. Reports; `propose` is what acts on it
 
 ```
 AGREES      116
-NONE LISTED 148  (page says none, record says none)
+NONE LISTED 150  (page says none, record says none)
 NO PAGE     108: ['02.002', '02.101', '02.103', '02.104', '02.105', '02.106', '02.107', '02.108', '02.109', '02.110', '02.111', '02.112', '02.113', '02.114', '02.115', '02.116', '02.118', '02.119', '02.120', '02.121', '02.122', '02.123', '02.124', '02.125', '02.126', '02.127', '02.128', '02.129', '02.130', '02.131', '02.132', '02.133', '02.135', '02.136', '02.137', '02.139', '02.140', '02.142', '02.144', '02.145', '02.147', '02.148', '02.149', '02.150', '02.151', '02.152', '02.153', '02.154', '02.156', '02.157', '02.158', '02.159', '02.161', '02.162', '02.164', '02.165', '02.166', '02.167', '02.170', '02.171', '02.172', '02.173', '02.174', '02.175', '02.177', '02.178', '02.179', '02.180', '02.181', '02.182', '02.183', '02.201', '02.210', '02.212', '02.216', '02.219', '02.222', '02.223', '02.225', '02.228', '02.230', '02.231', '02.303', '02.XFER', '10.008', '10.009', '20.211', '30.316', '40.014', '50.034', '60.009', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999']
 
 RECORD ADDS WHAT THE PAGE OMITS (13) - the page prints a
@@ -58,7 +67,7 @@ Prerequisite heading with nothing under it, and the record names one:
   01.020   ['01.019']
   01.401   ['01.400']
   10.017   ['10.015']
-  10.020   ['10.014']
+  10.020   ['10.014', '10.025']
   40.003   ['40.001', '40.002']
   40.007   ['40.001']
   40.008   ['40.004']
@@ -111,6 +120,42 @@ OR ON THE PAGE, NO TREE IN THE RECORD (17):
 reads the two reports with a model and edits data/courses where the page supports it. Every proposal is validated against the quoted page text before it is written
 
 ```
+## proposed edits
+
+Read by WEB2API.
+
+### prerequisites
+
+4 course record(s) disagreed with their page.
+
+dropped by validation:
+
+| course | field | why |
+|---|---|---|
+| 50.037 | prerequisites | value must be a non-empty list of course codes |
+
+read and left alone:
+
+| course | why |
+|---|---|
+| 10.022 | The page text lacks an explicit prerequisite statement to quote. |
+| 40.001 | The prerequisite text on the page is ambiguous as it specifies prerequisites for exchange students only. |
+
+### minors
+
+5 minor page(s) name a code their record lacks.
+
+read and left alone:
+
+| minor | why |
+|---|---|
+| minor-aai | No new course additions to propose based on the page text for requirements. |
+| minor-ai | No missing requirement codes to add. |
+| minor-dai | No new requirements found to add. |
+| minor-dh | All listed DH electives are already present in the requirement groups. |
+| minor-hcd | No missing courses to add to the requirement groups. |
+```
+
 ## proposed edits
 
 4 course record(s) disagreed with their page. Read by GROQ.

@@ -12,5 +12,8 @@
   "tags": [
     "Core",
     "SMT"
-  ]
+  ],
+  "sourceUrl": "https://www.sutd.edu.sg/course/99-504-high-performance-computing-in-science-and-engineering/",
+  "noBatchChat": true,
+  "noBatchChatReason": "core"
 }
