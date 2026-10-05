@@ -27,3 +27,7 @@ declare module '*.html?raw' {
   const content: string;
   export default content;
 }
+
+// JSDOM is used in Vitest unit tests to simulate browser DOM parsing.
+declare module 'jsdom';
+

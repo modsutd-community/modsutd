@@ -266,6 +266,9 @@ export interface TimetableEvent {
   // DOM, which sees holidays and reschedules. When present, the ICS export
   // emits one event per date instead of a weekly recurrence rule.
   occurrences?: string[];
+  // Renders DTSTART;VALUE=DATE and DTEND;VALUE=DATE in iCalendar exports so
+  // multi-day reminders banner across weeks instead of occupying timed slots.
+  allDay?: boolean;
 }
 
 export interface ModsState {

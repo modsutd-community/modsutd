@@ -139,11 +139,13 @@ async function openThread(mod: Mod): Promise<string> {
 export function ReviewForm({
     mod,
     prefillText,
+    prefillVals,
     threadUrl,
     onPosted,
 }: {
     mod: Mod;
     prefillText?: string;
+    prefillVals?: Record<string, string>;
     // Fired after a review is posted through the API, so the giscus embed can
     // be rebuilt - it has no way of noticing a comment it did not create.
     onPosted?: () => void;
@@ -151,9 +153,13 @@ export function ReviewForm({
     threadUrl?: string | null;
 }) {
     const linked = useGithubLink();
-    const [vals, setVals] = useState<Record<string, string>>(
-        () => readDrafts()[mod.code]?.vals ?? {},
-    );
+    // Prefill values merge over stored drafts on arrival: the bookmarklet is an
+    // explicit "review with these answers" action, while drafts are only local
+    // crash guards.
+    const [vals, setVals] = useState<Record<string, string>>(() => {
+        const draft = readDrafts()[mod.code]?.vals ?? {};
+        return {...draft, ...(prefillVals ?? {})};
+    });
     // An arriving prefill outranks a stored draft. The bookmarklet is an explicit
     // "review this, with this text" - a draft is only there to survive a stray
     // click, and letting it win made the bookmarklet look like it did nothing.
@@ -168,6 +174,12 @@ export function ReviewForm({
     useEffect(() => {
         if (prefillText) setText((cur) => cur || prefillText);
     }, [prefillText]);
+
+    useEffect(() => {
+        if (prefillVals && Object.keys(prefillVals).length > 0) {
+            setVals((cur) => ({...cur, ...prefillVals}));
+        }
+    }, [prefillVals]);
 
     // Switching mods must not carry answers across - that is how a review about
     // one class ends up filed against another - but it must not throw them away

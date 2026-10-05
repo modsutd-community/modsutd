@@ -128,7 +128,13 @@ function WorkbenchInner() {
 
     // Prefill carried from /share?text=&mod= deep links (bookmarklet,
     // extension). Parsed synchronously once - inbound-only, like all URLs here.
-    const [sharePrefill] = useState<{text?: string; mod?: string}>(() => {
+    const [sharePrefill] = useState<{
+        text?: string;
+        mod?: string;
+        best?: string;
+        worst?: string;
+        workload?: string;
+    }>(() => {
         if (window.location.pathname !== "/share") return {};
         // Fragment first - that is where the bookmarklet puts it now, so the text
         // never reaches a server log. Query string still read for older ones.
@@ -137,7 +143,13 @@ function WorkbenchInner() {
         );
         const query = new URLSearchParams(window.location.search);
         const pick = (k: string) => hash.get(k) ?? query.get(k) ?? undefined;
-        return {text: pick("text"), mod: pick("mod")};
+        return {
+            text: pick("text"),
+            mod: pick("mod"),
+            best: pick("best"),
+            worst: pick("worst"),
+            workload: pick("workload"),
+        };
     });
 
     // ---- Inbound deep links only, once on mount. The workbench is ONE page:
@@ -524,6 +536,20 @@ function WorkbenchInner() {
                     <ShareBody
                         prefillText={sharePrefill.text}
                         prefillMod={sharePrefill.mod}
+                        prefillVals={{
+                            ...(sharePrefill.best
+                                ? {"Best part": sharePrefill.best}
+                                : {}),
+                            ...(sharePrefill.worst
+                                ? {"Worst part": sharePrefill.worst}
+                                : {}),
+                            ...(sharePrefill.workload
+                                ? {
+                                      "Workload (lighter / as-stated / heavier)":
+                                          sharePrefill.workload,
+                                  }
+                                : {}),
+                        }}
                     />
                 </Panel>
                 <Panel
@@ -724,7 +750,13 @@ interface MobileProps {
     clashCount: number;
     pickMod: (code: string) => void;
     focusRoom: (room: string) => void;
-    sharePrefill: {text?: string; mod?: string};
+    sharePrefill: {
+        text?: string;
+        mod?: string;
+        best?: string;
+        worst?: string;
+        workload?: string;
+    };
 }
 
 function MobileShell({
@@ -1125,6 +1157,20 @@ function MobileShell({
                         <ShareBody
                             prefillText={sharePrefill.text}
                             prefillMod={sharePrefill.mod}
+                            prefillVals={{
+                                ...(sharePrefill.best
+                                    ? {"Best part": sharePrefill.best}
+                                    : {}),
+                                ...(sharePrefill.worst
+                                    ? {"Worst part": sharePrefill.worst}
+                                    : {}),
+                                ...(sharePrefill.workload
+                                    ? {
+                                          "Workload (lighter / as-stated / heavier)":
+                                              sharePrefill.workload,
+                                      }
+                                    : {}),
+                            }}
                         />
                     </Sheet>
                 )}

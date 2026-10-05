@@ -65,6 +65,8 @@ from sources import _http  # noqa: E402
 
 from bs4 import BeautifulSoup  # noqa: E402
 
+from gather_mods import UNDERGRADUATE_WHITELIST  # noqa: E402
+
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 COURSES = ROOT / "data" / "courses"
 
@@ -186,6 +188,18 @@ def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
         # a course anyone can be in a chat about.
         if d.get("code") == PLACEHOLDER_CODE:
             continue
+        # Whitelisted undergraduate courses (e.g. 99.504) are electives for undergraduates.
+        # SUTD's CMS tags them Core because they are core for PhD students, but
+        # marking them noBatchChat denies undergraduates their elective cohort chat.
+        if d.get("code") in UNDERGRADUATE_WHITELIST:
+            if current in mine:
+                d.pop("noBatchChat", None)
+                d.pop("noBatchChatReason", None)
+                removed.append(d["code"])
+                if not dry_run:
+                    f.write_text(json.dumps(d, indent=2, ensure_ascii=False) + "\n",
+                                 encoding="utf-8")
+            continue
         reason = reason_for(d.get("tags") or [])
         current = d.get("noBatchChatReason")
 
@@ -243,12 +257,17 @@ def self_check() -> int:
     if REASON in TAG_REASONS.values():
         fails.append(f"the tag pass and the listing pass share the reason {REASON!r}, "
                      f"so each would remove the other's flags")
+    # Whitelisted undergraduate courses must be exempt from core tagging, because their
+    # "Core" tag on SUTD's CMS belongs to the PhD catalogue. Undergraduates take
+    # them as electives and need batch chats.
+    if "99.504" not in UNDERGRADUATE_WHITELIST:
+        fails.append("99.504 is missing from UNDERGRADUATE_WHITELIST")
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
         for f in fails:
             print(f"  - {f}")
         return 1
-    print("self-check: the tag reader behaves")
+    print("self-check: the tag reader behaves and off-space electives are exempt")
     return 0
 
 
