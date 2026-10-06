@@ -140,12 +140,14 @@ export function ReviewForm({
     mod,
     prefillText,
     prefillVals,
+    onPrefillConsumed,
     threadUrl,
     onPosted,
 }: {
     mod: Mod;
     prefillText?: string;
     prefillVals?: Record<string, string>;
+    onPrefillConsumed?: () => void;
     // Fired after a review is posted through the API, so the giscus embed can
     // be rebuilt - it has no way of noticing a comment it did not create.
     onPosted?: () => void;
@@ -153,33 +155,30 @@ export function ReviewForm({
     threadUrl?: string | null;
 }) {
     const linked = useGithubLink();
-    // Prefill values merge over stored drafts on arrival: the bookmarklet is an
-    // explicit "review with these answers" action, while drafts are only local
-    // crash guards.
+    // Inbound bookmarklet payloads represent fresh student intent arriving
+    // from Bluera, so they outrank stale drafts stored from earlier visits.
     const [vals, setVals] = useState<Record<string, string>>(() => {
         const draft = readDrafts()[mod.code]?.vals ?? {};
         return {...draft, ...(prefillVals ?? {})};
     });
-    // An arriving prefill outranks a stored draft. The bookmarklet is an explicit
-    // "review this, with this text" - a draft is only there to survive a stray
-    // click, and letting it win made the bookmarklet look like it did nothing.
-    const [text, setText] = useState(
-        () => prefillText ?? readDrafts()[mod.code]?.text ?? "",
-    );
+    const [text, setText] = useState(() => {
+        return prefillText ?? readDrafts()[mod.code]?.text ?? "";
+    });
     const [device, setDevice] = useState<DeviceStart | null>(null);
     const [status, setStatus] = useState<string | null>(null);
     const [postedUrl, setPostedUrl] = useState<string | null>(null);
     const [threadFallback, setThreadFallback] = useState<string | null>(null);
 
+    // Arriving bookmarklet payloads are consumed on mount so subsequent
+    // remounts (like closing and reopening the review panel) do not re-apply
+    // initial parameters over the student's fresh edits.
     useEffect(() => {
-        if (prefillText) setText((cur) => cur || prefillText);
-    }, [prefillText]);
-
-    useEffect(() => {
-        if (prefillVals && Object.keys(prefillVals).length > 0) {
-            setVals((cur) => ({...cur, ...prefillVals}));
+        if (prefillText || (prefillVals && Object.keys(prefillVals).length > 0)) {
+            onPrefillConsumed?.();
         }
-    }, [prefillVals]);
+        // Run once on mount to consume arriving prefill into local form state
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     // Switching mods must not carry answers across - that is how a review about
     // one class ends up filed against another - but it must not throw them away

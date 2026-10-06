@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useMemo, useRef, useState} from "react";
+import {ReactNode, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {selectMod} from "@/reducers/timetableReducer";
@@ -128,7 +128,7 @@ function WorkbenchInner() {
 
     // Prefill carried from /share?text=&mod= deep links (bookmarklet,
     // extension). Parsed synchronously once - inbound-only, like all URLs here.
-    const [sharePrefill] = useState<{
+    const [sharePrefill, setSharePrefill] = useState<{
         text?: string;
         mod?: string;
         best?: string;
@@ -143,14 +143,38 @@ function WorkbenchInner() {
         );
         const query = new URLSearchParams(window.location.search);
         const pick = (k: string) => hash.get(k) ?? query.get(k) ?? undefined;
-        return {
+        const res = {
             text: pick("text"),
             mod: pick("mod"),
             best: pick("best"),
             worst: pick("worst"),
             workload: pick("workload"),
         };
+        // Inbound URL parameters are consumed on boot. Clean the address bar so
+        // subsequent reloads or navigations do not repeatedly re-inject GET values.
+        if (window.location.search || window.location.hash) {
+            window.history.replaceState(null, "", "/share");
+        }
+        return res;
     });
+
+    const sharePrefillVals = useMemo(() => {
+        const vals: Record<string, string> = {};
+        if (sharePrefill.best) vals["Best part"] = sharePrefill.best;
+        if (sharePrefill.worst) vals["Worst part"] = sharePrefill.worst;
+        if (sharePrefill.workload) {
+            vals["Workload (lighter / as-stated / heavier)"] =
+                sharePrefill.workload;
+        }
+        return Object.keys(vals).length > 0 ? vals : undefined;
+    }, [sharePrefill]);
+
+    // Once the review form consumes inbound bookmarklet answers, clear the
+    // prefill payload from workbench state so subsequent panel remounts do not
+    // clobber user edits.
+    const handlePrefillConsumed = useCallback(() => {
+        setSharePrefill((cur) => ({mod: cur.mod}));
+    }, []);
 
     // ---- Inbound deep links only, once on mount. The workbench is ONE page:
     // switching tools/tabs never touches the URL.
@@ -375,6 +399,7 @@ function WorkbenchInner() {
                 pickMod={pickMod}
                 focusRoom={focusRoom}
                 sharePrefill={sharePrefill}
+                onPrefillConsumed={handlePrefillConsumed}
             />
         );
     }
@@ -536,20 +561,8 @@ function WorkbenchInner() {
                     <ShareBody
                         prefillText={sharePrefill.text}
                         prefillMod={sharePrefill.mod}
-                        prefillVals={{
-                            ...(sharePrefill.best
-                                ? {"Best part": sharePrefill.best}
-                                : {}),
-                            ...(sharePrefill.worst
-                                ? {"Worst part": sharePrefill.worst}
-                                : {}),
-                            ...(sharePrefill.workload
-                                ? {
-                                      "Workload (lighter / as-stated / heavier)":
-                                          sharePrefill.workload,
-                                  }
-                                : {}),
-                        }}
+                        prefillVals={sharePrefillVals}
+                        onPrefillConsumed={handlePrefillConsumed}
                     />
                 </Panel>
                 <Panel
@@ -757,6 +770,7 @@ interface MobileProps {
         worst?: string;
         workload?: string;
     };
+    onPrefillConsumed?: () => void;
 }
 
 function MobileShell({
@@ -765,10 +779,21 @@ function MobileShell({
     pickMod,
     focusRoom,
     sharePrefill,
+    onPrefillConsumed,
 }: MobileProps) {
     const ui = useWorkbenchUi();
     const rows = useFilteredMods();
     const dispatch = useAppDispatch();
+    const sharePrefillVals = useMemo(() => {
+        const vals: Record<string, string> = {};
+        if (sharePrefill.best) vals["Best part"] = sharePrefill.best;
+        if (sharePrefill.worst) vals["Worst part"] = sharePrefill.worst;
+        if (sharePrefill.workload) {
+            vals["Workload (lighter / as-stated / heavier)"] =
+                sharePrefill.workload;
+        }
+        return Object.keys(vals).length > 0 ? vals : undefined;
+    }, [sharePrefill]);
     // Shares the module cache with the desktop list and the mod panel, so the
     // mobile shell pays for no extra request of its own.
     const [tg] = useTelegramData();
@@ -1157,20 +1182,8 @@ function MobileShell({
                         <ShareBody
                             prefillText={sharePrefill.text}
                             prefillMod={sharePrefill.mod}
-                            prefillVals={{
-                                ...(sharePrefill.best
-                                    ? {"Best part": sharePrefill.best}
-                                    : {}),
-                                ...(sharePrefill.worst
-                                    ? {"Worst part": sharePrefill.worst}
-                                    : {}),
-                                ...(sharePrefill.workload
-                                    ? {
-                                          "Workload (lighter / as-stated / heavier)":
-                                              sharePrefill.workload,
-                                      }
-                                    : {}),
-                            }}
+                            prefillVals={sharePrefillVals}
+                            onPrefillConsumed={onPrefillConsumed}
                         />
                     </Sheet>
                 )}

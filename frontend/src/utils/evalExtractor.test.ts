@@ -70,7 +70,7 @@ describe("extractEval", () => {
         expect(extractEval(createDocWithWorkload("Strongly Disagree")).workload).toBe("heavier");
     });
 
-    it("falls back to selected text or body text when no structured survey questions exist", () => {
+    it("uses selected text when provided, but never dumps raw page body text as review text", () => {
         const dom = new JSDOM(`
             <html>
                 <head><title>Course Review Notes</title></head>
@@ -86,7 +86,38 @@ describe("extractEval", () => {
 
         const fromBody = extractEval(dom.window.document);
         expect(fromBody.mod).toBe("10.014");
-        expect(fromBody.text).toContain("Reviewing 10.014 Computational Thinking");
+        expect(fromBody.text).toBeUndefined();
+    });
+
+    it("leaves review text fields undefined when not filled out, extracting only mod and workload", () => {
+        const dom = new JSDOM(`
+            <!DOCTYPE html>
+            <html>
+                <head>
+                    <title>Evaluation for 50.040 NLP</title>
+                </head>
+                <body>
+                    <div role="radiogroup" class="row">
+                        <h4>The course work load is manageable.</h4>
+                        <div class="radioButtonContainer" aria-checked="true" aria-label="Agree">
+                            <input type="radio" checked />
+                        </div>
+                    </div>
+                    <fieldset>
+                        <legend>What did you like about the course?</legend>
+                        <textarea></textarea>
+                    </fieldset>
+                    <p>Boilerplate guidelines that must never be dumped as review text.</p>
+                </body>
+            </html>
+        `);
+
+        const result = extractEval(dom.window.document);
+        expect(result.mod).toBe("50.040");
+        expect(result.workload).toBe("as-stated");
+        expect(result.best).toBeUndefined();
+        expect(result.worst).toBeUndefined();
+        expect(result.text).toBeUndefined();
     });
 });
 
@@ -133,6 +164,47 @@ describe("buildEvalBookmarklet", () => {
         const params = new URLSearchParams(hash);
         expect(params.get("mod")).toBe("50.040");
         expect(params.get("best")).toBe("Good pacing");
+    });
+
+    it("extracts mod and workload when textareas are empty without dumping page text or blocking with error toast", () => {
+        const bookmarkletUrl = buildEvalBookmarklet("https://modsutd.tech");
+        const dom = new JSDOM(
+            `
+            <!DOCTYPE html>
+            <html>
+                <head><title>Evaluation for 50.040</title></head>
+                <body>
+                    <div role="radiogroup">
+                        <h4>The course work load is manageable.</h4>
+                        <div class="radioButtonContainer" aria-checked="true" aria-label="Agree">
+                            <input type="radio" checked />
+                        </div>
+                    </div>
+                    <textarea id="ta_empty"></textarea>
+                    <p>Entire webpage text that must never be dumped as review text</p>
+                </body>
+            </html>
+            `,
+            { runScripts: "dangerously" },
+        );
+
+        let openedUrl = "";
+        dom.window.open = vi.fn((url: string) => {
+            openedUrl = url;
+            return null;
+        }) as unknown as typeof window.open;
+
+        const code = bookmarkletUrl.replace(/^javascript:/, "");
+        dom.window.eval(code);
+
+        expect(openedUrl).toContain("https://modsutd.tech/share#");
+        const hash = openedUrl.split("#")[1];
+        const params = new URLSearchParams(hash);
+        expect(params.get("mod")).toBe("50.040");
+        expect(params.get("workload")).toBe("as-stated");
+        expect(params.get("text")).toBeNull();
+        expect(params.get("best")).toBeNull();
+        expect(params.get("worst")).toBeNull();
     });
 
     it("displays an adaptive toast when invoked on an external domain", () => {

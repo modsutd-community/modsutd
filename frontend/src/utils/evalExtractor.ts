@@ -69,10 +69,10 @@ export function extractEval(doc: Document, selectionText?: string): ExtractedEva
         text = text ? `${text}\n\n${block}` : block;
     }
 
-    // Fall back to selection or body text only when no survey fields matched.
-    if (!text && !best && !worst) {
-        const raw = (selectionText || bodyText).slice(0, 4000).trim();
-        if (raw) text = raw;
+    // Use explicitly selected text if the caller provided it, but never fall back
+    // to document body text: page boilerplate and headers make useless reviews.
+    if (!text && !best && !worst && selectionText?.trim()) {
+        text = selectionText.trim().slice(0, 4000);
     }
 
     // Workload question mapping: Bluera asks "The course work load is manageable."
@@ -131,8 +131,9 @@ export function extractEval(doc: Document, selectionText?: string): ExtractedEva
  * - On other domains: guides the user to Bluera.
  * - On multi-mod dashboard: prompts user to open a specific mod first.
  * - On intro screen: prompts user to click Start Now and enter feedback.
- * - On blank survey: prompts user to type answers first.
- * - On completed/active survey with responses: extracts fields and opens modSUTD in 1 tab.
+ * - On completed survey or unidentifiable blank page: prompts user accordingly.
+ * - On active survey: extracts whatever fields are available (mod, workload, answers)
+ *   without dumping whole-page HTML boilerplate into review text.
  *
  * Transports extracted answers via URL hash fragment rather than query params
  * to prevent survey answers from ever touching intermediary HTTP request logs.
@@ -169,10 +170,6 @@ if(tas.length===0){
   return toast('Open a specific mod evaluation first, then click this bookmarklet.');
 }
 
-const hasAnswers=tas.some(ta=>((ta.value??ta.textContent??'').trim().length>0));
-if(!hasAnswers){
-  return toast('Please fill in the evaluation first, then click this bookmarklet.');
-}
 const m=(d.title||'').match(/\\b\\d{2}[.]\\d{3}[A-Za-z]?\\b/)||(d.querySelector('h1')?.innerText||d.querySelector('h1')?.textContent||'').match(/\\b\\d{2}[.]\\d{3}[A-Za-z]?\\b/)||(d.body?.innerText||d.body?.textContent||'').match(/\\b\\d{2}[.]\\d{3}[A-Za-z]?\\b/);
 let b='',w='',g='',ins=[];
 for(const ta of tas){
@@ -195,7 +192,8 @@ if(ins.length>0){
   t=t?t+'\\n\\n'+it:it;
 }
 if(!t&&!b&&!w){
-  t=(getSelection().toString()||d.body?.innerText||d.body?.textContent||'').slice(0,4000).trim();
+  const s=getSelection().toString().trim();
+  if(s)t=s.slice(0,4000);
 }
 let wl='';
 for(const r of d.querySelectorAll('div[role="radiogroup"],.row')){
@@ -210,6 +208,9 @@ for(const r of d.querySelectorAll('div[role="radiogroup"],.row')){
       else if(/neutral|agree/i.test(l))wl='as-stated';
     }
   }
+}
+if(!m&&!b&&!w&&!wl&&!t){
+  return toast('Please fill in the evaluation first, then click this bookmarklet.');
 }
 const p=new URLSearchParams();
 if(m)p.set('mod',m[0]);
