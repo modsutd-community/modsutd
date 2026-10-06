@@ -21,9 +21,15 @@ interface Props {
     prefillText?: string;
     prefillMod?: string;
     prefillVals?: Record<string, string>;
+    onPrefillConsumed?: () => void;
 }
 
-export function ShareBody({prefillText, prefillMod, prefillVals}: Props) {
+export function ShareBody({
+    prefillText,
+    prefillMod,
+    prefillVals,
+    onPrefillConsumed,
+}: Props) {
     const mods = useAppSelector((s) => s.mods.data);
     const [modSearch, setModSearch] = useState(prefillMod ?? "");
     const [picked, setPicked] = useState<string | null>(prefillMod ?? null);
@@ -135,6 +141,7 @@ export function ShareBody({prefillText, prefillMod, prefillVals}: Props) {
                             mod={mod}
                             prefillText={prefillText}
                             prefillVals={prefillVals}
+                            onPrefillConsumed={onPrefillConsumed}
                         />
                     ) : (
                         <span className={wb.faint} style={{fontSize: 11}}>

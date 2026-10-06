@@ -20,6 +20,47 @@ describe("ReviewForm prefill and editing", () => {
         localStorage.clear();
     });
 
+    it("prioritizes arriving prefill over an older stored draft on initial mount", () => {
+        // Pre-populate an older draft in localStorage
+        localStorage.setItem(
+            "modsutd.review.drafts.v1",
+            JSON.stringify({
+                [mockMod.code]: {
+                    text: "Older Draft Text",
+                    vals: { "Best part": "Older Best" },
+                },
+            }),
+        );
+
+        render(
+            <ReviewForm
+                mod={mockMod}
+                prefillText="Fresh Bookmarklet Text"
+                prefillVals={{ "Best part": "Fresh Best" }}
+            />,
+        );
+
+        const bodyArea = screen.getByLabelText("review body") as HTMLTextAreaElement;
+        const bestArea = screen.getByLabelText("Best part") as HTMLTextAreaElement;
+        expect(bodyArea.value).toBe("Fresh Bookmarklet Text");
+        expect(bestArea.value).toBe("Fresh Best");
+    });
+
+    it("notifies parent when prefill parameters are consumed on mount", () => {
+        let consumed = false;
+        render(
+            <ReviewForm
+                mod={mockMod}
+                prefillText="Incoming text"
+                onPrefillConsumed={() => {
+                    consumed = true;
+                }}
+            />,
+        );
+
+        expect(consumed).toBe(true);
+    });
+
     it("does not revert user edits to prefilled fields when parent re-renders", () => {
         const { rerender } = render(
             <ReviewForm
@@ -43,86 +84,31 @@ describe("ReviewForm prefill and editing", () => {
             />,
         );
 
-        // Crucial test: user edit must be preserved, not overwritten by re-render
+        // User edit must be preserved, not overwritten by re-render
         expect(textarea.value).toBe("User Custom Edit");
     });
 
-    it("preserves user edits across unmount and remount rather than reverting to old prefill", () => {
+    it("preserves user edits across unmount and remount after prefill has been consumed", () => {
+        let prefill: { text?: string } | undefined = { text: "Initial Text" };
         const { unmount } = render(
             <ReviewForm
                 mod={mockMod}
-                prefillVals={{ "Best part": "Initial Best" }}
-            />,
-        );
-
-        const textarea = screen.getByLabelText("Best part") as HTMLTextAreaElement;
-        fireEvent.change(textarea, { target: { value: "User Custom Edit" } });
-
-        // User clicks away (panel unmounts)
-        unmount();
-
-        // User opens panel again
-        render(<ReviewForm mod={mockMod} />);
-
-        const remountedTextarea = screen.getByLabelText("Best part") as HTMLTextAreaElement;
-        expect(remountedTextarea.value).toBe("User Custom Edit");
-    });
-
-    it("preserves user edits across remount even if parent re-passes old prefillVals prop", () => {
-        const { unmount } = render(
-            <ReviewForm
-                mod={mockMod}
-                prefillVals={{ "Best part": "Initial Best" }}
-            />,
-        );
-
-        const textarea = screen.getByLabelText("Best part") as HTMLTextAreaElement;
-        fireEvent.change(textarea, { target: { value: "User Custom Edit" } });
-
-        unmount();
-
-        // When user opens panel again in Workbench where sharePrefill was not cleared
-        render(
-            <ReviewForm
-                mod={mockMod}
-                prefillVals={{ "Best part": "Initial Best" }}
-            />,
-        );
-
-        const remountedTextarea = screen.getByLabelText("Best part") as HTMLTextAreaElement;
-        expect(remountedTextarea.value).toBe("User Custom Edit");
-    });
-
-    it("does not revert user edits to prefilled text when parent re-renders or remounts", () => {
-        const { rerender, unmount } = render(
-            <ReviewForm
-                mod={mockMod}
-                prefillText="Initial Text"
+                prefillText={prefill.text}
+                onPrefillConsumed={() => {
+                    prefill = undefined;
+                }}
             />,
         );
 
         const textarea = screen.getByLabelText("review body") as HTMLTextAreaElement;
         expect(textarea.value).toBe("Initial Text");
-
         fireEvent.change(textarea, { target: { value: "User Custom Body Text" } });
-        expect(textarea.value).toBe("User Custom Body Text");
 
-        rerender(
-            <ReviewForm
-                mod={mockMod}
-                prefillText="Initial Text"
-            />,
-        );
-        expect(textarea.value).toBe("User Custom Body Text");
-
+        // User closes review panel (unmounts)
         unmount();
 
-        render(
-            <ReviewForm
-                mod={mockMod}
-                prefillText="Initial Text"
-            />,
-        );
+        // User reopens review panel (remounts without consumed prefill)
+        render(<ReviewForm mod={mockMod} prefillText={prefill?.text} />);
         const remounted = screen.getByLabelText("review body") as HTMLTextAreaElement;
         expect(remounted.value).toBe("User Custom Body Text");
     });

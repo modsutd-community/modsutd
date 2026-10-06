@@ -1,4 +1,4 @@
-import {ReactNode, useEffect, useMemo, useRef, useState} from "react";
+import {ReactNode, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "@/store";
 import {selectMod} from "@/reducers/timetableReducer";
@@ -128,7 +128,7 @@ function WorkbenchInner() {
 
     // Prefill carried from /share?text=&mod= deep links (bookmarklet,
     // extension). Parsed synchronously once - inbound-only, like all URLs here.
-    const [sharePrefill] = useState<{
+    const [sharePrefill, setSharePrefill] = useState<{
         text?: string;
         mod?: string;
         best?: string;
@@ -168,6 +168,13 @@ function WorkbenchInner() {
         }
         return Object.keys(vals).length > 0 ? vals : undefined;
     }, [sharePrefill]);
+
+    // Once the review form consumes inbound bookmarklet answers, clear the
+    // prefill payload from workbench state so subsequent panel remounts do not
+    // clobber user edits.
+    const handlePrefillConsumed = useCallback(() => {
+        setSharePrefill((cur) => ({mod: cur.mod}));
+    }, []);
 
     // ---- Inbound deep links only, once on mount. The workbench is ONE page:
     // switching tools/tabs never touches the URL.
@@ -392,6 +399,7 @@ function WorkbenchInner() {
                 pickMod={pickMod}
                 focusRoom={focusRoom}
                 sharePrefill={sharePrefill}
+                onPrefillConsumed={handlePrefillConsumed}
             />
         );
     }
@@ -554,6 +562,7 @@ function WorkbenchInner() {
                         prefillText={sharePrefill.text}
                         prefillMod={sharePrefill.mod}
                         prefillVals={sharePrefillVals}
+                        onPrefillConsumed={handlePrefillConsumed}
                     />
                 </Panel>
                 <Panel
@@ -761,6 +770,7 @@ interface MobileProps {
         worst?: string;
         workload?: string;
     };
+    onPrefillConsumed?: () => void;
 }
 
 function MobileShell({
@@ -769,6 +779,7 @@ function MobileShell({
     pickMod,
     focusRoom,
     sharePrefill,
+    onPrefillConsumed,
 }: MobileProps) {
     const ui = useWorkbenchUi();
     const rows = useFilteredMods();
@@ -1172,6 +1183,7 @@ function MobileShell({
                             prefillText={sharePrefill.text}
                             prefillMod={sharePrefill.mod}
                             prefillVals={sharePrefillVals}
+                            onPrefillConsumed={onPrefillConsumed}
                         />
                     </Sheet>
                 )}
