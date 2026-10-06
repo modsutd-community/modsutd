@@ -1,0 +1,19 @@
+{
+  "code": "10.027",
+  "name": "Algorithmic Thinking and Object-Based Abstraction",
+  "description": "Students will dive in into the world of computing. The course is a continuation of Introduction to Programming in Term 1. Students will be introduced to basic data structures, algorithms, and software abstraction using object-oriented programming in a practical way. The main aim of this course is to strengthen students’ algorithmic thinking and abstract thinking which will be helpful in whatever field they choose to go to in the future. Students will also undertake mini-projects where they apply what they learn to develop web applications to prototype their system.",
+  "credits": 12,
+  "department": "Science, Mathematics and Technology",
+  "pillar": "SMT",
+  "term": "2",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "ISTD",
+    "Term 2",
+    "Freshmore Core"
+  ],
+  "noBatchChat": true,
+  "noBatchChatReason": "freshmore core"
+}
