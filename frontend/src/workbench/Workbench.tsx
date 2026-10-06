@@ -143,14 +143,31 @@ function WorkbenchInner() {
         );
         const query = new URLSearchParams(window.location.search);
         const pick = (k: string) => hash.get(k) ?? query.get(k) ?? undefined;
-        return {
+        const res = {
             text: pick("text"),
             mod: pick("mod"),
             best: pick("best"),
             worst: pick("worst"),
             workload: pick("workload"),
         };
+        // Inbound URL parameters are consumed on boot. Clean the address bar so
+        // subsequent reloads or navigations do not repeatedly re-inject GET values.
+        if (window.location.search || window.location.hash) {
+            window.history.replaceState(null, "", "/share");
+        }
+        return res;
     });
+
+    const sharePrefillVals = useMemo(() => {
+        const vals: Record<string, string> = {};
+        if (sharePrefill.best) vals["Best part"] = sharePrefill.best;
+        if (sharePrefill.worst) vals["Worst part"] = sharePrefill.worst;
+        if (sharePrefill.workload) {
+            vals["Workload (lighter / as-stated / heavier)"] =
+                sharePrefill.workload;
+        }
+        return Object.keys(vals).length > 0 ? vals : undefined;
+    }, [sharePrefill]);
 
     // ---- Inbound deep links only, once on mount. The workbench is ONE page:
     // switching tools/tabs never touches the URL.
@@ -536,20 +553,7 @@ function WorkbenchInner() {
                     <ShareBody
                         prefillText={sharePrefill.text}
                         prefillMod={sharePrefill.mod}
-                        prefillVals={{
-                            ...(sharePrefill.best
-                                ? {"Best part": sharePrefill.best}
-                                : {}),
-                            ...(sharePrefill.worst
-                                ? {"Worst part": sharePrefill.worst}
-                                : {}),
-                            ...(sharePrefill.workload
-                                ? {
-                                      "Workload (lighter / as-stated / heavier)":
-                                          sharePrefill.workload,
-                                  }
-                                : {}),
-                        }}
+                        prefillVals={sharePrefillVals}
                     />
                 </Panel>
                 <Panel
@@ -769,6 +773,16 @@ function MobileShell({
     const ui = useWorkbenchUi();
     const rows = useFilteredMods();
     const dispatch = useAppDispatch();
+    const sharePrefillVals = useMemo(() => {
+        const vals: Record<string, string> = {};
+        if (sharePrefill.best) vals["Best part"] = sharePrefill.best;
+        if (sharePrefill.worst) vals["Worst part"] = sharePrefill.worst;
+        if (sharePrefill.workload) {
+            vals["Workload (lighter / as-stated / heavier)"] =
+                sharePrefill.workload;
+        }
+        return Object.keys(vals).length > 0 ? vals : undefined;
+    }, [sharePrefill]);
     // Shares the module cache with the desktop list and the mod panel, so the
     // mobile shell pays for no extra request of its own.
     const [tg] = useTelegramData();
@@ -1157,20 +1171,7 @@ function MobileShell({
                         <ShareBody
                             prefillText={sharePrefill.text}
                             prefillMod={sharePrefill.mod}
-                            prefillVals={{
-                                ...(sharePrefill.best
-                                    ? {"Best part": sharePrefill.best}
-                                    : {}),
-                                ...(sharePrefill.worst
-                                    ? {"Worst part": sharePrefill.worst}
-                                    : {}),
-                                ...(sharePrefill.workload
-                                    ? {
-                                          "Workload (lighter / as-stated / heavier)":
-                                              sharePrefill.workload,
-                                      }
-                                    : {}),
-                            }}
+                            prefillVals={sharePrefillVals}
                         />
                     </Sheet>
                 )}
