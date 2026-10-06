@@ -307,7 +307,7 @@ export function TimetableBody({onPickMod}: Props) {
     };
 
     // Week-1 Monday from the earliest parsed class date - so the exported
-    // .ics can carry the week-7/14 review reminders with zero extra input.
+    // .ics can carry review reminders with zero extra input.
     const termStartISO = useMemo(() => {
         const first = events
             .map((e) => e.startDate)

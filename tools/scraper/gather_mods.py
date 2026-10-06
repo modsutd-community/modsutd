@@ -107,14 +107,13 @@ VALID_PREFIXES = {"01", "02", "03", "10", "20", "30", "40", "50", "60"}
 #
 # The third field is checked against the scraped description on every run,
 # because the reason a code is admitted lives on a page SUTD can rewrite, and an
-# allowlist keyed on a number alone would go on importing a course as a term-6
-# undergraduate elective long after its page stopped saying so. A course already
-# in the catalogue is reported and kept, because a copy-edit must not silently
-# drop one; a code admitted here that has never been written is refused.
+# UNDERGRADUATE_WHITELIST is the exception list and it holds one code: 99.504,
+# which SUTD files under SMT as a graduate course but whose syllabus explicitly
+# admits term 6 and term 8 undergraduates.
 #
 # 99.504's page: "This is a course intended for PhD students and for term 6 or
 # term 8 undergraduate students."
-OFF_SPACE_ADMIT: dict[str, tuple[str, str, str]] = {
+UNDERGRADUATE_WHITELIST: dict[str, tuple[str, str, str]] = {
     "99.504": ("SMT", "6", "undergraduate students"),
 }
 
@@ -182,7 +181,7 @@ def undergrad_urls(
         if not m:
             continue
         code = f"{m.group(1)}.{m.group(2)}"
-        if m.group(1) not in VALID_PREFIXES and code not in OFF_SPACE_ADMIT:
+        if m.group(1) not in VALID_PREFIXES and code not in UNDERGRADUATE_WHITELIST:
             off_space.setdefault(m.group(1), []).append(url)
             continue
         by_code.setdefault(code, []).append((m.group(3), url))
@@ -411,13 +410,13 @@ def graduate_term(code: str, description: str) -> str | None:
 
 
 def stale_admission(code: str, description: str) -> str | None:
-    """The words OFF_SPACE_ADMIT was written on, when the page has lost them.
+    """The words UNDERGRADUATE_WHITELIST was written on, when the page has lost them.
 
     Case-insensitive because the only thing being asked is whether the sentence
     that admitted this code is still on the page; SUTD capitalises headings and
     sentence starts differently across the catalogue.
     """
-    admit = OFF_SPACE_ADMIT.get(code)
+    admit = UNDERGRADUATE_WHITELIST.get(code)
     if not admit:
         return None
     marker = admit[2]
@@ -681,7 +680,7 @@ def main() -> int:
         # Above the merge branch, so it runs for an admitted course that is
         # already in /data. A page is rewritten long after its record is
         # written, and checking only on the way in would mean checking once.
-        admit = OFF_SPACE_ADMIT.get(code)
+        admit = UNDERGRADUATE_WHITELIST.get(code)
         # Same shape as the admission below: a pin read off a page is re-read
         # against that page every run, because the page is SUTD's to rewrite.
         if code in GRADUATE_PAGE and graduate_term(code, parsed["description"]) is None:
@@ -794,8 +793,8 @@ def main() -> int:
     # The admitted ones do not appear above, because they were not dropped -
     # which is exactly why they are named here. An exception nobody can see in
     # the run output is the same silence this change is about.
-    admitted = sorted(c for c in OFF_SPACE_ADMIT if c in chosen)
-    print(f"admitted off-space codes   : {len(admitted)} {admitted}")
+    admitted = sorted(c for c in UNDERGRADUATE_WHITELIST if c in chosen)
+    print(f"undergraduate whitelist codes      : {len(admitted)} {admitted}")
     if admit_stale:
         print(f"    !! page no longer says why : {admit_stale}")
     if grad_stale:
@@ -946,7 +945,7 @@ def self_check() -> int:
 
     # The admission's own justification, checked on every run because the page
     # it was read off is SUTD's to rewrite. Literal marker text here: a case
-    # that reads OFF_SPACE_ADMIT[code][2] passes whatever that is set to.
+    # that reads UNDERGRADUATE_WHITELIST[code][2] passes whatever that is set to.
     for code, description, want, why in [
         ("99.504",
          "This is a course intended for PhD students and for term 6 or term 8 "
@@ -964,10 +963,10 @@ def self_check() -> int:
 
     # 99.504's page names term 6 and publishes no Term tag. Without the pin it
     # lands in 8, the untermed-elective fallback, which is not what it said.
-    # Literals, not the constant: a case that reads OFF_SPACE_ADMIT cannot
+    # Literals, not the constant: a case that reads UNDERGRADUATE_WHITELIST cannot
     # tell a policy change from a bug, and it crashes rather than failing
     # when the entry is removed.
-    if OFF_SPACE_ADMIT.get("99.504") != ("SMT", "6", "undergraduate students"):
+    if UNDERGRADUATE_WHITELIST.get("99.504") != ("SMT", "6", "undergraduate students"):
         fails.append("99.504 is no longer admitted as SMT term 6")
     if term_from_tags(["Core", "SMT"], default="6") != "6":
         fails.append("the pinned term for an admitted off-space code is ignored")

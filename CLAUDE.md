@@ -216,7 +216,7 @@ Two are deliberately not monthly, and say why in their own headers:
   two say "Non-credit course"). Those are REPORTED by prefix now, not dropped by
   a bare `continue`: a decision the run does not print is one the next
   maintainer re-derives from the sitemap by hand, which is how 99.504 sat
-  unlisted. `OFF_SPACE_ADMIT` is the exception list, holding the one code whose
+  unlisted. `UNDERGRADUATE_WHITELIST` is the exception list, holding the one code whose
   page names an undergraduate audience, with its pillar and term pinned because
   neither can be derived. Widening the set is guarded by `ELECTIVE_SUFFIX_RE`:
   SUTD re-lists three SMT electives in the PhD catalogue as `<name> (Elective)`,

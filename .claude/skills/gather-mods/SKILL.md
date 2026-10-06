@@ -50,7 +50,7 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   be dropped by a bare `continue` that printed nothing, so a real course could
   sit unlisted with no way to find out. The run now prints them by prefix with
   their slugs.
-  `OFF_SPACE_ADMIT` is the exception list and it holds one code: **99.504**,
+  `UNDERGRADUATE_WHITELIST` is the exception list and it holds one code: **99.504**,
   whose page says "intended for PhD students and for term 6 or term 8
   undergraduate students". Its pillar and term are pinned there because neither
   can be derived - the page publishes no `Term` tag, and `prefix_precedents()`
@@ -147,7 +147,7 @@ undergraduate audience:
 
 To admit one:
 
-1. Add it to `OFF_SPACE_ADMIT` as `code: (pillar, term, the words)`. The third
+1. Add it to `UNDERGRADUATE_WHITELIST` as `code: (pillar, term, the words)`. The third
    field is the phrase you just read, and the run re-checks it against the
    scraped description every time, because SUTD can rewrite a page long after
    a record is written. Pillar and term are pinned because nothing can derive

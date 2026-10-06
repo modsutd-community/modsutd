@@ -191,8 +191,8 @@ describe('review reminders ride along with the timetable', () => {
 
   // No calendar passed here, so these are the fallback dates. Where the term IS
   // known the midterm moves off recess week - see termReminders.test.ts.
-  it('adds exactly two: a Friday before recess and week 11 Monday', () => {
-    expect(reminders.map((r) => r.startDate)).toEqual(['2026-10-30', '2026-11-23']);
+  it('adds exactly two: week 4 Monday and week 11 Monday', () => {
+    expect(reminders.map((r) => r.startDate)).toEqual(['2026-10-05', '2026-11-23']);
   });
 
   it('survives into the exported file alongside the classes', () => {
@@ -207,9 +207,10 @@ describe('review reminders ride along with the timetable', () => {
       events.reduce((n, e) => n + (e.occurrences?.length || 1), 0) + 2);
   });
 
-  it('points back at the share page so the reminder is actionable', () => {
-    const [first] = reparse(buildICS([reminders[0]]));
-    expect(first.location).toBe('https://modsutd.tech/share');
+  it('keeps location pointing to /share on reminders', () => {
+    const [mid, fin] = reparse(buildICS(reminders));
+    expect(mid.location).toBe('https://modsutd.tech/share');
+    expect(fin.location).toBe('https://modsutd.tech/share');
   });
 });
 
@@ -257,19 +258,20 @@ describe('every event is findable by one search term', () => {
   });
 });
 
-describe('reminders keep the link in one place', () => {
-  const [midterm] = buildTermReminderEvents({
+describe('reminders keep location pointing to /share', () => {
+  const [midterm, final] = buildTermReminderEvents({
     termLabel: "T7 '26", termStartISO: '2026-09-14', origin: 'https://modsutd.tech',
   });
 
-  it('puts the share link in LOCATION, where calendars make it tappable', () => {
-    const [ev] = reparse(buildICS([midterm]));
-    expect(ev.location).toBe('https://modsutd.tech/share');
+  it('keeps location pointing to /share on both midterm and final events', () => {
+    const [mid, fin] = reparse(buildICS([midterm, final]));
+    expect(mid.location).toBe('https://modsutd.tech/share');
+    expect(fin.location).toBe('https://modsutd.tech/share');
   });
 
-  it('does not repeat the url in the description', () => {
+  it('instructs student to check Outlook or mod for the actual deadline in description', () => {
     const [ev] = reparse(buildICS([midterm]));
-    expect(ev.description).not.toContain('http');
+    expect(ev.description).toContain('Please check your mod / Outlook for the actual deadline');
     expect(ev.description).toContain(SIGNATURE);
   });
 });

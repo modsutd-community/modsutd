@@ -184,6 +184,7 @@ export function weeklyRuns(dates: string[]): string[][] {
 // The exact dates buildICS will emit for an event - must mirror its branching,
 // or a key is missing for the date actually written out.
 function emitDates(e: TimetableEvent): string[] {
+  if (e.allDay) return [e.startDate];
   if (e.occurrences?.length) return e.occurrences;
   if (e.startDate === e.endDate) return [e.startDate];
   const first = alignToWeekday(e.startDate, e.day);
@@ -260,7 +261,7 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
         `DTEND;TZID=Asia/Singapore:${localStamp(date, e.endTime)}`,
         ...(rrule ? [rrule] : []),
         `SUMMARY:${summary}`,
-        `LOCATION:${escapeText(where)}`,
+        ...(where.trim() ? [`LOCATION:${escapeText(where)}`] : []),
         `DESCRIPTION:${desc}`,
         'END:VEVENT',
       ].map(foldLine).join('\r\n');
@@ -288,6 +289,26 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
           // not contain.
           ? [vevent(run[0], `RRULE:FREQ=WEEKLY;COUNT=${run.length}`)]
           : [vevent(run[0])]);
+    }
+    if (e.allDay) {
+      // Multi-day banner: VALUE=DATE avoids occupying timed class slots.
+      // In RFC 5545, DTEND is exclusive for DATE values, so shift by 1 day.
+      const dtstart = e.startDate.replace(/-/g, '');
+      const dtend = shiftDate(e.endDate, 1).replace(/-/g, '');
+      return [
+        [
+          'BEGIN:VEVENT',
+          `DTSTAMP:${dtstamp}`,
+          `UID:${stableUid([keys.get(e)!.get(e.startDate)!])}`,
+          `SEQUENCE:${sequence}`,
+          `DTSTART;VALUE=DATE:${dtstart}`,
+          `DTEND;VALUE=DATE:${dtend}`,
+          `SUMMARY:${summary}`,
+          ...(where.trim() ? [`LOCATION:${escapeText(where)}`] : []),
+          `DESCRIPTION:${desc}`,
+          'END:VEVENT',
+        ].map(foldLine).join('\r\n'),
+      ];
     }
     if (e.startDate === e.endDate) {
       return [vevent(e.startDate)];

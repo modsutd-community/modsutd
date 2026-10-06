@@ -1,52 +1,16 @@
-#!/usr/bin/env python3
-"""What a refresh changed in /data, named by record rather than by line.
-
-    python tools/scraper/what_changed.py            # working tree vs HEAD
-    python tools/scraper/what_changed.py --ref main
-
-WHY THIS EXISTS
-A diff hunk in a large JSON file carries no object context. `data/specializations.json`
-holds 21 tracks; a hunk reading `+ "50.057"` sits in one of them and the diff
-does not say which, and the nearest `"id"` line ABOVE the hunk frequently
-belongs to a different record than the one being changed. Citing a change from
-the hunk alone produced a PR body that named the wrong track, for a change that
-was correct. A reviewer checking that citation against the page would have found
-nothing and either rejected a good change or stopped trusting the citations.
-
-So this walks the two JSON documents and reports each change with the record it
-happened in and the source URL that record itself carries:
-
-    data/specializations.json
-      csd-software-engineering / track core courses (choose 2) / anyOf
-        + 50.057
-        https://www.sutd.edu.sg/istd/education/undergraduate/specialisation-tracks/software-engineering/
-
-The URL is read out of the record, never composed, so the line a reviewer opens
-is the page the parser actually read.
-
-LISTS OF RECORDS ARE KEYED, NOT INDEXED. `tracks[3]` is meaningless the moment a
-track is inserted above it: every later record reads as changed. A list whose
-items carry `id`, `code` or `name` is matched on that instead, so an insertion
-shows up as one addition.
-"""
-
-from __future__ import annotations
-
 import argparse
+import html
 import json
 import pathlib
 import subprocess
 import sys
 
-ROOT = pathlib.Path(__file__).resolve().parents[2]
+ROOT = pathlib.Path(__file__).resolve().parents[2] if "__file__" in locals() else pathlib.Path(r"C:\Users\Andrew\Desktop\Dev Me\modsutd")
 DATA = ROOT / "data"
 
-# In order of preference. `id` is the stable one; `code` is what course records
-# use; `name` is a last resort and can collide, which is why it is last.
 KEYS = ("id", "code", "name", "label")
-
-# Fields a record uses to say where it was read from. Printed verbatim.
 SOURCE_FIELDS = ("source", "sourceUrl", "url")
+IMPORTANT_TAGS = {"core", "freshmore core", "smt", "hass", "epd", "esd", "csd", "dai", "asd"}
 
 
 def key_of(item: object, index: int) -> str:
@@ -67,8 +31,15 @@ def source_of(node: object) -> str:
     return ""
 
 
+def clean_cell(text: str) -> str:
+    """Escape pipes and format markdown table cell, replacing empty/(none) with hyphen."""
+    s = text.strip()
+    if not s or s == "(none)":
+        return "-"
+    return s.replace("|", "\\|").replace("\n", "<br>")
+
+
 def walk(old: object, new: object, path: list[str], src: str, out: list[tuple[str, str, str]]) -> None:
-    """Append (path, change, source) for every leaf that differs."""
     src = source_of(new) or source_of(old) or src
 
     if isinstance(old, dict) and isinstance(new, dict):
@@ -77,7 +48,6 @@ def walk(old: object, new: object, path: list[str], src: str, out: list[tuple[st
         return
 
     if isinstance(old, list) and isinstance(new, list):
-        # A list of scalars is a set of values; a list of records is keyed.
         if all(not isinstance(x, (dict, list)) for x in old + new):
             gone = [x for x in old if x not in new]
             came = [x for x in new if x not in old]
@@ -93,23 +63,23 @@ def walk(old: object, new: object, path: list[str], src: str, out: list[tuple[st
         n = {key_of(x, i): x for i, x in enumerate(new)}
         for k in sorted(set(o) | set(n)):
             if k not in o:
-                out.append((" / ".join(path + [k]), "NEW record", source_of(n[k]) or src))
+                out.append((" / ".join(path + [k]), "(none) -> NEW record", source_of(n[k]) or src))
             elif k not in n:
-                out.append((" / ".join(path + [k]), "REMOVED record", source_of(o[k]) or src))
+                out.append((" / ".join(path + [k]), "REMOVED record -> (none)", source_of(o[k]) or src))
             else:
                 walk(o[k], n[k], path + [k], src, out)
         return
 
     if old != new:
         if old is None:
-            out.append((" / ".join(path), f"set to {json.dumps(new, ensure_ascii=False)[:120]}", src))
+            out.append((" / ".join(path), f"(none) -> {json.dumps(new, ensure_ascii=False)}", src))
         elif new is None:
-            out.append((" / ".join(path), "removed", src))
+            out.append((" / ".join(path), f"{json.dumps(old, ensure_ascii=False)} -> (none)", src))
         else:
             a = json.dumps(old, ensure_ascii=False)
             b = json.dumps(new, ensure_ascii=False)
-            if len(a) > 90 or len(b) > 90:
-                out.append((" / ".join(path), "text changed", src))
+            if len(a) > 120 or len(b) > 120:
+                out.append((" / ".join(path), f"text changed ({len(a)} -> {len(b)} chars)", src))
             else:
                 out.append((" / ".join(path), f"{a} -> {b}", src))
 
@@ -125,47 +95,187 @@ def at_ref(ref: str, rel: str) -> object | None:
         return None
 
 
-def changed(ref: str) -> list[str]:
-    p = subprocess.run(["git", "status", "--porcelain", "--", "data"] if ref == "HEAD"
-                       else ["git", "diff", "--name-only", ref, "--", "data"],
+def changed_files(base_ref: str, head_ref: str | None) -> list[str]:
+    if head_ref is None:
+        p = subprocess.run(["git", "status", "--porcelain", "--", "data"] if base_ref == "HEAD"
+                           else ["git", "diff", "--name-only", base_ref, "--", "data"],
+                           cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
+        if base_ref == "HEAD":
+            return [ln[3:].strip() for ln in p.stdout.splitlines() if ln.strip()]
+        return [ln.strip() for ln in p.stdout.splitlines() if ln.strip()]
+    p = subprocess.run(["git", "diff", "--name-only", f"{base_ref}..{head_ref}", "--", "data"],
                        cwd=ROOT, capture_output=True, text=True, encoding="utf-8")
-    if ref == "HEAD":
-        return [ln[3:].strip() for ln in p.stdout.splitlines() if ln.strip()]
     return [ln.strip() for ln in p.stdout.splitlines() if ln.strip()]
+
+
+def format_tag_diff(tag_str: str) -> tuple[str, str]:
+    """Parse '+ "A", "B"  - "C"' into clean (added, removed) columns."""
+    added_part, removed_part = "", ""
+    if "+" in tag_str:
+        rest = tag_str.split("+", 1)[1]
+        if "-" in rest:
+            added_part, removed_part = rest.split("-", 1)
+        else:
+            added_part = rest
+    elif "-" in tag_str:
+        removed_part = tag_str.split("-", 1)[1]
+
+    def style_tags(raw: str, is_removed: bool = False) -> str:
+        items = [t.strip().strip('"') for t in raw.split(",") if t.strip()]
+        out = []
+        for it in items:
+            if is_removed and it.lower() in IMPORTANT_TAGS:
+                out.append(f"**`{it}`**")
+            else:
+                out.append(f"`{it}`")
+        return ", ".join(out) if out else "-"
+
+    return style_tags(added_part), style_tags(removed_part, is_removed=True)
+
+
+def build_markdown_report(base_ref: str, head_ref: str | None = None) -> str:
+    files = [f for f in changed_files(base_ref, head_ref) if f.endswith(".json")]
+    if not files:
+        return "No JSON under `data/` changed."
+
+    new_files: list[str] = []
+    removed_files: list[str] = []
+    chat_warnings: list[dict] = []
+    course_updates: list[dict] = []
+    new_urls_only: list[tuple[str, str]] = []  # (code, url)
+    other_files: list[tuple[str, list[tuple[str, str, str]]]] = []
+
+    for rel in sorted(files):
+        old = at_ref(base_ref, rel)
+        if head_ref is None:
+            path = ROOT / rel
+            new = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        else:
+            new = at_ref(head_ref, rel)
+
+        if new is None:
+            removed_files.append(rel)
+            continue
+        if old is None:
+            new_files.append(rel)
+            continue
+
+        out: list[tuple[str, str, str]] = []
+        walk(old, new, [], "", out)
+        if not out:
+            continue
+
+        if rel.startswith("data/courses/"):
+            code = (new.get("code") if isinstance(new, dict) else None) or rel.replace("data/courses/", "").replace(".json", "").replace("_", ".")
+            fields = {w for w, _, _ in out}
+
+            chat_diffs = [(w, c, s) for w, c, s in out if w in ("noBatchChat", "noBatchChatReason")]
+            if chat_diffs:
+                src = source_of(new) or source_of(old)
+                chat_warnings.append({"code": code, "rel": rel, "diffs": chat_diffs, "src": src})
+
+            # When only sourceUrl was backfilled, collapse into summary to keep the main table scannable.
+            if fields == {"sourceUrl"}:
+                old_url = old.get("sourceUrl") if isinstance(old, dict) else None
+                new_url = new.get("sourceUrl") if isinstance(new, dict) else None
+                if old_url is None and new_url:
+                    new_urls_only.append((code, new_url))
+                    continue
+
+            tag_diff = next((c for w, c, _ in out if w == "tags"), None)
+            added_tags, removed_tags = format_tag_diff(tag_diff) if tag_diff else ("-", "-")
+            other_diffs = [f"{w}: {c}" for w, c, _ in out if w != "tags"]
+            src = source_of(new) or source_of(old)
+            course_updates.append({
+                "code": code,
+                "rel": rel,
+                "added_tags": added_tags,
+                "removed_tags": removed_tags,
+                "other": "<br>".join(other_diffs) if other_diffs else "-",
+                "src": src,
+            })
+        else:
+            other_files.append((rel, out))
+
+    lines: list[str] = []
+    lines.append("## Summary of Changes in `/data`\n")
+    lines.append(f"- **Total files changed**: {len(files)}")
+    if chat_warnings:
+        lines.append(f"- **Batch chat flags modified**: {len(chat_warnings)}")
+    if new_files:
+        lines.append(f"- **New courses added**: {len(new_files)} ({', '.join(f'`{p}`' for p in new_files)})")
+    if removed_files:
+        lines.append(f"- **Courses removed**: {len(removed_files)} ({', '.join(f'`{p}`' for p in removed_files)})")
+    if course_updates:
+        lines.append(f"- **Course catalog updates**: {len(course_updates)}")
+    if new_urls_only:
+        lines.append(f"- **Only sourceUrl backfilled**: {len(new_urls_only)}")
+    if other_files:
+        lines.append(f"- **Other data files updated**: {len(other_files)} ({', '.join(f'`{p}`' for p, _ in other_files)})")
+
+    if chat_warnings:
+        lines.append("\n> [!WARNING]")
+        lines.append("> ### Batch Chat Policy Changes")
+        for item in chat_warnings:
+            lines.append(f"> - `{item['code']}` (`{item['rel']}`):")
+            for w, c, _ in item["diffs"]:
+                lines.append(f">   - **{w}**: {c}")
+            if item["src"]:
+                lines.append(f">   - [source]({item['src']})")
+
+    if new_files:
+        lines.append("\n### New Files\n")
+        for p in new_files:
+            lines.append(f"- `{p}`")
+
+    if removed_files:
+        lines.append("\n### Removed Files\n")
+        for p in removed_files:
+            lines.append(f"- `{p}`")
+
+    if course_updates:
+        lines.append("\n### Course Updates\n")
+        lines.append("| Course | Tags Added | Tags Removed | Other Changes | Source |")
+        lines.append("| :--- | :--- | :--- | :--- | :--- |")
+        for item in course_updates:
+            src_link = f"[source]({item['src']})" if item["src"] else "-"
+            c_code = clean_cell(f"`{item['code']}`")
+            c_add = clean_cell(item["added_tags"])
+            c_rem = clean_cell(item["removed_tags"])
+            c_oth = clean_cell(item["other"])
+            lines.append(f"| {c_code} | {c_add} | {c_rem} | {c_oth} | {src_link} |")
+
+    if new_urls_only:
+        lines.append(f"\n<details>\n<summary><b>Only sourceUrl backfilled ({len(new_urls_only)} courses)</b> - Click to expand</summary>\n")
+        for code, url in new_urls_only:
+            lines.append(f"- `{code}`: {url}")
+        lines.append("\n</details>\n")
+
+    if other_files:
+        lines.append("\n### Other Data Files\n")
+        for rel, out in other_files:
+            lines.append(f"#### `{rel}`\n")
+            for where, change, src in out:
+                lines.append(f"- **{where or '(root)'}**: {change}")
+                if src and where not in ("sourceUrl", "url") and src not in change:
+                    lines.append(f"  - source: {src}")
+
+    return "\n".join(lines)
 
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--ref", default="HEAD", help="compare against this git ref")
+    ap.add_argument("--base", default=None, help="base git ref when comparing two refs")
+    ap.add_argument("--head", default=None, help="head git ref when comparing two refs")
     ap.add_argument("--out", default="", help="write the markdown here as well as stdout")
     args = ap.parse_args()
 
-    files = [f for f in changed(args.ref) if f.endswith(".json")]
-    lines: list[str] = []
-    if not files:
-        lines.append("No JSON under `data/` changed.")
-    for rel in sorted(files):
-        path = ROOT / rel
-        new = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
-        old = at_ref(args.ref, rel)
-        if new is None:
-            lines += [f"### {rel}", "", "file removed", ""]
-            continue
-        if old is None:
-            lines += [f"### {rel}", "", "NEW FILE", f"source: {source_of(new) or 'none in the record'}", ""]
-            continue
-        out: list[tuple[str, str, str]] = []
-        walk(old, new, [], "", out)
-        if not out:
-            continue
-        lines += [f"### {rel}", ""]
-        for where, change, src in out:
-            lines.append(f"- **{where or '(root)'}** {change}")
-            if src:
-                lines.append(f"  - {src}")
-        lines.append("")
+    if args.base and args.head:
+        text = build_markdown_report(args.base, args.head)
+    else:
+        text = build_markdown_report(args.ref, None)
 
-    text = "\n".join(lines)
     if args.out:
         pathlib.Path(args.out).write_text(text, encoding="utf-8")
     print(text)
