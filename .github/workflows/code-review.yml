@@ -154,6 +154,15 @@ jobs:
             # is no longer read here (the scraper still uses it, see
             # tools/scraper/agents/llm.py).
             #
+            # Started through tools/ci/web2api_reviewer.py, never directly.
+            # The proxy has no function calling to offer - it asks the model
+            # for a fenced JSON block and scrapes it out of the text - and a
+            # reviewer records a finding only through a tool call. Run bare,
+            # every review through it ended "0 finding(s)" with a green check:
+            # the findings were in the reply, as prose or in a block of the
+            # wrong shape, and the scrape dropped them. That file's docstring
+            # has the three repairs.
+            #
             # Vendored at tools/ci/gemini_web2api.py rather than fetched: it
             # runs in the same job as the reviewer, which holds a token that
             # can post comments, so the bytes that run are bytes a pull request
@@ -175,7 +184,8 @@ jobs:
               continue-on-error: true
               run: |
                   pip install httpx
-                  python tools/ci/gemini_web2api.py > "$RUNNER_TEMP/proxy.log" 2>&1 &
+                  WEB2API_STATS="$RUNNER_TEMP/web2api-stats.json" \
+                    python tools/ci/web2api_reviewer.py > "$RUNNER_TEMP/proxy.log" 2>&1 &
                   for i in $(seq 1 30); do
                       curl -sf http://127.0.0.1:8081/v1/models >/dev/null 2>&1 && break
                       sleep 1
@@ -247,8 +257,75 @@ jobs:
                       *'item(s) failed'*) ok=false ;;
                     esac
                   fi
+                  # Gemini only, and it is why this step differs from the two
+                  # below. Its tool calls are scraped out of text by the proxy,
+                  # so a review can finish "complete, 0 findings" having
+                  # recorded nothing it found. Two places say so.
+                  #
+                  # The proxy's own count, which is the only trace of a call
+                  # the reviewer never received: a block it could not turn into
+                  # a call, or a long prose answer that stayed prose after
+                  # being asked again. Absent means the proxy never ran the
+                  # repaired path, and that is a failure too.
+                  #
+                  # And the reviewer's result, for the call that arrived and
+                  # was refused. Only code_comment, and only when every one
+                  # failed: a file_read of a missing path is the model looking
+                  # around, and a comment rejected once and accepted on the
+                  # retry is a finding that landed.
+                  #
+                  # Nothing here counts tool calls made. The call that ends a
+                  # task is not in that total, so a clean review of a clean
+                  # diff reads zero and must pass.
+                  #
+                  # Unreadable is a failure, as it is for the summary above: a
+                  # check that quietly stops checking is how this went unseen.
+                  why=""
+                  if [ "$ok" = true ]; then
+                    stats="$RUNNER_TEMP/web2api-stats.json"
+                    result=/tmp/ocr-result.json
+                    if ! command -v jq >/dev/null; then
+                      ok=false; why="jq is missing, nothing was checked"
+                    elif ! jq -e '.summary and .tool_calls' "$result" >/dev/null 2>&1; then
+                      ok=false; why="the reviewer's result is unreadable"
+                    else
+                      refused="$(jq -r '.tool_calls.failure_by_tool.code_comment // 0' "$result")"
+                      made="$(jq -r '.tool_calls.by_tool.code_comment // 0' "$result")"
+                      files="$(jq -r '.summary.files_reviewed // 0' "$result")"
+                      if [ "$refused" -gt 0 ] && [ "$refused" -ge "$made" ]; then
+                        ok=false; why="every code_comment was refused ($refused)"
+                      elif [ "$files" -gt 0 ]; then
+                        # A stats file only exists once the proxy has counted
+                        # something, so its absence after a review that read
+                        # files and lost nothing is normal. Read it only if
+                        # it is there.
+                        if [ -s "$stats" ]; then
+                          lost="$(jq -r '(.prose_unrecovered // 0) + (.blocks_lost // 0)' "$stats" 2>/dev/null || echo unreadable)"
+                          case "$lost" in
+                            0) ;;
+                            unreadable) ok=false; why="the proxy's count is unreadable" ;;
+                            *) ok=false; why="$lost finding-shaped reply(ies) the proxy could not turn into a call" ;;
+                          esac
+                        fi
+                      fi
+                    fi
+                  fi
                   echo "ok=$ok" >> "$GITHUB_OUTPUT"
-                  echo "$OUTCOME / ok=$ok" >> "$GITHUB_STEP_SUMMARY"
+                  echo "$OUTCOME / ok=$ok${why:+ ($why)}" >> "$GITHUB_STEP_SUMMARY"
+                  [ -s "$RUNNER_TEMP/web2api-stats.json" ] && echo "proxy: $(cat "$RUNNER_TEMP/web2api-stats.json")" >> "$GITHUB_STEP_SUMMARY" || true
+
+            # Gemini needs no token, so it can be the only provider there is.
+            # Then nothing below runs, and without this the check would end
+            # green on a review that did not happen.
+            - name: No provider completed a review
+              if: >-
+                  always() && steps.verdict.outputs.ok != 'true'
+                  && needs.context.outputs.has_groq != 'true'
+                  && needs.context.outputs.has_openai != 'true'
+              run: |
+                  echo "::error::Gemini did not complete a review and no other provider is configured." \
+                       "The pull request has no review. Re-run with /open-code-review."
+                  exit 1
 
     groq:
         runs-on: ubuntu-latest

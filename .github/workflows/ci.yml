@@ -114,6 +114,10 @@ jobs:
       - name: the handover still picks the earliest human
         working-directory: .
         run: python tools/telegram/participants.py --self-check
+      # The reviewer's findings travel through this scrape. When it is wrong
+      # nothing fails: a review comes back clean and the check stays green.
+      - name: the web2api tool-call scrape still reads what a model writes
+        run: python tools/ci/web2api_reviewer.py --self-check
 
       # The home-screen icon is geometry, not taste: the maskable safe zone is
       # a circle of radius 2/5 of the icon, and artwork past it is clipped by a
