@@ -53,6 +53,11 @@ GitHub Discussion (not a PR) if you want to revisit one.
   hooks; SCSS modules with tokens from `frontend/src/styles/variables.scss`.
 - Comments explain _why_, never _what_. Match the existing lowercase,
   plain-spoken doc voice - no corporate tone, no emoji in docs
+- **No path to one person's machine**, in code, comments or docs: no home or
+  desktop directory, no drive letter with a user name in it. It names somebody's
+  computer in a public repo and breaks on every other one. Resolve from
+  `__file__` or the repo root. A fallback of that kind merged in
+  `what_changed.py` as dead code, which is the form it usually takes.
 - **No incident tallies.** Give the mechanism and the rule, never a count of
   how often something went wrong before or how long it took: "one run in
   three", "57 retries", "122 of 162", "this shipped once". A reader needs to
@@ -111,6 +116,23 @@ GitHub Discussion (not a PR) if you want to revisit one.
   than explaining it in a PR comment nobody will read twice. The rules live on
   the TRUSTED BASE: the action checks out `main`, so a change to them does
   nothing until it is merged.
+  **A rule added here goes into `rule.json` in the same PR, when a reviewer
+  could check it from a diff.** That means a thing to flag (a `VITE_` secret, a
+  static Leaflet import, a path to one machine) or a decision it would
+  otherwise report as a bug. This file is invisible to it, so a rule written
+  only here is one it never hears of.
+  Author process needs no entry. The catch-all rule tells the reviewer to flag
+  a CLAUDE.md or AGENTS.md hunk that skips this, so the cascade is checked and
+  not only asked for.
+  **A rule has a size limit, and CI enforces it.** The reviewer's first
+  provider reads about 46 KB of prompt and silently drops the rest. Every turn
+  about a file carries that file's rule, beside 8 KB of tool definitions the
+  reviewer needs, so a longer rule is paid for out of the diff's room.
+  `web2api_reviewer.py --self-check` fails when one passes `RULE_MAX_BYTES`.
+  When a rule is full, **split it by path**: add a narrower glob ABOVE it
+  holding only what those files need. First match wins, so `teleState.ts` can
+  have its own entry and stop costing every other workbench file its
+  paragraph. Lengthening a shared rule is the one move that does not scale.
 
 - **Lint is ESLint 10 flat config**, `frontend/eslint.config.js`. `.eslintrc.cjs`
   is gone; ESLint 10 reads nothing else. Two things there are deliberate. The

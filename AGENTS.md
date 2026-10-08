@@ -23,6 +23,9 @@ Quickest orientation, if you read nothing else:
 - **Never commit or echo credentials**, and never prefix anything `VITE_` that
   is not meant to be public - Vite inlines those into the shipped bundle.
 - **No `Co-Authored-By` trailers** on commits, and **no em dashes** in prose.
+- **A new rule a reviewer could check goes in `.opencodereview/rule.json` too.**
+  The LLM reviewer reads that file and the diff, and neither this file nor
+  CLAUDE.md. Why and how short: CLAUDE.md, the reviewer bullet in House style.
 
 - **Opening a PR?** `.github/pull_request_template.md` is the shape: cause,
   fix, migration, test, checklist. GitHub prefills it in the browser; `gh pr

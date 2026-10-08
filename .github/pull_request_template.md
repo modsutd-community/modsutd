@@ -71,5 +71,8 @@ Find elements by a data-act hook, never by copy that gets reworded. -->
 - [ ] No architecture-invariant changes - no backend, DB, analytics or new
       runtime dependency. Those are a Discussion, not a PR. See
       [CLAUDE.md](../CLAUDE.md)
+- [ ] New rule in CLAUDE.md or AGENTS.md that a reviewer could check from a
+      diff? It is in `.opencodereview/rule.json` too, or the reviewer never
+      hears of it
 - [ ] AI-assisted? Fine, and expected - confirm a human (you) read every
       changed line
