@@ -165,6 +165,19 @@ def reason_for(tags: list[str]) -> str | None:
     return None
 
 
+def whitelist_releases(record: dict, mine: set[str]) -> bool:
+    """Whether a whitelisted course carries a flag this pass set and must drop.
+
+    The record's OWN reason, read here and nowhere else. The loop below read a
+    variable it only assigns further down, so the answer came from whichever
+    course the glob visited before this one: 99.504 kept `noBatchChat` because
+    the file ahead of it had no reason of ours, and would have lost a hand-set
+    flag had that file carried one. On the first course of a run it is a
+    NameError.
+    """
+    return record.get("noBatchChatReason") in mine
+
+
 def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
     """Flag every course whose own tags call it a core, and unflag what stops.
 
@@ -192,7 +205,7 @@ def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
         # SUTD's CMS tags them Core because they are core for PhD students, but
         # marking them noBatchChat denies undergraduates their elective cohort chat.
         if d.get("code") in UNDERGRADUATE_WHITELIST:
-            if current in mine:
+            if whitelist_releases(d, mine):
                 d.pop("noBatchChat", None)
                 d.pop("noBatchChatReason", None)
                 removed.append(d["code"])
@@ -262,6 +275,20 @@ def self_check() -> int:
     # them as electives and need batch chats.
     if "99.504" not in UNDERGRADUATE_WHITELIST:
         fails.append("99.504 is missing from UNDERGRADUATE_WHITELIST")
+    # And the release reads the course's own reason. Literal reasons here: a
+    # case built from TAG_REASONS passes whatever that table holds.
+    ours = {"core", "core elective", "freshmore core"}
+    for record, want, why in [
+        ({"code": "99.504", "noBatchChat": True, "noBatchChatReason": "core"}, True,
+         "a flag this pass set on a whitelisted course comes off"),
+        ({"code": "99.504", "noBatchChat": True}, False,
+         "a flag set by hand, with no reason, is not ours to remove"),
+        ({"code": "99.504", "noBatchChat": True, "noBatchChatReason": "pillar core"}, False,
+         "the listing pass's flag is not this pass's to remove"),
+        ({"code": "99.504"}, False, "nothing to release"),
+    ]:
+        if whitelist_releases(record, ours) is not want:
+            fails.append(f"{why}: {record} gave {not want}")
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
         for f in fails:
