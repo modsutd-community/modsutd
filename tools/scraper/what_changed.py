@@ -5,7 +5,7 @@ import pathlib
 import subprocess
 import sys
 
-ROOT = pathlib.Path(__file__).resolve().parents[2] if "__file__" in locals() else pathlib.Path(r"C:\Users\Andrew\Desktop\Dev Me\modsutd")
+ROOT = pathlib.Path(__file__).resolve().parents[2]
 DATA = ROOT / "data"
 
 KEYS = ("id", "code", "name", "label")
