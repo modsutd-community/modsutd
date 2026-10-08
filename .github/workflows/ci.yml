@@ -117,6 +117,7 @@ jobs:
       # The reviewer's findings travel through this scrape. When it is wrong
       # nothing fails: a review comes back clean and the check stays green.
       - name: the web2api tool-call scrape still reads what a model writes
+        working-directory: .
         run: python tools/ci/web2api_reviewer.py --self-check
 
       # The home-screen icon is geometry, not taste: the maskable safe zone is
