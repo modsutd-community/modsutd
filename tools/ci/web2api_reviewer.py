@@ -92,6 +92,14 @@ SAFE_PROMPT_BYTES = 46000
 # would not fit. The model can ask for the file again; it cannot ask for the
 # end of a prompt it never saw.
 KEEP_RECENT_RESULTS = 2
+# The most one entry in .opencodereview/rule.json may weigh. A file's rule is
+# sent on every turn about that file, beside about 8 KB of tool definitions
+# and 3 KB of the reviewer's own instructions, so this leaves some 28 KB of the
+# 46 for the diff and what the model reads. Enforced by --self-check, in CI:
+# the rules file is told to grow whenever CLAUDE.md does, and without a ceiling
+# that growth is paid for out of the diff's room, one sentence at a time, with
+# nothing failing. A rule at the cap is split by path, not lengthened.
+RULE_MAX_BYTES = 6500
 ELIDED = "[elided to fit the prompt: an older tool result. Call the tool again if you need it.]"
 
 # Appended to upstream's own instruction, which says only "respond with a
@@ -366,6 +374,29 @@ def _size(text: str) -> int:
     return len(text.encode("utf-8"))
 
 
+def _compact_tools(prompt: str, tools: list) -> str:
+    """The tool definitions, re-serialised without indentation.
+
+    Upstream pretty-prints them, and they are the largest fixed thing in every
+    turn: about a fifth of the block is spaces. Same definitions, same order,
+    nothing reworded. Rebuilt exactly as upstream builds them so the block can
+    be found by value; if a refresh changes how it is built the prompt is
+    returned untouched, which costs bytes and breaks nothing.
+    """
+    defs = []
+    for tool in tools:
+        fn = tool.get("function", tool) if tool.get("type") == "function" else tool
+        defs.append({
+            "name": fn.get("name", tool.get("name", "")),
+            "description": fn.get("description", tool.get("description", "")),
+            "parameters": fn.get("parameters", tool.get("parameters", {})),
+        })
+    pretty = json.dumps(defs, indent=2)
+    if pretty not in prompt:
+        return prompt
+    return prompt.replace(pretty, json.dumps(defs, separators=(",", ":"), ensure_ascii=False), 1)
+
+
 def messages_to_prompt(messages: list, tools: list | None = None) -> tuple:
     """Upstream's flattening, kept under what the endpoint actually reads.
 
@@ -383,6 +414,7 @@ def messages_to_prompt(messages: list, tools: list | None = None) -> tuple:
     def build(msgs):
         prompt, images = _orig_messages_to_prompt(msgs, tools)
         if tools:
+            prompt = _compact_tools(prompt, tools)
             prompt = f"[System instruction]: {STRICT_RULES}\n\n{prompt}"
         return prompt, images
 
@@ -627,6 +659,20 @@ def self_check() -> int:
             fails.append("a prompt that fits after eliding was counted as oversized")
         if "x" * 15000 not in convo[2]["content"]:
             fails.append("eliding edited the caller's own messages")
+        # The tool definitions, compacted: same content, fewer bytes.
+        wide = [{"type": "function", "function": {
+            "name": "code_comment", "description": "Report a defect. " * 20,
+            "parameters": {"type": "object", "properties": {
+                "comments": {"type": "array", "items": {"type": "object", "properties": {
+                    "path": {"type": "string"}, "body": {"type": "string"}}}}},
+                "required": ["comments"]}}}]
+        raw, _ = _orig_messages_to_prompt([{"role": "user", "content": "hi"}], wide)
+        packed = _compact_tools(raw, wide)
+        if len(packed) >= len(raw):
+            fails.append("the tool definitions were not compacted")
+        if '"required":["comments"]' not in packed or "Report a defect. " * 20 not in packed:
+            fails.append("compacting the tool definitions changed what they say")
+
         huge = [{"role": "user", "content": "d" * 60000}]
         upstream.messages_to_prompt(huge, tools)
         if STATS["oversized"] != before["oversized"] + 1:
@@ -675,12 +721,28 @@ def self_check() -> int:
         upstream.gemini_stream_generate, upstream.extract_response_text, time.sleep = (
             real_generate, real_extract, real_sleep)
 
+    # The reviewer's rules, against the room they are paid for out of.
+    rules_path = Path(__file__).resolve().parents[2] / ".opencodereview" / "rule.json"
+    try:
+        rules = json.loads(rules_path.read_text(encoding="utf-8"))["rules"]
+    except (OSError, ValueError, KeyError) as exc:
+        fails.append(f"cannot read {rules_path.name}: {exc}")
+    else:
+        for rule in rules:
+            weight = len(rule["rule"].encode("utf-8"))
+            if weight > RULE_MAX_BYTES:
+                fails.append(
+                    f"the rule for {rule['path']} is {weight} bytes, over the {RULE_MAX_BYTES} "
+                    f"a rule may weigh. It is sent on every turn about a matching file, out "
+                    f"of the 46 KB the endpoint reads. Split it by path (a narrower glob "
+                    f"ABOVE this one, carrying only what those files need) or cut it.")
+
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
         for f in fails:
             print(f"  - {f}")
         return 1
-    print("self-check: the tool-call scrape, the retries and the seams behave")
+    print("self-check: the tool-call scrape, the retries, the seams and the rule budget behave")
     return 0
 
 

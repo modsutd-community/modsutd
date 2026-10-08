@@ -124,9 +124,15 @@ GitHub Discussion (not a PR) if you want to revisit one.
   Author process needs no entry. The catch-all rule tells the reviewer to flag
   a CLAUDE.md or AGENTS.md hunk that skips this, so the cascade is checked and
   not only asked for.
-  Keep each rule short. The reviewer's first provider reads about 46 KB of
-  prompt and silently drops the rest, and a file's rule is in every turn about
-  that file. `tools/ci/web2api_reviewer.py` says how that was measured.
+  **A rule has a size limit, and CI enforces it.** The reviewer's first
+  provider reads about 46 KB of prompt and silently drops the rest. Every turn
+  about a file carries that file's rule, beside 8 KB of tool definitions the
+  reviewer needs, so a longer rule is paid for out of the diff's room.
+  `web2api_reviewer.py --self-check` fails when one passes `RULE_MAX_BYTES`.
+  When a rule is full, **split it by path**: add a narrower glob ABOVE it
+  holding only what those files need. First match wins, so `teleState.ts` can
+  have its own entry and stop costing every other workbench file its
+  paragraph. Lengthening a shared rule is the one move that does not scale.
 
 - **Lint is ESLint 10 flat config**, `frontend/eslint.config.js`. `.eslintrc.cjs`
   is gone; ESLint 10 reads nothing else. Two things there are deliberate. The
