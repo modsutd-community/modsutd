@@ -264,8 +264,9 @@ jobs:
                   #
                   # The proxy's own count, which is the only trace of a call
                   # the reviewer never received: a block it could not turn into
-                  # a call, or a long prose answer that stayed prose after
-                  # being asked again. Absent means the proxy never ran the
+                  # a call, a long prose answer that stayed prose after being
+                  # asked again, or a prompt longer than the endpoint reads
+                  # even after older tool results were dropped from it. Absent means the proxy never ran the
                   # repaired path, and that is a failure too.
                   #
                   # And the reviewer's result, for the call that arrived and
@@ -300,11 +301,11 @@ jobs:
                         # files and lost nothing is normal. Read it only if
                         # it is there.
                         if [ -s "$stats" ]; then
-                          lost="$(jq -r '(.prose_unrecovered // 0) + (.blocks_lost // 0)' "$stats" 2>/dev/null || echo unreadable)"
+                          lost="$(jq -r '(.prose_unrecovered // 0) + (.blocks_lost // 0) + (.oversized // 0)' "$stats" 2>/dev/null || echo unreadable)"
                           case "$lost" in
                             0) ;;
                             unreadable) ok=false; why="the proxy's count is unreadable" ;;
-                            *) ok=false; why="$lost finding-shaped reply(ies) the proxy could not turn into a call" ;;
+                            *) ok=false; why="$lost turn(s) the proxy could not carry: a finding it could not turn into a call, or a prompt past what the endpoint reads" ;;
                           esac
                         fi
                       fi

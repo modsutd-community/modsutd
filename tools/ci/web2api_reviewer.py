@@ -78,6 +78,22 @@ SPEAKER = re.compile(r"(?m)^[ \t]*\[(?:Assistant|Tool result[^\]\n]*)\]:")
 # model pausing to think. Shorter ones are left out of the lost-work count.
 PROSE_MIN_CHARS = 400
 
+# Gemini's web endpoint reads a prompt up to about here and silently drops the
+# END of anything longer. Measured from a runner with a word planted at each
+# end of a growing prompt: both read back at every size to 49 KB, the second
+# was lost or invented at 54 KB, and from 67 KB the reply says the message
+# "got cut off". Nothing errors, so a long review turn simply loses its newest
+# messages, which are the tool results the model asked for last.
+# It is the endpoint's limit and not ours to raise: upstream's own
+# PROMPT_MAX_BYTES only decides when to drop tool schemas, and truncates
+# nothing.
+SAFE_PROMPT_BYTES = 46000
+# A tool result older than the newest few is replaced by this when a prompt
+# would not fit. The model can ask for the file again; it cannot ask for the
+# end of a prompt it never saw.
+KEEP_RECENT_RESULTS = 2
+ELIDED = "[elided to fit the prompt: an older tool result. Call the tool again if you need it.]"
+
 # Appended to upstream's own instruction, which says only "respond with a
 # tool_call block" and "only when needed". The second half is what licenses a
 # page of prose in place of the call the client is waiting for.
@@ -112,6 +128,8 @@ STATS = {
     "nudged": 0,              # a reply with no usable call was asked again
     "nudge_recovered": 0,     # ...and the second reply had one
     "failure_pages": 0,       # Gemini's failure page, retried
+    "results_elided": 0,      # an older tool result dropped so the prompt fits
+    "oversized": 0,           # a prompt past the limit even so: its end was not read
 }
 
 # How many tool_call blocks the last parse on this thread refused. Per thread
@@ -344,10 +362,48 @@ def is_upstream_failure(text: str) -> bool:
 _orig_messages_to_prompt = None
 
 
+def _size(text: str) -> int:
+    return len(text.encode("utf-8"))
+
+
 def messages_to_prompt(messages: list, tools: list | None = None) -> tuple:
-    prompt, images = _orig_messages_to_prompt(messages, tools)
-    if tools:
-        prompt = f"{prompt}\n\n[System instruction]: {STRICT_RULES}"
+    """Upstream's flattening, kept under what the endpoint actually reads.
+
+    The rules go at the FRONT. They were appended once, and the end of a long
+    prompt is the part that is dropped, so the turns that most needed them
+    never saw them.
+
+    A review turn grows with every file the model reads, because the whole
+    conversation is re-sent as one prompt. When it would not fit, the oldest
+    tool results go first and the newest stay: what the model asked for last is
+    what it is about to reason about. A prompt still too long after that is
+    counted, because its tail was not read and the review of that group is not
+    one to trust.
+    """
+    def build(msgs):
+        prompt, images = _orig_messages_to_prompt(msgs, tools)
+        if tools:
+            prompt = f"[System instruction]: {STRICT_RULES}\n\n{prompt}"
+        return prompt, images
+
+    prompt, images = build(messages)
+    if _size(prompt) <= SAFE_PROMPT_BYTES:
+        return prompt, images
+
+    trimmed = [dict(m) for m in messages]
+    results = [i for i, m in enumerate(trimmed)
+               if m.get("role") == "tool" and isinstance(m.get("content"), str)]
+    for i in results[:-KEEP_RECENT_RESULTS] if KEEP_RECENT_RESULTS else results:
+        if len(trimmed[i]["content"]) <= len(ELIDED):
+            continue
+        trimmed[i]["content"] = ELIDED
+        bump("results_elided")
+        prompt, images = build(trimmed)
+        if _size(prompt) <= SAFE_PROMPT_BYTES:
+            return prompt, images
+    bump("oversized")
+    upstream.log(f"prompt is {_size(prompt)} bytes after eliding, past the "
+                 f"{SAFE_PROMPT_BYTES} the endpoint reads: its end will be dropped")
     return prompt, images
 
 
@@ -397,9 +453,9 @@ def _call_gemini(self, prompt, model_id, think_mode, tools, file_refs=None):
     bump("nudged")
     upstream.log(f"no usable tool_call in a {len(text)}-char reply, asking once more")
     calls_again, clean_again = [], ""
-    # The nudge must fit the same budget the first prompt did, or upstream
-    # truncates the prompt from the front and the tools block goes first.
-    room = upstream.PROMPT_MAX_BYTES - len(prompt.encode("utf-8")) - len(NUDGE) - 64
+    # The nudge must fit the same budget the first prompt did, or the
+    # endpoint drops its end, which is the nudge itself.
+    room = SAFE_PROMPT_BYTES - _size(prompt) - len(NUDGE) - 64
     if room > 200:
         try:
             again = _ask(f"{prompt}\n\n[Assistant]: {text[:room]}\n\n{NUDGE}",
@@ -549,6 +605,32 @@ def self_check() -> int:
         plain, _ = upstream.messages_to_prompt([{"role": "user", "content": "hi"}], None)
         if "RULES FOR TOOL CALLS" in plain:
             fails.append("the strict rules are added to a request with no tools")
+        if prompt.index("RULES FOR TOOL CALLS") > 40:
+            fails.append("the strict rules are not at the front, where a long prompt keeps them")
+
+        # A conversation that has read five big files. Literal sizes: 5 x 15 KB
+        # cannot fit in 46 KB, and the two newest must be the ones that stay.
+        convo = [{"role": "user", "content": "review this diff"}]
+        for n in range(5):
+            convo.append({"role": "assistant", "content": "", "tool_calls": [
+                {"function": {"name": "file_read", "arguments": '{"file_path": "f%d.py"}' % n}}]})
+            convo.append({"role": "tool", "name": "file_read", "content": f"FILE{n} " + "x" * 15000})
+        before = dict(STATS)
+        long_prompt, _ = upstream.messages_to_prompt(convo, tools)
+        if len(long_prompt.encode("utf-8")) > 46000:
+            fails.append(f"a long conversation is still {len(long_prompt)} bytes after eliding")
+        if "FILE4 " not in long_prompt or "FILE3 " not in long_prompt:
+            fails.append("the newest tool results were elided instead of the oldest")
+        if "FILE0 " in long_prompt:
+            fails.append("the oldest tool result survived while the prompt was over")
+        if STATS["oversized"] != before["oversized"]:
+            fails.append("a prompt that fits after eliding was counted as oversized")
+        if "x" * 15000 not in convo[2]["content"]:
+            fails.append("eliding edited the caller's own messages")
+        huge = [{"role": "user", "content": "d" * 60000}]
+        upstream.messages_to_prompt(huge, tools)
+        if STATS["oversized"] != before["oversized"] + 1:
+            fails.append("a prompt nothing can shrink was not counted as oversized")
 
         # The retry logic, with Gemini replaced by a script of replies.
         real_generate, real_extract, real_sleep = (
