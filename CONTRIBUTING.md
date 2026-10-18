@@ -1,6 +1,6 @@
 # Contributing
 
-Before you start: you may want to read the [onboarding guide](https://github.com/modsutd-community/modsutd/tree/main/docs/onboarding.md) if you wish to understand the core operations here (and maybe join us? :))
+Before you start: you may want to read the [onboarding guide](docs/onboarding.md) if you wish to understand the core operations here (and maybe join us? :))
 
 Every bit goes a long way!
 

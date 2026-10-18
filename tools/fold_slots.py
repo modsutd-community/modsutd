@@ -23,7 +23,7 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from venue_resolve import VENUE_RE, room_code, venue_index  # noqa: E402
 
-MODS = DATA / "mods"
+MODS = DATA / "mods" if (DATA / "mods").exists() else DATA / "courses"
 TERM_WINDOW = DATA / "term-window.json"
 TERM_CALENDAR = DATA / "term-calendar.json"
 MAX_SLOTS = 80

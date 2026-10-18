@@ -21,7 +21,8 @@ async function fetchJSON<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export const loadMods     = () => fetchJSON<Mod[]>('/data/mods.json');
+export const loadMods     = () =>
+  fetchJSON<Mod[]>('/data/mods.json').catch(() => fetchJSON<Mod[]>('/data/courses.json'));
 export const loadVenues   = () => fetchJSON<Venue[]>('/data/venues.json');
 export const loadManifest = () => fetchJSON<DataManifest>('/data/manifest.json');
 

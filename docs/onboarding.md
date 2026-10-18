@@ -51,7 +51,7 @@ npm run dev   # http://localhost:3000
 modsutd/
 ├── data/                  # Source of truth JSON files
 │   ├── mods/              # One JSON per mod (e.g. 10_014.json, 50_001.json)
-│   ├── venues/            # One JSON per venue (e.g. 1.309.json)
+│   ├── venues/            # One JSON per venue (e.g. 1_309.json)
 │   └── _meta/             # Term calendars, specialisations, virtual tour scenes
 ├── frontend/              # React 18 + Vite + TypeScript application
 │   ├── src/
@@ -182,7 +182,7 @@ Repeatable procedures live in `.claude/skills/`. Both human developers and AI as
 - **Constraint**: Outputs structured diffs for human review; scrapers never auto-commit raw text.
 - **Worked Example**:
   ```bash
-  python tools/scraper/gather_mods.py --pillar CSD
+  python tools/scraper/gather_mods.py --limit 5
   python tools/scraper/what_changed.py
   ```
 
