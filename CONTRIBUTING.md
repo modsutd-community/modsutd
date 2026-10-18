@@ -1,5 +1,7 @@
 # Contributing
 
+Before you start: you may want to read the [onboarding guide](docs/onboarding.md) if you wish to understand the core operations here (and maybe join us? :))
+
 Every bit goes a long way!
 
 - honest module reviews

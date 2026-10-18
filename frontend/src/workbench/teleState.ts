@@ -68,7 +68,7 @@ export function chatEligible(mod: Mod): boolean {
  * would actually make.
  *
  * Eligibility alone is a property of the record and stays true forever, so it
- * marked every HASS course in the catalogue including the ones not offered
+ * marked every HASS mod in the catalogue including the ones not offered
  * this term. The registry alone is too narrow the other way: a mod running
  * this term whose chat nobody has asked for yet is exactly the row worth
  * marking, because one click makes it.

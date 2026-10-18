@@ -31,14 +31,15 @@ function lastUpdated(dir) {
 
 mkdirSync(OUT_DIR, { recursive: true });
 
-const courses = readJSONDir(join(SRC_DATA, 'courses')).sort((a, b) => a.code.localeCompare(b.code));
-const venues  = readJSONDir(join(SRC_DATA, 'venues')).sort((a, b) => a.code.localeCompare(b.code));
+const modsDir = statSync(join(SRC_DATA, 'mods'), { throwIfNoEntry: false }) ? join(SRC_DATA, 'mods') : join(SRC_DATA, 'courses');
+const mods   = readJSONDir(modsDir).sort((a, b) => a.code.localeCompare(b.code));
+const venues = readJSONDir(join(SRC_DATA, 'venues')).sort((a, b) => a.code.localeCompare(b.code));
 
 // A zero count means /data wasn't found (misconfigured root directory on the
 // host, broken checkout) - shipping an empty catalogue is worse than failing.
-if (courses.length === 0 || venues.length === 0) {
+if (mods.length === 0 || venues.length === 0) {
   console.error(
-    `[sync-data] refusing to write an empty catalogue (courses=${courses.length}, venues=${venues.length}) - is ${SRC_DATA} present?`
+    `[sync-data] refusing to write an empty catalogue (mods=${mods.length}, venues=${venues.length}) - is ${SRC_DATA} present?`
   );
   process.exit(1);
 }
@@ -259,7 +260,9 @@ if (courses.length === 0 || venues.length === 0) {
   for (const c of plateClash) console.warn(`[sync-data] plate disagreement: ${c}`);
 }
 
-writeFileSync(join(OUT_DIR, 'courses.json'), JSON.stringify(courses, null, 2));
+writeFileSync(join(OUT_DIR, 'mods.json'),    JSON.stringify(mods, null, 2));
+// Kept for backward compatibility during active browser sessions
+writeFileSync(join(OUT_DIR, 'courses.json'), JSON.stringify(mods, null, 2));
 writeFileSync(join(OUT_DIR, 'venues.json'),  JSON.stringify(venues,  null, 2));
 
 // Specialisation-track criteria for the plan badges, and the fixed
@@ -273,13 +276,13 @@ for (const extra of ['specializations.json', 'freshmore.json', 'minors.json', 't
 
 const manifest = {
   scrapedAt: new Date().toISOString(),
-  coursesUpdatedAt: lastUpdated(join(SRC_DATA, 'courses')),
-  venuesUpdatedAt:  lastUpdated(join(SRC_DATA, 'venues')),
-  counts: { courses: courses.length, venues: venues.length },
+  modsUpdatedAt:   lastUpdated(modsDir),
+  venuesUpdatedAt: lastUpdated(join(SRC_DATA, 'venues')),
+  counts: { mods: mods.length, venues: venues.length },
 };
 writeFileSync(join(OUT_DIR, 'manifest.json'), JSON.stringify(manifest, null, 2));
 
-console.log(`[sync-data] wrote ${courses.length} courses, ${venues.length} venues to ${OUT_DIR}`);
+console.log(`[sync-data] wrote ${mods.length} mods, ${venues.length} venues to ${OUT_DIR}`);
 
 // The indoor-map deep link resolves by EXACT label and falls back to the whole
 // campus on anything else - no error, no distinguishable status - so a stale or

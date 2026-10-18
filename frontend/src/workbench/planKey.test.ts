@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { REPEATABLE, planKeyFor, codeOfKey, modOfKey } from './logic';
 import type { Mod } from '@/types';
 
-// 02.XFER is the summer or winter HASS transfer: a real course each time, and a
+// 02.XFER is the summer or winter HASS transfer: a real mod each time, and a
 // student may take several across a degree. `selectedMods` is a string[] behind
 // an `includes` guard, so a second one needed a key of its own, and the term is
 // what distinguishes them.

@@ -47,7 +47,7 @@ so the first click of the new term opens a new batch.
 
 ## 3. Community threads
 
-- Prune stale-term schedule slots from `data/courses/*.json` - last term's
+- Prune stale-term schedule slots from `data/mods/*.json` - last term's
   room occupancy is wrong the moment the new term starts. (Slots auto-commit
   on main via the timetable-contribution workflow; there is no PR to merge.)
   A slot carries no term, so nothing but the calendar date tells you which term
@@ -56,7 +56,7 @@ so the first click of the new term opens a new batch.
 ## 4. Schedule data
 
 - If SUTD has published the official term timetable: ingest real schedules
-  into `data/courses/*.json` (see the `course-data` skill for shape rules).
+  into `data/mods/*.json` (see the `mod-data` skill for shape rules).
   Remove the placeholder labelling **only** for mods whose schedules are now
   real.
 - If not: placeholders stay, labelled as placeholders. Never dress them up

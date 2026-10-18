@@ -1,7 +1,7 @@
 {
   "name": "modSUTD",
   "short_name": "modSUTD",
-  "description": "An independent, student-built course catalogue, timetable builder and venue finder for SUTD students. Not affiliated with or endorsed by SUTD.",
+  "description": "An independent, student-built mod catalogue, timetable builder and venue finder for SUTD students. Not affiliated with or endorsed by SUTD.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

@@ -295,9 +295,9 @@ export function freshmoreFixedSet(core: FreshmoreCore): Map<string, number> {
 /**
  * Mods a student can hold more than one chip of.
  *
- * 02.XFER is the summer or winter HASS transfer: a real course each time, done
+ * 02.XFER is the summer or winter HASS transfer: a real mod each time, done
  * in whichever term it was done in, and a student may take several across a
- * degree. Everything else is one chip, because a course is passed once.
+ * degree. Everything else is one chip, because a mod is passed once.
  */
 export const REPEATABLE = new Set(['02.XFER']);
 

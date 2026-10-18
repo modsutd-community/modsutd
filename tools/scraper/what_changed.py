@@ -141,7 +141,7 @@ def build_markdown_report(base_ref: str, head_ref: str | None = None) -> str:
     new_files: list[str] = []
     removed_files: list[str] = []
     chat_warnings: list[dict] = []
-    course_updates: list[dict] = []
+    mod_updates: list[dict] = []
     new_urls_only: list[tuple[str, str]] = []  # (code, url)
     other_files: list[tuple[str, list[tuple[str, str, str]]]] = []
 
@@ -165,8 +165,8 @@ def build_markdown_report(base_ref: str, head_ref: str | None = None) -> str:
         if not out:
             continue
 
-        if rel.startswith("data/courses/"):
-            code = (new.get("code") if isinstance(new, dict) else None) or rel.replace("data/courses/", "").replace(".json", "").replace("_", ".")
+        if rel.startswith("data/mods/") or rel.startswith("data/courses/"):
+            code = (new.get("code") if isinstance(new, dict) else None) or rel.replace("data/mods/", "").replace("data/courses/", "").replace(".json", "").replace("_", ".")
             fields = {w for w, _, _ in out}
 
             chat_diffs = [(w, c, s) for w, c, s in out if w in ("noBatchChat", "noBatchChatReason")]
@@ -186,7 +186,7 @@ def build_markdown_report(base_ref: str, head_ref: str | None = None) -> str:
             added_tags, removed_tags = format_tag_diff(tag_diff) if tag_diff else ("-", "-")
             other_diffs = [f"{w}: {c}" for w, c, _ in out if w != "tags"]
             src = source_of(new) or source_of(old)
-            course_updates.append({
+            mod_updates.append({
                 "code": code,
                 "rel": rel,
                 "added_tags": added_tags,
@@ -203,11 +203,11 @@ def build_markdown_report(base_ref: str, head_ref: str | None = None) -> str:
     if chat_warnings:
         lines.append(f"- **Batch chat flags modified**: {len(chat_warnings)}")
     if new_files:
-        lines.append(f"- **New courses added**: {len(new_files)} ({', '.join(f'`{p}`' for p in new_files)})")
+        lines.append(f"- **New mods added**: {len(new_files)} ({', '.join(f'`{p}`' for p in new_files)})")
     if removed_files:
-        lines.append(f"- **Courses removed**: {len(removed_files)} ({', '.join(f'`{p}`' for p in removed_files)})")
-    if course_updates:
-        lines.append(f"- **Course catalog updates**: {len(course_updates)}")
+        lines.append(f"- **Mods removed**: {len(removed_files)} ({', '.join(f'`{p}`' for p in removed_files)})")
+    if mod_updates:
+        lines.append(f"- **Mod catalogue updates**: {len(mod_updates)}")
     if new_urls_only:
         lines.append(f"- **Only sourceUrl backfilled**: {len(new_urls_only)}")
     if other_files:
@@ -233,11 +233,11 @@ def build_markdown_report(base_ref: str, head_ref: str | None = None) -> str:
         for p in removed_files:
             lines.append(f"- `{p}`")
 
-    if course_updates:
-        lines.append("\n### Course Updates\n")
-        lines.append("| Course | Tags Added | Tags Removed | Other Changes | Source |")
+    if mod_updates:
+        lines.append("\n### Mod Updates\n")
+        lines.append("| Mod | Tags Added | Tags Removed | Other Changes | Source |")
         lines.append("| :--- | :--- | :--- | :--- | :--- |")
-        for item in course_updates:
+        for item in mod_updates:
             src_link = f"[source]({item['src']})" if item["src"] else "-"
             c_code = clean_cell(f"`{item['code']}`")
             c_add = clean_cell(item["added_tags"])
@@ -246,7 +246,7 @@ def build_markdown_report(base_ref: str, head_ref: str | None = None) -> str:
             lines.append(f"| {c_code} | {c_add} | {c_rem} | {c_oth} | {src_link} |")
 
     if new_urls_only:
-        lines.append(f"\n<details>\n<summary><b>Only sourceUrl backfilled ({len(new_urls_only)} courses)</b> - Click to expand</summary>\n")
+        lines.append(f"\n<details>\n<summary><b>Only sourceUrl backfilled ({len(new_urls_only)} mods)</b> - Click to expand</summary>\n")
         for code, url in new_urls_only:
             lines.append(f"- `{code}`: {url}")
         lines.append("\n</details>\n")

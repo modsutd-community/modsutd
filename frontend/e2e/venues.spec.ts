@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { coursesWithSchedules } from './support/courses';
+import { modsWithSchedules } from './support/mods';
 
 // Room finder: every venue as a FREE/BUSY cell probed at (day, time), with
 // the time typeable to ANY valid HH:MM - not just the quick chips. Clicking
@@ -9,8 +9,8 @@ import { coursesWithSchedules } from './support/courses';
 // honesty rule) - so occupancy behaviour is exercised by injecting one
 // synthetic slot at the network layer, never by committing fake data.
 async function withSeededSlot(page: import('@playwright/test').Page) {
-  await page.route('**/data/courses.json', (r) => r.fulfill({
-    json: coursesWithSchedules(['10.013'], [{
+  await page.route(/data\/(mods|courses)\.json/, (r) => r.fulfill({
+    json: modsWithSchedules(['10.013'], [{
       type: 'Lecture', day: 'Monday', startTime: '09:00', endTime: '11:00',
       location: '2.101', instructors: [],
     }]),

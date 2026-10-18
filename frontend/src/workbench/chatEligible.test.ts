@@ -76,7 +76,7 @@ describe('which mods the catalogue marks', () => {
   });
 
   // A live entry outranks the rest: a chat that exists is joinable whatever
-  // the catalogue says about the course.
+  // the catalogue says about the mod.
   it('marks a live chat even for a mod that could not get one now', () => {
     expect(chatOffered(mod({ noBatchChat: true }), { expires: TERM_END }, TERM_END, TODAY))
       .toBe(true);
@@ -90,7 +90,7 @@ describe('which mods the catalogue marks', () => {
 describe('the button on a mod page', () => {
   // chatEligible decides whether the mod panel offers a button at all. The
   // catalogue's mark is a different question, answered by the registry: a HASS
-  // course is eligible forever and only has a chat in the terms it runs.
+  // mod is eligible forever and only has a chat in the terms it runs.
   it('a mod this refuses draws no button either', () => {
     const ineligible = mod({ term: '1' });
     expect(chatEligible(ineligible)).toBe(false);

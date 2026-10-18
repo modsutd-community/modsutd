@@ -7,7 +7,7 @@
 
 WHY THIS EXISTS
 The pieces of a mod are refreshed by separate scripts, and the monthly job
-called two of them. The walk over all 389 course pages, the one that finds new
+called two of them. The walk over all 389 mod pages, the one that finds new
 mods, tags, descriptions and source URLs, was a command a maintainer had to
 remember, and a scheduled job is the only thing here that gets remembered. One
 entry point, so "refresh the mods" is one thing to schedule.
@@ -25,16 +25,16 @@ WAVES, NOT A QUEUE. Most of the wall clock is waiting on sutd.edu.sg, so steps
 that touch different files run together. What forces an order is only ever a
 shared file:
   wave 1  mods, tracks, minors, terms         - four different outputs
-  wave 2  hass                                - writes data/courses too, so
+  wave 2  hass                                - writes data/mods too, so
                                                 it must not race mods
-  wave 3  cores                               - writes data/courses as well
+  wave 3  cores                               - writes data/mods as well
   wave 4  prereqs                             - reads what the three above wrote
 
 STEP NAMES. Five of the six steps read www.sutd.edu.sg, so a name after the
 host tells a reader nothing. They are named after what they produce instead,
 except `hass`, which is the one on another host.
 
-`mods` and `prereqs` read the SAME 389 course pages; the difference is that one
+`mods` and `prereqs` read the SAME 389 mod pages; the difference is that one
 writes records and the other reports on them. That pair is the reason the naming
 is worth caring about.
 """
@@ -67,7 +67,7 @@ STEPS: list[tuple[str, list[str], str]] = [
     (
         "mods",
         ["gather_mods.py"],
-        "every mod on sutd.edu.sg, walked from the two course sitemaps: new "
+        "every mod on sutd.edu.sg, walked from the two mod sitemaps: new "
         "mods, tags, descriptions, source URLs, grading and workload",
     ),
     (
@@ -106,11 +106,11 @@ STEPS: list[tuple[str, list[str], str]] = [
     (
         "cores",
         ["gather_cores.py"],
-        "every core course -> noBatchChat, because a chat for a course "
+        "every core mod -> noBatchChat, because a chat for a mod "
         "everybody takes has the same membership as the cohort chat they "
         "already have. Two halves: each pillar's own core read off its "
         "published listing, and anything the catalogue already tags Freshmore "
-        "Core or Core. Runs AFTER `mods`, so a course added in this same run "
+        "Core or Core. Runs AFTER `mods`, so a mod added in this same run "
         "is flagged in this same run",
     ),
     (
@@ -127,7 +127,7 @@ STEPS: list[tuple[str, list[str], str]] = [
             "--minors", str(SCRATCH / "minors.json"),
             "--report-out", str(SCRATCH / "proposed.md"),
         ],
-        "reads the two reports with a model and edits data/courses where the "
+        "reads the two reports with a model and edits data/mods where the "
         "page supports it. Every proposal is validated against the quoted page "
         "text before it is written",
     ),
@@ -138,11 +138,11 @@ WAVES: list[list[str]] = [
     ["mods", "tracks", "minors", "terms", "canaries"],
     ["hass"],
     # Its own wave, and it has to be AFTER `mods`: that is the step that
-    # creates a record for a course SUTD has just added, and this is the step
-    # that decides whether the new course gets a batch chat. Before it, a new
+    # creates a record for a mod SUTD has just added, and this is the step
+    # that decides whether the new mod gets a batch chat. Before it, a new
     # core would go a month offering one.
     #
-    # It writes data/courses, so it cannot run beside `mods` or `hass`, and
+    # It writes data/mods, so it cannot run beside `mods` or `hass`, and
     # `prereqs` READS those records so it cannot run beside this.
     ["cores"],
     ["prereqs"],

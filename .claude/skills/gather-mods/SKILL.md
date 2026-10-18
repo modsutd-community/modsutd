@@ -1,11 +1,11 @@
 ---
 name: gather-mods
-description: Refresh modSUTD's catalogue from the official sutd.edu.sg course listing - new mods, tags, descriptions - via tools/scraper/gather_mods.py. Use when a scrape pull request reports listed mods missing from the repo, when a term brings new offerings, or on "refresh the catalogue/tags".
+description: Refresh modSUTD's catalogue from the official sutd.edu.sg mod listing - new mods, tags, descriptions - via tools/scraper/gather_mods.py. Use when a scrape pull request reports listed mods missing from the repo, when a term brings new offerings, or on "refresh the catalogue/tags".
 ---
 
 # Refreshing the catalogue from the official listing
 
-The official source is the WordPress course post-type, enumerated by two
+The official source is the WordPress mod post-type, enumerated by two
 sitemaps (`course-sitemap.xml`, `course-sitemap2.xml`) - NOT the JS-rendered
 listing page. `tools/scraper/gather_mods.py` is the reusable gatherer;
 
@@ -31,7 +31,7 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   `(?i)(?<![a-z])(lkycic|namic)(?![a-z])` - a substring check would
   false-positive on "Dy**namic**s"/"Thermody**namic**s".
 - Page parse is a heading-driven state machine over `<main>` VISIBLE TEXT:
-  h1 → description ¶s (some pages instead use a "Course Description"
+  h1 → description ¶s (some pages instead use a "Mod Description"
   heading); "Prerequisite(s)" / "Co-requisite(s)" sections collect
   `\d{2}\.\d{3}` codes and MUST stop at the next heading or
   mutually-exclusive-subject codes leak in; credits from
@@ -43,11 +43,11 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   table and runs in CI.
 - **Which codes it walks, and what it says about the rest.** `VALID_PREFIXES`
   is the code space of SUTD's own undergraduate listing, checked rather than
-  guessed: that listing yields 219 course links carrying exactly those nine
+  guessed: that listing yields 219 mod links carrying exactly those nine
   prefixes. Everything else in the sitemap is a graduate catalogue (51.5xx is
   MSSD, 99.5xx the SMT PhD programme) or an orphan CMS record (41.5xx, 45.2xx:
   no programme lists them and their pages carry no prose at all). Those used to
-  be dropped by a bare `continue` that printed nothing, so a real course could
+  be dropped by a bare `continue` that printed nothing, so a real mod could
   sit unlisted with no way to find out. The run now prints them by prefix with
   their slugs.
   `UNDERGRADUATE_WHITELIST` is the exception list and it holds one code: **99.504**,
@@ -55,21 +55,21 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   undergraduate students". Its pillar and term are pinned there because neither
   can be derived - the page publishes no `Term` tag, and `prefix_precedents()`
   would vote on "99" using the 99.999 placeholders. The third field is the
-  sentence that justified the entry, re-read on every run: a course already in
+  sentence that justified the entry, re-read on every run: a mod already in
   `/data` is reported and kept when the page loses it, because a copy-edit must
-  not silently drop a course, and a code admitted there that has never been
+  not silently drop a mod, and a code admitted there that has never been
   written is refused.
   `ELECTIVE_SUFFIX_RE` is what makes widening the set safe: SUTD re-lists three
   SMT electives in the PhD catalogue as `<name> (Elective)` under a 99.5xx
   code, and 99.502 is 01.117 with a different number on it. Only that exact
   suffix is stripped before comparing, because the repo keeps pairs that share
   a bare name on purpose - 50.007 and 50.570 are both "Machine Learning".
-- **A course's level is not in its number.** The eleven courses under `02.5`
+- **A mod's level is not in its number.** The eleven mods under `02.5`
   tag themselves `Term 1` to `Term 3` and read like a master's programme. Two
   of their pages say so in their own words, and `GRADUATE_PAGE` holds those two
   with the words that say it: 02.563 is "a Masters Research Project", 02.522
   "provides a strong foundation for the Master's Research Project". Those are
-  filed under 8, beside every other graduate course in the catalogue, and the
+  filed under 8, beside every other graduate mod in the catalogue, and the
   marker is re-read on every run like an admission's.
   The other nine name no audience at all, so they keep the term they publish
   and there is no prefix rule. The same ban is why the 5xx-means-graduate
@@ -78,7 +78,7 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   readable: `course-level-sitemap.xml` holds exactly two terms, `graduate` and
   `undergraduate`. The archive behind each renders in the browser, the
   listing's own `?course-level=` filter is applied in the browser too (the
-  server returns the unfiltered first page), the course page HTML carries no
+  server returns the unfiltered first page), the mod page HTML carries no
   trace of it, and `/wp-json/wp/v2/course` answers 403. If a way in appears,
   that taxonomy is the signal to key on, and the number never is.
 - **Merge policy - never degrade**: existing repo files get a surgical
@@ -88,7 +88,7 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   assessment table / a `Workload: a-b-c` line - official beats anything
   hand-written; workload exists ONLY in that official form).
   Schedules/credits/term/prerequisites are never touched.
-- **A re-title is PROPOSED, in the diff.** SUTD renames course pages, and
+- **A re-title is PROPOSED, in the diff.** SUTD renames mod pages, and
   `name` is what a student searches by and what their plan shows, so the run
   writes the page's title into the record and stops there: the pull request
   carries the before and the after, and a reviewer accepts it by merging or
@@ -106,7 +106,7 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
 
 ## After a run
 
-1. `python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('data/courses/*.json')]"`
+1. `python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('data/mods/*.json')]"`
 2. `cd frontend && node scripts/sync-data.mjs && npm test && npm run e2e`
    (some e2e fixtures pin mods - 10.013, 10.018, 02.101; update specs in the
    same PR if a pinned fixture legitimately changed).
@@ -115,14 +115,14 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
 4. PR title `data: listing refresh <date>`, one concern per PR.
 
 
-## A course nothing links to
+## A mod nothing links to
 
-Some courses are reachable only by their own URL. SUTD's undergraduate listing
+Some mods are reachable only by their own URL. SUTD's undergraduate listing
 does not carry them, so no amount of clicking finds them, and 99.504 sat
 unlisted that way.
 
 They are in the sitemaps, which is how this gatherer sees them at all:
-`course-sitemap.xml` and `course-sitemap2.xml` hold every course post, far more
+`course-sitemap.xml` and `course-sitemap2.xml` hold every mod post, far more
 than the listing does. `undergrad_urls` buckets anything whose prefix is
 outside `VALID_PREFIXES` into `off_space`, and the run prints it:
 
@@ -141,7 +141,7 @@ Of the 22 codes outside the space today, exactly one page names an
 undergraduate audience:
 
 ```
-99.504   This is a course intended for PhD students and for term 6 or term 8
+99.504   This is a mod intended for PhD students and for term 6 or term 8
          undergraduate students.
 ```
 
@@ -153,11 +153,11 @@ To admit one:
    a record is written. Pillar and term are pinned because nothing can derive
    them: the page publishes no `Term` tag, and `prefix_precedents()` has no
    honest vote for a prefix the repo barely holds.
-2. Run the gatherer. It writes `data/courses/XX_YYY.json` like any other new
+2. Run the gatherer. It writes `data/mods/XX_YYY.json` like any other new
    record, through the same schema validation.
 3. Nothing else is by hand. `frontend/scripts/gen-sitemap.mjs` writes
    `sitemap.xml` from `/data` at build time and `prerender.mjs` writes the
-   course's own HTML page, so the deploy after the merge is what puts
+   mod's own HTML page, so the deploy after the merge is what puts
    `/mods/XX.YYY` in front of a crawler.
 
 A code whose page says nothing stays out and stays reported. That is the point
@@ -173,25 +173,25 @@ sentence, and SUTD writes prerequisites as prose that changes meaning:
 - **Matriculation-year alternatives.** "10.014 Computational Thinking for
   Design (For AY2020 to AY2024) or 10.025 ... (For AY2025 and subsequent
   batches)" arrives as `["10.014","10.025"]`, which the plan reads as needing
-  BOTH. Six courses were wrong this way at once.
-- **A course named but not numbered.** "Algorithmic Thinking and Object-Based
+  BOTH. Six mods were wrong this way at once.
+- **A mod named but not numbered.** "Algorithmic Thinking and Object-Based
   Abstraction (For AY2026 onwards)" has no code, so it was dropped entirely.
 - **Near-misses that are still "all of".** "20.201 and 20.202 or speak with the
   professor" and "50.001, 50.004; or a working knowledge of Python" both
   contain "or" and both still require every code.
 
 So after a harvest, verify the prerequisites in parallel rather than one page
-at a time. `tools/scraper/audit_prereqs.py` lists every course whose listing
+at a time. `tools/scraper/audit_prereqs.py` lists every mod whose listing
 carries a joining word; for the cohort-gated shape, fan out over the affected
 codes and read each page:
 
 ```
-Workflow: one agent per course code, phase 'Fetch', schema
+Workflow: one agent per mod code, phase 'Fetch', schema
   { code, prerequisiteTextVerbatim, isCohortGated,
     alternatives: [{ code, title, cohort }], alwaysRequired, notes }
 ```
 
-Ask each agent to quote the block VERBATIM, to report an uncoded course with
+Ask each agent to quote the block VERBATIM, to report an uncoded mod with
 `code: ""` and its exact title, and to say in `notes` when a page has no
 prerequisites block at all rather than reporting an empty one as a flat list.
 Ten pages took under two minutes that way.

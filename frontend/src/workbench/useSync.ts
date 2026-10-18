@@ -72,7 +72,7 @@ export function useSync(): void {
           }
           if (take.includes('contributed')) {
             importContributed(bundle.contributed);
-            // overlayLocal runs where the courses are loaded, so a contribution
+            // overlayLocal runs where the mods are loaded, so a contribution
             // arriving over the wire reaches the heatmap and the mod pages only
             // by reloading those slices - the same step the local paste takes.
             void dispatch(fetchMods());

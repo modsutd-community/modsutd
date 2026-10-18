@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { unmet, requirements, requirementsOf, treeOf } from './prereq';
-import M057 from '../../../data/courses/50_057.json';
-import M007 from '../../../data/courses/50_007.json';
-import COURSE_40321 from '../../../data/courses/40_321.json';
+import M057 from '../../../data/mods/50_057.json';
+import M007 from '../../../data/mods/50_007.json';
+import MOD_40321 from '../../../data/mods/40_321.json';
 import type { PrereqTree } from '@/types';
 
 // The bug this exists for: SUTD lists 40.321 as "40.002 Optimisation OR 60.008
@@ -12,11 +12,11 @@ describe('an "or" prerequisite is satisfied by either branch', () => {
   const has = (...done: string[]) => (c: string) => done.includes(c);
 
   it('is the shape 40.321 actually ships', () => {
-    expect(COURSE_40321.prereqTree).toEqual({ or: ['40.002', '60.008'] });
+    expect(MOD_40321.prereqTree).toEqual({ or: ['40.002', '60.008'] });
   });
 
   it('takes either one, and asks for the shorter path when neither is done', () => {
-    const t = COURSE_40321.prereqTree as PrereqTree;
+    const t = MOD_40321.prereqTree as PrereqTree;
     expect(unmet(t, has('40.002'))).toEqual([]);
     expect(unmet(t, has('60.008'))).toEqual([]);
     expect(unmet(t, has())).toHaveLength(1);
@@ -28,7 +28,7 @@ describe('an "or" prerequisite is satisfied by either branch', () => {
     expect(unmet(t, has('10.013', '10.014'))).toEqual([]);
   });
 
-  // 50.057: one named course AND one of two others.
+  // 50.057: one named mod AND one of two others.
   it('handles an and wrapped around an or', () => {
     const t: PrereqTree = { and: ['50.003', { or: ['10.014', '10.025'] }] };
     expect(unmet(t, has('50.003', '10.025'))).toEqual([]);
@@ -51,7 +51,7 @@ describe('an "or" prerequisite is satisfied by either branch', () => {
     expect(unmet(t, has())).toHaveLength(2);
   });
 
-// SUTD names a course before it numbers one, and gates prerequisites on the
+// SUTD names a mod before it numbers one, and gates prerequisites on the
 // year a student matriculated. 50.057 is both at once: 50.003 AND one of
 // 10.014 (AY2024 and earlier), 10.025 (AY2025), or "Algorithmic Thinking and
 // Object-Based Abstraction" (AY2026 onwards, no code yet).
@@ -79,7 +79,7 @@ describe('a requirement SUTD named but did not number', () => {
 
   // The AY2026 branch has nothing to place, so it cannot be the thing standing
   // between a student and the mod - it would lock 50.057 for that whole cohort.
-  it('does not block an AY2026 student on a course with no code', () => {
+  it('does not block an AY2026 student on a mod with no code', () => {
     expect(unmet(tree, has('50.003'), 'ay2026')).toEqual([]);
   });
 
@@ -122,7 +122,7 @@ describe('50.057 as it actually ships', () => {
     expect(unmet(tree, has('50.003', '10.025'), 'ay2025')).toEqual([]);
   });
 
-  it("never accepts another cohort's course", () => {
+  it("never accepts another cohort's mod", () => {
     expect(unmet(tree, has('50.003', '10.025'), 'ay2024')).toEqual(['10.014']);
     expect(unmet(tree, has('50.003', '10.014'), 'ay2025')).toEqual(['10.025']);
   });

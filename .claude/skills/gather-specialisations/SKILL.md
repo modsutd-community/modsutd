@@ -26,10 +26,10 @@ JSON round-trip) and exits 1 WITHOUT writing on failure - safe to cron.
 
 | Pillar | Where the criteria live | Parse approach |
 |---|---|---|
-| CSD (ISTD) | per-track subpages under /istd/…/specialisation-tracks/ | headings "Track Requirement" / "Track Core Courses" / "Track Electives"; phrases "N out of M track core", "N track electives" |
-| ESD | per-track subpages | "Required courses" section, stop at "For more information" |
+| CSD (ISTD) | per-track subpages under /istd/…/specialisation-tracks/ | headings "Track Requirement" / "Track Core Mods" / "Track Electives"; phrases "N out of M track core", "N track electives" |
+| ESD | per-track subpages | "Required mods" section, stop at "For more information" |
 | DAI | single page, numbered h5 headings + "Subjects include:" lists | subject NAMES only - resolved to codes via a two-tier name→code index (scraped page text beats repo files; within-tier conflicts dropped, never guessed). DAI tracks are discontinued from AY2026 (noted per track) |
-| EPD | **PDF "Advising Track Matrix" only** | structured via `tools/scraper/epd_matrix_overlay.json` - HAND-extracted (2026-07) by rendering the PDF (`pdftoppm -r 200`), reading each track band, and verifying every code against `data/courses` names; the gatherer merges the overlay on every run. EPD's track dropdown is JS-rendered: subpage slugs are regexed from raw HTML |
+| EPD | **PDF "Advising Track Matrix" only** | structured via `tools/scraper/epd_matrix_overlay.json` - HAND-extracted (2026-07) by rendering the PDF (`pdftoppm -r 200`), reading each track band, and verifying every code against `data/mods` names; the gatherer merges the overlay on every run. EPD's track dropdown is JS-rendered: subpage slugs are regexed from raw HTML |
 
 ## Refreshing the EPD overlay (when a NEW matrix PDF appears)
 
@@ -46,14 +46,14 @@ calendar]" - it applies to those intakes). When EPD publishes a newer PDF:
    NAVY T7+T8 cells = advanced pillar electives (counts from headers, sum
    them); PINK cells = cross-pillar substitutions → notes (and into the
    advanced pool where the header counts them, e.g. CE/BI4).
-3. Verify EVERY code against `data/courses/*.json` names before writing -
+3. Verify EVERY code against `data/mods/*.json` names before writing -
    this catches misreads (e.g. 30.105 vs 30.106).
 4. Update `tools/scraper/epd_matrix_overlay.json` (keep `_provenance`
    accurate: source URL, method, caveat), re-run the gatherer, commit both.
 
 ## Hard-won rules
 
-- Regex course codes out of **visible text only** (scripts/styles/SVG
+- Regex mod codes out of **visible text only** (scripts/styles/SVG
   stripped) - raw HTML is full of `\d\d.\d\d\d` false positives from CSS
   `calc()` and SVG paths.
 - ISTD OR-pairs ("50.007 or 40.319") put both codes in `anyOf` with a note -

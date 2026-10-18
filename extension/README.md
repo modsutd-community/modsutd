@@ -13,7 +13,7 @@ You'll see the modSUTD icon in your extensions tray. Pin it.
 ## What it does
 
 - On Microsoft Forms pages and `*.sutd.edu.sg` pages, watches the DOM for the "your response was submitted" confirmation message.
-- When detected on a page that looks like a SUTD course evaluation, floats a button at the bottom-right that links to `https://modsutd.tech/share`.
+- When detected on a page that looks like a SUTD mod evaluation, floats a button at the bottom-right that links to `https://modsutd.tech/share`.
 - Clicking the button opens the share page in a new tab. The user pastes their review there manually (privacy default - see below).
 
 ## Privacy

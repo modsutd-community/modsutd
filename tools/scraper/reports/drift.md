@@ -93,18 +93,18 @@ DIFFERS (4) - read the sentence, do not apply blindly:
 
   50.037  Blockchain Technology  [and]
     page has, repo lacks : ['50.012', '50.020', '50.043']
-    The course assumes a basic familiarity with computer programming and knowledge of the Python language. 50.004 Algorithms 50.005 Computer System Engineering 50.012 Networks , 50.020 Security , and 50.0
+    The mod assumes a basic familiarity with computer programming and knowledge of the Python language. 50.004 Algorithms 50.005 Computer System Engineering 50.012 Networks , 50.020 Security , and 50.0
 
 OR ON THE PAGE, NO TREE IN THE RECORD (17):
   03.007B  03.007A Innovating with Design and AI-1 (IDeA-1) Workload : 5-0-7 *The first number represents the number of hours per w
   10.022  10.018 Modelling Space and Systems Workload: 5-0-7 *The first number represents the number of hours per week assigned fo
-  20.203  Students wishing to enrol in the course must have completed 20.201 Architecture Science and Technology 20.202 Architectu
+  20.203  Students wishing to enrol in the mod must have completed 20.201 Architecture Science and Technology 20.202 Architectu
   20.304  20.101 Architecture Core Studio 1 20.102 Architecture Core Studio 2 20.221 Traditions: World History Connections to Vern
   20.320  20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design or speak with the profess
   20.321  20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design Number of credits: 9 Work
   20.511  Bachelor of Science (Architecture and Sustainable Design) degree or equivalent Successful completion of Structured Inter
   20.512  Bachelor of Science (Architecture and Sustainable Design) degree or equivalent Successful completion of Structured Inter
-  20.515  A student should be admitted to the M.Arch programme. This course is required for M.Arch accreditation Number of credits
+  20.515  A student should be admitted to the M.Arch programme. This mod is required for M.Arch accreditation Number of credits
   20.535  20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design or speak with the profess
   40.316  10.022 Modelling Uncertainty (or equivalent) Number of credits: 12
   50.012  50.005 Computer System Engineering or A working knowledge of programming in Python and a strong foundation in computer s
@@ -117,7 +117,7 @@ OR ON THE PAGE, NO TREE IN THE RECORD (17):
 
 ## propose
 
-reads the two reports with a model and edits data/courses where the page supports it. Every proposal is validated against the quoted page text before it is written
+reads the two reports with a model and edits data/mods where the page supports it. Every proposal is validated against the quoted page text before it is written
 
 ```
 ## proposed edits
@@ -126,17 +126,17 @@ Read by WEB2API.
 
 ### prerequisites
 
-4 course record(s) disagreed with their page.
+4 mod record(s) disagreed with their page.
 
 dropped by validation:
 
-| course | field | why |
+| mod | field | why |
 |---|---|---|
-| 50.037 | prerequisites | value must be a non-empty list of course codes |
+| 50.037 | prerequisites | value must be a non-empty list of mod codes |
 
 read and left alone:
 
-| course | why |
+| mod | why |
 |---|---|
 | 10.022 | The page text lacks an explicit prerequisite statement to quote. |
 | 40.001 | The prerequisite text on the page is ambiguous as it specifies prerequisites for exchange students only. |
@@ -149,23 +149,23 @@ read and left alone:
 
 | minor | why |
 |---|---|
-| minor-aai | No new course additions to propose based on the page text for requirements. |
+| minor-aai | No new mod additions to propose based on the page text for requirements. |
 | minor-ai | No missing requirement codes to add. |
 | minor-dai | No new requirements found to add. |
 | minor-dh | All listed DH electives are already present in the requirement groups. |
-| minor-hcd | No missing courses to add to the requirement groups. |
+| minor-hcd | No missing mods to add to the requirement groups. |
 ```
 
 ## proposed edits
 
-4 course record(s) disagreed with their page. Read by GROQ.
+4 mod record(s) disagreed with their page. Read by GROQ.
 
 ### read and left alone
 
-| course | why |
+| mod | why |
 |---|---|
-| 10.022 | Page text does not state any prerequisites for the course. |
+| 10.022 | Page text does not state any prerequisites for the mod. |
 | 20.224 | Page indicates no required prerequisites. |
-| 40.001 | Page text does not list any prerequisites for the course. |
+| 40.001 | Page text does not list any prerequisites for the mod. |
 | 50.037 | Page states that 50.004 and 50.005 are helpful but not required, so they should not be prerequisites. |
 ```

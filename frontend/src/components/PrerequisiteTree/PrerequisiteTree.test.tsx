@@ -38,7 +38,7 @@ describe('prerequisite tree leaves', () => {
     expect(screen.getByText('AY2025')).toBeTruthy();
   });
 
-  // The real shape, from data/courses/50_057.json. Every alternative has to be
+  // The real shape, from data/mods/50_057.json. Every alternative has to be
   // on screen: the whole point of the change was that one of them was missing.
   it('draws every branch of 50.057, including the uncoded one', () => {
     show({

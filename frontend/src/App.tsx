@@ -35,7 +35,7 @@ export default function App() {
   const [builtAt, setBuiltAt] = useState<string | undefined>();
   useEffect(() => {
     loadManifest()
-      .then((m) => setBuiltAt(m.coursesUpdatedAt ?? m.scrapedAt))
+      .then((m) => setBuiltAt(m.modsUpdatedAt ?? m.scrapedAt))
       .catch(() => setBuiltAt(undefined));
   }, []);
 

@@ -70,7 +70,7 @@ jobs:
             # either way.
             # The same proxy the reviewer uses, for the same reason: the free
             # Gemini API tier is 5 requests a minute and 20 a day, and a refresh
-            # asks a model about every course whose prerequisites read as prose.
+            # asks a model about every mod whose prerequisites read as prose.
             # It needs no credential. When it fails to start, nothing here
             # changes: GEMINI_WEB2API_URL stays unset and agents/llm.py falls
             # through to the token providers exactly as before.

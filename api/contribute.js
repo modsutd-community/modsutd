@@ -55,7 +55,7 @@ function foreignOrigin(req) {
 
 const DAYS = new Set(['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
 const TYPES = new Set(['Lecture', 'Cohort', 'Tutorial', 'Lab', 'Studio', 'Seminar', 'Recitation']);
-// Letters allowed: SUTD splits a course into 03.007A/03.007B rather than
+// Letters allowed: SUTD splits a mod into 03.007A/03.007B rather than
 // issuing a second number. Kept in step with CANONICAL_MOD in
 // frontend/src/utils/contributeTimetable.ts - the relays cannot import
 // from the app, so this is a copy on purpose.

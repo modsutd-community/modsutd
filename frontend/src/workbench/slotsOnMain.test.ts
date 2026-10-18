@@ -60,7 +60,7 @@ describe('waiting for a contribution to reach main', () => {
     fetchMock.mockResolvedValue(reply([{ day: 'Monday' }]));
     await slotsOnMain('03.007A', 1, 0);
     const url = String(fetchMock.mock.calls[0][0]);
-    expect(url).toContain('/main/data/courses/03_007A.json');
+    expect(url).toContain('/main/data/mods/03_007A.json');
   });
 
   // Measured against a real push: the contents API had the new bytes one

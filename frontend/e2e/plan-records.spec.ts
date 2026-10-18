@@ -229,7 +229,7 @@ test.describe('plan + records', () => {
 
   // 02.XFER is the summer or winter HASS transfer, done in whichever term it
   // was done in, and a student may take several across a degree. Every other mod
-  // is one chip because a course is passed once.
+  // is one chip because a mod is passed once.
   test('02.XFER holds a chip in each term it was taken', async ({ page, isMobile }) => {
     test.skip(!!isMobile, 'drag placement is the desktop affordance');
 
@@ -358,7 +358,7 @@ test.describe('plan + records', () => {
     await tt.getByRole('button', { name: 'plan', exact: true }).click();
     await tt.locator('[data-act="cohort"]').selectOption('ay2026');
     // 03.007A is fixed in AY2026 term 1, and the tree shows it there. Exact,
-    // because 03.007, 03.007A and 03.007B are now three different courses and
+    // because 03.007, 03.007A and 03.007B are now three different mods and
     // a loose match would resolve to whichever came first.
     await expect(tt.locator('[data-level="1"]').getByText('03.007A')).toBeVisible();
 
@@ -466,7 +466,7 @@ test.describe('plan + records', () => {
   // 50.007 needs 50.001 AND 50.004, except for a DAI student matriculated
   // AY2024 or earlier: the leaf carries notForPillar ["DAI"] with notForCohort
   // ["ay2024"]. The evaluator had always read that correctly and the panel
-  // handed it the COURSE's pillar, which is CSD, so the exemption was compared
+  // handed it the MOD's pillar, which is CSD, so the exemption was compared
   // against the wrong person and never fired. Here rather than in prereq.test
   // because that one passes 'DAI' in by hand and stayed green throughout.
   test("a DAI student on AY2024 does not need 50.001 for 50.007", async ({ page, isMobile }) => {

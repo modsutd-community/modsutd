@@ -20,7 +20,7 @@ What the export gets wrong, in the order you will meet it:
 
 - **Rooms move.** 50.057's export put Tuesday 14:00 in 1.415 AND 1.416 as a CI01
   cohort. It is a lecture in 2.505, which is what a paste said.
-- **Sections appear under it.** That same course has a CI02 meeting Wednesday
+- **Sections appear under it.** That same mod has a CI02 meeting Wednesday
   18:00 in 2.308. The export names no such section.
 - **An instructor may add a cohort class**, move one, or run one fortnightly
   rather than weekly. None of that reaches the PDF, and none of it is expressible
@@ -121,7 +121,7 @@ field nothing reads is a field that goes stale silently.
 
 ## The write merges, it does not replace
 
-`merge_schedules` takes what is in the course record and what the export says.
+`merge_schedules` takes what is in the mod record and what the export says.
 The export wins for every meeting it describes. A slot the export does not
 describe survives and is listed under "Kept" at the end of the report, because
 a make-up class or a room change reaches `/data` through a student's paste and
@@ -156,17 +156,17 @@ real change the registry has not published or a slot to correct.
 Every file prints its colour key along the bottom, one swatch per mod. That is
 the list the run checks itself against: a mod in the legend with no block
 parsed is a parse failure, not an empty week. `HASS` appears in five of the six
-as a placeholder colour and is not a course.
+as a placeholder colour and is not a mod.
 
 The registry suffixes a HASS code with its track - `02.143HT` is `02.143` on
-the Humanities track. The catalogue holds one record per course, and the app's
+the Humanities track. The catalogue holds one record per mod, and the app's
 code pattern allows one trailing letter and not two, so the suffix is dropped
 and the mapping is printed in the report.
 
 ## Then open a pull request
 
 Never commit straight to main, and never auto-commit: a term's import rewrites
-dozens of course files at once.
+dozens of mod files at once.
 
 ```bash
 git switch -c data/term-<n>-enrolment
@@ -187,7 +187,7 @@ machine.
 so no chat can be created until this PR is merged. After it is:
 
 - only mods with `noBatchChat` unset get one, which in practice is the HASS
-  courses and the electives. A pillar core is flagged by
+  mods and the electives. A pillar core is flagged by
   `tools/scraper/gather_cores.py` and gets none.
 - the workflow's own gate is **six chats a day**
   (`createdDay == today >= 6 -> skip=daily-cap`), so a term's worth takes
@@ -201,5 +201,5 @@ so no chat can be created until this PR is merged. After it is:
 ## Related
 
 - `.claude/skills/new-term` - everything else a new term needs.
-- `.claude/skills/course-data` - the shape of a course record.
+- `.claude/skills/mod-data` - the shape of a mod record.
 - `docs/data-format.md` - what each schedule field means.

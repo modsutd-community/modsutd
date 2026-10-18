@@ -6,7 +6,7 @@
 
 WHY THIS EXISTS
 Three files on main are written by workflows, not by a person: the batch-chat
-registry, the term window, and the `schedules` inside each course record. A
+registry, the term window, and the `schedules` inside each mod record. A
 maintainer who publishes with `git reset --soft <root> && commit --amend &&
 push --force` rebuilds main from their WORKING TREE, so anything a workflow
 committed since their last checkout is simply gone - and `--force-with-lease`
@@ -64,12 +64,16 @@ def count(text: str | None, kind: str) -> int:
     return 0
 
 
-def course_files() -> list[str]:
-    r = subprocess.run(
-        ["git", "ls-tree", "--name-only", "origin/main", "data/courses/"],
-        cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
-    )
-    return [ln for ln in r.stdout.splitlines() if ln.endswith(".json")]
+def mod_files() -> list[str]:
+    for dir_name in ("data/mods/", "data/courses/"):
+        r = subprocess.run(
+            ["git", "ls-tree", "--name-only", "origin/main", dir_name],
+            cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
+        )
+        files = [ln for ln in r.stdout.splitlines() if ln.endswith(".json")]
+        if files:
+            return files
+    return []
 
 
 def main() -> int:
@@ -80,17 +84,18 @@ def main() -> int:
     subprocess.run(["git", "fetch", "origin", "-q"], cwd=ROOT, check=False)
 
     checks: list[tuple[str, str]] = [(REGISTRY, "keys"), (TERM_WINDOW, "window")]
-    checks += [(f, "schedules") for f in course_files()]
+    checks += [(f, "schedules") for f in mod_files()]
 
     losses: list[str] = []
     for path, kind in checks:
-        there, here = count(live(path), kind), count(mine(path), kind)
+        local_path = path.replace("data/courses/", "data/mods/") if (ROOT / "data/mods").exists() else path
+        there, here = count(live(path), kind), count(mine(local_path), kind)
         if there > here:
-            losses.append(f"  {path}: main has {there}, this tree has {here}")
+            losses.append(f"  {local_path}: main has {there}, this tree has {here}")
             if args.take:
                 text = live(path)
                 if text is not None:
-                    (ROOT / path).write_text(text, encoding="utf-8")
+                    (ROOT / local_path).write_text(text, encoding="utf-8")
 
     if not losses:
         print("live data intact: nothing on main would be dropped")

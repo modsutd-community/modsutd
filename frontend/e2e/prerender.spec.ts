@@ -11,14 +11,14 @@ import { fileURLToPath } from 'node:url';
 //    is doorway content, and Google treats it as such. The data behind these
 //    is real, so the test is that the page actually carries it.
 // 2. TWO RENDERERS DISAGREEING. The static page and the React app describe the
-//    same course. They read the same built bundle by construction, and these
+//    same mod. They read the same built bundle by construction, and these
 //    assertions hold them to it.
 // 3. SOFT 404s. A url in the sitemap that opens nothing is crawl budget spent
 //    on a page that cannot exist.
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const BUNDLE = path.resolve(HERE, '..', 'dist', 'data');
-const courses = JSON.parse(readFileSync(path.join(BUNDLE, 'courses.json'), 'utf8')) as
+const mods = JSON.parse(readFileSync(path.join(BUNDLE, 'mods.json'), 'utf8')) as
   Array<Record<string, string | number | string[]>>;
 const venues = JSON.parse(readFileSync(path.join(BUNDLE, 'venues.json'), 'utf8')) as
   Array<Record<string, string | number>>;
@@ -37,7 +37,7 @@ test.describe('prerendered pages', () => {
     const res = await request.get('/mods/50.040');
     expect(res.status()).toBe(200);
     const html = await res.text();
-    const rec = courses.find((c) => c.code === '50.040')!;
+    const rec = mods.find((c) => c.code === '50.040')!;
 
     // Risk 2: every one of these comes from the bundle the app itself fetches.
     expect(title(html)).toContain('50.040');
@@ -50,7 +50,7 @@ test.describe('prerendered pages', () => {
     expect(data.courseCode).toBe('50.040');
     expect(data.name).toBe(rec.name);
     expect(data.numberOfCredits).toBe(rec.credits);
-    // SUTD provides the course; this site only catalogues it. The claim is
+    // SUTD provides the mod; this site only catalogues it. The claim is
     // accurate and the page says in its own words that it is not affiliated.
     expect((data.provider as Record<string, string>).name)
       .toContain('Singapore University of Technology and Design');
@@ -134,7 +134,7 @@ test.describe('prerendered pages', () => {
     const xml = await (await request.get('/sitemap.xml')).text();
     const listed = [...xml.matchAll(/<loc>https:\/\/modsutd\.tech\/mods\/([^<]+)<\/loc>/g)]
       .map((m) => decodeURIComponent(m[1]));
-    expect(listed.length).toBe(courses.length);
+    expect(listed.length).toBe(mods.length);
 
     // Spot the ends rather than fetching 389 pages: a generator that dropped
     // records would drop them from both lists together, so the count above is

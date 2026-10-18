@@ -180,7 +180,7 @@ export function TimetableBody({onPickMod}: Props) {
     const [manifestBuiltAt, setManifestBuiltAt] = useState<string | undefined>();
     useEffect(() => {
         loadManifest()
-            .then((m) => setManifestBuiltAt(m.coursesUpdatedAt ?? m.scrapedAt))
+            .then((m) => setManifestBuiltAt(m.modsUpdatedAt ?? m.scrapedAt))
             .catch(() => setManifestBuiltAt(undefined));
     }, []);
 

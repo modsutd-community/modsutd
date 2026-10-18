@@ -60,7 +60,7 @@ The gist stays on your account until you delete it.
 consent gate says so before anything is parsed. What goes: mod code, session
 type, day, start and end time, venue. What does not: instructor names, dates,
 your name, any account. A workflow re-validates every field from scratch and
-commits the clean ones into the per-mod course files, aggregated. The repo never
+commits the clean ones into the per-mod files, aggregated. The repo never
 stores a per-person timetable.
 
 **Reviews are the opposite**, deliberately. They post to GitHub Discussions

@@ -53,7 +53,7 @@ export async function slotsOnMain(code: string, tries = 12, gapMs = 5000): Promi
   for (let i = 0; i < tries; i++) {
     try {
       const mod = await fromMain<{ schedules?: unknown[] }>(
-        `data/courses/${code.replace('.', '_')}.json`,
+        `data/mods/${code.replace('.', '_')}.json`,
       );
       if ((mod?.schedules?.length ?? 0) > 0) return true;
     } catch {

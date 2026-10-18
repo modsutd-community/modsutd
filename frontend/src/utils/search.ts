@@ -15,11 +15,11 @@ export interface SearchResult {
 // a doc saying "HASS" gains the long form, and a doc saying "Think Tank 21"
 // gains "tt" and "tt21". Only the first direction existed before, which left
 // every entry whose abbreviation never appears in the text (ml, lt, cc, tt)
-// dead - no course is written "ml", so a query for it matched nothing.
+// dead - no mod is written "ml", so a query for it matched nothing.
 // Keep this small and high-precision; one bad synonym pollutes every result.
 const SYNONYMS: Record<string, string> = {
   // The ASD curriculum grid calls 20.501 "Sustainable Design Option Studio 3";
-  // its own course page, which the catalogue follows, calls it Graduate
+  // its own mod page, which the catalogue follows, calls it Graduate
   // Studio. Both names are real, so both have to find it.
   'sustainable design option studio': 'graduate studio',
   ml:          'machine learning',

@@ -11,7 +11,7 @@ SUTD serves that day, so a stub guessed against older HTML was not a head start.
 
 Freshmore and elective HASS subjects come from the two listing pages in
 sources/hass.py. Everything else about a mod, in every pillar, comes from the
-`mods` step: sutd.edu.sg's own course sitemap covers all of them.
+`mods` step: sutd.edu.sg's own mod sitemap covers all of them.
 
 Default behaviour is to leave existing files alone unless the scrape returns
 a strictly different mod. SUTD pages break parsers silently - better to skip
@@ -31,7 +31,7 @@ from normalise import diff, normalise_mod
 from schema import Mod
 
 DATA_DIR     = Path(__file__).resolve().parents[2] / "data"
-COURSES_DIR  = DATA_DIR / "courses"
+MODS_DIR     = DATA_DIR / "mods" if (DATA_DIR / "mods").exists() else DATA_DIR / "courses"
 VENUES_DIR   = DATA_DIR / "venues"
 
 ScrapeFn = Callable[[], Iterable[Mod]]
@@ -62,7 +62,7 @@ def merge(existing: dict, payload: dict) -> dict:
     """`existing` with the fields this scrape owns filled in where it has them.
 
     An empty value is not an answer. A page that parsed to an empty description
-    or an empty prerequisite list is a page that broke, not a course that lost
+    or an empty prerequisite list is a page that broke, not a mod that lost
     its prerequisites, and telling those two apart is not possible from here.
     """
     out = dict(existing)
@@ -76,7 +76,7 @@ def merge(existing: dict, payload: dict) -> dict:
 
 def write_mod(mod: Mod, dry_run: bool) -> str:
     """Returns one of {written, unchanged, would-write}."""
-    path = COURSES_DIR / f"{mod.code.replace('.', '_')}.json"
+    path = MODS_DIR / f"{mod.code.replace('.', '_')}.json"
     payload = mod.model_dump(exclude_none=True)
 
     if path.exists():
@@ -87,7 +87,7 @@ def write_mod(mod: Mod, dry_run: bool) -> str:
 
     if dry_run:
         return "would-write"
-    COURSES_DIR.mkdir(parents=True, exist_ok=True)
+    MODS_DIR.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     return "written"
 
@@ -124,7 +124,7 @@ def run(sources: list[str], dry_run: bool) -> int:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="scrape SUTD course data")
+    p = argparse.ArgumentParser(description="scrape SUTD mod data")
     p.add_argument("--source", action="append",
                    help="restrict to one or more sources; default = all")
     p.add_argument("--dry-run", action="store_true",

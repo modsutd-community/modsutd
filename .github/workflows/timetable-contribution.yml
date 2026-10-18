@@ -1,6 +1,6 @@
 # Folds anonymously contributed timetable slots (relayed by the site's
 # /api/contribute function as a repository_dispatch) straight into
-# /data/courses on main - no PR. fold_slots.py IS the gate: the payload is
+# /data/mods on main - no PR. fold_slots.py IS the gate: the payload is
 # attacker-reachable, so it reaches python only via an env var and is
 # re-validated from scratch; anything that fails validation is silently
 # dropped. Availability data must not wait on a human (owner decision) -
@@ -35,7 +35,7 @@ jobs:
           # folded, committed and then thrown away.
           token: ${{ secrets.MODSUTD_BOT_TOKEN || secrets.GITHUB_TOKEN }}
 
-      - name: Fold slots into /data/courses
+      - name: Fold slots into /data/mods
         env:
           PAYLOAD: ${{ toJSON(github.event.client_payload) }}
         run: python3 tools/fold_slots.py
@@ -48,7 +48,9 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/courses data/term-window.json
+          [ -d data/mods ] && git add data/mods
+          [ -d data/courses ] && git add data/courses
+          git add data/term-window.json
           git commit -m "data: crowdsourced timetable slots (auto-validated)"
           # Retry around racing pushes (another fold or a human commit).
           for i in 1 2 3; do

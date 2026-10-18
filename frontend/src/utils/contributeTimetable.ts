@@ -21,13 +21,13 @@ export interface OccupancySlot {
 const CANONICAL_TYPES: ReadonlySet<string> = new Set<LessonType>([
   'Lecture', 'Cohort', 'Tutorial', 'Lab', 'Studio', 'Seminar', 'Recitation',
 ]);
-// A code may carry a letter: SUTD splits a course into 03.007A and 03.007B
+// A code may carry a letter: SUTD splits a mod into 03.007A and 03.007B
 // rather than issuing a second number. Without the suffix every slot for a
 // lettered mod was dropped here in silence, and 03.007A/B are freshmore
 // core - most of a cohort's timetable would have gone missing.
 export const CANONICAL_MOD = /^\d{2}\.\d{3}[A-Za-z]?$/;
 
-// The sample timetable uses real course codes so the app behaves normally
+// The sample timetable uses real mod codes so the app behaves normally
 // when testing, which means a stray paste would otherwise auto-commit invented
 // schedules. The marker rides in the text itself, so it survives copy-paste.
 export const SAMPLE_MARKER = 'modSUTD SYNTHETIC SAMPLE';

@@ -12,12 +12,12 @@ import { fileURLToPath } from 'node:url';
 // same server. The bundle on disk is what that request would have returned.
 // import.meta.url, not __dirname: this suite loads as an ES module.
 const HERE = path.dirname(fileURLToPath(import.meta.url));
-const BUILT = path.resolve(HERE, '..', '..', 'public', 'data', 'courses.json');
+const BUILT = path.resolve(HERE, '..', '..', 'public', 'data', 'mods.json');
 
 export interface Mod { code: string; schedules: unknown[] }
 
 /** The real catalogue, with `schedules` replaced for the codes given. */
-export function coursesWithSchedules(codes: string[], schedules: unknown[]): Mod[] {
+export function modsWithSchedules(codes: string[], schedules: unknown[]): Mod[] {
   const mods = JSON.parse(readFileSync(BUILT, 'utf8')) as Mod[];
   for (const m of mods) if (codes.includes(m.code)) m.schedules = schedules;
   return mods;

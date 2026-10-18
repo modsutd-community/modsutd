@@ -1,6 +1,6 @@
-"""Reconcile every course record's prerequisites against its SUTD page.
+"""Reconcile every mod record's prerequisites against its SUTD page.
 
-`gather_mods.py` reads the prerequisite block and keeps the course codes in
+`gather_mods.py` reads the prerequisite block and keeps the mod codes in
 it, so "40.002 or 60.008" and "40.002 and 60.008" both arrive as
 ["40.002", "60.008"] - which the plan then treats as "all of". This says which
 ones the page joins with "or", and which ones the repo and the page disagree
@@ -8,7 +8,7 @@ about in either direction.
 
     python tools/scraper/audit_prereqs.py                  -> report to stdout
     python tools/scraper/audit_prereqs.py --json out.json  -> the same, machine-readable
-    python tools/scraper/audit_prereqs.py --csv out.csv    -> one row per course
+    python tools/scraper/audit_prereqs.py --csv out.csv    -> one row per mod
 
 It never writes to `data/`. Codes in the block are not always requirements:
 50.037's page names 50.012, 50.020 and 50.043 and then says they "are helpful
@@ -29,7 +29,7 @@ import _http  # noqa: E402
 from bs4 import BeautifulSoup  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-COURSES = ROOT / "data" / "courses"
+MODS = ROOT / "data" / "mods" if (ROOT / "data" / "mods").exists() else ROOT / "data" / "courses"
 
 CODE = re.compile(r"\b(\d{2}\.\d{3}[A-Za-z]?)\b")
 
@@ -40,7 +40,7 @@ SITEMAPS = (
 
 
 def url_by_code() -> dict[str, str]:
-    """Course URLs straight from the sitemap, keyed by code.
+    """Mod URLs straight from the sitemap, keyed by code.
 
     Guessing the slug from the name gets most of them and 404s on the rest -
     the listing does not spell every title the way the record does.
@@ -83,7 +83,7 @@ def prereq_block(html: str) -> str:
 
 
 def tree_codes(node: object) -> list[str]:
-    """Every course code a prereqTree names, at any depth."""
+    """Every mod code a prereqTree names, at any depth."""
     if isinstance(node, str):
         return [node]
     if isinstance(node, dict):
@@ -98,10 +98,10 @@ def tree_codes(node: object) -> list[str]:
 
 
 def repo_codes(d: dict) -> set[str]:
-    """What the record claims is REQUIRED BEFORE the course.
+    """What the record claims is REQUIRED BEFORE the mod.
 
     Corequisites are deliberately left out. A page's prerequisite block does
-    not list them, so folding them in reports every course that has one as a
+    not list them, so folding them in reports every mod that has one as a
     disagreement: 60.005 carries 60.004 as a corequisite and the page says
     only 10.014.
     """
@@ -114,23 +114,23 @@ def main() -> int:
     ap.add_argument("--csv")
     ap.add_argument("--limit", type=int, default=0)
     # Zero, not two. A single listed prerequisite can be wrong on its own -
-    # 10.022 carried a 10.007 that SUTD does not list at all - and a course
+    # 10.022 carried a 10.007 that SUTD does not list at all - and a mod
     # listing none can be missing all of them. Anything above zero is a guess
     # at where a mistake is allowed to hide.
     ap.add_argument("--min-prereqs", type=int, default=0)
     args = ap.parse_args()
 
     todo = []
-    for f in sorted(COURSES.glob("*.json")):
+    for f in sorted(MODS.glob("*.json")):
         d = json.loads(f.read_text(encoding="utf-8"))
         if len(d.get("prerequisites") or []) >= args.min_prereqs:
             todo.append(d)
     if args.limit:
         todo = todo[: args.limit]
-    print(f"{len(todo)} course records to check", file=sys.stderr)
+    print(f"{len(todo)} mod records to check", file=sys.stderr)
 
     urls = url_by_code()
-    print(f"{len(urls)} course URLs in the sitemap", file=sys.stderr)
+    print(f"{len(urls)} mod URLs in the sitemap", file=sys.stderr)
 
     rows: list[dict] = []
     for i, d in enumerate(todo, 1):
@@ -160,8 +160,8 @@ def main() -> int:
             continue
 
         row["listed"] = text
-        # Minus the course's own code: 50.021's block ends in a footnote naming
-        # 50.021, which would otherwise read as a course requiring itself.
+        # Minus the mod's own code: 50.021's block ends in a footnote naming
+        # 50.021, which would otherwise read as a mod requiring itself.
         row["page"] = [c for c in CODE.findall(text) if c != d["code"]]
         # The page HAS a Prerequisite heading and prints nothing under it but a
         # dash. That is SUTD saying "none", not a page that failed to load -

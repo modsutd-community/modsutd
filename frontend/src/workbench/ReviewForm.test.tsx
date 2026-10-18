@@ -7,7 +7,7 @@ import type { Mod } from "@/types";
 const mockMod: Mod = {
     code: "50.040",
     name: "Natural Language Processing",
-    description: "NLP course description",
+    description: "NLP mod description",
     department: "Computer Science and Design",
     term: "7",
     credits: 12,

@@ -1,7 +1,7 @@
 """Fetch the SUTD hosts the rest of the refresh never touches.
 
 Every other step in mods_refresh.py IS a canary for its own host: `mods` walks
-www.sutd.edu.sg's course sitemaps, `hass` reads hass.sutd.edu.sg, `tracks` reads
+www.sutd.edu.sg's sitemaps, `hass` reads hass.sutd.edu.sg, `tracks` reads
 the four pillar pages, `terms` reads the academic calendar and data.gov.sg. When
 one of those goes away the step that needs it fails and says so, and a separate
 check saying the same thing a second time is a second thing to keep true.
@@ -76,7 +76,7 @@ def main() -> int:
     # All of them, not a sample. One scene answering proves the host and the
     # path shape, but a tour is free to retire a single room, and a sample would
     # leave the 360 panel broken for that one with nothing said. It is one
-    # request per scene, in a run that walks 389 course pages.
+    # request per scene, in a run that walks 389 mod pages.
     bad: list[str] = []
     for scene in scenes:
         url = FACE_URL.format(scene=scene)

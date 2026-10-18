@@ -1,22 +1,22 @@
 ---
 name: retire-mod
-description: Retire a course SUTD no longer offers - mark it, keep its history, and close its review thread. Use when a course page 404s, disappears from the sitemap, or is replaced by a new code.
+description: Retire a mod SUTD no longer offers - mark it, keep its history, and close its review thread. Use when a mod page 404s, disappears from the sitemap, or is replaced by a new code.
 ---
 
 # Retiring a mod
 
-SUTD drops courses occasionally. 10.009 The Digital World became 10.014, which became
-10.025, which became a course with no number yet. 40.014 was replaced by
+SUTD drops mods occasionally. 10.009 The Digital World became 10.014, which became
+10.025, which became a mod with no number yet. 40.014 was replaced by
 40.018.
 
-**Never delete the file.** A student on an older cohort took that course, their
+**Never delete the file.** A student on an older cohort took that mod, their
 saved plan still names it, its code is still a prerequisite of something, and
 its giscus thread is the only record of what taking it was like. Deleting takes
 all four and cannot be undone from the app.
 
 ## 1. Prove it is actually gone
 
-A course missing from one page is not retired. Check the sitemaps, which are
+A mod missing from one page is not retired. Check the sitemaps, which are
 what the `mods` step compares against:
 
 ```bash
@@ -30,12 +30,12 @@ just the wrong page. This is not hypothetical: 20.099 was retired here on an
 agent's word and had to be restored, because `/course/20-099-urban-sketching/`
 is in the sitemap.
 
-Nothing there? Confirm the course page 404s directly, and check whether a
+Nothing there? Confirm the mod page 404s directly, and check whether a
 successor code exists (`40.014` -> `40.018`).
 
 ## 2. Mark it
 
-One field, in the course's own JSON:
+One field, in the mod's own JSON:
 
 ```json
 "retired": true
@@ -73,7 +73,7 @@ gh api graphql -f query='
   }' -f id='<the id from above>'
 ```
 
-`reason: OUTDATED` is the honest one - the course is gone, the reviews are not
+`reason: OUTDATED` is the honest one - the mod is gone, the reviews are not
 wrong. giscus still renders a closed thread and its comments; it just refuses
 new ones.
 
@@ -90,9 +90,9 @@ you the file had to stay.
 
 ## What this is not for
 
-- **A course that moved term or changed name.** Edit the record; see
-  `.claude/skills/course-data`.
-- **A course split into lettered halves** (03.007 -> 03.007A/03.007B). All three
+- **A mod that moved term or changed name.** Edit the record; see
+  `.claude/skills/mod-data`.
+- **A mod split into lettered halves** (03.007 -> 03.007A/03.007B). All three
   can be live at once. `gather_mods.py` refuses to recreate a base code whose
   lettered siblings exist, so do not "tidy" the base file away.
 - **A placeholder** (`99.999`, `02.XFER`). Those are ours, not SUTD's, and are

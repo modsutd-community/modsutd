@@ -5,7 +5,7 @@ labels: bug
 ---
 
 **Wrong data is faster to fix than a bug.**
-If a course description, prerequisite
+If a mod description, prerequisite
 or room detail is wrong, a one-line PR to `data/` lands within a day. Say where
 you saw the right version and open it directly.
 

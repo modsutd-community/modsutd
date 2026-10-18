@@ -1,12 +1,12 @@
 # Data format
 
-The catalogue is `/data/courses/*.json` and `/data/venues/*.json`. One file per record; filenames replace `.` with `_` (e.g. `10.013` → `10_013.json`).
+The catalogue is `/data/mods/*.json` and `/data/venues/*.json`. One file per record; filenames replace `.` with `_` (e.g. `10.013` → `10_013.json`).
 
 The TypeScript types in [`frontend/src/types/index.ts`](../frontend/src/types/index.ts) are the contract. If you change a field, change the type, the scraper, and any existing JSON.
 
-## Mod (course)
+## Mod
 
-386 records, one per course.
+386 records, one per mod.
 
 ```json
 {
@@ -43,17 +43,17 @@ The TypeScript types in [`frontend/src/types/index.ts`](../frontend/src/types/in
 
 ### Field notes
 
-- `code` - `XX.YYY` (two digits, dot, three), with an optional trailing letter: SUTD splits a course into `03.007A` and `03.007B` rather than issuing a second number. The letter is part of the code and never trimmed - a suffixed code is its OWN course, never folded into the base one. The pattern is `\d{2}\.\d{3}[A-Za-z]?`, spelled that way in the app (`CANONICAL_MOD`), in each `api/` relay and in `tools/fold_slots.py`; `modCode.test.ts` fails if those copies drift. One entry does not fit it, `02.XFER`, a HASS transfer placeholder that is not a schedulable class.
+- `code` - `XX.YYY` (two digits, dot, three), with an optional trailing letter: SUTD splits a mod into `03.007A` and `03.007B` rather than issuing a second number. The letter is part of the code and never trimmed - a suffixed code is its OWN mod, never folded into the base one. The pattern is `\d{2}\.\d{3}[A-Za-z]?`, spelled that way in the app (`CANONICAL_MOD`), in each `api/` relay and in `tools/fold_slots.py`; `modCode.test.ts` fails if those copies drift. One entry does not fit it, `02.XFER`, a HASS transfer placeholder that is not a schedulable class.
 - `pillar` - `SMT | EPD | ESD | CSD | DAI | ASD | HASS`. There is no "Freshmore" pillar - freshmore subjects belong to SMT (or HASS). A mod can span extra pillars via its official tags (e.g. 03.007A carries ASD + EPD + SMT); `pillar` is the primary.
-- `term` - `1` … `10`. Singular. We don't model multiple offerings per year - pick the canonical one. A page that publishes no `Term N` tag gets **8** if it is an elective and **1** if it is tagged `Freshmore Core`: those are the only two shapes the listing produces, and calling both of them term 1 made the freshmore term the dumping ground for the whole elective catalogue. `term_from_tags` in `tools/scraper/gather_mods.py` decides, and `--self-check` pins it. One course overrides it: 99.504's page names term 6 and publishes no tag at all, so its term is pinned in `UNDERGRADUATE_WHITELIST` beside its pillar. Two more are pinned in `GRADUATE_PAGE`, which holds the courses whose own page calls them a master's course, with the words that say it: 02.522 and 02.563 are filed under 8, where every other graduate course in the catalogue sits. Their `Term 2` and `Term 3` tags stay on the record, because those are that programme's terms and the page publishes them. A code alone never decides this: the nine other `02.5` courses name no audience on their pages and keep the term they publish.
-- `prerequisites` - flat list of mod codes. Use this for the simple "all of the above" case (covers ~95% of SUTD courses).
+- `term` - `1` … `10`. Singular. We don't model multiple offerings per year - pick the canonical one. A page that publishes no `Term N` tag gets **8** if it is an elective and **1** if it is tagged `Freshmore Core`: those are the only two shapes the listing produces, and calling both of them term 1 made the freshmore term the dumping ground for the whole elective catalogue. `term_from_tags` in `tools/scraper/gather_mods.py` decides, and `--self-check` pins it. One mod overrides it: 99.504's page names term 6 and publishes no tag at all, so its term is pinned in `UNDERGRADUATE_WHITELIST` beside its pillar. Two more are pinned in `GRADUATE_PAGE`, which holds the mods whose own page calls them a master's mod, with the words that say it: 02.522 and 02.563 are filed under 8, where every other graduate mod in the catalogue sits. Their `Term 2` and `Term 3` tags stay on the record, because those are that programme's terms and the page publishes them. A code alone never decides this: the nine other `02.5` mods name no audience on their pages and keep the term they publish.
+- `prerequisites` - flat list of mod codes. Use this for the simple "all of the above" case (covers ~95% of SUTD mods).
 - `tags` - the official listing's own tags ("Term 5", "AI Track", "Freshmore Core"). Specialisation-track matching runs off them, so copy them verbatim rather than tidying them.
 - `prereqTree` - optional, and optional fields are **omitted, never `null`**. Use it only when the prereq logic actually needs AND/OR/N-of, or when a leaf needs more than a code:
-  a leaf may be an object `{name, code?, cohort?}`. `name` alone is a course SUTD has
+  a leaf may be an object `{name, code?, cohort?}`. `name` alone is a mod SUTD has
   announced but not numbered - it renders on the mod page and cannot block a plan,
   because there is nothing to place. `cohort` scopes a leaf to matriculation years
   (`ay2026` / `ay2025` / `ay2024`), which is how 50.057 asks AY2024 students for
-  10.014, AY2025 for 10.025, and AY2026 for a course with no code yet.
+  10.014, AY2025 for 10.025, and AY2026 for a mod with no code yet.
 
 ```json
 "prereqTree": {
@@ -70,8 +70,8 @@ Special leaves:
 
 The recursive renderer handles arbitrary nesting. Keep it shallow - three levels max - or no one will read it.
 
-- `workload` - OFFICIAL only: it exists solely when the course page publishes a `Workload: a-b-c` line (lecture/cohort - lab/design - independent study, h/wk), which the gatherer maps into the fields and marks `source: "official"`. Never invent or estimate one; a mod without a published workload simply has no `workload` key.
-- `noBatchChat` - no batch Telegram chat is offered for this course. A chat is for a course a student CHOOSES, where the people in it have nothing else in common; a capstone splits into project teams, and a pillar's core is taken by everybody who already shares a cohort chat. `noBatchChatReason` names what set it, and every value is written by `tools/scraper/gather_cores.py`, which removes only flags carrying a reason it wrote itself. `"pillar core"` comes from each pillar's published core listing, and that half never removes more than two flags in one run, so a half-parsed page cannot quietly unflag a pillar. `"freshmore core"`, `"core"` and `"core elective"` are the course's own tag, lowercased, and nothing is inferred past what the tag says: `"core"` is vague because the page is. A flag with no reason was set by hand and no script will touch it.
+- `workload` - OFFICIAL only: it exists solely when the mod page publishes a `Workload: a-b-c` line (lecture/cohort - lab/design - independent study, h/wk), which the gatherer maps into the fields and marks `source: "official"`. Never invent or estimate one; a mod without a published workload simply has no `workload` key.
+- `noBatchChat` - no batch Telegram chat is offered for this mod. A chat is for a mod a student CHOOSES, where the people in it have nothing else in common; a capstone splits into project teams, and a pillar's core is taken by everybody who already shares a cohort chat. `noBatchChatReason` names what set it, and every value is written by `tools/scraper/gather_cores.py`, which removes only flags carrying a reason it wrote itself. `"pillar core"` comes from each pillar's published core listing, and that half never removes more than two flags in one run, so a half-parsed page cannot quietly unflag a pillar. `"freshmore core"`, `"core"` and `"core elective"` are the mod's own tag, lowercased, and nothing is inferred past what the tag says: `"core"` is vague because the page is. A flag with no reason was set by hand and no script will touch it.
 - `schedules[].location` - a room code `data/venues` actually has, and never a name. A contributed timetable prints whichever the registry felt like, so `tools/fold_slots.py` resolves it: a code, then the full printed name, then the name with its donor bracket dropped, then a fragment that appears inside exactly one room's name (which is how `Albert` becomes `1.102`, `Lecture Theatre 1 (Albert Hong)`). A half of a divisible classroom becomes the room, so `2.507A` is `2.507`. Anything that resolves to nothing is **left out and reported**, because a location that is not a venue key is a room the finder, the heatmaps and the .ics all fail to place, and nothing says so. `Lecture` and `Online` are the two that got in before this.
 - `schedules[].source` - **required on every entry**, and one of two values. `"subject-enrolment"` is the registry's own export, parsed from the six PDFs by `tools/enrolment/parse_enrolment_pdfs.py`: it covers a whole term on day one and is PROVISIONAL, because rooms move and sections are added after it is published and nothing republishes it. `"contributed"` is a student's own MyPortal timetable, written by `tools/fold_slots.py`: it covers only what somebody pasted, and it is what that person is actually being told to attend this week. On a disagreement the paste wins, by the HOUR rather than the room - 50.057's export had Tuesday 14:00 as a CI01 cohort in both 1.415 and 1.416, and the class is a lecture in 2.505. Matching on the room would have kept all three and drawn one hour in three places.
 - `schedules` - placeholder times are acceptable while the scraper isn't tied to MyPortal. Mark synthetic ones in the commit message.
@@ -140,12 +140,12 @@ does not?
 - `facility: true` - a named campus place with no room number. It never shows
   FREE/BUSY state and drops out of the FREE filter.
 - Availability is **not stored** on the venue. It is computed at runtime by
-  rolling up every mod's `schedules`. If a class isn't in `/data/courses/`, it
+  rolling up every mod's `schedules`. If a class isn't in `/data/mods/`, it
   isn't in the heatmap.
 
 ## Adding a new mod
 
-1. Create `data/courses/XX_YYY.json` with the structure above.
+1. Create `data/mods/XX_YYY.json` with the structure above.
 2. `cd frontend && npm run dev`. The `predev` script picks up your new file.
 3. Visit `/mods/XX.YYY` - your mod should render.
 4. Open a PR. Mention where you got the data (URL, syllabus PDF, screenshot).

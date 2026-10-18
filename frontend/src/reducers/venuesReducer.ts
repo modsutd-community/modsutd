@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { Venue, VenueAvailability, VenuesState } from '@/types';
-import { loadVenues, loadCourses, buildAvailability } from '@/utils/loadData';
+import { loadVenues, loadMods, buildAvailability } from '@/utils/loadData';
 import { overlayLocal } from '@/workbench/contributed';
 
 const initialState: VenuesState = {
@@ -10,14 +10,14 @@ const initialState: VenuesState = {
   error: null,
 };
 
-// Pulls venues + courses (for availability rollup) in one go so the venue
+// Pulls venues + mods (for availability rollup) in one go so the venue
 // page never renders a half-loaded view.
 export const fetchVenues = createAsyncThunk('venues/fetch', async () => {
-  const [venues, raw] = await Promise.all([loadVenues(), loadCourses()]);
+  const [venues, raw] = await Promise.all([loadVenues(), loadMods()]);
   // Same overlay as the mod pages, so a room a contribution just filled is
   // warm in the heatmap immediately rather than after the next build.
-  const courses = overlayLocal(raw);
-  const availability = buildAvailability(courses);
+  const mods = overlayLocal(raw);
+  const availability = buildAvailability(mods);
 
   // Room codes occasionally appear in schedules before someone curates a
   // venue entry - synthesize a row so they still render.

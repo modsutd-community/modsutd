@@ -62,6 +62,7 @@ GitHub Discussion (not a PR) if you want to revisit one.
   how often something went wrong before or how long it took: "one run in
   three", "57 retries", "122 of 162", "this shipped once". A reader needs to
   know what breaks and why, not the project's history of breaking it.
+- **Mods, never courses**: SUTD students call them mods, never courses. The codebase, documentation, types, and UI use 'mod' / 'mods' exclusively. 'Course' must not appear in user-facing copy, code, or docs.
 - **Docs change in the same PR as the thing they describe.** A skill, a doc,
   a workflow header or a comment that outlived its subject is worse than none:
   the next agent believes it. Before opening a PR, grep the repo for the field,
@@ -72,7 +73,7 @@ GitHub Discussion (not a PR) if you want to revisit one.
   repo decides elsewhere: that a timetable is pasted from MyPortal's LIST view
   and not the weekly grid, that reviews are giscus comments, and that the
   licence is Apache 2.0. Change any of those and change that file in the same
-  PR. It is hand-written and static on purpose - it names no course and no room,
+  PR. It is hand-written and static on purpose - it names no mod and no room,
   so it cannot go stale against `/data`, only against a decision.
 
 - **Say a thing once, and link to it.** Each fact has one home: fields in
@@ -175,14 +176,14 @@ Use the project skills in `.claude/skills/` - they encode the procedures so
 each new maintainer (or their agent) doesn't re-derive them:
 
 - `new-term` - everything that must change when a new term starts
-- `course-data` - how to add or fix course/venue JSON correctly
+- `mod-data` - how to add or fix mod/venue JSON correctly
 - `gather-mods` - refresh the catalogue from the official listing
 - `gather-specialisations` - refresh the specialisation-track criteria
 - `venue-search` - what room search already handles, and the one table to
   update when a new room type appears
 - `parse-subject-enrolment-pdfs` - fill a whole term's schedules and rooms
   from the registry's six enrolment PDFs, rather than waiting for pastes
-- `retire-mod` - a course SUTD dropped: mark it, keep its history, close
+- `retire-mod` - a mod SUTD dropped: mark it, keep its history, close
   its review thread. Never delete the file
 
 Every token, what happens without it, and which of Actions, Vercel and local
@@ -211,7 +212,7 @@ Two are deliberately not monthly, and say why in their own headers:
 - `frontend/public/data/` is generated (gitignored) - edit `/data` instead.
 - **There is no freshness job, and that is the point.** A sentinel that only
   reported drift ran twenty minutes before `scrape`, which fixes it: both
-  compared the HASS listing and the course sitemaps against `/data`, and the
+  compared the HASS listing and the sitemaps against `/data`, and the
   specialisation check re-ran `gather_specialisations.py` into a temp file to
   diff a result `scrape` wrote in the same hour. A finding you have to act on
   by hand, beside a job that already acted, teaches a reader to skim both.
@@ -228,14 +229,14 @@ Two are deliberately not monthly, and say why in their own headers:
   a step named `pillars` that scraped no pillar. A real pillar parser is written
   against whatever HTML SUTD serves that day, so the stub was not a head start
   and it is gone. Everything else about a mod, in every pillar, comes from the
-  `mods` step, because sutd.edu.sg's own course sitemap covers all of them.
+  `mods` step, because sutd.edu.sg's own sitemap covers all of them.
   The "never wipe on empty" rule in `scrape.py` stays and is a safety feature.
 - **`VALID_PREFIXES` in `gather_mods.py` is the undergraduate listing's own code
-  space**, not a guess: that listing yields 219 course links carrying exactly
+  space**, not a guess: that listing yields 219 mod links carrying exactly
   those nine prefixes. What the sitemap holds beyond them is a graduate
   catalogue (51.5xx is MSSD, 99.5xx the SMT PhD programme) or an orphan CMS
   record (41.5xx, 45.2xx - no programme lists them, their pages carry no prose,
-  two say "Non-credit course"). Those are REPORTED by prefix now, not dropped by
+  two say "Non-credit mod"). Those are REPORTED by prefix now, not dropped by
   a bare `continue`: a decision the run does not print is one the next
   maintainer re-derives from the sitemap by hand, which is how 99.504 sat
   unlisted. `UNDERGRADUATE_WHITELIST` is the exception list, holding the one code whose
@@ -384,10 +385,10 @@ Two are deliberately not monthly, and say why in their own headers:
 - The giscus themes are `data:` URIs built in `config/giscus.ts`, and they carry
   the workbench palette as Primer variables. Without it the frame keeps GitHub's
   near-white on GitHub's navy and reads as a window from another site.
-- **`notForPillar` names the STUDENT, never the course.** `utils/prereq.ts`
+- **`notForPillar` names the STUDENT, never the mod.** `utils/prereq.ts`
   takes the reader's own pillar and cohort, and the plan panel handed it
   `mod.pillar` for a while: 50.007's leaf carries `notForPillar: ["DAI"]` and
-  50.007 is a CSD course, so the exemption was compared against the wrong person
+  50.007 is a CSD mod, so the exemption was compared against the wrong person
   and a DAI student on AY2024 was told to take 50.001. The unit tests never saw
   it, because they pass `'DAI'` in by hand - the seam was the call site, so the
   regression test is in `e2e/plan-records.spec.ts`. `currentPillar` also belongs
@@ -448,7 +449,7 @@ Two are deliberately not monthly, and say why in their own headers:
   whether the page MEANT the codes it names, and validates every proposal before
   touching a file: the record has to exist, the field has to be one of three, every
   code has to have a file, and the `quote` has to appear in the page text that
-  course was reported with. A proposal that fails is listed as dropped, never
+  mod was reported with. A proposal that fails is listed as dropped, never
   applied. `--self-check` runs the validator against known-good and known-bad
   edits without a network call. Which providers exist and in what order is
   `tools/scraper/agents/llm.py`, and nowhere else.
@@ -533,7 +534,7 @@ Two are deliberately not monthly, and say why in their own headers:
   carrying that record's facts. `#root` is left empty, so React mounts exactly
   as before and a reader with JavaScript never sees the static copy.
   It reads `dist/data/*.json`, the bundle the app itself fetches, so the page
-  and the app cannot describe the same course differently.
+  and the app cannot describe the same mod differently.
   Two things there are load-bearing. The canonical url is `/mods/50.040` with
   NO trailing slash, and no static server resolves that to
   `mods/50.040/index.html` on its own: the last segment has a dot, so it reads

@@ -7,7 +7,7 @@
 REPORTS, NEVER WRITES. The ten minor pages are each laid out differently and
 state their requirements in prose, so a parser that rewrote the file would be
 guessing at counts and groupings. It also cannot tell a requirement from an
-example: the pages carry numbers that look like course codes and are not, which
+example: the pages carry numbers that look like mod codes and are not, which
 is why only the real prefixes below are read at all.
 
 What it can say honestly is narrower than it first looks. "The repo requires a
@@ -20,7 +20,7 @@ So it flags the things that really do mean stale:
   - SUTD lists a minor the repo does not carry, or the repo carries one SUTD no
     longer links
   - the page is unreachable, or 404s
-  - the page names NO course codes at all, which is what a redesign looks like
+  - the page names NO mod codes at all, which is what a redesign looks like
   - the page names a code this minor does not list, which is a new or changed
     requirement rather than an expansion the repo already made
 

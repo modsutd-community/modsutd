@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Mark every core course as getting no batch chat.
+"""Mark every core mod as getting no batch chat.
 
     python tools/scraper/gather_cores.py            # refresh, then report
     python tools/scraper/gather_cores.py --dry-run  # report, write nothing
 
 WHY A CORE GETS NO CHAT
-A batch chat is for a course a cohort CHOOSES, where the people in it are the
+A batch chat is for a mod a cohort CHOOSES, where the people in it are the
 people who picked the same elective and have nothing else in common. A core is
 taken by everybody, who already share a cohort chat, a timetable and a year
 group. A second group with the same membership is noise, which is the same
@@ -28,7 +28,7 @@ a short published list, so the cohort shares it the way they share any core.
 out.
 
 The reasons are the tags, lowercased, and nothing is inferred from the code
-number. A course is a graduate core when the page says graduate, and the page
+number. A mod is a graduate core when the page says graduate, and the page
 does not say it here: it says `Core`. So the reason is `core`, which is vague
 and is what was published.
 
@@ -47,7 +47,7 @@ is left exactly as it is, because a flag with no reason was set by a person and
 this script has no way to know what they knew.
 
 THE FILTER IS THE `.general-listing-grid`, NOT THE PAGE
-Reading course codes off the whole page returns 23 for DAI where the grid has 8:
+Reading mod codes off the whole page returns 23 for DAI where the grid has 8:
 the rest are navigation, related links and a footer. Scoped to the grid, the
 `?course-type=` filter is honoured server-side and the answer is the core.
 """
@@ -68,19 +68,19 @@ from bs4 import BeautifulSoup  # noqa: E402
 from gather_mods import UNDERGRADUATE_WHITELIST  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-COURSES = ROOT / "data" / "courses"
+MODS = ROOT / "data" / "mods" if (ROOT / "data" / "mods").exists() else ROOT / "data" / "courses"
 
 REASON = "pillar core"
 # A tag that says "everybody on this programme takes this", and the reason each
 # one writes. Own reasons, so this pass only ever removes what it wrote and a
-# course that stops being a PILLAR core keeps a tag-driven flag, and the other
+# mod that stops being a PILLAR core keeps a tag-driven flag, and the other
 # way round.
 #
 # Each reason is the tag it came from, lowercased, and that is deliberate.
 # Nothing is read off the code number: 5xx is not a graduate marker, and
 # "graduate core" would be flatly false for the ASD cores tagged `Core` that
 # sit at terms 4 to 8 (20.213, 20.221, 20.222, 20.224, 20.318, 20.319). A
-# reason copied off the tag cannot be wrong about the course, because the tag
+# reason copied off the tag cannot be wrong about the mod, because the tag
 # is what the page said. It can only be as vague as the page was.
 #
 # `Core Elective` is here too. It reads like a choice and is not one in the
@@ -127,7 +127,7 @@ MIN_PER_PILLAR = 2
 # returns HALF its grid clears it, and then every core it failed to mention
 # gets its flag taken off: a bad minute turned into a data change nobody asked
 # for. A curriculum drops a core or two at a time, so more than that in one run
-# is the page being wrong rather than the course list changing. Deliberately
+# is the page being wrong rather than the mod list changing. Deliberately
 # NOT a count of what each pillar should have, because the whole reason this
 # reads the listing is that those numbers move.
 MAX_REMOVALS = 2
@@ -148,11 +148,11 @@ def codes_in_grid(url: str) -> list[str] | None:
 
 
 def path_for(code: str) -> pathlib.Path:
-    return COURSES / f"{code.replace('.', '_')}.json"
+    return MODS / f"{code.replace('.', '_')}.json"
 
 
 def reason_for(tags: list[str]) -> str | None:
-    """The reason a course's own tags give for having no chat, or None.
+    """The reason a mod's own tags give for having no chat, or None.
 
     Pure, so it can be driven without touching /data. The distinction it has to
     get right is `Core` against `Core Elective`: one is taken by everyone on
@@ -166,24 +166,24 @@ def reason_for(tags: list[str]) -> str | None:
 
 
 def whitelist_releases(record: dict, mine: set[str]) -> bool:
-    """Whether a whitelisted course carries a flag this pass set and must drop.
+    """Whether a whitelisted mod carries a flag this pass set and must drop.
 
     The record's OWN reason, read here and nowhere else. The loop below read a
     variable it only assigns further down, so the answer came from whichever
-    course the glob visited before this one: 99.504 kept `noBatchChat` because
+    mod the glob visited before this one: 99.504 kept `noBatchChat` because
     the file ahead of it had no reason of ours, and would have lost a hand-set
-    flag had that file carried one. On the first course of a run it is a
+    flag had that file carried one. On the first mod of a run it is a
     NameError.
     """
     return record.get("noBatchChatReason") in mine
 
 
 def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
-    """Flag every course whose own tags call it a core, and unflag what stops.
+    """Flag every mod whose own tags call it a core, and unflag what stops.
 
     Reads only /data, so it runs whether or not the listings are reachable and
     cannot be left half-applied by a bad minute on sutd.edu.sg. The tags are
-    what `gather_mods.py` copied off the course's own page, so this is the
+    what `gather_mods.py` copied off the mod's own page, so this is the
     page speaking, once removed.
 
     The tags it reads and what each becomes is TAG_REASONS, and the rule for
@@ -194,14 +194,14 @@ def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
     """
     mine = set(TAG_REASONS.values())
     added, removed = [], []
-    for f in sorted(COURSES.glob("*.json")):
+    for f in sorted(MODS.glob("*.json")):
         d = json.loads(f.read_text(encoding="utf-8"))
-        # 99.999 is the placeholder for a course SUTD has announced and not
+        # 99.999 is the placeholder for a mod SUTD has announced and not
         # numbered. There are several, they share the code, and none of them is
-        # a course anyone can be in a chat about.
+        # a mod anyone can be in a chat about.
         if d.get("code") == PLACEHOLDER_CODE:
             continue
-        # Whitelisted undergraduate courses (e.g. 99.504) are electives for undergraduates.
+        # Whitelisted undergraduate mods (e.g. 99.504) are electives for undergraduates.
         # SUTD's CMS tags them Core because they are core for PhD students, but
         # marking them noBatchChat denies undergraduates their elective cohort chat.
         if d.get("code") in UNDERGRADUATE_WHITELIST:
@@ -239,7 +239,7 @@ def core_tag_pass(dry_run: bool) -> tuple[list[str], list[str]]:
 def self_check() -> int:
     """Drive the tag reader. No network, no /data.
 
-    Getting this wrong is invisible from the outside: a course quietly stops
+    Getting this wrong is invisible from the outside: a mod quietly stops
     offering a chat, or quietly starts, and the only sign is a button that is
     not there.
     """
@@ -270,17 +270,17 @@ def self_check() -> int:
     if REASON in TAG_REASONS.values():
         fails.append(f"the tag pass and the listing pass share the reason {REASON!r}, "
                      f"so each would remove the other's flags")
-    # Whitelisted undergraduate courses must be exempt from core tagging, because their
+    # Whitelisted undergraduate mods must be exempt from core tagging, because their
     # "Core" tag on SUTD's CMS belongs to the PhD catalogue. Undergraduates take
     # them as electives and need batch chats.
     if "99.504" not in UNDERGRADUATE_WHITELIST:
         fails.append("99.504 is missing from UNDERGRADUATE_WHITELIST")
-    # And the release reads the course's own reason. Literal reasons here: a
+    # And the release reads the mod's own reason. Literal reasons here: a
     # case built from TAG_REASONS passes whatever that table holds.
     ours = {"core", "core elective", "freshmore core"}
     for record, want, why in [
         ({"code": "99.504", "noBatchChat": True, "noBatchChatReason": "core"}, True,
-         "a flag this pass set on a whitelisted course comes off"),
+         "a flag this pass set on a whitelisted mod comes off"),
         ({"code": "99.504", "noBatchChat": True}, False,
          "a flag set by hand, with no reason, is not ours to remove"),
         ({"code": "99.504", "noBatchChat": True, "noBatchChatReason": "pillar core"}, False,
@@ -334,7 +334,7 @@ def main() -> int:
 
     if failed:
         # Partial is worse than nothing here: a pillar that failed to parse would
-        # look like a pillar with no core, and every one of its courses would
+        # look like a pillar with no core, and every one of its mods would
         # have its flag taken off.
         print(f"\nREFUSING TO WRITE: {len(failed)} source(s) did not parse "
               f"({', '.join(failed)}). The flags on disk stand.", file=sys.stderr)
@@ -346,7 +346,7 @@ def main() -> int:
     stale = sorted(
         d["code"]
         for d in (json.loads(f.read_text(encoding="utf-8"))
-                  for f in sorted(COURSES.glob("*.json")))
+                  for f in sorted(MODS.glob("*.json")))
         if d.get("noBatchChatReason") == REASON and d["code"] not in wanted
     )
     if len(stale) > MAX_REMOVALS:
@@ -386,7 +386,7 @@ def main() -> int:
         removed.append(code)
 
     tag = "[dry-run] " if args.dry_run else ""
-    print(f"\n{tag}{len(wanted)} core course(s) across {len(SOURCES)} listings")
+    print(f"\n{tag}{len(wanted)} core mod(s) across {len(SOURCES)} listings")
     if added:
         print(f"{tag}flagged: {', '.join(added)}")
     if removed:
