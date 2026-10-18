@@ -29,6 +29,10 @@ refresh is still "replace the file whole"; if upstream renames one of the
 names patched here, `install()` fails loudly at startup rather than running
 the unpatched proxy and returning empty reviews again.
 
+One request never reaches Gemini: the reviewer's grouping request is answered
+here, so every file is reviewed in a prompt of its own. GROUPING_REQUEST says
+why.
+
 What the scrape could not save is counted, in the file WEB2API_STATS names.
 The client cannot report a call it never received, so that file is the only
 place a dropped finding leaves a trace, and the review workflow reads it.
@@ -88,6 +92,32 @@ PROSE_MIN_CHARS = 400
 # PROMPT_MAX_BYTES only decides when to drop tool schemas, and truncates
 # nothing.
 SAFE_PROMPT_BYTES = 46000
+# The reviewer's request to split a pull request into review groups, which the
+# proxy answers itself and never sends to Gemini. A group is reviewed in one
+# prompt carrying every file in it, and nothing in that request can keep the
+# prompt under SAFE_PROMPT_BYTES: it lists each file with its changed-line
+# count, and line counts do not predict bytes (a rule file with four changed
+# lines put 27 KB into its prompt). The model groups by theme, so a large pull
+# request comes back as groups past what the endpoint reads, and the whole
+# review falls through to the next provider. The reviewer's own group-size
+# limit (max_tokens) cannot fix it: it counts the diff alone when it splits a
+# group and the whole prompt when it checks one, so some group always lands in
+# between and fails. Answering `[]` assigns no file to any group, and the
+# reviewer gives every unassigned file a group of its own (grouping.go,
+# open-code-review v1.13.1). One file's diff fits where a theme's does not; a
+# single file too big even alone is still counted as oversized. Matched on
+# the reviewer's own wording: if it is reworded, grouping goes back to Gemini
+# and an oversized group is counted, so the failure is a fallback, not a
+# silent half-read review.
+# Anchored to the START of the flattened prompt, which is where its system
+# message lands. The reviewer sends other requests without tools - re-locating
+# a comment, compressing a long conversation - and those quote a diff or a file
+# read, so a review of THIS file carries the sentence in their middle. A loose
+# match answered them `[]`: the comment lost its line and the conversation
+# lost its summary.
+GROUPING_REQUEST = re.compile(
+    r"\A\[System instruction\]: You are a file grouping assistant for code review\.")
+GROUPING_ANSWER = "[]"
 # A tool result older than the newest few is replaced by this when a prompt
 # would not fit. The model can ask for the file again; it cannot ask for the
 # end of a prompt it never saw.
@@ -138,6 +168,7 @@ STATS = {
     "failure_pages": 0,       # Gemini's failure page, retried
     "results_elided": 0,      # an older tool result dropped so the prompt fits
     "oversized": 0,           # a prompt past the limit even so: its end was not read
+    "grouping_answered": 0,   # a grouping request answered here, one file per group
 }
 
 # How many tool_call blocks the last parse on this thread refused. Per thread
@@ -466,6 +497,9 @@ def _ask(prompt, model_id, think_mode, file_refs, must_answer: bool):
 
 
 def _call_gemini(self, prompt, model_id, think_mode, tools, file_refs=None):
+    if not tools and GROUPING_REQUEST.search(prompt):
+        bump("grouping_answered")
+        return GROUPING_ANSWER, None
     text = _ask(prompt, model_id, think_mode, file_refs, must_answer=bool(tools))
     if not tools or not text:
         return text, None
@@ -518,13 +552,26 @@ def install() -> None:
     if _orig_messages_to_prompt is not None:
         return
     for name in ("messages_to_prompt", "parse_tool_calls", "extract_response_text",
-                 "gemini_stream_generate", "log", "main", "PROMPT_MAX_BYTES"):
+                 "gemini_stream_generate", "gemini_stream_generate_iter", "log", "main",
+                 "PROMPT_MAX_BYTES"):
         getattr(upstream, name)
     getattr(upstream.GeminiHandler, "_call_gemini")
     _orig_messages_to_prompt = upstream.messages_to_prompt
+    _orig_stream_iter = upstream.gemini_stream_generate_iter
     upstream.messages_to_prompt = messages_to_prompt
     upstream.parse_tool_calls = parse_tool_calls
     upstream.GeminiHandler._call_gemini = _call_gemini
+
+    # A streamed request with no tools skips _call_gemini. The reviewer does
+    # not stream unless its extra_body asks, and ours does not, but a grouping
+    # answer that depended on that would stop working the day someone does.
+    def stream_iter(prompt, *args, **kwargs):
+        if GROUPING_REQUEST.search(prompt):
+            bump("grouping_answered")
+            yield GROUPING_ANSWER
+            return
+        yield from _orig_stream_iter(prompt, *args, **kwargs)
+    upstream.gemini_stream_generate_iter = stream_iter
 
 
 # ---------------------------------------------------------------------------
@@ -672,6 +719,42 @@ def self_check() -> int:
             fails.append("the tool definitions were not compacted")
         if '"required":["comments"]' not in packed or "Report a defect. " * 20 not in packed:
             fails.append("compacting the tool definitions changed what they say")
+
+        # The reviewer's grouping request, as v1.13.1 words it and flattened
+        # the way the proxy flattens it, is answered here and never reaches the
+        # network. A review turn still does, and so does a request without
+        # tools that quotes the sentence, as a re-location of a comment on
+        # this very file would.
+        grouping, _ = upstream.messages_to_prompt([
+            {"role": "system", "content": "You are a file grouping assistant for code review. "
+                                          "Group changed files into clusters."},
+            {"role": "user", "content": "Group the following changed files:\n\n"
+                                        "[0] MODIFIED   a.py (+1/-0)\n"}], None)
+        quoting, _ = upstream.messages_to_prompt([
+            {"role": "system", "content": "You re-locate a review comment in a diff."},
+            {"role": "user", "content": '+GROUPING_REQUEST = re.compile(r"You are a file '
+                                        'grouping assistant for code review.")'}], None)
+        real_generate = upstream.gemini_stream_generate
+
+        def no_network(*_a, **_k):
+            raise AssertionError("reached the network")
+        upstream.gemini_stream_generate = no_network
+        try:
+            answer = _call_gemini(None, grouping, 1, 0, None)
+            streamed = "".join(upstream.gemini_stream_generate_iter(grouping, 1, 0))
+            if answer != (GROUPING_ANSWER, None) or streamed != GROUPING_ANSWER:
+                fails.append(f"the grouping request was not answered with one group per file: {answer!r} {streamed!r}")
+            for name, prompt, with_tools in (("a review turn", "review this diff", tools),
+                                             ("a request quoting the sentence", quoting, None)):
+                try:
+                    _call_gemini(None, prompt, 1, 0, with_tools)
+                    fails.append(f"{name} was answered without asking Gemini")
+                except AssertionError:
+                    pass
+        except AssertionError:
+            fails.append("the grouping request was sent to Gemini")
+        finally:
+            upstream.gemini_stream_generate = real_generate
 
         huge = [{"role": "user", "content": "d" * 60000}]
         upstream.messages_to_prompt(huge, tools)

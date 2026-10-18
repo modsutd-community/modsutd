@@ -176,10 +176,30 @@ jobs:
             # default and the only thing this job may execute. persist-credentials
             # is off so no token is left in the workspace git config while a
             # third-party process is running beside it.
+            # Read live, in every provider job and not once for the run, because
+            # a review can start long after the pull request it was queued for
+            # has closed. A push's run waits behind the one before it, and each
+            # fallback job waits behind the provider before it, and a Groq
+            # fallback can take a quarter of an hour. Merged in between, the
+            # base now contains the head: the action reviews an empty range and
+            # rewrites the summary comment to "no items were selected" over the
+            # review that was there. Only a definite "closed" skips. An API
+            # error reads as open, because this check exists to skip a review
+            # nobody will read and must never cost an open pull request one.
+            - name: Is the pull request still open
+              id: live
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+              run: |
+                  state="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .state)" || state=open
+                  echo "open=$([ "$state" = closed ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
             - uses: actions/checkout@v4
+              if: steps.live.outputs.open == 'true'
               with:
                   persist-credentials: false
             - name: Start gemini-web2api
+              if: steps.live.outputs.open == 'true'
               id: proxy
               continue-on-error: true
               run: |
@@ -194,6 +214,7 @@ jobs:
                   echo "gemini-web2api answered /v1/models; this review goes through it" >> "$GITHUB_STEP_SUMMARY"
             - id: review
               continue-on-error: true
+              if: steps.live.outputs.open == 'true'
               uses: alibaba/open-code-review@main
               with:
                   llm_url: http://127.0.0.1:8081/v1/chat/completions
@@ -239,8 +260,14 @@ jobs:
               env:
                   GH_TOKEN: ${{ github.token }}
                   OUTCOME: ${{ steps.review.outcome }}
+                  OPEN: ${{ steps.live.outputs.open }}
                   PR: ${{ github.event.pull_request.number || github.event.issue.number }}
               run: |
+                  if [ "$OPEN" = false ]; then
+                    echo "ok=true" >> "$GITHUB_OUTPUT"
+                    echo "Pull request #$PR closed before this review started; nothing reviewed." >> "$GITHUB_STEP_SUMMARY"
+                    exit 0
+                  fi
                   ok=true
                   [ "$OUTCOME" = "success" ] || ok=false
                   if [ "$ok" = true ]; then
@@ -342,8 +369,18 @@ jobs:
         outputs:
             ok: ${{ steps.verdict.outputs.ok }}
         steps:
+            # As in the gemini job: a fallback can start after a merge.
+            - name: Is the pull request still open
+              id: live
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+              run: |
+                  state="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .state)" || state=open
+                  echo "open=$([ "$state" = closed ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
             - id: review
               continue-on-error: true
+              if: steps.live.outputs.open == 'true'
               uses: alibaba/open-code-review@main
               with:
                   llm_url: https://api.groq.com/openai/v1/chat/completions
@@ -394,8 +431,14 @@ jobs:
               env:
                   GH_TOKEN: ${{ github.token }}
                   OUTCOME: ${{ steps.review.outcome }}
+                  OPEN: ${{ steps.live.outputs.open }}
                   PR: ${{ github.event.pull_request.number || github.event.issue.number }}
               run: |
+                  if [ "$OPEN" = false ]; then
+                    echo "ok=true" >> "$GITHUB_OUTPUT"
+                    echo "Pull request #$PR closed before this review started; nothing reviewed." >> "$GITHUB_STEP_SUMMARY"
+                    exit 0
+                  fi
                   ok=true
                   [ "$OUTCOME" = "success" ] || ok=false
                   if [ "$ok" = true ]; then
@@ -432,8 +475,18 @@ jobs:
             && needs.groq.outputs.ok != 'true'
             && needs.context.outputs.has_openai == 'true'
         steps:
+            # As in the gemini job: a fallback can start after a merge.
+            - name: Is the pull request still open
+              id: live
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+              run: |
+                  state="$(gh api "repos/$GITHUB_REPOSITORY/pulls/$PR" --jq .state)" || state=open
+                  echo "open=$([ "$state" = closed ] && echo false || echo true)" >> "$GITHUB_OUTPUT"
             - id: review
               continue-on-error: true
+              if: steps.live.outputs.open == 'true'
               uses: alibaba/open-code-review@main
               with:
                   llm_url: https://api.openai.com/v1/chat/completions
@@ -466,8 +519,14 @@ jobs:
               env:
                   GH_TOKEN: ${{ github.token }}
                   OUTCOME: ${{ steps.review.outcome }}
+                  OPEN: ${{ steps.live.outputs.open }}
                   PR: ${{ github.event.pull_request.number || github.event.issue.number }}
               run: |
+                  if [ "$OPEN" = false ]; then
+                    echo "ok=true" >> "$GITHUB_OUTPUT"
+                    echo "Pull request #$PR closed before this review started; nothing reviewed." >> "$GITHUB_STEP_SUMMARY"
+                    exit 0
+                  fi
                   ok=true
                   [ "$OUTCOME" = "success" ] || ok=false
                   if [ "$ok" = true ]; then
@@ -492,3 +551,35 @@ jobs:
                        "The pull request has no review. Re-run with /open-code-review" \
                        "once the limit resets."
                   exit 1
+
+    # Once, after every provider, and only for exact copies. A model can file
+    # one finding twice in a run - the same text on the same lines, differing
+    # only in a field the posted comment does not show - and the action posts
+    # both, each under its own random marker. The action's own duplicate check
+    # (its `incremental` input) is not used for this, because it also drops a
+    # comment on any line an earlier bot comment touches, whatever either says:
+    # a fallback provider's different finding on a line the rejected provider
+    # already commented on would be counted in the summary and never shown.
+    # Here a comment is removed only when an earlier one from THIS run has the
+    # same path, the same lines and the same body once the marker is cut off.
+    dedupe:
+        runs-on: ubuntu-latest
+        needs: [context, gemini, groq, openai]
+        if: always() && needs.context.result == 'success'
+        steps:
+            - name: Delete duplicate review comments from this run
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+                  MARK: "<!-- ocr-${{ github.run_id }}-${{ github.run_attempt }}-"
+              run: |
+                  gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR/comments" \
+                    --jq '.[] | select(.user.login == "github-actions[bot]") | select(.body | startswith(env.MARK))' \
+                    | jq -s -r '
+                        map({id, key: [.path, .start_line, .line, .original_line,
+                                       (.body | sub("^<!-- ocr-[0-9]+-[0-9]+-[0-9a-f]+ -->\\s*"; ""))]})
+                        | group_by(.key) | map(sort_by(.id) | .[1:][] | .id) | .[]' \
+                    | while read -r id; do
+                        gh api -X DELETE "repos/$GITHUB_REPOSITORY/pulls/comments/$id" \
+                          && echo "deleted duplicate review comment $id" >> "$GITHUB_STEP_SUMMARY"
+                      done
