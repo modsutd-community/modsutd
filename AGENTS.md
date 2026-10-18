@@ -39,6 +39,11 @@ Quickest orientation, if you read nothing else:
   file or a JSON field name. The site is live and has no backend, so that data
   is in browsers a deploy cannot reach. Read the old name or say whose data you
   are dropping, and answer it in the PR's Migration section.
+- **Resolve reviews on the PR before merging.** Never merge while review comments
+  remain unaddressed, and never open a second PR to fix what a reviewer flagged
+  on the first. Fetch review comments with `gh api repos/{owner}/{repo}/pulls/{pr}/comments`,
+  reply in each thread with `gh api .../comments/{id}/replies`, push the fixes to
+  the same branch, confirm CI is green, and only then merge.
 
 Repeatable procedures are skills in `.claude/skills/`, and they are plain
 Markdown - readable by any agent, whatever runs them. `new-term`, `mod-data`,
