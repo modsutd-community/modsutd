@@ -65,15 +65,18 @@ def count(text: str | None, kind: str) -> int:
 
 
 def mod_files() -> list[str]:
+    seen: set[str] = set()
+    all_files: list[str] = []
     for dir_name in ("data/mods/", "data/courses/"):
         r = subprocess.run(
             ["git", "ls-tree", "--name-only", "origin/main", dir_name],
             cwd=ROOT, capture_output=True, text=True, encoding="utf-8",
         )
-        files = [ln for ln in r.stdout.splitlines() if ln.endswith(".json")]
-        if files:
-            return files
-    return []
+        for ln in r.stdout.splitlines():
+            if ln.endswith(".json") and ln not in seen:
+                seen.add(ln)
+                all_files.append(ln)
+    return all_files
 
 
 def main() -> int:
