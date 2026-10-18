@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // Venues need share links to direct students to the room finder heatmap and directions,
-// whereas modules link out to official course pages directly.
+// whereas mods link out to official mod pages directly.
 test.describe('share link button', () => {
   test('venue inspector shares canonical venue URL and indicates copied state', async ({
     page,

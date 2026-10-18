@@ -3,7 +3,7 @@ import { JSDOM } from "jsdom";
 import { extractEval, buildEvalBookmarklet } from "./evalExtractor";
 
 describe("extractEval", () => {
-    it("extracts course code, best part, worst part, workload, and instructor feedback from Bluera HTML", () => {
+    it("extracts mod code, best part, worst part, workload, and instructor feedback from Bluera HTML", () => {
         const dom = new JSDOM(`
             <!DOCTYPE html>
             <html>
@@ -73,7 +73,7 @@ describe("extractEval", () => {
     it("uses selected text when provided, but never dumps raw page body text as review text", () => {
         const dom = new JSDOM(`
             <html>
-                <head><title>Course Review Notes</title></head>
+                <head><title>Mod Review Notes</title></head>
                 <body>
                     <p>Reviewing 10.014 Computational Thinking. Fantastic instructor explanations.</p>
                 </body>

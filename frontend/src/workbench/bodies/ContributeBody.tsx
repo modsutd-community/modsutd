@@ -31,7 +31,7 @@ const WAYS: Array<{
     },
     {
         title: "data",
-        body: "wrong description, missing prereq, drifted schedule - PR /data/courses/<code>.json. small diffs ship fast.",
+        body: "wrong description, missing prereq, drifted schedule - PR /data/mods/<code>.json. small diffs ship fast.",
         links: [
             {
                 href: `https://github.com/${REPO}/tree/main/data`,

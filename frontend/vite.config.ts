@@ -29,7 +29,7 @@ function prerenderedPaths() {
         if (m) req.url = `/${m[1]}/${m[2]}/index.html`;
         // The index pages are real files too, and without this the preview
         // server hands /mods to the SPA fallback while production serves the
-        // list of every course.
+        // list of every mod.
         const i = /^\/(mods|venues)\/?$/.exec(path);
         if (i) req.url = `/${i[1]}/index.html`;
         next();

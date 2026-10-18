@@ -17,11 +17,11 @@ describe('eventsToSlots gate parity with the relay', () => {
 
   // A suffixed code is its OWN mod and must never be folded into the base one.
   // It used to be dropped here to guarantee that, which also threw away
-  // 03.007A and 03.007B - one course SUTD split in two, both freshmore core.
-  // What actually guarantees it is fold_slots.py, which writes only to a course
+  // 03.007A and 03.007B - one mod SUTD split in two, both freshmore core.
+  // What actually guarantees it is fold_slots.py, which writes only to a mod
   // file that already exists: `if not path.exists(): skipped`. So an unknown
   // suffixed code costs nothing, and a known one finally arrives.
-  it('keeps a suffixed course code as its own mod, never the base one', () => {
+  it('keeps a suffixed mod code as its own mod, never the base one', () => {
     const slots = eventsToSlots([
       { ...base, modCode: '03.007A', type: 'Lab', location: '1.611' },
       { ...base, modCode: '50.002X', type: 'Lab', location: '1.611' },

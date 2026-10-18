@@ -23,18 +23,18 @@ Semantics: ALL requirement groups must be satisfied. "Choose N from ..." is
 {count: N, anyOf: [...]}; "all of these M" is {count: M, anyOf: [those M]}.
 
 Ground rules baked in - keep them:
-  * Course codes are ONLY extracted from *visible text* (script/style/svg
+  * Mod codes are ONLY extracted from *visible text* (script/style/svg
     stripped). Raw HTML is full of false \\d\\d.\\d\\d\\d matches from CSS
     calc() values and SVG path data.
   * Never invent a code. DAI lists subject *names* with no codes; names are
     resolved against (a) code+name pairs seen in this run's scraped text and
-    (b) the repo's own data/courses/*.json. Exact match after normalisation
+    (b) the repo's own data/mods/*.json. Exact match after normalisation
     only - unresolved names go into `notes`.
   * EPD publishes requirements only as a PDF / image "Advising Track Matrix"
     (linear text extraction is a column jumble) -> notes-only, with the
     matrix URL preserved.
   * Open-ended clauses ("any ISTD elective", "any 1 Elective offered by
-    ESD") cannot be enumerated (the ISTD course list is JS-paginated) and
+    ESD") cannot be enumerated (the ISTD mod list is JS-paginated) and
     are recorded verbatim in `notes`.
 
 Run:  .venv/bin/python gather_specialisations.py [--refresh] [--out PATH]
@@ -59,7 +59,7 @@ from bs4 import BeautifulSoup
 SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parents[1]
 CACHE_DIR = SCRIPT_DIR / ".cache"
-COURSES_DIR = REPO_ROOT / "data" / "courses"
+MODS_DIR = REPO_ROOT / "data" / "mods" if (REPO_ROOT / "data" / "mods").exists() else REPO_ROOT / "data" / "courses"
 DEFAULT_OUT = REPO_ROOT / "data" / "specializations.json"
 
 BASE = "https://www.sutd.edu.sg"
@@ -71,7 +71,7 @@ SOURCES = {
 }
 
 CODE_RE = re.compile(r"\b\d{2}\.\d{3}[A-Za-z]?\b")
-# a line that *starts* with a code followed by a course name
+# a line that *starts* with a code followed by a mod name
 CODE_NAME_LINE_RE = re.compile(r"^(\d{2}\.\d{3}[A-Za-z]?)\s+(\S.*)$")
 
 _client = httpx.Client(
@@ -132,7 +132,7 @@ def kebab(name: str) -> str:
 
 
 def norm_name(s: str) -> str:
-    """Normalise a course name for exact-match resolution."""
+    """Normalise a mod name for exact-match resolution."""
     s = s.lower().replace("&", " and ")
     s = re.sub(r"\(.*?\)", " ", s)          # drop parentheticals e.g. (for ESD students only)
     s = re.sub(r"[^a-z0-9]+", " ", s)
@@ -146,11 +146,11 @@ def group(count: int, any_of: list[str], label: str) -> dict:
 # --------------------------------------------------------------------------- name -> code index
 
 def build_name_index(corpus_lines: list[list[str]]) -> dict[str, str]:
-    """Map normalised course name -> code.
+    """Map normalised mod name -> code.
 
     Two tiers, in order of trust:
       1. code+name pairs seen in this run's scraped SUTD page text
-      2. the repo's data/courses/*.json
+      2. the repo's data/mods/*.json
     A name that maps to two different codes *within the same tier* is
     ambiguous and dropped from that tier. A lower tier never overrides an
     upper one (e.g. repo file 99.502 "X (Elective)" must not shadow the
@@ -180,8 +180,8 @@ def build_name_index(corpus_lines: list[list[str]]) -> dict[str, str]:
                 scraped_pairs.append((m.group(2).rstrip("# ").strip(), m.group(1)))
 
     repo_pairs = []
-    if COURSES_DIR.is_dir():
-        for f in sorted(COURSES_DIR.glob("*.json")):
+    if MODS_DIR.is_dir():
+        for f in sorted(MODS_DIR.glob("*.json")):
             try:
                 d = json.loads(f.read_text(encoding="utf-8"))
             except (json.JSONDecodeError, OSError):
@@ -268,9 +268,9 @@ def parse_istd_track(url: str, html: str) -> dict:
                     )
         if core_codes and core_count:
             requirements.append(group(core_count, core_codes,
-                                      f"track core courses (choose {core_count})"))
+                                      f"track core mods (choose {core_count})"))
         elif core_codes:
-            requirements.append(group(len(core_codes), core_codes, "track core courses"))
+            requirements.append(group(len(core_codes), core_codes, "track core mods"))
 
     if i_elec >= 0:
         elec_codes = collect(i_elec + 1, i_end)
@@ -294,17 +294,17 @@ def parse_istd_track(url: str, html: str) -> dict:
 
     for ln in lines:
         if ln.startswith("Core courses are not recognised"):
-            notes.append(ln)
+            notes.append(ln.replace("Core courses are not recognised", "Core mods are not recognised"))
             break
 
-    if not requirements:  # e.g. Custom Track - no fixed course list
+    if not requirements:  # e.g. Custom Track - no fixed mod list
         for marker in ("A custom track must consist of",
                        "list of 2 track core subjects and 4 track electives"):
             for ln in lines:
                 if marker in ln:
                     notes.append(ln)
                     break
-        notes.append("No fixed course list - requirements are proposed by the student "
+        notes.append("No fixed mod list - requirements are proposed by the student "
                      "and approved by the ISTD undergraduate committee.")
 
     return {
@@ -366,10 +366,10 @@ def parse_esd_track(url: str, html: str) -> dict:
             elif re.search(r"need to take \d+ courses", ln, re.I):
                 notes.append(ln)
         if codes:
-            requirements.append(group(len(codes), codes, "required courses (all)"))
+            requirements.append(group(len(codes), codes, "required mods (all)"))
 
     if not requirements:
-        notes.append("No machine-readable course list found on the page.")
+        notes.append("No machine-readable mod list found on the page.")
 
     return {
         "id": f"esd-{kebab(name)}",
@@ -403,7 +403,7 @@ def parse_epd_track(url: str, html: str) -> dict:
     requirements: list[dict] = []
     notes: list[str] = []
 
-    # EPD pages carry no course codes in text; requirements live in the
+    # EPD pages carry no mod codes in text; requirements live in the
     # "Advising Track Matrix" PDF / images, which are not machine-readable
     # (linear PDF text extraction scrambles the matrix columns).
     codes: list[str] = []
@@ -414,7 +414,7 @@ def parse_epd_track(url: str, html: str) -> dict:
     if codes:
         # Future-proofing: if EPD ever publishes codes in text, surface them
         # but keep them notes-only until a human confirms the intended shape.
-        notes.append("Course codes found on page (structure unverified): " + ", ".join(codes))
+        notes.append("Mod codes found on page (structure unverified): " + ", ".join(codes))
 
     pdf_url = None
     for a in soup_main(html).find_all("a", href=True):
@@ -483,11 +483,11 @@ def parse_dai(url: str, html: str, name_index: dict[str, str]) -> list[dict]:
             code = name_index.get(norm_name(s))
             (resolved.append(code) if code else unresolved.append(s))
 
-        notes = [f"Track consists of {count} elective courses from the subject list."]
+        notes = [f"Track consists of {count} elective mods from the subject list."]
         notes += page_notes
         if unresolved:
             notes.append(
-                "Subjects with no resolvable course code (count toward the track but "
+                "Subjects with no resolvable mod code (count toward the track but "
                 "are not machine-checkable): " + "; ".join(unresolved)
             )
 
@@ -553,7 +553,7 @@ def validate(tracks: list[dict]) -> list[str]:
                 problems.append(f"{t['id']}: bad count {g['count']} for {len(g['anyOf'])} options")
             for c in g["anyOf"]:
                 if not CODE_RE.fullmatch(c):
-                    problems.append(f"{t['id']}: bad course code {c!r}")
+                    problems.append(f"{t['id']}: bad mod code {c!r}")
     ids = [t["id"] for t in tracks]
     for dup in {i for i in ids if ids.count(i) > 1}:
         problems.append(f"duplicate id: {dup}")

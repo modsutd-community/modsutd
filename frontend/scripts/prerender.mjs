@@ -1,5 +1,5 @@
 // Writes one real HTML file per mod and per room into dist/, so a crawler that
-// runs no JavaScript gets a page about THAT course instead of the app shell.
+// runs no JavaScript gets a page about THAT mod instead of the app shell.
 //
 // WHY
 // The app reads the URL once on boot and never writes a title back, so every
@@ -16,9 +16,9 @@
 // sees the static copy.
 //
 // THE FACTS COME FROM THE BUILT BUNDLE, NOT FROM /data
-// `dist/data/courses.json` is the file the app itself fetches, after
+// `dist/data/mods.json` is the file the app itself fetches, after
 // sync-data.mjs has attached everything derived. Reading /data instead would
-// mean the page and the app could describe the same course differently, which
+// mean the page and the app could describe the same mod differently, which
 // is the one failure this shape makes possible.
 //
 // Runs as `postbuild`, after vite has written dist/index.html.
@@ -31,7 +31,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, '..', 'dist');
 const ORIGIN = 'https://modsutd.tech';
 
-// Long enough to say what the course is, short enough that Google shows it
+// Long enough to say what the mod is, short enough that Google shows it
 // rather than its own extract. Cut on a word.
 const DESC_MAX = 155;
 
@@ -85,7 +85,7 @@ function page(shell, { title, description, canonical, jsonld, body }) {
     `<script type="application/ld+json">\n${ld(jsonld)}\n    </script>`,
   ), out, 'a JSON-LD block to replace');
   // Inside the existing noscript, replacing the generic copy. A reader without
-  // JavaScript is on this page because they searched for this course.
+  // JavaScript is on this page because they searched for this mod.
   out = must(out.replace(/<noscript>[\s\S]*?<\/noscript>/, `<noscript>\n${body}\n    </noscript>`),
              out, 'a <noscript> block');
   return out;
@@ -106,7 +106,7 @@ function noscriptBody(rows, heading, lead, sourceUrl) {
   // sutd.edu.sg, and that is a reason to check rather than a reason not to.
   const safe = httpUrl(sourceUrl);
   const source = safe
-    ? `<p><a href="${esc(safe)}" style="color:#7aa2f7">SUTD's own page for this course</a></p>`
+    ? `<p><a href="${esc(safe)}" style="color:#7aa2f7">SUTD's own page for this mod</a></p>`
     : '';
   return `      <div style="max-width:40rem;margin:3rem auto;padding:0 1.25rem;color:#e9eaed;font:16px/1.6 system-ui,sans-serif">
         <h1 style="font-size:1.4rem">${esc(heading)}</h1>
@@ -115,7 +115,7 @@ function noscriptBody(rows, heading, lead, sourceUrl) {
           ${facts}
         </ul>
         ${source}
-        <p><a href="/" style="color:#7aa2f7">Open modSUTD</a> &middot; <a href="/mods" style="color:#7aa2f7">All courses</a> &middot; <a href="/venues" style="color:#7aa2f7">All rooms</a> &middot; <a href="/faq.html" style="color:#7aa2f7">FAQ</a></p>
+        <p><a href="/" style="color:#7aa2f7">Open modSUTD</a> &middot; <a href="/mods" style="color:#7aa2f7">All mods</a> &middot; <a href="/venues" style="color:#7aa2f7">All rooms</a> &middot; <a href="/faq.html" style="color:#7aa2f7">FAQ</a></p>
         ${NOT_AFFILIATED}
       </div>`;
 }
@@ -165,24 +165,25 @@ if (!existsSync(shellPath)) {
 }
 const shell = readFileSync(shellPath, 'utf-8');
 
-const courses = JSON.parse(readFileSync(join(DIST, 'data', 'courses.json'), 'utf-8'));
+const modsFile = existsSync(join(DIST, 'data', 'mods.json')) ? join(DIST, 'data', 'mods.json') : join(DIST, 'data', 'courses.json');
+const modsList = JSON.parse(readFileSync(modsFile, 'utf-8'));
 const venues = JSON.parse(readFileSync(join(DIST, 'data', 'venues.json'), 'utf-8'));
 
 let mods = 0;
 const rejected = [];
-for (const c of courses) {
+for (const c of modsList) {
   if (typeof c.code !== 'string' || !c.code) continue;
   if (!safeSegment(c.code)) { rejected.push(c.code); continue; }
   const url = `${ORIGIN}/mods/${encodeURIComponent(c.code)}`;
   const retired = c.retired ? ' (no longer offered)' : '';
   const lead = trim(c.description, 400)
-    || `${c.name} is a ${c.credits}-credit ${c.pillar} course at SUTD.`;
+    || `${c.name} is a ${c.credits}-credit ${c.pillar} mod at SUTD.`;
 
   write(`mods/${c.code}`, page(shell, {
-    title: `${c.code} ${c.name} - SUTD course - modSUTD`,
+    title: `${c.code} ${c.name} - SUTD mod - modSUTD`,
     description: trim(
       c.description
-      || `${c.code} ${c.name}: a ${c.credits}-credit SUTD ${c.pillar} course in term ${c.term}.`,
+      || `${c.code} ${c.name}: a ${c.credits}-credit SUTD ${c.pillar} mod in term ${c.term}.`,
     ),
     canonical: url,
     jsonld: {
@@ -191,7 +192,7 @@ for (const c of courses) {
       name: c.name,
       courseCode: c.code,
       url,
-      // SUTD provides the course; modSUTD only catalogues it. Naming the
+      // SUTD provides the mod; modSUTD only catalogues it. Naming the
       // provider is the accurate claim, and the page says in its own words
       // that this site is not affiliated with them.
       provider: {
@@ -206,7 +207,7 @@ for (const c of courses) {
     },
     body: noscriptBody(
       [
-        ['Course code', c.code],
+        ['Mod code', c.code],
         ['Pillar', c.pillar],
         ['Term', c.term],
         ['Credits', c.credits],
@@ -272,7 +273,7 @@ for (const v of venues) {
 }
 
 // The index pages, and the reason this file writes any: nothing on this site
-// links to a course page. The app is one canvas with no anchors in it, so a
+// links to a mod page. The app is one canvas with no anchors in it, so a
 // crawler arriving from sitemap.xml found several hundred urls that nothing
 // pointed at, which Google files as "Discovered - currently not indexed" and
 // does not spend crawl budget on. These two pages are the crawl graph: one
@@ -313,11 +314,11 @@ function indexPage(kind, heading, lead, rows) {
 
 write('mods', indexPage(
   'mods',
-  'Every SUTD course',
-  'One link per course in the catalogue, with the code and the title SUTD '
-  + 'publishes. Each page carries that course\'s pillar, term, credits, '
+  'Every SUTD mod',
+  'One link per mod in the catalogue, with the code and the title SUTD '
+  + 'publishes. Each page carries that mod\'s pillar, term, credits, '
   + 'prerequisites and schedule.',
-  courses
+  modsList
     // The same filter the loop above writes pages under, so the index cannot
     // link a page that was never written: a code safeSegment refuses has no
     // page and is already reported by name in `rejected`.

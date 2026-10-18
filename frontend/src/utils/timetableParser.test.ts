@@ -95,7 +95,7 @@ describe('parseTimetableText on SAMS List View shape', () => {
     expect(events.find((e) => e.modCode === '10.013')?.location).toBe('1.510');
   });
 
-  it('reads the stray space in the course code and 12-hour times', () => {
+  it('reads the stray space in the mod code and 12-hour times', () => {
     const events = parseTimetableText(SAMPLE_LIST_VIEW);
     const mna = events.find((e) => e.modCode === '10.013');
     expect(mna).toBeDefined();
@@ -111,7 +111,7 @@ describe('parseTimetableText on SAMS List View shape', () => {
 
 // The Section column. MyPortal prints it once per group beside the Class Nbr
 // and the Component, and it was matched and discarded - so a reader with two
-// cohorts of one course in a week had nothing telling them which was which.
+// cohorts of one mod in a week had nothing telling them which was which.
 describe('which cohort the reader is in', () => {
   it('carries a CI section off the group header', () => {
     const one = [
@@ -159,7 +159,7 @@ describe('which cohort the reader is in', () => {
     expect(events[0].section).toBeUndefined();
   });
 
-  it('keeps two sections of one course apart when they share a room and an hour', () => {
+  it('keeps two sections of one mod apart when they share a room and an hour', () => {
     // Without the section in the collapse key these merge into whichever came
     // first, and one of the two disappears from the week.
     const twoSections = [
@@ -173,10 +173,10 @@ describe('which cohort the reader is in', () => {
   });
 });
 
-// A course can print a cohort group and then a team group. The section is
+// A mod can print a cohort group and then a team group. The section is
 // recomputed from the nearest preceding header for every row, so the second
 // group must not inherit the first one's.
-describe('two groups under one course', () => {
+describe('two groups under one mod', () => {
   const mixed = [
     '01 .400 - Capstone 1',
     'Class Nbr\tSection\tComponent\tDays & Times\tRoom\tInstructor\tStart/End Date',

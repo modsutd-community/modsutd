@@ -19,7 +19,7 @@ export function extractEval(doc: Document, selectionText?: string): ExtractedEva
     const h1 = doc.querySelector("h1")?.textContent || "";
     const bodyText = doc.body?.textContent || "";
 
-    // Sniff 5-character course codes like 50.040 or 02.105DH.
+    // Sniff 5-character mod codes like 50.040 or 02.105DH.
     const modMatch =
         title.match(/\b\d{2}[.]\d{3}[A-Za-z]?\b/) ||
         h1.match(/\b\d{2}[.]\d{3}[A-Za-z]?\b/) ||

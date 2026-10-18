@@ -133,10 +133,10 @@ export function anyAwaiting(): boolean {
 /**
  * Show a contribution on this browser before the build that ships it.
  *
- * Applied where courses are loaded, so the mod pages and the venue heatmaps
+ * Applied where mods are loaded, so the mod pages and the venue heatmaps
  * both see it and neither needs its own copy of the rule. Pure on purpose: it
  * used to delete its own entry the moment a fetch came back with schedules,
- * and during a deploy the two concurrent fetches of courses.json can return
+ * and during a deploy the two concurrent fetches of mods.json can return
  * DIFFERENT bodies - so one would drop the entry while the other was still
  * rendering the empty file, and the contribution vanished on reload. Forgetting
  * is pruneContributed's job, once, off the settled store.
@@ -150,10 +150,10 @@ export function anyAwaiting(): boolean {
  * workflow to create a real Telegram group, so it waits for data everyone can
  * see.
  */
-export function overlayLocal(courses: Mod[]): Mod[] {
+export function overlayLocal(mods: Mod[]): Mod[] {
   const store = read();
-  if (!Object.keys(store).length) return courses;
-  return courses.map((c) => {
+  if (!Object.keys(store).length) return mods;
+  return mods.map((c) => {
     const entry = store[c.code];
     if (entry === undefined || c.schedules.length > 0) return c;
     if (!entry.schedules?.length) return c;

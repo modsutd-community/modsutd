@@ -189,7 +189,7 @@ test('a browser already open picks up a change it did not ask for', async ({ bro
     { timeout: 60_000 },
   ).toContain('01.106');
 
-  // Reaching localStorage is not enough: overlayLocal runs where the courses
+  // Reaching localStorage is not enough: overlayLocal runs where the mods
   // are loaded, so without reloading those slices the heatmap stays empty
   // however complete the store is.
   //

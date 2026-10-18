@@ -47,7 +47,7 @@ on:
         types: [opened, synchronize, reopened]
         # Half the file filtering. This half is all-or-nothing - it skips only
         # when EVERY changed file matches - so its job is the cheap one: a pull
-        # request touching nothing but course and venue JSON starts no runner.
+        # request touching nothing but mod and venue JSON starts no runner.
         # The per-file half, which is what a MIXED pull request needs, is
         # `exclude` in .opencodereview/rule.json.
         paths-ignore:

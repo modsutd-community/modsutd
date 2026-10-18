@@ -2,8 +2,8 @@
 // has a URL a crawler can find.
 //
 // WHY IT IS GENERATED AND NOT WRITTEN
-// The catalogue is 389 courses and 225 rooms and both move. A hand-kept list is
-// right until the first month nobody remembers, and a sitemap naming a course
+// The catalogue is 389 mods and 225 rooms and both move. A hand-kept list is
+// right until the first month nobody remembers, and a sitemap naming a mod
 // that no longer exists is worse than a short one.
 //
 // WHY IT IS A FILE IN public/ AND NOT A ROUTE
@@ -60,7 +60,8 @@ const esc = (s) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c],
   );
 
-const courses = records(join(SRC_DATA, 'courses'));
+const modsDir = statSync(join(SRC_DATA, 'mods'), { throwIfNoEntry: false }) ? join(SRC_DATA, 'mods') : join(SRC_DATA, 'courses');
+const mods = records(modsDir);
 const venues = records(join(SRC_DATA, 'venues'));
 
 // NO lastmod anywhere, deliberately. Every candidate for one here is a
@@ -78,13 +79,13 @@ const urls = [
   { loc: `${ORIGIN}/faq.html`, priority: '0.6', changefreq: 'monthly' },
 ];
 
-for (const c of courses) {
-  // A retired course keeps its page on purpose: someone took it, their plan
+for (const m of mods) {
+  // A retired mod keeps its page on purpose: someone took it, their plan
   // still names it, and its review thread is the only record of what taking it
   // was like. Lower priority, not absent.
   urls.push({
-    loc: `${ORIGIN}/mods/${encodeURIComponent(c.code)}`,
-    priority: c.retired ? '0.3' : '0.7',
+    loc: `${ORIGIN}/mods/${encodeURIComponent(m.code)}`,
+    priority: m.retired ? '0.3' : '0.7',
     changefreq: 'weekly',
   });
 }
@@ -116,4 +117,4 @@ writeFileSync(
 
 // A sitemap may hold 50,000 URLs and 50MB uncompressed. This is nowhere near
 // either, and saying so is cheaper than a reader wondering.
-console.log(`  sitemap.xml: ${urls.length} urls (${courses.length} mods, ${venues.length} rooms)`);
+console.log(`  sitemap.xml: ${urls.length} urls (${mods.length} mods, ${venues.length} rooms)`);

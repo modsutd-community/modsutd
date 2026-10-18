@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import type { Mod, ModsState } from '@/types';
-import { loadCourses } from '@/utils/loadData';
+import { loadMods } from '@/utils/loadData';
 import { overlayLocal } from '@/workbench/contributed';
 
 const initialState: ModsState = {
@@ -13,7 +13,7 @@ export const fetchMods = createAsyncThunk('mods/fetch', async () => {
   // Overlaid, not merged later: a contribution has to be on screen the moment
   // it is accepted, and the build that makes it everyone's is up to four hours
   // away. overlayLocal drops its own entry once that build lands.
-  return overlayLocal(await loadCourses());
+  return overlayLocal(await loadMods());
 });
 
 const modsSlice = createSlice({

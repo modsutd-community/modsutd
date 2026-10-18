@@ -6,14 +6,14 @@ result as a PR for human review. `scrape.py` is one of those steps.
 
 | step | reads | writes |
 |---|---|---|
-| `mods` | `www.sutd.edu.sg` course sitemaps, ~389 course pages | `data/courses/*.json` |
-| `hass` | `hass.sutd.edu.sg` freshmore and elective listings | `data/courses/*.json` |
+| `mods` | `www.sutd.edu.sg` sitemaps, ~389 mod pages | `data/mods/*.json` |
+| `hass` | `hass.sutd.edu.sg` freshmore and elective listings | `data/mods/*.json` |
 | `tracks` | four specialisation-track sections on `www.sutd.edu.sg` | `data/specializations.json` |
 | `terms` | SUTD's academic calendar, plus `data.gov.sg` public holidays | `data/term-calendar.json` |
 | `minors` | SUTD's minors index, then each minor page | nothing, reports |
-| `cores` | each pillar's core listing on `www.sutd.edu.sg` | `data/courses/*.json` |
-| `prereqs` | the same course pages as `mods` | nothing, reports |
-| `propose` | the last two reports, through a model | `data/courses`, `data/minors.json` |
+| `cores` | each pillar's core listing on `www.sutd.edu.sg` | `data/mods/*.json` |
+| `prereqs` | the same mod pages as `mods` | nothing, reports |
+| `propose` | the last two reports, through a model | `data/mods`, `data/minors.json` |
 
 Five of them read `www.sutd.edu.sg`, so the names say what each produces
 rather than where it went. `hass` is the exception because it is the one on
@@ -30,7 +30,7 @@ were a best-effort guess and it returned before yielding anything, so it cost
 four requests a run and produced nothing, under a step then called `pillars`.
 A real pillar parser is written against whatever HTML SUTD serves that day,
 so it was not a head start. Everything about a mod in every pillar comes from
-the `mods` step anyway: the course sitemap covers all of them.
+the `mods` step anyway: the mod sitemap covers all of them.
 
 `_http.py` in that folder is not a source: it is the shared cached HTTP client.
 

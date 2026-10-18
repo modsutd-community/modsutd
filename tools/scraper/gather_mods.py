@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Gather the official undergraduate course listing from sutd.edu.sg.
+"""Gather the official undergraduate mod listing from sutd.edu.sg.
 
-Walks the Yoast course sitemaps, keeps /course/<NN-NNN...> pages, and
-merges what it finds into /data/courses/:
+Walks the Yoast sitemaps, keeps /course/<NN-NNN...> pages, and
+merges what it finds into /data/mods/:
 
 * existing mods  -> only the "tags" field is added/replaced (plus the
   description, but ONLY when the repo description is empty). Schedules,
   grading, workload, credits, term, prerequisites are never touched.
 * new mods       -> full JSON validated through schema.Mod before writing.
 
-Courses that mention LKYCIC or NAMIC (as standalone tokens - "Dynamics"
+Mods that mention LKYCIC or NAMIC (as standalone tokens - "Dynamics"
 must not match "NAMIC") are skipped.
 
 Run with:  python gather_mods.py [--dry-run] [--limit N]
@@ -38,14 +38,14 @@ from schema import Mod  # noqa: E402
 from sources import _http  # noqa: E402
 
 REPO_ROOT = SCRAPER_DIR.parents[1]
-COURSES_DIR = REPO_ROOT / "data" / "courses"
+MODS_DIR = REPO_ROOT / "data" / "mods" if (REPO_ROOT / "data" / "mods").exists() else REPO_ROOT / "data" / "courses"
 
 SITEMAPS = [
     "https://www.sutd.edu.sg/course-sitemap.xml",
     "https://www.sutd.edu.sg/course-sitemap2.xml",
 ]
 
-# Slug starts with an undergrad course code, e.g. 01-018-... or 02-131dh-...
+# Slug starts with an undergrad mod code, e.g. 01-018-... or 02-131dh-...
 SLUG_CODE_RE = re.compile(r"^(\d{2})-(\d{3})([a-z]{0,3})(?=-|/|$)")
 DOTTED_CODE_RE = re.compile(r"\d{2}\.\d{3}[A-Za-z]?")
 # Standalone tokens only: "NAMIC" must NOT match inside "Dynamics",
@@ -55,11 +55,11 @@ HEADING_TAGS = ("h2", "h3", "h4", "h5", "h6")
 PREREQ_HEADING_RE = re.compile(r"(?i)^pre-?requisites?\b")
 COREQ_HEADING_RE = re.compile(r"(?i)^co-?requisites?\b")
 # Some pages (e.g. 60-001) put the intro under an explicit heading.
-DESC_HEADING_RE = re.compile(r"(?i)^course description\b")
+DESC_HEADING_RE = re.compile(r"(?i)^(?:course|mod) description\b")
 CREDITS_RE = re.compile(r"Number of credits:\s*(\d+)")
 TERM_TAG_RE = re.compile(r"(?i)^term\s+(\d+)$")
 
-# Fallbacks for code prefixes with no precedent in /data/courses -
+# Fallbacks for code prefixes with no precedent in /data/mods -
 # derived from the official listing tags on the page. There is no
 # "Freshmore" pillar: freshmore subjects belong to SMT (or HASS).
 TAG_TO_PILLAR = {
@@ -84,11 +84,11 @@ PILLAR_DEPARTMENT = {
 }
 
 # The code space of SUTD's own undergraduate listing, and not a guess: walking
-# /education/undergraduate/courses/ to its last page yields 219 course links
+# /education/undergraduate/courses/ to its last page yields 219 mod links
 # carrying exactly these nine prefixes. A sitemap slug outside them is a
 # graduate catalogue (51.5xx is MSSD, 99.5xx the SMT PhD programme) or an orphan
 # CMS record (41.5xx and 45.2xx: no programme lists them, their page body holds
-# no prose at all, and two of them say "Non-credit course").
+# no prose at all, and two of them say "Non-credit mod").
 #
 # A second copy of this set lives in gather_minors.py for a different purpose -
 # keeping phone and reference numbers out of a minor page's code extraction -
@@ -103,15 +103,15 @@ VALID_PREFIXES = {"01", "02", "03", "10", "20", "30", "40", "50", "60"}
 # elective fallback, which is not what the page said. And prefix_precedents()
 # has no honest vote for "99": its majority comes from the 99.999 placeholders,
 # which exist only until SUTD publishes AY2026 codes, so a couple more of those
-# would silently move a real course to another pillar.
+# would silently move a real mod to another pillar.
 #
 # The third field is checked against the scraped description on every run,
 # because the reason a code is admitted lives on a page SUTD can rewrite, and an
 # UNDERGRADUATE_WHITELIST is the exception list and it holds one code: 99.504,
-# which SUTD files under SMT as a graduate course but whose syllabus explicitly
+# which SUTD files under SMT as a graduate mod but whose syllabus explicitly
 # admits term 6 and term 8 undergraduates.
 #
-# 99.504's page: "This is a course intended for PhD students and for term 6 or
+# 99.504's page: "This is a mod intended for PhD students and for term 6 or
 # term 8 undergraduate students."
 UNDERGRADUATE_WHITELIST: dict[str, tuple[str, str, str]] = {
     "99.504": ("SMT", "6", "undergraduate students"),
@@ -128,12 +128,12 @@ ELECTIVE_SUFFIX_RE = re.compile(r"(?i)\s*\(elective\)\s*$")
 ASSESSMENT_HEADING_RE = re.compile(r"(?i)^learning assessment\b")
 
 # "Workload: 5-0-7" - lecture/recitation/cohort, then lab/design/field
-# work, then independent study, in hours per week (defined on the course
+# work, then independent study, in hours per week (defined on the mod
 # pages themselves). Published on a minority of pages; where present it
 # replaces the hand-estimated placeholder.
 WORKLOAD_RE = re.compile(r"(?i)Workload\s*:?\s*(\d{1,2})\s*-\s*(\d{1,2})\s*-\s*(\d{1,2})")
 
-# Tag texts that name a pillar (a course can carry several - 03.007A is
+# Tag texts that name a pillar (a mod can carry several - 03.007A is
 # ASD + EPD + SMT via its per-pillar suffix pages).
 PILLAR_TAG_NAMES = {"smt", "hass", "istd", "epd", "esd", "asd", "dai"}
 
@@ -147,7 +147,7 @@ def fetch(url: str, *, delay: float, ttl_hours: float) -> str:
     return _http.get(url, ttl_hours=ttl_hours, delay=delay)
 
 
-def sitemap_course_urls(*, delay: float, ttl_hours: float) -> list[str]:
+def sitemap_mod_urls(*, delay: float, ttl_hours: float) -> list[str]:
     locs: list[str] = []
     for sm in SITEMAPS:
         xml = fetch(sm, delay=delay, ttl_hours=ttl_hours)
@@ -160,7 +160,7 @@ def slug_of(url: str) -> str:
 
 
 def undergrad_urls(
-    course_urls: list[str],
+    mod_urls: list[str],
 ) -> tuple[dict[str, str], dict[str, list[str]], list[str], dict[str, list[str]]]:
     """Map dotted code -> URL. When several slugs share a code (03-007 /
     03-007a / 03-007b) prefer the plain, suffix-less slug; the other
@@ -171,12 +171,12 @@ def undergrad_urls(
     keyed by prefix, rather than being dropped where nobody sees it. Which
     codes SUTD publishes outside the undergraduate space is a decision, and a
     decision the run does not print is one the next maintainer has to
-    re-derive from the sitemap by hand - which is how a real course sat
+    re-derive from the sitemap by hand - which is how a real mod sat
     unlisted with nothing saying so.
     """
     by_code: dict[str, list[tuple[str, str]]] = {}
     off_space: dict[str, list[str]] = {}
-    for url in course_urls:
+    for url in mod_urls:
         m = SLUG_CODE_RE.match(slug_of(url))
         if not m:
             continue
@@ -330,7 +330,7 @@ def page_tags(soup: BeautifulSoup) -> list[str]:
 
 
 def norm_title(name: str) -> str:
-    """A course name reduced to what two listings of it would share."""
+    """A mod name reduced to what two listings of it would share."""
     s = name.lower().replace("&", " and ")
     return " ".join(re.sub(r"[^a-z0-9]+", " ", s).split())
 
@@ -345,7 +345,7 @@ def repo_names() -> dict[str, str]:
     """
     seen: dict[str, str] = {}
     clash: set[str] = set()
-    for path in sorted(COURSES_DIR.glob("*.json")):
+    for path in sorted(MODS_DIR.glob("*.json")):
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
@@ -374,14 +374,14 @@ def elective_duplicate(title: str, owners: dict[str, str]) -> str | None:
     return owners.get(norm_title(stripped))
 
 
-# Courses whose own page says they belong to a master's programme, with the
+# Mods whose own page says they belong to a master's programme, with the
 # words that say it and the term to file them under. Read off the page and not
 # off the number: the 02.5xx block looks like one programme and nine of its
 # eleven pages name no audience at all, so they keep the term they publish.
 #
-# 8 is where every other graduate course in this catalogue already sits, having
+# 8 is where every other graduate mod in this catalogue already sits, having
 # arrived there through the untermed-elective fallback. It is not a claim that
-# these are eighth-term undergraduate courses; nothing in the schema can say
+# these are eighth-term undergraduate mods; nothing in the schema can say
 # "not an undergraduate term", and inventing a value here would be a second
 # reader's problem every time.
 GRADUATE_PAGE: dict[str, tuple[str, str]] = {
@@ -396,7 +396,7 @@ GRADUATE_PAGE: dict[str, tuple[str, str]] = {
 
 
 def graduate_term(code: str, description: str) -> str | None:
-    """The term for a course whose own page calls it a master's course.
+    """The term for a mod whose own page calls it a master's mod.
 
     None when the code is not in the table, and also when it is but the page no
     longer carries the words: the entry is a reading of one sentence, and SUTD
@@ -423,10 +423,10 @@ def stale_admission(code: str, description: str) -> str | None:
     return None if marker.lower() in description.lower() else marker
 
 
-# Where a course goes when its page publishes no "Term N" tag at all, which is
+# Where a mod goes when its page publishes no "Term N" tag at all, which is
 # most of the elective catalogue. 1 was wrong in a way that showed: it swept
 # every elective and technical elective into the freshmore term, so the Term 1
-# filter answered with courses no freshmore can take and the plan dropped every
+# filter answered with mods no freshmore can take and the plan dropped every
 # one of them into T8's first slot by way of term 1.
 #
 # 8 is the last undergraduate term, which is where an elective with no published
@@ -458,12 +458,12 @@ def rename_batch_ok(count: int) -> bool:
 
 
 def name_change(current: str, scraped: str) -> str | None:
-    """The page's title for this course, when it is really a different one.
+    """The page's title for this mod, when it is really a different one.
 
     Whitespace is normalised on both sides before comparing, because the page
     is read out of HTML where a line break is a space and a run of spaces is
     one space, and neither is a re-title. A page that parsed to nothing, or to
-    something too short to be a course name, never wins: an empty h1 is a
+    something too short to be a mod name, never wins: an empty h1 is a
     broken parse and this is the field a student searches by.
     """
     a, b = " ".join(current.split()), " ".join(scraped.split())
@@ -473,7 +473,7 @@ def name_change(current: str, scraped: str) -> str | None:
 
 
 def term_from_tags(tags: list[str], default: str | None = None) -> str:
-    """The term a course page names, or where an untermed one belongs.
+    """The term a mod page names, or where an untermed one belongs.
 
     The tag wins whenever there is one. Without it, a Freshmore Core is early
     and everything else is a late elective: those are the only two shapes the
@@ -492,7 +492,7 @@ def term_from_tags(tags: list[str], default: str | None = None) -> str:
 def prefix_precedents() -> dict[str, tuple[str, str]]:
     """prefix -> (pillar, department) by majority vote over existing files."""
     votes: dict[str, Counter] = {}
-    for path in sorted(COURSES_DIR.glob("*.json")):
+    for path in sorted(MODS_DIR.glob("*.json")):
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
@@ -526,7 +526,7 @@ def merge_existing(path: Path, parsed: dict, dry_run: bool) -> str:
     Returns unchanged|tags-updated.
 
     Known hazard: SUTD publishes 03.007, 03.007A and 03.007B as three separate
-    courses, and a listing page that mentions only the base code must not have
+    mods, and a listing page that mentions only the base code must not have
     its tags written onto the base file as though the split never happened.
     Codes are matched exactly, letter included, so the three stay distinct - do
     not "normalise" a suffixed code here to find a file.
@@ -590,13 +590,13 @@ def write_new(path: Path, mod: Mod, dry_run: bool) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--dry-run", action="store_true")
-    ap.add_argument("--limit", type=int, default=0, help="only first N courses")
+    ap.add_argument("--limit", type=int, default=0, help="only first N mods")
     ap.add_argument("--delay", type=float, default=0.25)
     ap.add_argument("--ttl-hours", type=float, default=168.0)
     args = ap.parse_args()
 
-    course_urls = sitemap_course_urls(delay=args.delay, ttl_hours=args.ttl_hours)
-    chosen, extras, dropped_dups, off_space = undergrad_urls(course_urls)
+    mod_urls = sitemap_mod_urls(delay=args.delay, ttl_hours=args.ttl_hours)
+    chosen, extras, dropped_dups, off_space = undergrad_urls(mod_urls)
     precedents = prefix_precedents()
     owners = repo_names()
 
@@ -657,34 +657,34 @@ def main() -> int:
                 if t.strip().lower() in PILLAR_TAG_NAMES and t not in parsed["tags"]:
                     parsed["tags"].append(t)
 
-        path = COURSES_DIR / f"{code.replace('.', '_')}.json"
+        path = MODS_DIR / f"{code.replace('.', '_')}.json"
 
         # A base code must never be written when the repo has split it. SUTD
-        # publishes 03.007, 03.007A and 03.007B as three courses; a listing row
+        # publishes 03.007, 03.007A and 03.007B as three mods; a listing row
         # or a slug that yields only "03.007" would otherwise land its tags and
         # description on the base file, quietly re-merging a split someone made
         # deliberately. Codes are matched exactly, letter included.
         siblings = sorted(
-            q.name for q in COURSES_DIR.glob(f"{code.replace('.', '_')}[A-Za-z].json")
+            q.name for q in MODS_DIR.glob(f"{code.replace('.', '_')}[A-Za-z].json")
         )
         if siblings and not path.exists():
             print(
                 f"[!] {code} is split into {', '.join(siblings)} - refusing to recreate "
                 f"the base file. Point the listing at the lettered code, or add the base "
-                f"course by hand if SUTD really publishes all of them.",
+                f"mod by hand if SUTD really publishes all of them.",
                 file=sys.stderr,
             )
             failed.append(code)
             continue
 
-        # Above the merge branch, so it runs for an admitted course that is
+        # Above the merge branch, so it runs for an admitted mod that is
         # already in /data. A page is rewritten long after its record is
         # written, and checking only on the way in would mean checking once.
         admit = UNDERGRADUATE_WHITELIST.get(code)
         # Same shape as the admission below: a pin read off a page is re-read
         # against that page every run, because the page is SUTD's to rewrite.
         if code in GRADUATE_PAGE and graduate_term(code, parsed["description"]) is None:
-            print(f"[!] {code} is filed as a graduate course because its page "
+            print(f"[!] {code} is filed as a graduate mod because its page "
                   f"said {GRADUATE_PAGE[code][1]!r} and it no longer does",
                   file=sys.stderr)
             grad_stale.append(code)
@@ -692,7 +692,7 @@ def main() -> int:
         if stale:
             print(f"[!] {code} is admitted because its page said {stale!r} "
                   f"and it no longer does - check whether it is still an "
-                  f"undergraduate course", file=sys.stderr)
+                  f"undergraduate mod", file=sys.stderr)
             admit_stale.append(code)
 
         if path.exists():
@@ -705,16 +705,16 @@ def main() -> int:
                                 parsed.get("sourceUrl") or ""))
             continue
 
-        # A course already in /data keeps its record and its tag updates
+        # A mod already in /data keeps its record and its tag updates
         # whatever the page now says. One that has never been written is the
         # opposite case: nothing is dropped by refusing it, and writing it
-        # would file a course into the undergraduate catalogue on a sentence
+        # would file a mod into the undergraduate catalogue on a sentence
         # that is not on its page any more.
         if stale:
             failed.append(code)
             continue
 
-        # The allowlist wins. It is a person saying "this code is a real course,
+        # The allowlist wins. It is a person saying "this code is a real mod,
         # write it", and the guard below is a pattern match on a title - so if
         # the two ever disagreed, the heuristic would be overruling the decision
         # that exists to overrule it.
@@ -762,7 +762,7 @@ def main() -> int:
     # A re-title is PROPOSED and never merged quietly. The name is written into
     # the record so the pull request carries the before and the after as a diff
     # a person can read, and a reviewer accepts it by merging or takes it back
-    # out. The scraper cannot tell SUTD renaming a course from SUTD replacing
+    # out. The scraper cannot tell SUTD renaming a mod from SUTD replacing
     # one, and the name is what a student searches by and what their plan shows,
     # so the decision is the reviewer's rather than this file's.
     applied = rename_batch_ok(len(renames))
@@ -783,8 +783,8 @@ def main() -> int:
                             encoding="utf-8")
 
     print()
-    print(f"sitemap /course/ URLs      : {len(course_urls)}")
-    print(f"undergrad courses kept     : {len(chosen)}"
+    print(f"sitemap /course/ URLs      : {len(mod_urls)}")
+    print(f"undergrad mods kept         : {len(chosen)}"
           f" ({len(dropped_dups)} duplicate-code slugs dropped: "
           f"{[slug_of(u) for u in dropped_dups]})")
     off_total = sum(len(v) for v in off_space.values())
@@ -822,9 +822,9 @@ def main() -> int:
 def self_check() -> int:
     """Drive term_from_tags against the tag shapes the listing produces.
 
-    No network. Where an untermed course lands decides which term filter finds
+    No network. Where an untermed mod lands decides which term filter finds
     it, where the plan first puts it, and whether it can have a batch chat, and
-    the wrong answer is invisible: a course simply sits in a term nobody
+    the wrong answer is invisible: a mod simply sits in a term nobody
     expects it in.
     """
     # Literal terms on the right, never the constants the function reads: an
@@ -848,13 +848,13 @@ def self_check() -> int:
         got = term_from_tags(tags)
         if got != want:
             fails.append(f"{why}: tags {tags} gave {got!r}, want {want!r}")
-    # The caller can still say where an untermed course goes, which is what
+    # The caller can still say where an untermed mod goes, which is what
     # keeps this usable from a script that knows better than the default.
     if term_from_tags([], default="3") != "3":
         fails.append("an explicit default is ignored")
 
     # A re-title, against literal strings rather than a record in /data: a case
-    # built from a course file starts passing the day somebody edits that file.
+    # built from a mod file starts passing the day somebody edits that file.
     for before, after, want, why in [
         ("Theory and Dynamics of Urban Social Processes",
          "Urban Theory I: Dynamics of Urban Systems and Social Change",
@@ -887,7 +887,7 @@ def self_check() -> int:
 
 
     # The (Elective) guard, against a fixed table rather than the repo: a check
-    # that reads data/courses starts passing the day somebody deletes 01.117.
+    # that reads data/mods starts passing the day somebody deletes 01.117.
     owners = {
         "brain inspired computing and its applications": "01.117",
         "machine learning": "50.007",
@@ -926,18 +926,18 @@ def self_check() -> int:
     if sorted(off) != ["51", "99"] or len(off.get("99", [])) != 1:
         fails.append(f"off-space report wrong: { {k: len(v) for k, v in off.items()} }")
 
-    # A master's course, read off its page. Literal codes, terms and words
+    # A master's mod, read off its page. Literal codes, terms and words
     # here: a case built from GRADUATE_PAGE passes whatever that is set to.
     for code, description, want, why in [
         ("02.563", "The final term is dedicated for students to complete a "
                    "Masters Research Project.", "8",
-         "the page that files 02.563 as a graduate course"),
+         "the page that files 02.563 as a graduate mod"),
         ("02.563", "The final term is dedicated to independent work.", None,
          "the page dropped the words, so the pin stops answering"),
         ("02.522", "...a strong foundation for the Master's Research Project.",
          "8", "02.522 says what it prepares you for"),
         ("02.501", "Humans have the innate desire to live well.", None,
-         "a course nobody pinned keeps its own tag"),
+         "a mod nobody pinned keeps its own tag"),
     ]:
         got = graduate_term(code, description)
         if got != want:
@@ -948,10 +948,10 @@ def self_check() -> int:
     # that reads UNDERGRADUATE_WHITELIST[code][2] passes whatever that is set to.
     for code, description, want, why in [
         ("99.504",
-         "This is a course intended for PhD students and for term 6 or term 8 "
+         "This is a mod intended for PhD students and for term 6 or term 8 "
          "undergraduate students.",
          None, "the sentence the admission was written on"),
-        ("99.504", "This is a course intended for PhD students.",
+        ("99.504", "This is a mod intended for PhD students.",
          "undergraduate students", "the page dropped the words that admitted it"),
         ("99.504", "Open to UNDERGRADUATE STUDENTS in their final year.",
          None, "the marker is matched whatever its case"),

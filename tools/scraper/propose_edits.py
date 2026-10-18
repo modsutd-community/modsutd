@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Turn the drift reports into proposed edits to data/courses/*.json.
+"""Turn the drift reports into proposed edits to data/mods/*.json.
 
-    python tools/scraper/propose_edits.py --prereqs pre.json --minors min.json \\
+    python tools/scraper/propose_edits.py --prereqs pre.json --minors min.json \
         --report-out report.md
     python tools/scraper/propose_edits.py --prereqs pre.json --dry-run
 
@@ -15,10 +15,10 @@ unapplied. The reports stay report-only. This reads them.
 THE MODEL NEVER TOUCHES A FILE. It returns proposed edits and this script
 validates every one before writing:
 
-  * the course record has to exist
+  * the mod record has to exist
   * the field has to be `prerequisites`, `corequisites` or a one-level
     `prereqTree`
-  * every code has to have a file in data/courses/
+  * every code has to have a file in data/mods/
   * `quote` has to appear in the page text the report captured, compared with
     whitespace flattened. This is the gate against invention: a proposal the
     page does not support is dropped and listed as dropped, never applied
@@ -31,7 +31,7 @@ commits both into a pull request. Nothing here pushes and nothing here writes to
 main: /data is human-reviewed, and a model proposing an edit does not change
 that.
 
-BOTH REPORTS, not just prerequisites. `audit_prereqs.py` asks whether a course
+BOTH REPORTS, not just prerequisites. `audit_prereqs.py` asks whether a mod
 page means the codes it names; `gather_minors.py` asks the same question of a
 minor page. The judgement is identical and so is the gate, so both feed this.
 
@@ -53,7 +53,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from agents import llm  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-COURSES = ROOT / "data" / "courses"
+MODS = ROOT / "data" / "mods" if (ROOT / "data" / "mods").exists() else ROOT / "data" / "courses"
 
 FIELDS = {"prerequisites", "corequisites", "prereqTree"}
 MINORS = ROOT / "data" / "minors.json"
@@ -64,15 +64,15 @@ CODE_RE = re.compile(r"^\d{2}\.\d{3}[A-Za-z]?$")
 # loses every case in it.
 BATCH = 5
 
-SYSTEM = """You reconcile a university's course records against its own web pages.
+SYSTEM = """You reconcile a university's mod records against its own web pages.
 
-You are given, per course, the prerequisite text printed on the page and the
+You are given, per mod, the prerequisite text printed on the page and the
 codes the repository record holds. Decide whether the record should change.
 
 A code appearing on a page is NOT automatically a requirement. Pages say things
 like "helpful but not required", "recommended", "or equivalent experience", and
-name a code inside an example or inside another course's description. Propose an
-edit only when the sentence says the course requires it.
+name a code inside an example or inside another mod's description. Propose an
+edit only when the sentence says the mod requires it.
 
 Reply with JSON and nothing else, in exactly this shape:
 
@@ -90,7 +90,7 @@ Rules you must follow:
   one level deep, codes only. Use it only when the page joins the codes
   with "or".
 - `quote` MUST be copied character for character from the page text you were
-  given for that course. If you cannot quote the page, put the course in
+  given for that mod. If you cannot quote the page, put the mod in
   `skipped` instead.
 - Every code must look like NN.NNN.
 - Propose nothing when the page and the record already agree, or when the page
@@ -134,7 +134,7 @@ Rules you must follow:
 QUOTE_MIN_CHARS = 25
 QUOTE_MIN_WORDS = 5
 
-# The phrases a SUTD page uses to name a course and then disown it. A quote
+# The phrases a SUTD page uses to name a mod and then disown it. A quote
 # carrying one of these is evidence AGAINST a requirement, so accepting it as
 # support for adding a prerequisite gets the answer exactly backwards. 50.037's
 # block is the worked example: it names 50.012, 50.020 and 50.043 and then says
@@ -172,7 +172,7 @@ def quote_supports(quote: str, codes: list[str]) -> str:
       "50.012 Networks , 50.020 Security , and 50.0", which is 44 characters of
       nothing;
     - the disowning sentence itself, quoted as support for adding the very
-      courses it disowns.
+      mods it disowns.
 
     So the quote has to name every code being added, and must not be one of the
     sentences that take a requirement away.
@@ -198,7 +198,7 @@ def norm(s: str) -> str:
 
 
 def known_codes() -> set[str]:
-    return {p.stem.replace("_", ".") for p in COURSES.glob("*.json")}
+    return {p.stem.replace("_", ".") for p in MODS.glob("*.json")}
 
 
 # Enough page text to hold a sentence. A block that is one dash, or one code and
@@ -290,10 +290,10 @@ def validate_minor(edit: dict, by_id: dict, book_ids: dict, codes: set[str]) -> 
     if not isinstance(idx, int) or not 0 <= idx < len(reqs):
         return False, f"requirement {idx!r} is not a group on {mid}"
     # ADDING TO AN ALL-MANDATORY GROUP LOOSENS IT. `count == len(anyOf)` means
-    # every course in the list is required; append one and it silently becomes
-    # "choose count of len+1", so a student may now skip a course the page says
+    # every mod in the list is required; append one and it silently becomes
+    # "choose count of len+1", so a student may now skip a mod the page says
     # they must take. minor-aai's first group is count 1 over ["10.022"], a
-    # single mandatory course, and 16 of the 37 groups in data/minors.json have
+    # single mandatory mod, and 16 of the 37 groups in data/minors.json have
     # this shape. Whether a new code is also mandatory (count goes up) or an
     # alternative (count stays) is exactly the thing the page rarely says, so it
     # is refused and reported rather than guessed.
@@ -301,14 +301,14 @@ def validate_minor(edit: dict, by_id: dict, book_ids: dict, codes: set[str]) -> 
     if group.get("count") == len(group.get("anyOf") or []):
         return False, (f"group {idx} on {mid} is all-mandatory "
                        f"(count {group.get('count')} of {len(group.get('anyOf') or [])}); "
-                       "adding to it would turn a required course into a choice")
+                       "adding to it would turn a required mod into a choice")
     if not isinstance(add, list) or not add or not all(isinstance(c, str) for c in add):
-        return False, "add must be a non-empty list of course codes"
+        return False, "add must be a non-empty list of mod codes"
     for c in add:
         if not CODE_RE.match(c):
-            return False, f"{c!r} is not a course code"
+            return False, f"{c!r} is not a mod code"
         if c not in codes:
-            return False, f"{c} has no record in data/courses"
+            return False, f"{c} has no record in data/mods"
         if c in (reqs[idx].get("anyOf") or []):
             return False, f"{c} is already in that group"
     thin = quote_is_substantial(quote) or quote_supports(quote, list(add))
@@ -334,7 +334,7 @@ def apply_minor(edit: dict, book: dict) -> str:
 
 
 def load_record(code: str) -> dict:
-    path = COURSES / f"{code.replace('.', '_')}.json"
+    path = MODS / f"{code.replace('.', '_')}.json"
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception:  # noqa: BLE001
@@ -384,7 +384,7 @@ def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[boo
     if code not in codes:
         return False, f"no record for {code!r}"
     if code not in by_code:
-        return False, f"{code} was not one of the courses reported to the model"
+        return False, f"{code} was not one of the mods reported to the model"
     if field not in FIELDS:
         return False, f"field {field!r} is not one of {sorted(FIELDS)}"
 
@@ -397,7 +397,7 @@ def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[boo
         #            {"code": "10.025", "cohort": ["ay2025", "ay2026"]}]},
         # and accepting {"or": ["10.014", "10.025"]} over it deletes the cohort
         # scoping: every student would then satisfy the prerequisite with either
-        # course, which is exactly what the scoping exists to prevent. 11 course
+        # mod, which is exactly what the scoping exists to prevent. 11 mod
         # records carry scoping like that. Nested groups have the same problem.
         # Replacing one is a human's edit, so this refuses and says why.
         # TOP LEVEL ONLY, deliberately. flatten_tree recurses through and/or,
@@ -415,25 +415,25 @@ def validate(edit: dict, by_code: dict[str, dict], codes: set[str]) -> tuple[boo
     else:
         items = value
     if not isinstance(items, list) or not items or not all(isinstance(c, str) for c in items):
-        return False, "value must be a non-empty list of course codes"
+        return False, "value must be a non-empty list of mod codes"
     for c in items:
         if not CODE_RE.match(c):
-            return False, f"{c!r} is not a course code"
+            return False, f"{c!r} is not a mod code"
         if c not in codes:
-            return False, f"{c} has no record in data/courses"
+            return False, f"{c} has no record in data/mods"
     if code in items:
-        return False, "a course cannot be its own prerequisite"
+        return False, "a mod cannot be its own prerequisite"
 
     thin = quote_is_substantial(quote) or quote_supports(quote, list(items))
     if thin:
         return False, thin
     if norm(quote) not in norm(by_code[code].get("listed", "")):
-        return False, "quote is not in the page text this course was reported with"
+        return False, "quote is not in the page text this mod was reported with"
     return True, ""
 
 
 def apply(edit: dict, dry_run: bool) -> str:
-    path = COURSES / f"{edit['code'].replace('.', '_')}.json"
+    path = MODS / f"{edit['code'].replace('.', '_')}.json"
     d = json.loads(path.read_text(encoding="utf-8"))
     if d.get(edit["field"]) == edit["value"]:
         return "already matched"
@@ -459,7 +459,7 @@ SELF_CHECK: list[tuple[dict, bool]] = [
     # WAS True. A quote saying "helpful but not required" is evidence AGAINST
     # the edit, and this table asserting otherwise is how the hole stayed open.
     ({"code": "50.037", "field": "prerequisites", "value": ["50.004"],
-      "quote": "These courses are helpful but not required"}, False),
+      "quote": "These mods are helpful but not required"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": ["50.004"],
       "quote": "Students must have completed 50.004 before taking this"}, True),
     # Names the code AND hedges. Without this the HEDGES list has no case of
@@ -476,27 +476,27 @@ SELF_CHECK: list[tuple[dict, bool]] = [
     ({"code": "50.037", "field": "prerequisites", "value": ["50.004"],
       "quote": "this whole sentence is nowhere on the page"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": ["99.123"],
-      "quote": "These courses are helpful but not required"}, False),
+      "quote": "These mods are helpful but not required"}, False),
     ({"code": "50.037", "field": "description", "value": ["50.004"],
-      "quote": "These courses are helpful but not required"}, False),
+      "quote": "These mods are helpful but not required"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": ["50.037"],
-      "quote": "These courses are helpful but not required"}, False),
+      "quote": "These mods are helpful but not required"}, False),
     ({"code": "50.037", "field": "prerequisites", "value": [],
-      "quote": "These courses are helpful but not required"}, False),
+      "quote": "These mods are helpful but not required"}, False),
     ({"code": "50.037", "field": "prereqTree", "value": {"or": ["50.004"]},
       "quote": "Students must have completed 50.004 before taking this"}, True),
     ({"code": "50.037", "field": "prereqTree", "value": {"or": ["50.004"], "and": ["50.005"]},
-      "quote": "These courses are helpful but not required"}, False),
+      "quote": "These mods are helpful but not required"}, False),
     # 50.001's real tree is cohort-scoped, so a flat list may not replace it
     ({"code": "50.001", "field": "prereqTree", "value": {"or": ["10.014", "10.025"]},
       "quote": "Students must have completed 10.014 or 10.025 first"}, False),
     ({"code": "00.000", "field": "prerequisites", "value": ["50.004"],
-      "quote": "These courses are helpful but not required"}, False),
+      "quote": "These mods are helpful but not required"}, False),
 ]
 
 
 # The same, for minors. A group index is the part a model gets wrong quietly:
-# an off-by-one puts a core course into the electives list and the diff looks
+# an off-by-one puts a core mod into the electives list and the diff looks
 # plausible.
 SELF_CHECK_MINORS: list[tuple[dict, bool]] = [
     ({"minor": "_m", "requirement": 0, "add": ["50.001"], "quote": "Students must take 50.001 in term four"}, True),
@@ -518,7 +518,7 @@ def self_check() -> int:
     bad = 0
 
     by_code = {
-        "50.037": {"listed": "Students must have completed 50.004 before taking this. 50.012 Networks is helpful but not required for this. 50.012 Networks , 50.020 Security , and more. These courses are   HELPFUL but not required for 50.037."},
+        "50.037": {"listed": "Students must have completed 50.004 before taking this. 50.012 Networks is helpful but not required for this. 50.012 Networks , 50.020 Security , and more. These mods are   HELPFUL but not required for 50.037."},
         "50.001": {"listed": "Students must have completed 10.014 or 10.025 first."},
         "50.055": {"listed": "Students must have completed 50.007 and 50.039 first."},
     }
@@ -548,13 +548,13 @@ def self_check() -> int:
 
 
 def run_prereqs(path, report, args, codes):
-    """Course records against their own pages. Returns (accepted, rejected, skipped, providers)."""
+    """Mod records against their own pages. Returns (accepted, rejected, skipped, providers)."""
     rows = candidates(json.loads(pathlib.Path(path).read_text(encoding="utf-8")))
     if args.limit:
         rows = rows[: args.limit]
     if not rows:
         report += ["### prerequisites", "",
-                   "Nothing to propose: no course record disagrees with its page.", ""]
+                   "Nothing to propose: no mod record disagrees with its page.", ""]
         return [], [], [], set()
 
     by_code = {r["code"]: r for r in rows}
@@ -578,7 +578,7 @@ def run_prereqs(path, report, args, codes):
         skipped += parsed.get("skipped") or []
 
     report += ["### prerequisites", "",
-               f"{len(rows)} course record(s) disagreed with their page.", ""]
+               f"{len(rows)} mod record(s) disagreed with their page.", ""]
     for edit, outcome in accepted:
         report += [
             f"**{edit['code']}** `{edit['field']}` -> "
@@ -587,12 +587,12 @@ def run_prereqs(path, report, args, codes):
             "", str(edit.get("why", "")).strip(), "",
         ]
     if rejected:
-        report += ["dropped by validation:", "", "| course | field | why |", "|---|---|---|"]
+        report += ["dropped by validation:", "", "| mod | field | why |", "|---|---|---|"]
         report += [f"| {e.get('code', '?')} | {e.get('field', '?')} | {why} |"
                    for e, why in rejected]
         report.append("")
     if skipped:
-        report += ["read and left alone:", "", "| course | why |", "|---|---|"]
+        report += ["read and left alone:", "", "| mod | why |", "|---|---|"]
         report += [f"| {s.get('code', '?')} | {str(s.get('why', '')).strip()} |"
                    for s in skipped[:40]]
         report.append("")

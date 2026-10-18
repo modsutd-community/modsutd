@@ -1,6 +1,6 @@
 import { test, expect, Page } from '@playwright/test';
 import { pasteWeekly, openPasteBox } from './support/weekly';
-import { coursesWithSchedules } from './support/courses';
+import { modsWithSchedules } from './support/mods';
 
 // The batch-chat button and its eligibility rules. Shipped data has no
 // schedules (crowdsourced-only) and no live term, so both are injected at
@@ -14,8 +14,8 @@ async function stub(page: Page, codes: string[], registry: Record<string, unknow
   // query. A glob on the path matches only the first, and the real registry
   // from main then leaks into a test that meant to supply its own.
   await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: registry }));
-  await page.route('**/data/courses.json', (r) => r.fulfill({
-    json: coursesWithSchedules(codes, [{
+  await page.route(/data\/(mods|courses)\.json/, (r) => r.fulfill({
+    json: modsWithSchedules(codes, [{
       type: 'Lecture', day: 'Monday', startTime: '09:00', endTime: '11:00',
       location: '2.101', instructors: [],
     }]),
@@ -24,7 +24,7 @@ async function stub(page: Page, codes: string[], registry: Record<string, unknow
 
 test.describe('telegram batch chat', () => {
   // A T7 CSD elective, and it has to stay one. 50.040 stands here because a
-  // course a student CHOOSES is the only kind that gets a chat: this suite used
+  // mod a student CHOOSES is the only kind that gets a chat: this suite used
   // 50.001 until it was read off CSD's own core listing, and every eligibility
   // test then asserted against a mod that is no longer eligible.
   const ENTRY = {
@@ -115,14 +115,14 @@ test.describe('telegram batch chat', () => {
     await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: {} }));
     // main has not got the slots yet - that is the state under test, and
     // without this stub the probe would flip it straight to ready.
-    await page.route(/raw\.githubusercontent\.com.*courses/, (r) => r.fulfill({ json: { schedules: [] } }));
+    await page.route(/raw\.githubusercontent\.com.*(mods|courses)/, (r) => r.fulfill({ json: { schedules: [] } }));
     // COMMITTING is "this browser pasted, the build has not caught up", and
     // overlayLocal never covers deployed data - so the bundle has to have no
     // slots for this mod. Emptied here rather than relying on the shipped file
     // still being empty: one contributed timetable would make that untrue and
     // this test would fail for a reason that has nothing to do with the state.
-    await page.route('**/data/courses.json', (r) => r.fulfill({
-      json: coursesWithSchedules(['50.040'], []),
+    await page.route(/data\/(mods|courses)\.json/, (r) => r.fulfill({
+      json: modsWithSchedules(['50.040'], []),
     }));
 
     await page.goto('/mods/50.040');
@@ -154,14 +154,14 @@ test.describe('telegram batch chat', () => {
     await page.route(/term-window\.json/, (r) => r.fulfill({ json: {} }));
     await page.route(/telegram-groups\.json/, (r) => r.fulfill({ json: {} }));
 
-    await page.route(/raw\.githubusercontent\.com.*courses/, (r) => r.fulfill({ json: { schedules: [] } }));
+    await page.route(/raw\.githubusercontent\.com.*(mods|courses)/, (r) => r.fulfill({ json: { schedules: [] } }));
     // COMMITTING is "this browser pasted, the build has not caught up", and
     // overlayLocal never covers deployed data - so the bundle has to have no
     // slots for this mod. Emptied here rather than relying on the shipped file
     // still being empty: one contributed timetable would make that untrue and
     // this test would fail for a reason that has nothing to do with the state.
-    await page.route('**/data/courses.json', (r) => r.fulfill({
-      json: coursesWithSchedules(['50.040'], []),
+    await page.route(/data\/(mods|courses)\.json/, (r) => r.fulfill({
+      json: modsWithSchedules(['50.040'], []),
     }));
 
     await page.goto('/mods/50.040');
@@ -236,7 +236,7 @@ test.describe('telegram batch chat', () => {
   });
 
   // The catalogue marks a chat that EXISTS, not one that could. Eligibility is
-  // a property of the record and would mark every HASS course in the catalogue
+  // a property of the record and would mark every HASS mod in the catalogue
   // whether or not it runs this term; the registry is the only thing that
   // knows a group was actually made, and "there is a chat to join" is the
   // question a reader scanning the list is asking.
@@ -267,7 +267,7 @@ test.describe('telegram batch chat', () => {
     });
 
   // A chat that exists is joinable whatever the catalogue says about the
-  // course, so an entry outranks the rest of the rule.
+  // mod, so an entry outranks the rest of the rule.
   test('the catalogue marks a live chat for a mod with no slots', async ({ page }) => {
     await stub(page, [], ENTRY);
     await page.goto('/mods?q=50.040');

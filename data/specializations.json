@@ -26,7 +26,7 @@
             "50.039",
             "50.021"
           ],
-          "label": "track core courses (choose 2)"
+          "label": "track core mods (choose 2)"
         },
         {
           "count": 4,
@@ -44,7 +44,7 @@
           "label": "track electives (choose 4)"
         }
       ],
-      "notes": "Track cores 50.007 and 40.319 are alternatives - only one of the pair counts toward the core requirement.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore courses are not recognised as track electives. If unsure, please check with the pillar."
+      "notes": "Track cores 50.007 and 40.319 are alternatives - only one of the pair counts toward the core requirement.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore mods are not recognised as track electives. If unsure, please check with the pillar."
     },
     {
       "id": "csd-custom-track",
@@ -52,7 +52,7 @@
       "pillar": "CSD",
       "url": "https://www.sutd.edu.sg/istd/education/undergraduate/specialisation-tracks/custom-track/",
       "requirements": [],
-      "notes": "A custom track must consist of four subjects that together with the ISTD core of five subjects constitute a coherent set of subjects around a technical theme. For example, “Computational Design,” “Modeling and Simulation,” “Computational architecture,” “Secure Control,” and “Computational Finance” are potential technical themes not within the direct domain of ISTD but could be created by combining a relevant set of subjects from the other pillars. These subjects could be drawn from the list of subjects offered by any of the four pillars. Subjects that cannot be included in a custom track include: freshmore subjects, HASS subjects, and the five ISTD core subjects.\na list of 2 track core subjects and 4 track electives that together with the ISTD core relate to the theme you have selected, and the terms in which you would like to take these,\nNo fixed course list - requirements are proposed by the student and approved by the ISTD undergraduate committee."
+      "notes": "A custom track must consist of four subjects that together with the ISTD core of five subjects constitute a coherent set of subjects around a technical theme. For example, “Computational Design,” “Modeling and Simulation,” “Computational architecture,” “Secure Control,” and “Computational Finance” are potential technical themes not within the direct domain of ISTD but could be created by combining a relevant set of subjects from the other pillars. These subjects could be drawn from the list of subjects offered by any of the four pillars. Subjects that cannot be included in a custom track include: freshmore subjects, HASS subjects, and the five ISTD core subjects.\na list of 2 track core subjects and 4 track electives that together with the ISTD core relate to the theme you have selected, and the terms in which you would like to take these,\nNo fixed mod list - requirements are proposed by the student and approved by the ISTD undergraduate committee."
     },
     {
       "id": "csd-data-analytics",
@@ -79,7 +79,7 @@
             "50.038",
             "50.043"
           ],
-          "label": "track core courses (choose 2)"
+          "label": "track core mods (choose 2)"
         },
         {
           "count": 4,
@@ -95,7 +95,7 @@
           "label": "track electives (choose 4)"
         }
       ],
-      "notes": "Track cores 50.007 and 40.319 are alternatives - only one of the pair counts toward the core requirement.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore courses are not recognised as track electives. If unsure, please check with the pillar."
+      "notes": "Track cores 50.007 and 40.319 are alternatives - only one of the pair counts toward the core requirement.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore mods are not recognised as track electives. If unsure, please check with the pillar."
     },
     {
       "id": "csd-financial-technology",
@@ -122,7 +122,7 @@
             "50.043",
             "40.324"
           ],
-          "label": "track core courses (choose 2)"
+          "label": "track core mods (choose 2)"
         },
         {
           "count": 4,
@@ -140,7 +140,7 @@
           "label": "track electives (choose 4)"
         }
       ],
-      "notes": "Track cores 50.007 and 40.319 are alternatives - only one of the pair counts toward the core requirement.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore courses are not recognised as track electives. If unsure, please check with the pillar."
+      "notes": "Track cores 50.007 and 40.319 are alternatives - only one of the pair counts toward the core requirement.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore mods are not recognised as track electives. If unsure, please check with the pillar."
     },
     {
       "id": "csd-iot-and-intelligent-systems",
@@ -167,7 +167,7 @@
             "50.041",
             "50.021"
           ],
-          "label": "track core courses (choose 2)"
+          "label": "track core mods (choose 2)"
         },
         {
           "count": 4,
@@ -184,7 +184,7 @@
           "label": "track electives (choose 4)"
         }
       ],
-      "notes": "Track cores 50.046 and 50.012 are alternatives - only one of the pair counts toward the core requirement.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore courses are not recognised as track electives. If unsure, please check with the pillar."
+      "notes": "Track cores 50.046 and 50.012 are alternatives - only one of the pair counts toward the core requirement.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore mods are not recognised as track electives. If unsure, please check with the pillar."
     },
     {
       "id": "csd-security",
@@ -210,7 +210,7 @@
             "50.020",
             "50.044"
           ],
-          "label": "track core courses (choose 2)"
+          "label": "track core mods (choose 2)"
         },
         {
           "count": 4,
@@ -224,7 +224,7 @@
           "label": "track electives (choose 4)"
         }
       ],
-      "notes": "Any ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore courses are not recognised as track electives. If unsure, please check with the pillar."
+      "notes": "Any ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore mods are not recognised as track electives. If unsure, please check with the pillar."
     },
     {
       "id": "csd-software-engineering",
@@ -251,7 +251,7 @@
             "50.053",
             "50.057"
           ],
-          "label": "track core courses (choose 2)"
+          "label": "track core mods (choose 2)"
         },
         {
           "count": 4,
@@ -267,7 +267,7 @@
           "label": "track electives (choose 4)"
         }
       ],
-      "notes": "Any ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore courses are not recognised as track electives. If unsure, please check with the pillar."
+      "notes": "Any ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore mods are not recognised as track electives. If unsure, please check with the pillar."
     },
     {
       "id": "csd-visual-analytics-and-computing",
@@ -294,10 +294,10 @@
             "50.039",
             "50.017"
           ],
-          "label": "track core courses (choose 2)"
+          "label": "track core mods (choose 2)"
         }
       ],
-      "notes": "Track cores 50.035 and 50.039 are alternatives - only one of the pair counts toward the core requirement.\n4 track electives required, but only 3 are named on the page (01.116, 01.117, 60.004) - the remaining pool is open-ended.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore courses are not recognised as track electives. If unsure, please check with the pillar."
+      "notes": "Track cores 50.035 and 50.039 are alternatives - only one of the pair counts toward the core requirement.\n4 track electives required, but only 3 are named on the page (01.116, 01.117, 60.004) - the remaining pool is open-ended.\nAny ISTD elective also counts as a track elective (open-ended list, see https://www.sutd.edu.sg/istd/education/undergraduate/courses/ - not enumerated here).\nCore mods are not recognised as track electives. If unsure, please check with the pillar."
     },
     {
       "id": "dai-enterprise-design",
@@ -317,7 +317,7 @@
           "label": "track electives (choose 2)"
         }
       ],
-      "notes": "Track consists of 2 elective courses from the subject list.\nNote: These specialisation tracks are no longer offered from AY2026 onwards\nStudents are also required to fulfill a track-related internship."
+      "notes": "Track consists of 2 elective mods from the subject list.\nNote: These specialisation tracks are no longer offered from AY2026 onwards\nStudents are also required to fulfill a track-related internship."
     },
     {
       "id": "dai-healthcare-design",
@@ -337,7 +337,7 @@
           "label": "track electives (choose 2)"
         }
       ],
-      "notes": "Track consists of 2 elective courses from the subject list.\nNote: These specialisation tracks are no longer offered from AY2026 onwards\nStudents are also required to fulfill a track-related internship.\nSubjects with no resolvable course code (count toward the track but are not machine-checkable): Instructional Design of Serious Games for Healthcare"
+      "notes": "Track consists of 2 elective mods from the subject list.\nNote: These specialisation tracks are no longer offered from AY2026 onwards\nStudents are also required to fulfill a track-related internship.\nSubjects with no resolvable mod code (count toward the track but are not machine-checkable): Instructional Design of Serious Games for Healthcare"
     },
     {
       "id": "epd-beyond-industry-4-0",
@@ -686,10 +686,10 @@
             "40.320",
             "40.321"
           ],
-          "label": "required courses (all)"
+          "label": "required mods (all)"
         }
       ],
-      "notes": "Select any 1 Elective offered by ESD\nStudent need to take 3 courses for the track."
+      "notes": "Select any 1 Elective offered by ESD\nStudent need to take 3 mods for the track."
     },
     {
       "id": "esd-business-analytics-and-operations-research",
@@ -705,10 +705,10 @@
             "40.316",
             "40.319"
           ],
-          "label": "required courses (all)"
+          "label": "required mods (all)"
         }
       ],
-      "notes": "# Half term course - applies to: 40.302, 40.305"
+      "notes": "# Half term mod - applies to: 40.302, 40.305"
     },
     {
       "id": "esd-financial-services",
@@ -723,7 +723,7 @@
             "40.242",
             "40.323"
           ],
-          "label": "required courses (all)"
+          "label": "required mods (all)"
         }
       ],
       "notes": "40.240 Investment Science (for ESD students only)"
@@ -740,7 +740,7 @@
             "40.260",
             "40.318"
           ],
-          "label": "required courses (all)"
+          "label": "required mods (all)"
         }
       ],
       "notes": "AND select any 1 Elective offered by ESD"

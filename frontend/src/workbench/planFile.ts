@@ -135,10 +135,10 @@ export function buildPlanFile(
 /**
  * The records in `read` that this cohort is allowed to receive.
  *
- * A file can name any course code it likes. The planned mods come from the file
+ * A file can name any mod code it likes. The planned mods come from the file
  * and are the student's own, but the freshmore core does NOT: it is read out of
  * `data/freshmore.json` for the cohort, so a file cannot add to it, reorder it
- * or swap a course out of it. The only thing an import may do to a core mod is
+ * or swap a mod out of it. The only thing an import may do to a core mod is
  * replace the editable part, which is the record.
  *
  * So an incoming record is kept when its code is in the imported plan or in

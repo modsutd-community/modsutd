@@ -27,9 +27,9 @@ REQUIRED = ("code", "name", "description", "credits", "department", "pillar", "t
 PILLARS = ("Freshmore", "EPD", "ESD", "CSD", "DAI", "ASD", "HASS")
 
 SYSTEM = textwrap.dedent(f"""
-    You read a single course page from SUTD's website and return one canonical
+    You read a single mod page from SUTD's website and return one canonical
     SUTD module record as a JSON object, and nothing else. If the page is not a
-    course page, return {{"error": "not a course page"}}.
+    mod page, return {{"error": "not a mod page"}}.
 
     Required keys: {", ".join(REQUIRED)}.
     Optional keys: prerequisites, corequisites, both arrays of mod codes.

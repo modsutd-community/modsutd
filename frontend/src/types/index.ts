@@ -8,7 +8,7 @@ export interface Workload {
   project: number;
   preparation: number;
   total: number;
-  // 'official' = read off the course page's "Workload: a-b-c" line.
+  // 'official' = read off the mod page's "Workload: a-b-c" line.
   // Only official workloads ship - never estimates.
   source?: string;
 }
@@ -47,7 +47,7 @@ export interface GradingComponent {
 export interface GradingScheme {
   components: GradingComponent[];
   passingGrade?: string;
-  // 'official' when parsed from the course page's Learning assessment
+  // 'official' when parsed from the mod page's Learning assessment
   // table. Only official grading ships - never estimates.
   source?: string;
 }
@@ -55,7 +55,7 @@ export interface GradingScheme {
 // Recursive prereq tree. A leaf is a mod code; supports "10.001:B" for
 // minimum-grade and "10.%" for wildcards.
 //
-// A leaf can also be a NAMED requirement with no code. SUTD announces a course
+// A leaf can also be a NAMED requirement with no code. SUTD announces a mod
 // before it has a number - "Algorithmic Thinking and Object-Based Abstraction
 // (For AY2026 onwards)" is a real prerequisite of 50.057 with nothing to key
 // on - and dropping it because it has no code made 50.057 look like it needed
@@ -105,12 +105,12 @@ export interface Mod {
   noBatchChat?: boolean;
   // Who set the flag above, when a script did. Only `gather_cores.py`
   // writes one, and it removes only the flags carrying its own reason - so a
-  // course a human excluded by hand survives a pillar redesign, and a course
+  // mod a human excluded by hand survives a pillar redesign, and a mod
   // that leaves its pillar's core gets its flag taken back off.
   //
   // A closed set, not a free string: there is one writer and one value, and a
   // second writer adding a reason has to widen this in the same change. The
-  // course JSON is imported directly in places, so a reason that drifts from
+  // mod JSON is imported directly in places, so a reason that drifts from
   // the one the script writes fails typecheck rather than matching nothing.
   noBatchChatReason?: 'pillar core';
   // The SUTD page this record was read from. Linked from the mod name so a
@@ -225,7 +225,7 @@ export interface TimetableEvent {
   // where "at 2.406" tells a reader less than the name does.
   venueName?: string;
   /**
-   * The Section column: which cohort of this course the reader is in - CI03,
+   * The Section column: which cohort of this mod the reader is in - CI03,
    * LI01, CD01. Printed once per group in MyPortal's List View, beside the
    * Class Nbr and the Component.
    *
@@ -286,7 +286,7 @@ export interface VenuesState {
 
 // Which matriculation cohort's curriculum a plan follows. The freshmore core
 // differs, and so do some prerequisites: 50.057 wants 10.014 from AY2024 and
-// earlier, 10.025 from AY2025, and a course with no code yet from AY2026.
+// earlier, 10.025 from AY2025, and a mod with no code yet from AY2026.
 export type Curriculum = 'ay2026' | 'ay2025' | 'ay2024';
 
 // One curriculum's plan: which mods the student placed, and at which of

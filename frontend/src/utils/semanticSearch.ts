@@ -2,7 +2,7 @@
 //
 // Tier-1 (live, in `search.ts`) handles "10.013", "modelling", "calc" → calculus
 // via MiniSearch + a small synonym map. It misses semantic queries like
-// "courses about climate change" or "machine learning related stuff".
+// "mods about climate change" or "machine learning related stuff".
 //
 // Tier-2 plan:
 // 1. At build time, embed every mod's description with a small text-embedding

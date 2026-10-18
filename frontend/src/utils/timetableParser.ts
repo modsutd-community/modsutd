@@ -65,7 +65,7 @@ const DAY_TIME_CELL_RE = new RegExp(
 );
 const DATE_RE = /\d{2}\/\d{2}\/\d{4}/;
 
-const COURSE_RE = /(\d{2}\s*\.\s*\d{3}\w*)\s+-\s+([^\n]+)/g;
+const MOD_RE = /(\d{2}\s*\.\s*\d{3}\w*)\s+-\s+([^\n]+)/g;
 // The group header: Class Nbr, Section, Component, then the first row's day.
 // MyPortal prints it once per group and the rows under it inherit both
 // captures.
@@ -73,7 +73,7 @@ const COURSE_RE = /(\d{2}\s*\.\s*\d{3}\w*)\s+-\s+([^\n]+)/g;
 // The component is bounded by the day code rather than by the end of the line -
 // a greedy [^\n]+ swallows the whole rest of a tab-separated row. The section
 // used to be matched and thrown away, and it is the only place the export says
-// WHICH cohort of a course the reader is in.
+// WHICH cohort of a mod the reader is in.
 const TYPE_HEADER_RE =
   /\b\d{3,4}\s+([A-Z]{2}\d{2})\s+([A-Za-z][A-Za-z-]*(?: [A-Za-z-]+)*?)\s+(?=(?:Mo|Tu|We|Th|Fr|Sa|Su)\b)/g;
 
@@ -152,9 +152,9 @@ export function parseTimetableText(input: string): TimetableEvent[] {
   const text = input.replace(/\u00a0/g, ' ');
   const events: TimetableEvent[] = [];
 
-  // Index every course-header so we can slice the text into per-course chunks.
+  // Index every mod-header so we can slice the text into per-mod chunks.
   const headers: { code: string; name: string; index: number }[] = [];
-  for (const m of text.matchAll(COURSE_RE)) {
+  for (const m of text.matchAll(MOD_RE)) {
     headers.push({
       code: m[1].replace(/\s+/g, ''),
       name: m[2].trim(),

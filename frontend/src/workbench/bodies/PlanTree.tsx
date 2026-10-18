@@ -140,7 +140,7 @@ export function PlanTree({ onPick }: Props) {
       // list cannot express that and read 40.321 as needing both 40.002 and
       // 60.008 when the listing says either.
       // The cohort is not optional here. Without it every branch of an "or"
-      // survives pruning, and a branch naming an uncoded course cannot block -
+      // survives pruning, and a branch naming an uncoded mod cannot block -
       // so 50.057 read as reachable with neither 10.014 nor 10.025 anywhere in
       // the plan, for every cohort at once.
       const missing = unmet(
@@ -150,9 +150,9 @@ export function PlanTree({ onPick }: Props) {
           return pl !== undefined && pl < level;
         },
         freshmoreMode,
-        // The STUDENT's pillar, not the course's. `notForPillar` names who is
+        // The STUDENT's pillar, not the mod's. `notForPillar` names who is
         // exempt from a leaf, so 50.007 carries `notForPillar: ["DAI"]` and
-        // 50.007's own pillar is CSD: passing the course's meant the exemption
+        // 50.007's own pillar is CSD: passing the mod's meant the exemption
         // was compared against the wrong person and never fired, and a DAI
         // student on AY2024 was told to take 50.001.
         //
@@ -444,11 +444,11 @@ export function PlanTree({ onPick }: Props) {
                   dispatch(importPlans({ ...plans, [into]: read.plan }));
                   // The plan comes from the file; the freshmore core does not.
                   // It is read out of data/freshmore.json for the cohort, so a
-                  // file cannot add to it, reorder it or swap a course out of
+                  // file cannot add to it, reorder it or swap a mod out of
                   // it - the only thing an import may do to a core mod is
                   // replace its record. Records for anything else were being
                   // merged into the store wholesale, so a hand-edited file
-                  // could leave notes on a course nobody is taking.
+                  // could leave notes on a mod nobody is taking.
                   dispatch(importRecords({
                     ...records,
                     ...importableRecords(

@@ -353,7 +353,7 @@ export function ModBody({code, onPick, onFocusRoom}: Props) {
     const fixed = useMemo(() => freshmoreFixedSet(freshmore), [freshmore]);
     // The plan hands this panel a KEY, and a repeatable mod's key carries the
     // term it sits in, so opening T7's 02.XFER chip asked for `02.XFER|T7` -
-    // a string the store has never held - and the panel said the course does
+    // a string the store has never held - and the panel said the mod does
     // not exist. Same reader as the plan tree uses.
     const mod: Mod | undefined = code ? modOfKey(allMods, code) : undefined;
 

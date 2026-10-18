@@ -27,7 +27,7 @@ export function useFreshData(): void {
       if (Date.now() - last < STALE_MS) return;
       last = Date.now();
       // Both, because a build moves the mod pages and the venue heatmaps, and
-      // the heatmaps are built from the same courses file.
+      // the heatmaps are built from the same mods file.
       void dispatch(fetchMods());
       void dispatch(fetchVenues());
     };

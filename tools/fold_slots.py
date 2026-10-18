@@ -1,4 +1,4 @@
-"""Fold anonymously contributed timetable slots into /data/courses.
+"""Fold anonymously contributed timetable slots into /data/mods.
 
 Runs inside .github/workflows/timetable-contribution.yml and commits
 straight to main - this validation IS the merge gate. The payload
@@ -23,7 +23,7 @@ DATA = Path(__file__).resolve().parent.parent / "data"
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from venue_resolve import VENUE_RE, room_code, venue_index  # noqa: E402
 
-COURSES = DATA / "courses"
+MODS = DATA / "mods"
 TERM_WINDOW = DATA / "term-window.json"
 TERM_CALENDAR = DATA / "term-calendar.json"
 MAX_SLOTS = 80
@@ -44,7 +44,7 @@ def sort_key(entry: dict) -> tuple:
             str(entry.get("endTime", "")),
             str(entry.get("location", "")))
 TYPES = {"Lecture", "Cohort", "Tutorial", "Lab", "Studio", "Seminar", "Recitation"}
-# Letters allowed: 03.007A and 03.007B are one course split in two, and
+# Letters allowed: 03.007A and 03.007B are one mod split in two, and
 # dropping the suffix threw away every slot for both.
 MOD_RE = re.compile(r"^\d{2}\.\d{3}[A-Za-z]?$")
 TIME_RE = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
@@ -124,7 +124,7 @@ def main() -> int:
     unplaced: list[str] = []
 
     for slot in slots:
-        path = COURSES / f"{slot['mod'].replace('.', '_')}.json"
+        path = MODS / f"{slot['mod'].replace('.', '_')}.json"
         if not path.exists():
             skipped += 1
             continue

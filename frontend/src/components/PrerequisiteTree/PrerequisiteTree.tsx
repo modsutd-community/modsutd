@@ -60,7 +60,7 @@ function Node({ tree, depth, knownMods, onPick }: { tree: PrereqTree; depth: num
     const inner = (
       <span className={`${styles.leaf} ${styles[`d${depth % 4}`]}`}>
         {/* An uncoded requirement is a NAME, so it takes the name's voice.
-            Set in the code style it read as a very long course number. */}
+            Set in the code style it read as a very long mod code. */}
         {tree.code && <span className={styles.leafCode}>{tree.code}</span>}
         <span className={styles.leafName}>{tree.name}</span>
         {tree.cohort?.length && (

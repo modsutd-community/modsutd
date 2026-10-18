@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Read a term's six subject-enrolment PDFs into data/courses schedules.
+"""Read a term's six subject-enrolment PDFs into data/mods schedules.
 
     python tools/enrolment/parse_enrolment_pdfs.py <folder>
     python tools/enrolment/parse_enrolment_pdfs.py <folder> --dry-run
@@ -45,7 +45,7 @@ THE LEGEND IS THE TALLY
 Every file prints its own colour key along the bottom, one swatch per mod, and
 that is the list this checks itself against: a mod in the legend with no block
 parsed is a parse failure, not an empty week. `HASS` appears in five of the six
-as a placeholder colour and is not a course.
+as a placeholder colour and is not a mod.
 """
 
 from __future__ import annotations
@@ -71,7 +71,7 @@ def load_pdfplumber():
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
-COURSES = ROOT / "data" / "courses"
+MODS = ROOT / "data" / "mods" if (ROOT / "data" / "mods").exists() else ROOT / "data" / "courses"
 VENUES = ROOT / "data" / "venues"
 
 DAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -89,7 +89,7 @@ PILLARS: dict[str, tuple[str, ...]] = {
 
 # The registry's own code, which carries a track suffix the catalogue does not:
 # 02.143HT is 02.143 taught on the Humanities track. Two letters, where a real
-# course suffix is one (03.007A), so they cannot be confused.
+# mod suffix is one (03.007A), so they cannot be confused.
 CODE = re.compile(r"\d{2}\.\d{3}[A-Za-z]{0,2}")
 TRACK_SUFFIX = re.compile(r"^(\d{2}\.\d{3})[A-Za-z]{2}$")
 ROOM = re.compile(r"^\d\.\d{3}[A-Za-z]?$")
@@ -103,7 +103,7 @@ WEEKS_HEAD = re.compile(r"^\s*\d+x\s+w")
 KIND = {"CBL": "Cohort", "LEC": "Lecture", "LAB": "Lab", "TUT": "Tutorial",
         "SEM": "Seminar", "STU": "Studio", "REC": "Recitation"}
 
-# Not a course. Five of the six files block out the HASS hour in the cohort's
+# Not a mod. Five of the six files block out the HASS hour in the cohort's
 # week with a placeholder colour, so every one of them carries this.
 PLACEHOLDER = "HASS"
 
@@ -270,7 +270,7 @@ def parse_page(page, venues) -> tuple[list[dict], list[str]]:
         body = [l for l in lines if not re.fullmatch(r"(\d{2}:\d{2}\s*)+", l)]
         head, record = split_record(body)
         if not record:
-            continue  # a colour band with no course in it
+            continue  # a colour band with no mod in it
         if len(times) < 2:
             problems.append(f"no start/end time on {record[:40]!r}")
             continue
@@ -395,7 +395,7 @@ def canonical(code: str, known: set[str]) -> tuple[str, str | None]:
     """The catalogue's code for a registry code, and the suffix dropped.
 
     02.143HT is 02.143 on the Humanities track. The track is the registry's
-    business; the catalogue has one record per course and the app's own code
+    business; the catalogue has one record per mod and the app's own code
     pattern allows one trailing letter, not two.
     """
     if code in known:
@@ -413,7 +413,7 @@ def to_schedules(rows: list[dict], instructors: list[str] | None = None) -> list
     count occupancy off it, so a cohort split across two think tanks occupies
     both.
 
-    Deduplicated because a course taught to several pillars is printed in each
+    Deduplicated because a mod taught to several pillars is printed in each
     of their files: 01.400 Capstone 1 is in five of the six, identical every
     time, and without this it lands five times over. Two sections that really
     do meet in one room at one hour differ by `cohort` and both survive.
@@ -598,7 +598,7 @@ def self_check() -> int:
     No PDF and no network, so CI can run it. Everything here is a shape that
     actually came out of one of these files, including the two that read
     correctly right up until they did not: a weeks line that wrapped into the
-    record, and a course code the registry suffixes with its track.
+    record, and a mod code the registry suffixes with its track.
     """
     fails: list[str] = []
 
@@ -878,7 +878,7 @@ def main() -> int:
     pdfplumber = load_pdfplumber()
 
     known = {json.loads(f.read_text(encoding="utf-8"))["code"]
-             for f in COURSES.glob("*.json")}
+             for f in MODS.glob("*.json")}
     venues = venue_index()
 
     sections: list[str] = []
@@ -957,7 +957,7 @@ def main() -> int:
     kept: list[str] = []
     dropped: list[str] = []
     for code, rows in sorted(per_mod.items()):
-        f = COURSES / f"{code.replace('.', '_')}.json"
+        f = MODS / f"{code.replace('.', '_')}.json"
         mod = json.loads(f.read_text(encoding="utf-8"))
         fresh = to_schedules(rows)
 
@@ -997,13 +997,13 @@ def main() -> int:
         report.append(f"**Missing ({len(short)}): {', '.join(short)}**\n")
     if renamed:
         report.append("Track suffixes dropped, because the catalogue holds one "
-                      "record per course and the track is the registry's own: "
+                      "record per mod and the track is the registry's own: "
                       + ", ".join(f"`{k}` -> `{v}`" for k, v in sorted(renamed.items()))
                       + "\n")
     if absent:
         report.append(f"**No catalogue record ({len(absent)}): "
                       f"{', '.join(sorted(absent))}**\n")
-    report.append(f"{tag}{len(written)} course file(s) rewritten: "
+    report.append(f"{tag}{len(written)} mod file(s) rewritten: "
                   f"{', '.join(written) or 'none'}")
     if kept:
         report.append("")
@@ -1029,7 +1029,7 @@ def main() -> int:
     # parsed has already been written, and the line above says what.
     if short or absent or noted:
         print()
-        print("Exit 1: the courses above are written, and the report has "
+        print("Exit 1: the mods above are written, and the report has "
               "something in it a person has to look at before committing.")
         return 1
     return 0

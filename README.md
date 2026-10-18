@@ -1,8 +1,8 @@
 # 🐙 modSUTD
 
-A free **SUTD course catalogue, timetable-to-`.ics` converter, degree planner and
+A free **SUTD mod catalogue, timetable-to-`.ics` converter, degree planner and
 room finder**, live at **[modsutd.tech](https://modsutd.tech)**. Paste your SUTD
-timetable and get a calendar file; look up any course, its prerequisites and what
+timetable and get a calendar file; look up any mod, its prerequisites and what
 students said about it; find a room and the floor it is on.
 
 > modSUTD is an independent, student-built project. It is currently not affiliated
@@ -60,9 +60,9 @@ modsutd/
 │   │   └── types/        all the TS types
 │   ├── api/              six stateless relays (they hold a token, never you)
 │   └── scripts/          sync-data.mjs
-├── tools/scraper/        Python - gathers official SUTD pages → /data
+├── tools/scraper/        Python - gathers official SUTD pages -> /data
 ├── data/                 the catalogue itself (JSON, source of truth)
-│   ├── courses/          one file per mod (10_001.json, 50_001.json, …)
+│   ├── mods/             one file per mod (10_001.json, 50_001.json, ...)
 │   └── venues/           one file per room
 └── docs/                 architecture, data format, map and scraper notes
 ```

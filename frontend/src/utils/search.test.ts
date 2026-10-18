@@ -318,7 +318,7 @@ describe('a typed mod code is answered by codes', () => {
   const mods = [
     { code: '50.001', name: 'Information Systems & Programming', description: '', pillar: 'ISTD', department: 'x', term: '3', credits: 12, schedules: [] },
     { code: '50.004', name: 'Algorithms', description: 'covers 50 topics', pillar: 'ISTD', department: 'x', term: '4', credits: 12, schedules: [] },
-    { code: '02.136', name: 'Lyric Poetry', description: 'a course about 50 poems', pillar: 'HASS', department: 'y', term: '5', credits: 12, schedules: [] },
+    { code: '02.136', name: 'Lyric Poetry', description: 'a mod about 50 poems', pillar: 'HASS', department: 'y', term: '5', credits: 12, schedules: [] },
     { code: '02.501', name: 'Theory and Dynamics', description: '', pillar: 'HASS', department: 'y', term: '6', credits: 12, schedules: [] },
   ] as unknown as Parameters<typeof searchMods>[1];
 

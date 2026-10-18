@@ -14,7 +14,7 @@ import type { Curriculum, PrereqNamed, PrereqTree } from '@/types';
 //     only codes dropped it, so the mod looked easier to reach than it is.
 //   - a requirement that applies to some matriculation years and not others.
 //     The same 50.057 branch is 10.014 for AY2024 and earlier, 10.025 for
-//     AY2025, and the unnumbered course for AY2026.
+//     AY2025, and the unnumbered mod for AY2026.
 //
 // `met` answers "is this code placed at a strictly earlier level" - a prereq in
 // the same term is not a prereq met.
@@ -51,7 +51,7 @@ function appliesTo(
  * Done before evaluating rather than inside it, so an `or` whose only
  * applicable branch is unmet reports that branch instead of picking the
  * shortest across all three cohorts - which would tell an AY2024 student to
- * take a course that does not exist for them.
+ * take a mod that does not exist for them.
  */
 function prune(tree: PrereqTree, cohort: Curriculum | undefined, pillar?: string): PrereqTree | undefined {
   if (typeof tree === 'string') return tree;

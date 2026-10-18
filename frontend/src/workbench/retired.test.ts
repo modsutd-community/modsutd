@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import M10009 from '../../../data/courses/10_009.json';
-import M40014 from '../../../data/courses/40_014.json';
-import M50001 from '../../../data/courses/50_001.json';
-import M50006 from '../../../data/courses/50_006.json';
+import M10009 from '../../../data/mods/10_009.json';
+import M40014 from '../../../data/mods/40_014.json';
+import M50001 from '../../../data/mods/50_001.json';
+import M50006 from '../../../data/mods/50_006.json';
 
 // A retired mod stays in the data. A student on an older cohort took it, their
 // plan still names it, and its review thread is the only record of what taking
@@ -11,7 +11,7 @@ import M50006 from '../../../data/courses/50_006.json';
 const flag = (m: unknown) => (m as { retired?: boolean }).retired;
 
 describe('retired mods', () => {
-  // 10.009 The Digital World is in neither course sitemap and the academics
+  // 10.009 The Digital World is in neither mod sitemap and the academics
   // subdomain that used to carry it no longer resolves. 40.014's page 404s and
   // 40.018 replaced it.
   it('are marked, not deleted', () => {

@@ -170,7 +170,7 @@ export function CatalogueBody({ onPick, onPin, selectedOpen = true, onPlanDragSt
             <span className={styles.name}>{m.name}</span>
             {/* A chat to point at: one that exists, or one the button on
                 that mod's page would actually make. Eligibility alone marks
-                every HASS course forever, including the ones not offered this
+                every HASS mod forever, including the ones not offered this
                 term; the registry alone misses the row worth marking most,
                 a mod running now whose chat nobody has asked for yet. Costs
                 no extra request: useTelegramData is module-cached and the mod

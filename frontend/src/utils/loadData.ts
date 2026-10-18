@@ -3,9 +3,9 @@ import { recordServerDate } from './serverTime';
 
 export interface DataManifest {
   scrapedAt: string;
-  coursesUpdatedAt: string | null;
+  modsUpdatedAt: string | null;
   venuesUpdatedAt: string | null;
-  counts: { courses: number; venues: number };
+  counts: { mods: number; venues: number };
 }
 
 // Cache strategy: `default` respects the server's Cache-Control. In dev,
@@ -21,15 +21,15 @@ async function fetchJSON<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-export const loadCourses  = () => fetchJSON<Mod[]>('/data/courses.json');
+export const loadMods     = () => fetchJSON<Mod[]>('/data/mods.json');
 export const loadVenues   = () => fetchJSON<Venue[]>('/data/venues.json');
 export const loadManifest = () => fetchJSON<DataManifest>('/data/manifest.json');
 
 // Roll up every mod's schedules into per-venue availability maps so the
-// venue page can render heatmaps without scanning courses each render.
-export function buildAvailability(courses: Mod[]): Record<string, VenueAvailability> {
+// venue page can render heatmaps without scanning mods each render.
+export function buildAvailability(mods: Mod[]): Record<string, VenueAvailability> {
   const map: Record<string, VenueAvailability> = {};
-  for (const c of courses) {
+  for (const c of mods) {
     for (const s of c.schedules) {
       const code = s.location?.trim();
       if (!code) continue;

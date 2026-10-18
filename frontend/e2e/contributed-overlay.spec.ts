@@ -35,7 +35,7 @@ test.describe('contributed overlay', () => {
     // The whole point: still there, and still attached to the mod.
     expect(await page.evaluate((k) => localStorage.getItem(k), STORE)).toContain('01.106');
     const sched = await page.evaluate(async () => {
-      const r = await fetch('/data/courses.json');
+      const r = await fetch('/data/mods.json');
       return ((await r.json()) as Array<{ code: string; schedules: unknown[] }>)
         .find((c) => c.code === '01.106')?.schedules.length;
     });

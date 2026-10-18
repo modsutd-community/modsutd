@@ -108,7 +108,7 @@ describe('a mod this browser contributed, waiting on the next deploy', () => {
     });
 
     // It reads and never writes. Two loaders call it at once, and during a
-    // deploy those two fetches of courses.json can come back with DIFFERENT
+    // deploy those two fetches of mods.json can come back with DIFFERENT
     // bodies - so a version that forgot on sight dropped the entry from the
     // fetch that saw the new file while the other was still rendering the old
     // one, and the contribution vanished on reload.

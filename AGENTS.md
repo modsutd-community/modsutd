@@ -23,6 +23,7 @@ Quickest orientation, if you read nothing else:
 - **Never commit or echo credentials**, and never prefix anything `VITE_` that
   is not meant to be public - Vite inlines those into the shipped bundle.
 - **No `Co-Authored-By` trailers** on commits, and **no em dashes** in prose.
+- **Mods, never courses**: SUTD students call them mods, never courses. The codebase, documentation, types, and UI use 'mod' / 'mods' exclusively. 'Course' must not appear in user-facing copy, code, or docs.
 - **A new rule a reviewer could check goes in `.opencodereview/rule.json` too.**
   The LLM reviewer reads that file and the diff, and neither this file nor
   CLAUDE.md. Why and how short: CLAUDE.md, the reviewer bullet in House style.
@@ -40,5 +41,5 @@ Quickest orientation, if you read nothing else:
   are dropping, and answer it in the PR's Migration section.
 
 Repeatable procedures are skills in `.claude/skills/`, and they are plain
-Markdown - readable by any agent, whatever runs them. `new-term`, `course-data`,
+Markdown - readable by any agent, whatever runs them. `new-term`, `mod-data`,
 `gather-mods`, `gather-specialisations`, `venue-search`, `pr-review`.

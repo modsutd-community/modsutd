@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "modSUTD - share to catalogue",
   "version": "0.1.0",
-  "description": "After you submit a SUTD course evaluation, drop your review on modSUTD with one click.",
+  "description": "After you submit a SUTD mod evaluation, drop your review on modSUTD with one click.",
   "icons": {
     "16":  "icons/icon-16.png",
     "48":  "icons/icon-48.png",

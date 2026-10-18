@@ -1,6 +1,6 @@
 ---
-name: course-data
-description: How to add or fix course and venue JSON in modSUTD correctly - schema, naming, sourcing, placeholder rules, verification. Use for any edit under /data ("fix this mod's prereqs", "add course 50.XXX", "wrong room info").
+name: mod-data
+description: How to add or fix mod and venue JSON in modSUTD correctly - schema, naming, sourcing, placeholder rules, verification. Use for any edit under /data ("fix this mod's prereqs", "add mod 50.XXX", "wrong room info").
 ---
 
 # Editing /data correctly
@@ -14,7 +14,7 @@ so the bar is: **sourced, schema-valid, honestly labelled**.
 
 ## Where things live
 
-- One file per record: `data/courses/<code with . → _>.json` (e.g.
+- One file per record: `data/mods/<code with . → _>.json` (e.g.
   `50.001` → `50_001.json`), `data/venues/<code>.json`.
 - Schema contract: `frontend/src/types/index.ts` (`Mod`, `Venue`) and
   [docs/data-format.md](../../../docs/data-format.md).
@@ -59,14 +59,14 @@ check every field against the others:
   contain "or" and both still require every code. Read the sentence, not the
   word.
 - **Reconcile against the source before touching a prereq**, rather than
-  reasoning about what a course ought to need:
+  reasoning about what a mod ought to need:
 
   ```bash
   python tools/scraper/audit_prereqs.py --csv /tmp/prereqs.csv
   ```
 
   It reads every record's own `sourceUrl` page and prints what the two
-  disagree about in each direction, plus a row per course in the CSV: repo
+  disagree about in each direction, plus a row per mod in the CSV: repo
   prerequisites and corequisites, the codes the page names, the gap, and the
   block verbatim. Nothing is written to `data/` - it reports, a human edits.
   Three buckets are not errors and the tool separates them: a page with a blank

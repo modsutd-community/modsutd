@@ -20,7 +20,9 @@ const REPO = path.resolve(__dirname, '..', '..');
 const git = (...args: string[]) =>
   execFileSync('git', args, { cwd: REPO, encoding: 'utf8' }).trim();
 
-const COURSE = path.join(REPO, 'data', 'courses', '30_111.json');
+const MOD_FILE = existsSync(path.join(REPO, 'data', 'mods', '30_111.json'))
+  ? path.join(REPO, 'data', 'mods', '30_111.json')
+  : path.join(REPO, 'data', 'courses', '30_111.json');
 const TERM_WINDOW = path.join(REPO, 'data', 'term-window.json');
 
 function schedulesOf(file: string): Array<Record<string, string>> {
@@ -32,7 +34,7 @@ describe('contribution flow: paste -> slots -> fold_slots -> /data', () => {
   // Set the instant /data is known clean, and read by the restore below. The
   // guard threw while afterAll ran anyway, so a run refused for dirty /data
   // discarded the very changes it refused to run over: a `source` field added
-  // across 45 course files went exactly that way.
+  // across 45 mod files went exactly that way.
   let ours = false;
 
   beforeAll(() => {
@@ -44,8 +46,8 @@ describe('contribution flow: paste -> slots -> fold_slots -> /data', () => {
       );
     }
     ours = true;
-    expect(existsSync(COURSE)).toBe(true);
-    before = schedulesOf(COURSE).length;
+    expect(existsSync(MOD_FILE)).toBe(true);
+    before = schedulesOf(MOD_FILE).length;
   });
 
   afterAll(() => {
@@ -95,7 +97,7 @@ describe('contribution flow: paste -> slots -> fold_slots -> /data', () => {
     });
 
     expect(out).toMatch(/added \d+ slot/);
-    const after = schedulesOf(COURSE);
+    const after = schedulesOf(MOD_FILE);
     expect(after.length).toBeGreaterThan(before);
     expect(after.some((s) => s.location === '2.507' && s.type === 'Cohort')).toBe(true);
     // Contributed schedules carry no instructor - the privacy contract.
@@ -111,7 +113,7 @@ describe('contribution flow: paste -> slots -> fold_slots -> /data', () => {
     const events = parseTimetableText(SAMPLE_LIST_VIEW);
     const slots = eventsToSlots(events);
     const dates = events.flatMap((e) => [e.startDate, e.endDate]).filter(Boolean).sort();
-    const count = schedulesOf(COURSE).length;
+    const count = schedulesOf(MOD_FILE).length;
 
     const out = execFileSync('python3', ['tools/fold_slots.py'], {
       cwd: REPO,
@@ -128,6 +130,6 @@ describe('contribution flow: paste -> slots -> fold_slots -> /data', () => {
     });
 
     expect(out).toMatch(/added 0 slot/);
-    expect(schedulesOf(COURSE).length).toBe(count);
+    expect(schedulesOf(MOD_FILE).length).toBe(count);
   });
 });

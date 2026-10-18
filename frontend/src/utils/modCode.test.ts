@@ -10,7 +10,7 @@ import { CANONICAL_MOD, eventsToSlots } from './contributeTimetable';
 import { looksLikeCode } from './search';
 import type { TimetableEvent } from '@/types';
 
-// SUTD splits a course into 03.007A and 03.007B rather than issuing a second
+// SUTD splits a mod into 03.007A and 03.007B rather than issuing a second
 // number, and both are freshmore core. Every validator that spelled a code as
 // \d{2}\.\d{3} dropped them in silence: the contribution relay refused them,
 // fold_slots skipped them, and the search treated a typed code as prose.
@@ -65,7 +65,7 @@ describe('a mod code may carry a letter', () => {
     expect(m![1]).toBe(String.raw`^\d{2}\.\d{3}[A-Za-z]?$`);
   });
 
-  // The monthly listing refresh recreates any course file it does not find. A
+  // The monthly listing refresh recreates any mod file it does not find. A
   // row or a slug that yields only "03.007" would have landed its tags on the
   // base file and quietly re-merged a split someone made on purpose.
   it('the listing refresh refuses to recreate a split base code', () => {

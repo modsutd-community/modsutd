@@ -17,7 +17,7 @@
 const REPO = "modsutd-community/modsutd";
 const REPO_ID = "R_kgDOTe0tpA";
 const REVIEWS_CATEGORY_ID = "DIC_kwDOTe0tpM4DBo3C";
-// Letters allowed: SUTD splits a course into 03.007A/03.007B rather than
+// Letters allowed: SUTD splits a mod into 03.007A/03.007B rather than
 // issuing a second number. Kept in step with CANONICAL_MOD in
 // frontend/src/utils/contributeTimetable.ts - the relays cannot import
 // from the app, so this is a copy on purpose.

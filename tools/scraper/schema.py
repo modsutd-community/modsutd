@@ -40,7 +40,7 @@ class GradingComponent(BaseModel):
 class GradingScheme(BaseModel):
     components: list[GradingComponent]
     passingGrade: Optional[str] = None
-    # 'official' when parsed from the course page's Learning assessment
+    # 'official' when parsed from the mod page's Learning assessment
     # table. Only official grading ships.
     source: Optional[str] = None
 
@@ -51,7 +51,7 @@ class Workload(BaseModel):
     project: int
     preparation: int
     total: int
-    # 'official' when read off the course page's "Workload: a-b-c" line;
+    # 'official' when read off the mod page's "Workload: a-b-c" line;
     # absent means a hand-estimated placeholder.
     source: Optional[str] = None
 

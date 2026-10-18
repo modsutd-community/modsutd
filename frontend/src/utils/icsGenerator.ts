@@ -228,7 +228,7 @@ export function buildICS(events: TimetableEvent[], opts: ICSOptions = {}): strin
     // Parts, not a template: a reminder carries no code and no type, and the
     // template left it with a leading space and a dangling separator.
     // The section rides with the type - "50.040 NLP · Cohort CI03" - because a
-    // reader with two cohorts of one course in a week needs to know which of
+    // reader with two cohorts of one mod in a week needs to know which of
     // them this is, and the type alone says both are cohorts. Capstone teams
     // are already dropped in the parser.
     const kind = kindLabel(e);

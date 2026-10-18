@@ -1,7 +1,7 @@
 {
   "_provenance": {
     "source": "https://www.sutd.edu.sg/wp-content/uploads/2025/01/EPD-Curriculum-Matrix-Dec-24.pdf",
-    "method": "hand-extracted from the rendered matrix (visual read of every track band, codes cross-checked against data/courses names), 2026-07-16",
+    "method": "hand-extracted from the rendered matrix (visual read of every track band, codes cross-checked against data/mods names), 2026-07-16",
     "caveat": "The matrix titles itself 'EPD CURRICULUM MATRIX 2020-2023 [new calendar]' - it applies to those intakes; newer intakes may differ. Re-verify when EPD publishes a newer matrix.",
     "encoding": "restricted track electives are all-of; 'N Pillar Electives' / 'N Advanced Pillar Electives' counts come from the matrix term headers; advanced pools merge Term 7+8 columns. Cross-pillar substitution options stay in notes (they replace, not define, the track)."
   },

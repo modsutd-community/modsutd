@@ -26,7 +26,7 @@ const CHIP_FIELDS = [
 /**
  * Enter starts a bullet.
  *
- * A student writing three things about a course writes three lines, and three
+ * A student writing three things about a mod writes three lines, and three
  * lines of plain text are one paragraph on GitHub. Rather than teach markdown
  * in a placeholder, the newline brings its own "- ".
  *

@@ -14,7 +14,7 @@ const slot = (over: Partial<Schedule> = {}): Schedule => ({
 });
 
 const mod = (code: string, schedules: Schedule[]): Mod =>
-  ({ code, name: `course ${code}`, schedules } as unknown as Mod);
+  ({ code, name: `mod ${code}`, schedules } as unknown as Mod);
 
 describe('rolling schedules up into room availability', () => {
   // A room is busy once, however many classes are sitting in it. SUTD runs a
