@@ -15,5 +15,6 @@
     "Freshmore Core"
   ],
   "noBatchChat": true,
-  "noBatchChatReason": "freshmore core"
+  "noBatchChatReason": "freshmore core",
+  "sourceUrl": "https://www.sutd.edu.sg/course/10-027-algorithmic-thinking-and-object-based-abstraction/"
 }

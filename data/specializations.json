@@ -1,5 +1,5 @@
 {
-  "scrapedAt": "2026-10-02",
+  "scrapedAt": "2026-11-06",
   "tracks": [
     {
       "id": "csd-artificial-intelligence",
@@ -689,7 +689,7 @@
           "label": "required mods (all)"
         }
       ],
-      "notes": "Select any 1 Elective offered by ESD\nStudent need to take 3 mods for the track."
+      "notes": "Select any 1 Elective offered by ESD\nStudent need to take 3 courses for the track."
     },
     {
       "id": "esd-business-analytics-and-operations-research",
@@ -708,7 +708,7 @@
           "label": "required mods (all)"
         }
       ],
-      "notes": "# Half term mod - applies to: 40.302, 40.305"
+      "notes": "# Half term course - applies to: 40.302, 40.305"
     },
     {
       "id": "esd-financial-services",

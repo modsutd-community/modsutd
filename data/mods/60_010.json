@@ -1,0 +1,19 @@
+{
+  "code": "60.010",
+  "name": "Minds, Machines, and Design",
+  "description": "Our goal in this course is to explore popular types of AI systems from three perspectives. From a design perspective, we’ll learn about the algorithms on which they run. From a psychological perspective, we’ll consider how well these algorithms model human cognition. From a philosophical perspective, we’ll grapple with the metaphysical and ethical questions they raise. Our approach to this course will be a blend of hands-on experimentation and theoretical reflection. We’ll build spam classifiers and language models, then consider how well they model the way we recognise spam and understand language. We’ll perform adversarial and privacy attacks, then reflect on what the weaknesses of AI systems mean for artificial cognition and AI ethics. Through our explorations, we’ll learn to analyse AI systems from both design and human angles.",
+  "credits": 12,
+  "department": "Design and Artificial Intelligence",
+  "pillar": "DAI",
+  "term": "5",
+  "prerequisites": [],
+  "corequisites": [],
+  "schedules": [],
+  "tags": [
+    "DAI",
+    "Term 5",
+    "Track Core"
+  ],
+  "noBatchChat": true,
+  "noBatchChatReason": "pillar core"
+}
