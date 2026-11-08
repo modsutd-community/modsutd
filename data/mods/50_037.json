@@ -6,7 +6,10 @@
   "department": "Information Systems Technology and Design",
   "pillar": "CSD",
   "term": "7",
-  "prerequisites": [],
+  "prerequisites": [
+    "50.004",
+    "50.005"
+  ],
   "corequisites": [],
   "schedules": [
     {
