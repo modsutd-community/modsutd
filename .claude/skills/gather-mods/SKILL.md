@@ -18,7 +18,7 @@ tools/scraper/.venv/bin/python tools/scraper/gather_mods.py            # full ru
 #   --delay 0.25     politeness delay on cache misses
 #   --ttl-hours 168  on-disk HTML cache lifetime (tools/scraper/.cache/)
 #   --review-out PATH   the re-titles and term moves, as markdown for the PR body
-#   --rename-cap N      write re-titles when there are at most N (default 10,
+#   --rename-cap N      write re-titles when there are at most N (default 30,
 #                       or $MODS_RENAME_CAP)
 ```
 
