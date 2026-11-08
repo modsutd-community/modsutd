@@ -469,7 +469,10 @@ FRESHMORE_DEFAULT = "1"
 # merged by raising it for one run: `--rename-cap N`, or the scrape workflow's
 # rename_cap input, after reading the list the capped run put in its pull
 # request (--review-out) and finding the titles real.
-RENAME_CAP = 10
+# 30 because a real term fits under it: SUTD re-titles a term's mods together,
+# in the tens. A redesign that changes every h1 is the whole catalogue of 389
+# pages, so it still writes nothing.
+RENAME_CAP = 30
 
 # What the scrape workflow sets from its rename_cap input. Read as the flag's
 # default rather than passed as an argument, so mods_refresh.py does not grow a
@@ -490,7 +493,7 @@ def default_rename_cap(env: dict[str, str]) -> int:
     raw = (env.get(RENAME_CAP_ENV) or "").strip()
     if raw and not raw.isdigit():
         # Loud rather than falling back: a typo in the workflow input that
-        # quietly meant 10 would cap the run it was typed to uncap.
+        # quietly meant the default would cap the run it was typed to uncap.
         raise SystemExit(f"{RENAME_CAP_ENV} must be a whole number, got {raw!r}")
     return int(raw) if raw else RENAME_CAP
 
@@ -1159,8 +1162,8 @@ def self_check() -> int:
     for count, want, why in [
         (0, True, "a run with no re-titles"),
         (1, True, "one re-title"),
-        (10, True, "a run exactly at the cap"),
-        (11, False, "a run past the cap writes none of them"),
+        (30, True, "a run exactly at the cap"),
+        (31, False, "a run past the cap writes none of them"),
         (390, False, "a redesign that re-titles the whole catalogue"),
     ]:
         if rename_batch_ok(count) is not want:
@@ -1451,11 +1454,11 @@ def self_check() -> int:
     # The cap, overridden for one run, and the list a capped run still hands over.
     if not rename_batch_ok(20, cap=25):
         fails.append("--rename-cap 25 still refuses a batch of 20")
-    if rename_batch_ok(11):
-        fails.append("the default cap no longer refuses 11")
-    if default_rename_cap({}) != 10 or default_rename_cap({"MODS_RENAME_CAP": ""}) != 10:
+    if rename_batch_ok(31):
+        fails.append("the default cap no longer refuses 31")
+    if default_rename_cap({}) != 30 or default_rename_cap({"MODS_RENAME_CAP": ""}) != 30:
         fails.append("an unset or empty MODS_RENAME_CAP does not mean the default")
-    if default_rename_cap({"MODS_RENAME_CAP": "30"}) != 30:
+    if default_rename_cap({"MODS_RENAME_CAP": "45"}) != 45:
         fails.append("MODS_RENAME_CAP is not read")
     try:
         default_rename_cap({"MODS_RENAME_CAP": "ten"})

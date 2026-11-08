@@ -557,8 +557,8 @@ def proposal_sections(p: dict) -> list[str]:
                 "page can name a code and then disown it.", ""]
         for kind, e in accepted:
             if kind == "prereqs":
-                head = (f"**{e.get('code', '?')}** `{e.get('field', '?')}` -> "
-                        f"`{json.dumps(e.get('value'), ensure_ascii=False)}`")
+                head = (f"**{e.get('code', '?')}** `{e.get('field', '?')}`: "
+                        f"`{cell(e.get('was'))}` -> `{cell(e.get('value'))}`")
             else:
                 head = (f"**{e.get('minor', '?')}** + `{joined(e.get('add'))}` "
                         f"to requirement group {e.get('requirement', '?')}")
@@ -569,18 +569,28 @@ def proposal_sections(p: dict) -> list[str]:
                 "A model proposed these and the validator refused them, so nothing was "
                 "written. A refusal that looks wrong is a rule in `propose_edits.py` "
                 "that is too strict.", "",
-                "| record | proposed | why it was refused |", "|---|---|---|"]
+                # The record's value beside the proposal, and the sentence the
+                # model read: without both a reader has to open the file and the
+                # page to learn what a refusal saved them from.
+                "| record | record now | model proposed | page says | why it was refused |",
+                "|---|---|---|---|---|"]
         for kind, r in rejected:
             e = r.get("edit") if isinstance(r.get("edit"), dict) else {}
             if kind == "prereqs":
                 rec = e.get("code", "?")
-                prop = str(e.get("field", "?"))
+                field = str(e.get("field", "?"))
+                now = f"{field} = {cell(e.get('was'))}" if "was" in e else "-"
+                prop = field
                 if "value" in e:
                     prop += f" = {json.dumps(e['value'], ensure_ascii=False)}"
             else:
                 rec = e.get("minor", "?")
+                now = "-"
                 prop = f"add {joined(e.get('add')) or '?'} to group {e.get('requirement', '?')}"
-            out.append(f"| {cell(rec)} | {cell(prop)} | {cell(r.get('why', ''))} |")
+            quote = str(e.get("quote") or "")
+            quote = quote if len(quote) <= 300 else quote[:300] + "..."
+            out.append(f"| {cell(rec)} | {cell(now)} | {cell(prop)} | {cell(quote)} "
+                       f"| {cell(r.get('why', ''))} |")
         out.append("")
     return out
 
@@ -1076,6 +1086,16 @@ def self_check() -> int:
         {"edit": {"minor": "minor-ai", "add": [50037], "requirement": 1}, "why": "x"}]}}
     check("a list of ints from a step's JSON does not raise",
           "50037" in quick(proposed=odd))
+
+    refused = {"prereqs": {"accepted": [], "rejected": [{"edit": {
+        "code": "50.001", "field": "prereqTree", "value": {"or": ["10.014", "10.027"]},
+        "was": {"or": [{"code": "10.014", "cohort": ["ay2024"]}]},
+        "quote": "10.014 Computational Thinking for Design (For AY2020 to AY2024)"},
+        "why": "scoped"}]}}
+    body = quick(proposed=refused)
+    row = next((ln for ln in body.splitlines() if ln.startswith("| 50.001 |")), "")
+    check("a refused proposal shows the record's value and the page's sentence beside it",
+          '"cohort": ["ay2024"]' in row and "For AY2020 to AY2024" in row, row)
 
     has = lambda script, flag: True  # noqa: E731
     lacks = lambda script, flag: False  # noqa: E731
