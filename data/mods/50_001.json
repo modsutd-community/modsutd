@@ -1,6 +1,6 @@
 {
   "code": "50.001",
-  "name": "Information Systems & Programming",
+  "name": "Object-Oriented Software Design: Principles and Practice",
   "description": "An introduction to the design and programming of information systems, taught using Java. Topics include object-oriented programming, data structures, OO design principles, mobile programming, design patterns and use of software libraries.",
   "credits": 12,
   "department": "Information Systems Technology and Design",
@@ -8,7 +8,8 @@
   "term": "4",
   "prerequisites": [
     "10.014",
-    "10.025"
+    "10.025",
+    "10.027"
   ],
   "corequisites": [],
   "schedules": [],
@@ -30,13 +31,19 @@
         "code": "10.025",
         "name": "Computational Thinking for Design",
         "cohort": [
-          "ay2025",
+          "ay2025"
+        ]
+      },
+      {
+        "code": "10.027",
+        "name": "Algorithmic Thinking and Object-Based Abstraction",
+        "cohort": [
           "ay2026"
         ]
       }
     ]
   },
-  "sourceUrl": "https://www.sutd.edu.sg/course/50-001-information-systems-programming/",
+  "sourceUrl": "https://www.sutd.edu.sg/course/50-001-object-oriented-software-design-principles-and-practice/",
   "noBatchChat": true,
   "noBatchChatReason": "pillar core"
 }

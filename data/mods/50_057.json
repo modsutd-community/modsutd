@@ -5,11 +5,12 @@
   "credits": 12,
   "department": "Information Systems Technology and Design",
   "pillar": "CSD",
-  "term": "7",
+  "term": "6",
   "prerequisites": [
     "50.003",
     "10.014",
-    "10.025"
+    "10.025",
+    "10.027"
   ],
   "prereqTree": {
     "and": [
@@ -31,6 +32,7 @@
             ]
           },
           {
+            "code": "10.027",
             "name": "Algorithmic Thinking and Object-Based Abstraction",
             "cohort": [
               "ay2026"
@@ -73,7 +75,8 @@
     }
   ],
   "tags": [
-    "Term 7",
+    "Term 6",
+    "Term 8",
     "Elective / Technical Elective",
     "ISTD"
   ],

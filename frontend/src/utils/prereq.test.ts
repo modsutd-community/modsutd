@@ -147,7 +147,7 @@ describe('what a chip should show', () => {
     const pick = requirementsOf(tree, has(), undefined)
       .find((r) => r.kind === 'oneOf')!;
     expect(pick.options.map((o) => o.code ?? o.name)).toEqual([
-      '10.014', '10.025', 'Algorithmic Thinking and Object-Based Abstraction',
+      '10.014', '10.025', '10.027',
     ]);
   });
 
