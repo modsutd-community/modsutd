@@ -31,7 +31,8 @@ the unpatched proxy and returning empty reviews again.
 
 One request never reaches Gemini: the reviewer's grouping request is answered
 here, so every file is reviewed in a prompt of its own. GROUPING_REQUEST says
-why.
+why. A file whose diff is too big for one prompt even then is reviewed in
+pieces, asked in parallel and merged into one answer; SPLIT_NOTE says how.
 
 What the scrape could not save is counted, in the file WEB2API_STATS names.
 The client cannot report a call it never received, so that file is the only
@@ -40,6 +41,7 @@ place a dropped finding leaves a trace, and the review workflow reads it.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -47,6 +49,7 @@ import sys
 import threading
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -105,7 +108,7 @@ SAFE_PROMPT_BYTES = 46000
 # between and fails. Answering `[]` assigns no file to any group, and the
 # reviewer gives every unassigned file a group of its own (grouping.go,
 # open-code-review v1.13.1). One file's diff fits where a theme's does not; a
-# single file too big even alone is still counted as oversized. Matched on
+# single file too big even alone is split into pieces (SPLIT_NOTE). Matched on
 # the reviewer's own wording: if it is reworded, grouping goes back to Gemini
 # and an oversized group is counted, so the failure is a fallback, not a
 # silent half-read review.
@@ -131,6 +134,57 @@ KEEP_RECENT_RESULTS = 2
 # nothing failing. A rule at the cap is split by path, not lengthened.
 RULE_MAX_BYTES = 6500
 ELIDED = "[elided to fit the prompt: an older tool result. Call the tool again if you need it.]"
+# The NEWEST tool results are kept, and one of them alone can be what pushes a
+# turn over: a file_read returns up to 500 lines, about 22 KB of a 2000-line
+# file, beside some 19 KB the reviewer sends on every turn. So when eliding
+# the older ones is not enough, the newest are cut from the end, keeping whole
+# lines, with this marker saying how much went. Cut only as far as leaves the
+# diff PIECE_ROOM_MIN of room (or all of it, when it is smaller): a turn whose
+# diff has to be split anyway gains nothing from a tool result cut to nothing.
+TRUNCATED = ("[cut to fit the prompt: the last {cut} of {total} lines of this result "
+             "were dropped. Ask for them again with a narrower range if you need them.]")
+PIECE_ROOM_MIN = 12000
+
+# A diff too big for one prompt, even alone, is split and reviewed in pieces.
+# The reviewer cannot do it: max_tokens counts the diff alone when it splits a
+# group and the whole prompt when it checks one, and one file is the smallest
+# group it makes, so a single file whose diff is past what the endpoint reads
+# went to the next provider whole (gather_mods.py: a 39 KB diff in a 56 KB
+# prompt). Here the file's hunks are packed into pieces that each fit, every
+# piece is asked in parallel with the rest of the prompt unchanged, and the
+# replies are merged into the one turn the reviewer is waiting for. A hunk
+# bigger than a piece is cut at a line boundary and each part gets an @@ line
+# of its own, recomputed, so a comment still lands on the right line.
+# What a split costs: a defect whose two halves sit in different pieces is
+# seen by neither. The pieces are told they are partial so none of them
+# reports a hunk it cannot see as missing.
+SPLIT_CONCURRENCY = 2
+# Below this, a piece holds a hunk or two and the review reads as noise; the
+# turn is counted as oversized instead and the verdict falls back.
+SPLIT_MIN_ROOM = 4000
+# A hunk longer than this is cut into parts of at most this. Fixed rather than
+# "whatever room this turn has", so the parts come out the same on every turn
+# of a review and the ones already reviewed can be recognised and skipped.
+HUNK_PART_MAX = 8000
+SPLIT_NOTE = ("[System instruction]: This diff is too long for one prompt, so it is "
+              "reviewed in {n} parts and this is part {k}. Review only the hunks shown "
+              "here; the others are reviewed separately, so do not report anything as "
+              "missing because it is not in this part. A hunk too long for one part is "
+              "cut at a line boundary, and each part of it carries its own @@ line "
+              "numbers. Call task_done when this part is reviewed.")
+# The reviewer's planning request (open-code-review v1.13.6): no tools, the
+# same diff, and a plain-text plan back that it pastes into every review turn.
+# Split the same way, and the plans are merged into one.
+PLAN_REQUEST = re.compile(
+    r"\A\[System instruction\]: You are an expert in code review task planning\.")
+# A file block in the reviewer's prompt. Unambiguous at line start: every line
+# of a unified diff body begins with a space, +, -, @ or backslash, so a diff
+# of a file that itself contains "<file path=" or "</file>" cannot fake one.
+FILE_OPEN = re.compile(r'(?m)^<file path="[^"\n]*">\n(?=diff --git )')
+HUNK_HEAD = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@(.*)$")
+# How long a split review's state is kept. A later turn of the same review
+# needs to know which pieces already finished; a review that died is forgotten.
+SPLIT_STATE_TTL_S = 3600
 
 # Appended to upstream's own instruction, which says only "respond with a
 # tool_call block" and "only when needed". The second half is what licenses a
@@ -167,6 +221,9 @@ STATS = {
     "nudge_recovered": 0,     # ...and the second reply had one
     "failure_pages": 0,       # Gemini's failure page, retried
     "results_elided": 0,      # an older tool result dropped so the prompt fits
+    "results_truncated": 0,   # a newest tool result cut from its end so the prompt fits
+    "split_turns": 0,         # a turn whose diff was reviewed in pieces
+    "split_pieces": 0,        # ...and how many pieces were sent for them
     "oversized": 0,           # a prompt past the limit even so: its end was not read
     "grouping_answered": 0,   # a grouping request answered here, one file per group
 }
@@ -175,6 +232,10 @@ STATS = {
 # because the handler is threaded and two reviews' turns interleave; a global
 # would charge one turn with another's refusals.
 _turn = threading.local()
+
+# Which diff units each split review has finished, by review key. See _split_done.
+_split_lock = threading.Lock()
+_split_state: dict[str, dict] = {}
 
 
 def bump(key: str, by: int = 1) -> None:
@@ -438,9 +499,11 @@ def messages_to_prompt(messages: list, tools: list | None = None) -> tuple:
     A review turn grows with every file the model reads, because the whole
     conversation is re-sent as one prompt. When it would not fit, the oldest
     tool results go first and the newest stay: what the model asked for last is
-    what it is about to reason about. A prompt still too long after that is
-    counted, because its tail was not read and the review of that group is not
-    one to trust.
+    what it is about to reason about. Still too long, the newest are cut from
+    their end. Still too long, the diff itself is: it is split into pieces that
+    each fit, registered on this thread for _call_gemini to fan out. Only a
+    prompt none of that can bring under the limit is counted, because its tail
+    was not read and the review of that group is not one to trust.
     """
     def build(msgs):
         prompt, images = _orig_messages_to_prompt(msgs, tools)
@@ -449,6 +512,7 @@ def messages_to_prompt(messages: list, tools: list | None = None) -> tuple:
             prompt = f"[System instruction]: {STRICT_RULES}\n\n{prompt}"
         return prompt, images
 
+    _turn.split = None
     prompt, images = build(messages)
     if _size(prompt) <= SAFE_PROMPT_BYTES:
         return prompt, images
@@ -464,10 +528,234 @@ def messages_to_prompt(messages: list, tools: list | None = None) -> tuple:
         prompt, images = build(trimmed)
         if _size(prompt) <= SAFE_PROMPT_BYTES:
             return prompt, images
+
+    # The newest results, cut from the end, newest first.
+    region = diff_region(prompt)
+    diff = _size(prompt[region[0]:region[1]]) if region else 0
+    target = SAFE_PROMPT_BYTES - min(diff, PIECE_ROOM_MIN)
+    for i in reversed(results):
+        excess = _size(prompt) - diff - target
+        if excess <= 0:
+            break
+        cut = truncate_result(trimmed[i]["content"], excess)
+        if cut is None:
+            continue
+        trimmed[i]["content"] = cut
+        bump("results_truncated")
+        prompt, images = build(trimmed)
+        region = diff_region(prompt)
+        diff = _size(prompt[region[0]:region[1]]) if region else 0
+    if _size(prompt) <= SAFE_PROMPT_BYTES:
+        return prompt, images
+
+    if region:
+        key, done = _split_done(prompt, region, reviewing=bool(tools))
+        pieces = split_prompt(prompt, region, done)
+        if pieces is not None:
+            _turn.split = (prompt, key, pieces)
+            biggest = max((_size(p) for p, _ in pieces), default=0)
+            upstream.log(f"prompt is {_size(prompt)} bytes; {len(pieces)} piece(s) of its "
+                         f"diff still to review, the largest {biggest} bytes")
+            return prompt, images
     bump("oversized")
     upstream.log(f"prompt is {_size(prompt)} bytes after eliding, past the "
                  f"{SAFE_PROMPT_BYTES} the endpoint reads: its end will be dropped")
     return prompt, images
+
+
+def truncate_result(content: str, excess: int) -> str | None:
+    """`content` shortened by at least `excess` bytes, whole lines kept from
+    the top, with a marker saying how many went. None when nothing can go."""
+    lines = content.split("\n")
+    total = len(lines)
+    budget = _size(content) - excess
+    kept, used = [], 0
+    for line in lines:
+        cost = _size(line) + 1
+        # The marker is paid for out of the same budget, sized for the worst
+        # case so the result never ends up longer than asked.
+        if used + cost + _size(TRUNCATED.format(cut=total, total=total)) > budget:
+            break
+        kept.append(line)
+        used += cost
+    if len(kept) == total:
+        return None
+    marker = TRUNCATED.format(cut=total - len(kept), total=total)
+    out = "\n".join(kept + [marker])
+    return out if _size(out) < _size(content) else None
+
+
+def diff_region(prompt: str) -> tuple[int, int] | None:
+    """(start, end) of the run of <file> blocks holding the diff, or None.
+
+    Only in the two requests that carry the diff as the subject: a review turn,
+    inside <review_files>, and the planning request. Anywhere else a <file>
+    line is something the model read, not the thing under review.
+    """
+    if PLAN_REQUEST.match(prompt):
+        m = FILE_OPEN.search(prompt)
+    else:
+        rf = re.search(r"(?m)^<review_files>\n", prompt)
+        m = FILE_OPEN.match(prompt, rf.end()) if rf else None
+    if not m:
+        return None
+    start = pos = m.start()
+    while True:
+        close = re.compile(r"(?m)^</file>\n").search(prompt, pos)
+        if not close:
+            return None
+        pos = close.end()
+        nxt = FILE_OPEN.match(prompt, pos)
+        if not nxt:
+            return start, pos
+        pos = nxt.start()
+
+
+def _files(region: str) -> list[tuple[str, str, list[str]]]:
+    """(open line, header, hunks) per <file> block. A file with no hunk (a
+    binary, a pure rename) is one header-only unit."""
+    out = []
+    for block in re.findall(r'(?ms)^(<file path="[^"\n]*">\n)(.*?)^</file>\n', region):
+        opener, body = block
+        parts = re.split(r"(?m)^(?=@@ )", body)
+        out.append((opener, parts[0], parts[1:]))
+    return out
+
+
+def _cut_hunk(hunk: str, limit: int) -> list[str]:
+    """One hunk as several, each at most `limit` bytes, each with a correct @@.
+
+    The old and new positions are walked line by line: a context line moves
+    both, a removal only the old, an addition only the new. That is what lets
+    a comment on a line in the second part still name the real line number.
+    """
+    lines = hunk.split("\n")
+    head = HUNK_HEAD.match(lines[0])
+    body = lines[1:]
+    if body and body[-1] == "":
+        body.pop()
+    if not head:
+        return [hunk]
+    old, new, tail = int(head[1]), int(head[3]), head[5]
+    parts, cur, o_n, n_n, o0, n0 = [], [], 0, 0, old, new
+
+    def flush():
+        if cur:
+            parts.append(f"@@ -{o0},{o_n} +{n0},{n_n} @@{tail}\n" + "\n".join(cur) + "\n")
+
+    for ln in body:
+        head_cost = len(f"@@ -{old},{o_n} +{new},{n_n} @@{tail}\n") + 24
+        if cur and head_cost + sum(_size(x) + 1 for x in cur) + _size(ln) + 1 > limit:
+            flush()
+            cur, o_n, n_n, o0, n0 = [], 0, 0, old, new
+        cur.append(ln)
+        tag = ln[:1]
+        if tag in (" ", ""):
+            old, new, o_n, n_n = old + 1, new + 1, o_n + 1, n_n + 1
+        elif tag == "-":
+            old, o_n = old + 1, o_n + 1
+        elif tag == "+":
+            new, n_n = new + 1, n_n + 1
+    flush()
+    return parts
+
+
+def _unit_key(opener: str, part: str) -> str:
+    return hashlib.sha1((opener + part).encode("utf-8")).hexdigest()[:16]
+
+
+def _split_done(prompt: str, region: tuple[int, int], reviewing: bool) -> tuple[str, set]:
+    """(review key, the diff units already reviewed in this review).
+
+    A review is several turns, each a whole new request, and the pieces of a
+    split diff finish at different turns. A piece that called task_done must
+    not be asked again, or it reports its findings a second time and never
+    lets the review end. So what finished is remembered across requests, keyed
+    on everything up to the end of the diff, which is the same on every turn
+    of one review. A turn with no history yet is a review starting over (a
+    retry included), and starts with nothing done. The planning request is
+    one shot and keeps nothing.
+    """
+    if not reviewing:
+        return "", set()
+    key = hashlib.sha1(prompt[:region[1]].encode("utf-8")).hexdigest()
+    first = not SPEAKER.search(prompt, region[1])
+    now = time.time()
+    with _split_lock:
+        for k in [k for k, v in _split_state.items() if now - v["t"] > SPLIT_STATE_TTL_S]:
+            del _split_state[k]
+        if first or key not in _split_state:
+            _split_state[key] = {"done": set(), "t": now}
+        _split_state[key]["t"] = now
+        return key, set(_split_state[key]["done"])
+
+
+def split_prompt(prompt: str, region: tuple[int, int],
+                 done: set | frozenset = frozenset()) -> list[tuple[str, list[str]]] | None:
+    """The prompt as several, each holding part of the diff and fitting, with
+    the keys of the diff units each one carries. Units in `done` are left out;
+    an empty list means every unit is done.
+
+    None when it cannot be done usefully: too little room left beside the
+    rest of the prompt, or one file header alone does not fit.
+    """
+    start, end = region
+    before, after = prompt[:start], prompt[end:]
+    note = SPLIT_NOTE.format(n=99, k=99) + "\n\n"
+    room = SAFE_PROMPT_BYTES - _size(before) - _size(after) - _size(note) - 64
+    if room < SPLIT_MIN_ROOM:
+        return None
+
+    # Units in diff order, each tagged with its file so a piece can reopen it.
+    # A long hunk is cut at HUNK_PART_MAX and not at the room this turn has, so
+    # its parts, and their keys, are the same on every turn of the review.
+    units: list[tuple[int, str]] = []
+    files = _files(prompt[start:end])
+    for f, (opener, header, hunks) in enumerate(files):
+        overhead = _size(opener) + _size(header) + len("</file>\n")
+        if overhead >= room:
+            return None
+        if not hunks:
+            units.append((f, ""))
+        for h in hunks:
+            if overhead + _size(h) <= min(room, HUNK_PART_MAX):
+                units.append((f, h))
+            else:
+                units += [(f, part) for part in
+                          _cut_hunk(h, min(room, HUNK_PART_MAX) - overhead)]
+    units = [u for u in units if _unit_key(files[u[0]][0], u[1]) not in done]
+    if not units:
+        return []
+
+    pieces: list[list[tuple[int, str]]] = [[]]
+
+    def render(piece):
+        out, last = [], None
+        for f, h in piece:
+            if f != last:
+                if last is not None:
+                    out.append("</file>\n")
+                out += [files[f][0], files[f][1]]
+                last = f
+            out.append(h)
+        if last is not None:
+            out.append("</file>\n")
+        return "".join(out)
+
+    for u in units:
+        if pieces[-1] and _size(render(pieces[-1] + [u])) > room:
+            pieces.append([])
+        pieces[-1].append(u)
+    n = len(pieces)
+    # The note goes at the very front, where a long prompt keeps it.
+    out = [(SPLIT_NOTE.format(n=n, k=k + 1) + "\n\n" + before + render(p) + after,
+            [_unit_key(files[f][0], h) for f, h in p])
+           for k, p in enumerate(pieces)]
+    # A single line longer than a piece (minified code, a lockfile) cannot be
+    # cut at a line boundary. Better counted as oversized than sent over.
+    if any(_size(p) > SAFE_PROMPT_BYTES for p, _ in out):
+        return None
+    return out
 
 
 def _ask(prompt, model_id, think_mode, file_refs, must_answer: bool):
@@ -500,6 +788,100 @@ def _call_gemini(self, prompt, model_id, think_mode, tools, file_refs=None):
     if not tools and GROUPING_REQUEST.search(prompt):
         bump("grouping_answered")
         return GROUPING_ANSWER, None
+    # Registered by messages_to_prompt on this same thread, for this prompt.
+    split, _turn.split = getattr(_turn, "split", None), None
+    if split and split[0] == prompt:
+        return _call_split(split[1], split[2], model_id, think_mode, tools, file_refs)
+    return _answer(prompt, model_id, think_mode, tools, file_refs)
+
+
+TASK_DONE = "task_done"
+
+
+def _done_call() -> dict:
+    return {"id": f"call_{uuid.uuid4().hex[:8]}", "type": "function",
+            "function": {"name": TASK_DONE, "arguments": json.dumps({"state": "DONE"})}}
+
+
+def merge_plans(texts: list[str]) -> str:
+    """The planning replies for each piece, as the one plan the reviewer expects.
+
+    Its format is a "Summary:" line, an "Issues" line, then numbered issues or
+    "(none)". The summaries are joined, the issues renumbered in piece order.
+    A reply that does not follow the format is kept whole rather than lost.
+    """
+    summaries, issues, loose = [], [], []
+    for text in texts:
+        m = re.search(r"(?m)^Issues\s*$", text or "")
+        if not m:
+            if (text or "").strip():
+                loose.append(text.strip())
+            continue
+        head = text[:m.start()].strip()
+        summaries.append(re.sub(r"^Summary:\s*", "", head))
+        for item in re.split(r"(?m)^(?=\d+\.\s)", text[m.end():]):
+            item = item.strip()
+            if re.match(r"\d+\.\s", item):
+                issues.append(re.sub(r"^\d+\.", "", item, count=1).strip())
+    if not summaries:
+        return "\n\n".join(loose)
+    out = ["Summary: " + " ".join(s for s in summaries if s), "", "Issues", ""]
+    out += [f"{n}. {item}" for n, item in enumerate(issues, 1)] or ["(none)"]
+    return "\n".join(out + ([""] + loose if loose else []))
+
+
+def _call_split(key, pieces, model_id, think_mode, tools, file_refs):
+    """One turn of a split diff: every piece still to review, asked in parallel,
+    answered as one turn.
+
+    Calls from all pieces are returned together and task_done is held back
+    until every piece has called it, because the reviewer ends the review on
+    the first task_done it sees. A piece that answered with no usable call even
+    after the nudge counts as finished: asking it again every turn would keep
+    the review from ending, and its loss is already counted by _answer.
+    A piece that raises raises the turn, so the reviewer sees a failed request
+    and falls back, rather than a review with a part silently missing.
+    """
+    if not pieces:
+        return "", [_done_call()]
+    bump("split_turns")
+    bump("split_pieces", len(pieces))
+    with ThreadPoolExecutor(max_workers=SPLIT_CONCURRENCY) as pool:
+        if not tools:
+            texts = list(pool.map(lambda p: _ask(p[0], model_id, think_mode, file_refs,
+                                                 must_answer=False), pieces))
+            return merge_plans(texts), None
+        replies = list(pool.map(lambda p: _answer(p[0], model_id, think_mode, tools,
+                                                  file_refs), pieces))
+    texts, calls, seen, finished = [], [], set(), []
+    for (_, keys), (text, got) in zip(pieces, replies):
+        got = got or []
+        if text:
+            texts.append(text)
+        if not got or any(c["function"]["name"] == TASK_DONE for c in got):
+            finished += keys
+        for c in got:
+            sig = (c["function"]["name"], c["function"]["arguments"])
+            if c["function"]["name"] == TASK_DONE or sig in seen:
+                continue
+            seen.add(sig)
+            calls.append(c)
+    with _split_lock:
+        state = _split_state.get(key)
+        if state is not None:
+            state["done"].update(finished)
+            all_done = len(finished) == sum(len(k) for _, k in pieces)
+        else:
+            all_done = True
+    if calls:
+        return "\n\n".join(texts), calls
+    if all_done:
+        return "\n\n".join(texts), [_done_call()]
+    return "\n\n".join(texts), None
+
+
+def _answer(prompt, model_id, think_mode, tools, file_refs=None):
+    """One prompt, one answer: the scrape and the nudge."""
     text = _ask(prompt, model_id, think_mode, file_refs, must_answer=bool(tools))
     if not tools or not text:
         return text, None
@@ -570,11 +952,206 @@ def install() -> None:
             bump("grouping_answered")
             yield GROUPING_ANSWER
             return
+        # Same reason for a split planning request: streamed, it would go out
+        # whole and past the limit, and nothing would count it.
+        split, _turn.split = getattr(_turn, "split", None), None
+        if split and split[0] == prompt:
+            model_id, think_mode = (list(args) + [None, None])[:2]
+            yield _call_split(split[1], split[2], model_id, think_mode, None,
+                              args[2] if len(args) > 2 else kwargs.get("file_refs"))[0]
+            return
         yield from _orig_stream_iter(prompt, *args, **kwargs)
     upstream.gemini_stream_generate_iter = stream_iter
 
 
 # ---------------------------------------------------------------------------
+
+
+def _split_checks(tools: list, block) -> list[str]:
+    """The newest-result cut and the diff split, offline. Sizes are literal:
+    the fixed part of a real review turn is about 19 KB and gather_mods.py's
+    diff was 39 KB, so these prompts are past the limit the same way."""
+    fails: list[str] = []
+    path = "tools/scraper/gather_mods.py"
+
+    def hunk(i, ctx):
+        lines = [f" context HUNK{i:02d} {j} " + "c" * 50 for j in range(ctx)]
+        lines[ctx // 2:ctx // 2] = [f"-old HUNK{i:02d}", f"+new HUNK{i:02d} a", f"+new HUNK{i:02d} b"]
+        start = 10 + i * 400
+        return f"@@ -{start},{ctx + 1} +{start},{ctx + 2} @@ def f{i}():\n" + "\n".join(lines) + "\n"
+
+    def review_files(hunks):
+        return (f'<review_files>\n<file path="{path}">\ndiff --git a/{path} b/{path}\n'
+                f"index 1111111..2222222 100644\n--- a/{path}\n+++ b/{path}\n"
+                + "".join(hunks) + "</file>\n</review_files>\n")
+
+    def body_lines(text):
+        region = diff_region(text)
+        if not region:
+            return []
+        return [ln for ln in text[region[0]:region[1]].split("\n")
+                if ln[:1] in (" ", "+", "-") and not ln.startswith(("+++", "---"))]
+
+    # 24 ordinary hunks and one of 160 lines, past HUNK_PART_MAX, so it is cut.
+    hunks = [hunk(i, 18) for i in range(24)] + [hunk(99, 160)]
+    pad = {"role": "system", "content": "You review code. " + "s" * 17000}
+    convo = [pad, {"role": "user", "content": review_files(hunks) + "\nNow review."}]
+
+    before = dict(STATS)
+    prompt, _ = upstream.messages_to_prompt(convo, tools)
+    split = getattr(_turn, "split", None)
+    if _size(prompt) <= SAFE_PROMPT_BYTES:
+        fails.append(f"the split fixture is only {_size(prompt)} bytes and tests nothing")
+    if not split or split[0] != prompt:
+        fails.append("a review turn whose diff alone is past the limit was not split")
+        return fails
+    pieces = split[2]
+    if len(pieces) < 2:
+        fails.append(f"a {_size(prompt)}-byte prompt went out as {len(pieces)} piece")
+    over = [_size(p) for p, _ in pieces if _size(p) > SAFE_PROMPT_BYTES]
+    if over:
+        fails.append(f"split pieces past the limit: {over}")
+    if STATS["oversized"] != before["oversized"]:
+        fails.append("a prompt that was split was still counted as oversized")
+    if sorted(body_lines(prompt)) != sorted(x for p, _ in pieces for x in body_lines(p)):
+        fails.append("the pieces do not carry every diff line exactly once")
+    if not all(p.startswith("[System instruction]: This diff is too long") for p, _ in pieces):
+        fails.append("a piece is not told it is a part, at the front where it is kept")
+    # The cut hunk's parts must carry @@ lines that count their own lines and
+    # continue one another, or a comment on the second part lands off by the
+    # length of the first.
+    parts = []
+    for p, _ in pieces:
+        for h in re.split(r"(?m)^(?=@@ )", p[diff_region(p)[0]:diff_region(p)[1]])[1:]:
+            if "HUNK99" not in h:
+                continue
+            m = HUNK_HEAD.match(h.split("\n", 1)[0])
+            rows = [ln for ln in h.split("\n")[1:] if ln[:1] in (" ", "+", "-")]
+            o_n = sum(ln[:1] in (" ", "-") for ln in rows)
+            n_n = sum(ln[:1] in (" ", "+") for ln in rows)
+            if (int(m[2]), int(m[4])) != (o_n, n_n):
+                fails.append(f"a cut hunk's @@ counts {m[2]},{m[4]} but carries {o_n},{n_n}")
+            parts.append((int(m[1]), o_n, int(m[3]), n_n))
+    parts.sort()
+    if len(parts) < 2:
+        fails.append("the 160-line hunk was not cut")
+    for a, b in zip(parts, parts[1:]):
+        if (b[0], b[2]) != (a[0] + a[1], a[2] + a[3]):
+            fails.append(f"a cut hunk's parts do not continue one another: {a} then {b}")
+
+    # One review, three turns, Gemini scripted per piece: the piece holding
+    # HUNK00 reports and finishes at once, the other reads a file first.
+    real_generate, real_extract = upstream.gemini_stream_generate, upstream.extract_response_text
+    upstream.extract_response_text = lambda raw: raw
+    sent: list[str] = []
+    comment = {"name": "code_comment", "arguments": {"comments": [{"path": path, "body": "b"}]}}
+    read = {"name": "file_read", "arguments": {"file_path": path}}
+    done = {"name": "task_done", "arguments": {"state": "DONE"}}
+
+    def fake(p, *_a, **_k):
+        sent.append(p)
+        if "HUNK00" in p:
+            return block(comment) + "\n" + block(done)
+        if "[Tool result for file_read]" in p:
+            return block(done)
+        return block(read)
+
+    def turn(msgs):
+        sent.clear()
+        p, _ = upstream.messages_to_prompt(msgs, tools)
+        _, calls = _call_gemini(None, p, 1, 0, tools)
+        return sorted(c["function"]["name"] for c in calls or [])
+
+    upstream.gemini_stream_generate = fake
+    try:
+        got = turn(convo)
+        if got != ["code_comment", "file_read"]:
+            fails.append(f"turn 1 of a split review returned {got}, want the comment and "
+                         f"the read with task_done held back")
+        if any(_size(p) > SAFE_PROMPT_BYTES for p in sent):
+            fails.append("a piece sent to Gemini was past the limit")
+        history = convo + [
+            {"role": "assistant", "content": "", "tool_calls": [
+                {"function": {"name": "code_comment", "arguments": json.dumps(comment["arguments"])}},
+                {"function": {"name": "file_read", "arguments": json.dumps(read["arguments"])}}]},
+            {"role": "tool", "name": "code_comment", "content": "recorded"},
+            {"role": "tool", "name": "file_read", "content": "1| import os"}]
+        got = turn(history)
+        if got != ["task_done"] or any("HUNK00" in p for p in sent) or not sent:
+            fails.append(f"turn 2 asked {len(sent)} piece(s), one finished already "
+                         f"{'included' if any('HUNK00' in p for p in sent) else 'skipped'}, "
+                         f"returned {got}; want only the unfinished piece and task_done")
+        got = turn(history + [{"role": "assistant", "content": "ok"}])
+        if got != ["task_done"] or sent:
+            fails.append(f"a turn after every piece finished asked Gemini {len(sent)} time(s)")
+        turn(convo)
+        if not any("HUNK00" in p for p in sent):
+            fails.append("a review starting over did not ask every piece again")
+
+        # The planning request: no tools, split the same way, one plan back.
+        plan = [{"role": "system", "content": "You are an expert in code review task "
+                                              "planning. " + "s" * 17000},
+                {"role": "user", "content": review_files(hunks)[len("<review_files>\n"):]
+                 .replace("</review_files>\n", "") + "\n### Task\nPlan it."}]
+        upstream.gemini_stream_generate = lambda p, *_a, **_k: (
+            sent.append(p) or "Summary: part\n\nIssues\n\n1. [low] thing\n")
+        sent.clear()
+        p, _ = upstream.messages_to_prompt(plan, None)
+        text, _ = _call_gemini(None, p, 1, 0, None)
+        if len(sent) < 2 or text.count("[low] thing") != len(sent) or "2. [low]" not in text:
+            fails.append(f"the planning request went out as {len(sent)} prompt(s) and "
+                         f"merged to {text[:120]!r}")
+        sent.clear()
+        p, _ = upstream.messages_to_prompt(plan, None)
+        streamed = "".join(upstream.gemini_stream_generate_iter(p, 1, 0, None))
+        if len(sent) < 2 or "2. [low]" not in streamed:
+            fails.append(f"a streamed planning request went out as {len(sent)} prompt(s)")
+    finally:
+        upstream.gemini_stream_generate, upstream.extract_response_text = real_generate, real_extract
+
+    merged = merge_plans(["Summary: A\n\nIssues\n\n1. [high] x\n   -> file_read a\n2. [low] y\n",
+                          "Summary: B\n\nIssues\n\n(none)\n", "not a plan"])
+    for want in ("Summary: A B", "1. [high] x", "-> file_read a", "2. [low] y", "not a plan"):
+        if want not in merged:
+            fails.append(f"merge_plans lost {want!r}: {merged!r}")
+
+    # A newest tool result too big to keep whole, beside a diff that fits:
+    # cut from its end, the prompt fits, and nothing is split.
+    read_out = "\n".join(f"{n:4d}| line {n} " + "r" * 30 for n in range(1, 501))
+    small = [{"role": "system", "content": "You review code. " + "s" * 26000},
+             {"role": "user", "content": review_files([hunk(1, 18)])},
+             {"role": "assistant", "content": "", "tool_calls": [
+                 {"function": {"name": "file_read", "arguments": '{"file_path": "x"}'}}]},
+             {"role": "tool", "name": "file_read", "content": read_out}]
+    before = dict(STATS)
+    p, _ = upstream.messages_to_prompt(small, tools)
+    if _size(read_out) < 20000:
+        fails.append(f"the file_read fixture is only {_size(read_out)} bytes")
+    if _size(p) > SAFE_PROMPT_BYTES:
+        fails.append(f"a turn with a 22 KB file_read is still {_size(p)} bytes")
+    if "[cut to fit the prompt: the last" not in p or "   1| line 1 " not in p:
+        fails.append("the newest tool result was not cut from its end with a marker")
+    if getattr(_turn, "split", None) or STATS["oversized"] != before["oversized"]:
+        fails.append("a turn that fits after cutting a tool result was split or counted")
+    if small[3]["content"] != read_out:
+        fails.append("cutting the tool result edited the caller's own message")
+
+    # One line longer than any piece (a minified bundle) cannot be cut at a
+    # line boundary: not split, counted as oversized, so the verdict falls back.
+    minified = "@@ -1,1 +1,1 @@\n-a\n+" + "m" * 40000 + "\n"
+    before = dict(STATS)
+    upstream.messages_to_prompt([pad, {"role": "user", "content": review_files([minified])}], tools)
+    if getattr(_turn, "split", None) or STATS["oversized"] != before["oversized"] + 1:
+        fails.append("a diff line longer than any piece was split instead of counted as oversized")
+
+    # Under the limit: nothing cut, nothing split, nothing counted.
+    before = dict(STATS)
+    p, _ = upstream.messages_to_prompt(small[:2], tools)
+    if (getattr(_turn, "split", None) or _size(p) > SAFE_PROMPT_BYTES
+            or hunk(1, 18) not in p
+            or any(STATS[k] != before[k] for k in ("results_truncated", "split_turns", "oversized"))):
+        fails.append("a prompt under the limit was changed")
+    return fails
 
 
 def self_check() -> int:
@@ -803,6 +1380,7 @@ def self_check() -> int:
                 fails.append(f"{why}: got {got!r}")
         upstream.gemini_stream_generate, upstream.extract_response_text, time.sleep = (
             real_generate, real_extract, real_sleep)
+        fails += _split_checks(tools, block)
 
     # The reviewer's rules, against the room they are paid for out of.
     rules_path = Path(__file__).resolve().parents[2] / ".opencodereview" / "rule.json"
