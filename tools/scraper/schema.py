@@ -71,6 +71,11 @@ class Mod(BaseModel):
     workload: Optional[Workload] = None
     # Official listing tags from sutd.edu.sg ("Term 5", "AI Track", ...).
     tags: list[str] = Field(default_factory=list)
+    # The page this record was read from. Declared after `tags` because that
+    # is where the catalogue walk appends it when it backfills a record, so a
+    # new file and a backfilled one diff the same way. Optional because some
+    # records have no page: docs/data-format.md lists which.
+    sourceUrl: Optional[str] = None
 
 
 class Venue(BaseModel):

@@ -17,6 +17,9 @@ tools/scraper/.venv/bin/python tools/scraper/gather_mods.py            # full ru
 #   --limit N        first N pages (debugging)
 #   --delay 0.25     politeness delay on cache misses
 #   --ttl-hours 168  on-disk HTML cache lifetime (tools/scraper/.cache/)
+#   --review-out PATH   the re-titles and term moves, as markdown for the PR body
+#   --rename-cap N      write re-titles when there are at most N (default 10,
+#                       or $MODS_RENAME_CAP)
 ```
 
 venv needs `httpx, beautifulsoup4, lxml, pydantic` (requirements.txt; note
@@ -36,11 +39,13 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   `\d{2}\.\d{3}` codes and MUST stop at the next heading or
   mutually-exclusive-subject codes leak in; credits from
   `Number of credits:\s*(\d+)` (absent on many pages → default 12); tags
-  from `section.js-page-tags a`; term from the first `Term N` tag, and with
-  no such tag **8** for an elective or **1** for a `Freshmore Core`, because
-  calling both of them term 1 made the freshmore term the dumping ground for
-  the whole elective catalogue. `python gather_mods.py --self-check` pins that
-  table and runs in CI.
+  from `section.js-page-tags a`; term by the rule in `docs/data-format.md`
+  (`term`), which `page_term` implements once for new and existing records
+  alike. `python gather_mods.py --self-check` pins it and runs in CI.
+- The name is the h1 with the code taken off the front by `TITLE_CODE_RE`,
+  letter suffix included: "02.184DH Minds, Machines, and Design" is "Minds,
+  Machines, and Design". The suffix must be glued to the digits, so "02.153 A
+  History of Nuclear Strategy" keeps its "A".
 - **Which codes it walks, and what it says about the rest.** `VALID_PREFIXES`
   is the code space of SUTD's own undergraduate listing, checked rather than
   guessed: that listing yields 219 mod links carrying exactly those nine
@@ -86,8 +91,11 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   03-007a/b), description fill when the repo one is empty, and grading +
   workload replacement whenever the OFFICIAL page publishes them (an
   assessment table / a `Workload: a-b-c` line - official beats anything
-  hand-written; workload exists ONLY in that official form).
-  Schedules/credits/term/prerequisites are never touched.
+  hand-written; workload exists ONLY in that official form). `sourceUrl` is
+  refreshed every run, and `term` follows the page by the rule in
+  `docs/data-format.md`; the run lists each term it moved, including a record
+  whose page stopped naming a term, which is filed as untermed (8).
+  Schedules/credits/prerequisites are never touched.
 - **A re-title is PROPOSED, in the diff.** SUTD renames mod pages, and
   `name` is what a student searches by and what their plan shows, so the run
   writes the page's title into the record and stops there: the pull request
@@ -97,11 +105,20 @@ Python ≥3.13 needs `pydantic>=2.13`, hence the relaxed pin).
   Whitespace is normalised before comparing (HTML line breaks are not
   re-titles), a name under four characters never wins (an empty h1 is a broken
   parse), and over `RENAME_CAP` in one run NONE are written: a redesign that
-  changes every h1 must not rewrite the catalogue in one pull request. The run
-  prints each pair with the page it came from.
+  changes every h1 must not rewrite the catalogue in one pull request.
+  The run ends with the list and, on its very last line, the count and whether
+  any landed, because `mods_refresh.py` shows only a step's last lines.
+  `--review-out` writes the full list, with the term moves, as markdown;
+  `mods_refresh.py` points it at `tools/scraper/.reports/mods-review.md` and the
+  `scrape` workflow pastes that into the pull request body. For a real bulk
+  rename, read that list, then rerun with `--rename-cap N`, or dispatch the
+  `scrape` workflow with its `rename_cap` input, at least as high as the count.
+  The dispatch opens a fresh pull request carrying the same data plus the
+  names, so close the capped one.
   Empty scraped tags are never written. New mods get pillar/department from
   a majority-vote precedent map per 2-digit code prefix, are validated
-  through `tools/scraper/schema.py` Mod, and written with 2-space indent.
+  through `tools/scraper/schema.py` Mod (which carries `sourceUrl`, so a new
+  file has its page from the first run), and written with 2-space indent.
 - Exits non-zero if any page failed to parse; prints a full summary.
 
 ## After a run

@@ -6,6 +6,16 @@ on:
         # the first Saturday of the month.
         - cron: "30 16 * * 5"
     workflow_dispatch:
+        inputs:
+            # For a real bulk rename. A run with more re-titles than
+            # gather_mods.py's RENAME_CAP writes none of them and lists them in
+            # its pull request body; read that list, and when the titles are
+            # SUTD's own, run again with this set at least that high. The rerun
+            # opens a fresh pull request, so close the capped one.
+            rename_cap:
+                description: "Write page re-titles when there are at most this many (empty keeps the default)"
+                required: false
+                default: ""
 
 permissions:
     contents: write
@@ -16,12 +26,14 @@ jobs:
         runs-on: ubuntu-latest
         timeout-minutes: 15
         steps:
-            # cron cannot say "first Saturday", so workaround:
+            # cron cannot say "first Saturday", so workaround. A manual run is
+            # let through on any day: it is how a rename_cap is used, and an
+            # input that only works one week a month is not one anybody can act on.
             - name: First Saturday of the month
               id: when
               run: |
                   d=$(TZ=Asia/Singapore date +%d)
-                  if [ "$((10#$d))" -le 7 ]; then
+                  if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$((10#$d))" -le 7 ]; then
                     echo "go=true" >> "$GITHUB_OUTPUT"
                   else
                     echo "go=false" >> "$GITHUB_OUTPUT"
@@ -111,6 +123,9 @@ jobs:
                   GEMINI_TOKEN: ${{ secrets.GEMINI_TOKEN }}
                   GROQ_TOKEN: ${{ secrets.GROQ_TOKEN }}
                   OPENAI_TOKEN: ${{ secrets.OPENAI_TOKEN }}
+                  # Empty on a scheduled run, which gather_mods.py reads as its
+                  # own RENAME_CAP.
+                  MODS_RENAME_CAP: ${{ inputs.rename_cap }}
               run: |
                   python tools/scraper/mods_refresh.py --status-out "$GITHUB_OUTPUT" > /tmp/refresh.md
                   cat /tmp/refresh.md >> "$GITHUB_STEP_SUMMARY"
@@ -139,6 +154,11 @@ jobs:
                     echo '  a hunk in a 21-track JSON file does not say which track it belongs to.'
                     echo '- **Prerequisites.** Every proposed edit below quotes the page it came from.'
                     echo '  Read the quote. A page can name a code and then disown it.'
+                    echo
+                    # Re-titles and term moves, in full. The run output below
+                    # keeps only each step's last lines, and .reports/ is
+                    # gitignored, so this is the one place they reach a reviewer.
+                    cat tools/scraper/.reports/mods-review.md 2>/dev/null || true
                     echo
                     cat tools/scraper/.reports/proposed.md 2>/dev/null || true
                     echo
