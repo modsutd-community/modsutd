@@ -8,7 +8,8 @@
   "term": "4",
   "prerequisites": [
     "10.014",
-    "10.025"
+    "10.025",
+    "10.027"
   ],
   "corequisites": [],
   "schedules": [],
@@ -30,7 +31,13 @@
         "code": "10.025",
         "name": "Computational Thinking for Design",
         "cohort": [
-          "ay2025",
+          "ay2025"
+        ]
+      },
+      {
+        "code": "10.027",
+        "name": "Algorithmic Thinking and Object-Based Abstraction",
+        "cohort": [
           "ay2026"
         ]
       }
