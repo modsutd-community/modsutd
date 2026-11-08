@@ -26,7 +26,12 @@ jobs:
       - run: npm run build
 
   e2e:
-    runs-on: ubuntu-latest
+    # Pinned, unlike the jobs around it, because `playwright install --with-deps`
+    # refuses an OS its version does not know: when ubuntu-latest moved to
+    # 26.04 it failed with "Playwright does not support chromium on
+    # ubuntu26.04-x64" before a single test ran, on every pull request. Move
+    # this to a newer image in the same PR as a Playwright upgrade that names it.
+    runs-on: ubuntu-24.04
     timeout-minutes: 12
     defaults:
       run: { working-directory: frontend }
