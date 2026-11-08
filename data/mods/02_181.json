@@ -5,7 +5,7 @@
   "credits": 12,
   "department": "Humanities, Arts and Social Sciences",
   "pillar": "HASS",
-  "term": "7",
+  "term": "8",
   "prerequisites": [],
   "corequisites": [],
   "schedules": [
@@ -21,7 +21,6 @@
     }
   ],
   "tags": [
-    "Term 7",
     "Elective / Technical Elective",
     "HASS"
   ],

@@ -57,9 +57,9 @@ Read the page before editing data/minors.json. The requirements are prose, and a
 prerequisites against each mod's own page. Reports; `propose` is what acts on it
 
 ```
-AGREES      116
-NONE LISTED 150  (page says none, record says none)
-NO PAGE     108: ['02.002', '02.101', '02.103', '02.104', '02.105', '02.106', '02.107', '02.108', '02.109', '02.110', '02.111', '02.112', '02.113', '02.114', '02.115', '02.116', '02.118', '02.119', '02.120', '02.121', '02.122', '02.123', '02.124', '02.125', '02.126', '02.127', '02.128', '02.129', '02.130', '02.131', '02.132', '02.133', '02.135', '02.136', '02.137', '02.139', '02.140', '02.142', '02.144', '02.145', '02.147', '02.148', '02.149', '02.150', '02.151', '02.152', '02.153', '02.154', '02.156', '02.157', '02.158', '02.159', '02.161', '02.162', '02.164', '02.165', '02.166', '02.167', '02.170', '02.171', '02.172', '02.173', '02.174', '02.175', '02.177', '02.178', '02.179', '02.180', '02.181', '02.182', '02.183', '02.201', '02.210', '02.212', '02.216', '02.219', '02.222', '02.223', '02.225', '02.228', '02.230', '02.231', '02.303', '02.XFER', '10.008', '10.009', '20.211', '30.316', '40.014', '50.034', '60.009', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999']
+AGREES      113
+NONE LISTED 153  (page says none, record says none)
+NO PAGE     109: ['02.002', '02.101', '02.103', '02.104', '02.105', '02.106', '02.107', '02.108', '02.109', '02.110', '02.111', '02.112', '02.113', '02.114', '02.115', '02.116', '02.118', '02.119', '02.120', '02.121', '02.122', '02.123', '02.124', '02.125', '02.126', '02.127', '02.128', '02.129', '02.130', '02.131', '02.132', '02.133', '02.135', '02.136', '02.137', '02.139', '02.140', '02.142', '02.144', '02.145', '02.147', '02.148', '02.149', '02.150', '02.151', '02.152', '02.153', '02.154', '02.156', '02.157', '02.158', '02.159', '02.161', '02.162', '02.164', '02.165', '02.166', '02.167', '02.170', '02.171', '02.172', '02.173', '02.174', '02.175', '02.177', '02.178', '02.179', '02.180', '02.181', '02.182', '02.183', '02.184', '02.201', '02.210', '02.212', '02.216', '02.219', '02.222', '02.223', '02.225', '02.228', '02.230', '02.231', '02.303', '02.XFER', '10.008', '10.009', '20.211', '30.316', '40.014', '50.034', '60.009', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999', '99.999']
 
 RECORD ADDS WHAT THE PAGE OMITS (13) - the page prints a
 Prerequisite heading with nothing under it, and the record names one:
@@ -77,7 +77,7 @@ Prerequisite heading with nothing under it, and the record names one:
   50.039   ['50.007']
   50.042   ['50.005']
 
-DIFFERS (4) - read the sentence, do not apply blindly:
+DIFFERS (6) - read the sentence, do not apply blindly:
 
   10.022  Modelling Uncertainty  [or]
     page has, repo lacks : ['10.007']
@@ -91,27 +91,35 @@ DIFFERS (4) - read the sentence, do not apply blindly:
     repo has, page lacks : ['10.013']
     10.004 Advanced Math II Prerequisites (for Exchange Students): Multivariable Calculus
 
+  50.001  Object-Oriented Software Design: Principles and Practice  [or]
+    page has, repo lacks : ['10.027']
+    10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025) or 10.027 Algorithmic Thinking and Object-Based Abstraction (For AY2026 and sub
+
   50.037  Blockchain Technology  [and]
     page has, repo lacks : ['50.012', '50.020', '50.043']
-    The mod assumes a basic familiarity with computer programming and knowledge of the Python language. 50.004 Algorithms 50.005 Computer System Engineering 50.012 Networks , 50.020 Security , and 50.0
+    The course assumes a basic familiarity with computer programming and knowledge of the Python language. 50.004 Algorithms 50.005 Computer System Engineering 50.012 Networks , 50.020 Security , and 50.0
+
+  50.057  Modern Software Design Studio with Agentic AI  [or]
+    page has, repo lacks : ['10.027']
+    50.003 Elements of Software Construction And one of the courses listed below: 10.014 Computational Thinking for Design (For AY2020 to AY2024) or 10.025 Computational Thinking for Design (For AY2025) o
 
 OR ON THE PAGE, NO TREE IN THE RECORD (17):
   03.007B  03.007A Innovating with Design and AI-1 (IDeA-1) Workload : 5-0-7 *The first number represents the number of hours per w
   10.022  10.018 Modelling Space and Systems Workload: 5-0-7 *The first number represents the number of hours per week assigned fo
-  20.203  Students wishing to enrol in the mod must have completed 20.201 Architecture Science and Technology 20.202 Architectu
+  20.203  Students wishing to enrol in the course must have completed 20.201 Architecture Science and Technology 20.202 Architectu
   20.304  20.101 Architecture Core Studio 1 20.102 Architecture Core Studio 2 20.221 Traditions: World History Connections to Vern
   20.320  20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design or speak with the profess
   20.321  20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design Number of credits: 9 Work
   20.511  Bachelor of Science (Architecture and Sustainable Design) degree or equivalent Successful completion of Structured Inter
   20.512  Bachelor of Science (Architecture and Sustainable Design) degree or equivalent Successful completion of Structured Inter
-  20.515  A student should be admitted to the M.Arch programme. This mod is required for M.Arch accreditation Number of credits
+  20.515  A student should be admitted to the M.Arch programme. This course is required for M.Arch accreditation Number of credits
   20.535  20.201 Architecture Science and Technology 20.202 Architectural Structure and Enclosure Design or speak with the profess
   40.316  10.022 Modelling Uncertainty (or equivalent) Number of credits: 12
   50.012  50.005 Computer System Engineering or A working knowledge of programming in Python and a strong foundation in computer s
   50.017  50.003 Elements of Software Construction or knowledge of the following. C/C++: All assignments are in C/C++ Calculus, Li
   50.041  50.004 Algorithms or consultation with the instructor
   50.046  50.005 Computer System Engineering (recommended) or a strong foundation in computer systems
-  50.052  50.001 Information Systems & Programming or demonstrable experience and knowledge in object-oriented programming.
+  50.052  50.001 Object-Oriented Software Design: Principles and Practice or demonstrable experience and knowledge in object-orien
   50.053  50.003 Elements of Software Construction or good knowledge in JAVA programming or by consultation with the instructor.
 ```
 
@@ -126,46 +134,42 @@ Read by WEB2API.
 
 ### prerequisites
 
-4 mod record(s) disagreed with their page.
+6 mod record(s) disagreed with their page.
 
 dropped by validation:
 
 | mod | field | why |
 |---|---|---|
+| 50.001 | prereqTree | the existing prereqTree has scoped or nested leaves (cohort, nOf, a nested and/or); a flat code list would delete them |
 | 50.037 | prerequisites | value must be a non-empty list of mod codes |
 
-read and left alone:
+changed nothing (the verdict says whether a model read it):
 
-| mod | why |
-|---|---|
-| 10.022 | The page text lacks an explicit prerequisite statement to quote. |
-| 40.001 | The prerequisite text on the page is ambiguous as it specifies prerequisites for exchange students only. |
+| mod | verdict | why |
+|---|---|---|
+| 10.022 | left alone | The page text contains the course title and workload details without specifying any explicit prerequisites. |
+| 20.224 | left alone | The page states the courses are preferred rather than required, agreeing with the empty prerequisites record. |
+| 40.001 | left alone | The record contains 10.013 which is not present in the page text, making an exact quote impossible. |
+| 50.057 | left alone | The prerequisite text contains year-dependent conditional options combined with both 'And' and 'or', making a static record ambiguous. |
 
 ### minors
 
 5 minor page(s) name a code their record lacks.
 
-read and left alone:
+**minor-dh** + `02.184` to "electives" (staged)
 
-| minor | why |
-|---|---|
-| minor-aai | No new mod additions to propose based on the page text for requirements. |
-| minor-ai | No missing requirement codes to add. |
-| minor-dai | No new requirements found to add. |
-| minor-dh | All listed DH electives are already present in the requirement groups. |
-| minor-hcd | No missing mods to add to the requirement groups. |
-```
+> 02.184DH Minds, Machines, and Design
 
-## proposed edits
+The page lists 02.184DH as an approved elective for the Digital Humanities minor, but it is missing from the repository.
 
-4 mod record(s) disagreed with their page. Read by GROQ.
+changed nothing (the verdict says whether a model read it):
 
-### read and left alone
+| minor | verdict | why |
+|---|---|---|
+| minor-aai | left alone | All newly listed codes are either prerequisites, recommended background, or already accounted for in the repository. |
+| minor-ai | left alone | The newly named codes are part of alternative course lists, prerequisites, or alternate intake requirements rather than unrepresented group additions. |
+| minor-dai | left alone | The new course codes are either mentioned as prerequisites, pillar core requirements, or within specific contextual elective pathways not requiring edits. |
+| minor-hcd | left alone | The page discusses substitution courses and electives that are either already captured or fall under special substitution rules not requiring group edits. |
 
-| mod | why |
-|---|---|
-| 10.022 | Page text does not state any prerequisites for the mod. |
-| 20.224 | Page indicates no required prerequisites. |
-| 40.001 | Page text does not list any prerequisites for the mod. |
-| 50.037 | Page states that 50.004 and 50.005 are helpful but not required, so they should not be prerequisites. |
+Each edit above is a proposal a model made from the page text, checked against that text before it was written. Read the quote before merging: it is copied from the page, and the page is what the record has to match.
 ```
