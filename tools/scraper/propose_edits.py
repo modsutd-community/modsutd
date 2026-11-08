@@ -444,10 +444,58 @@ def apply(edit: dict, dry_run: bool) -> str:
     return "written"
 
 
-def emit(report: list[str], out: str) -> int:
+def verdicts(skipped: list, sent: list[str], answered: set[str],
+             unanswered: set[str], key: str) -> list[dict]:
+    """One verdict per record, checked against the records actually sent.
+
+    A model's `skipped` list is its own say-so. Printed as it came, it can
+    repeat one id and leave another out, and a reader counting one verdict per
+    record cannot tell that a record went unread. So an id is
+    printed once, an id that was never sent is shown as such, and a record
+    that was sent and drew neither an edit nor a skip is listed as having no
+    verdict rather than left out.
+    """
+    out: list[dict] = []
+    seen: set[str] = set()
+    for s in skipped:
+        if not isinstance(s, dict):
+            continue
+        rid = str(s.get(key, "")).strip()
+        if not rid or rid in seen:
+            continue
+        seen.add(rid)
+        out.append({"id": rid, "why": str(s.get("why", "")).strip(),
+                    "status": "left alone" if rid in sent else "not sent to the model"})
+    for rid in sent:
+        if rid in seen or rid in answered:
+            continue
+        out.append({"id": rid, "why": "",
+                    "status": "no provider answered" if rid in unanswered else "no verdict"})
+    return out
+
+
+# Not "read and left alone": in a provider outage every row here is "no
+# provider answered", and that heading said a model read records none saw.
+VERDICT_HEADING = "changed nothing (the verdict says whether a model read it):"
+
+
+def verdict_table(rows: list[dict], label: str) -> list[str]:
+    if not rows:
+        return []
+    out = [VERDICT_HEADING, "", f"| {label} | verdict | why |", "|---|---|---|"]
+    out += [f"| {v['id']} | {v['status']} | {v['why'] or '-'} |" for v in rows]
+    return out + [""]
+
+
+def emit(report: list[str], out: str, json_out: str = "", summary: dict | None = None) -> int:
     text = "\n".join(report)
     if out:
         pathlib.Path(out).write_text(text, encoding="utf-8")
+    # The PR body is assembled from this, not from the markdown above, so
+    # mods_refresh.py never has to parse a table this file happened to print.
+    if json_out:
+        pathlib.Path(json_out).write_text(
+            json.dumps(summary or {}, indent=1, ensure_ascii=False), encoding="utf-8")
     print(text)
     return 0
 
@@ -542,40 +590,79 @@ def self_check() -> int:
             bad += 1
             print(f"FAIL {edit} -> {got} ({why or 'accepted'}), wanted {want}")
 
-    total = len(SELF_CHECK) + len(SELF_CHECK_MINORS)
+    # The shape a real refresh returned: one id repeated, one sent id never
+    # answered, plus an id nobody sent.
+    got = verdicts(
+        [{"minor": "minor-ai", "why": "a"}, {"minor": "minor-ai", "why": "a"},
+         {"minor": "minor-dai", "why": "b"}, {"minor": "minor-zz", "why": "c"}],
+        ["minor-aai", "minor-ai", "minor-dai", "minor-hcd"], set(), {"minor-hcd"}, "minor")
+    want = [("minor-ai", "left alone"), ("minor-dai", "left alone"),
+            ("minor-zz", "not sent to the model"), ("minor-aai", "no verdict"),
+            ("minor-hcd", "no provider answered")]
+    vcases = 1
+    if [(v["id"], v["status"]) for v in got] != want:
+        bad += 1
+        print(f"FAIL verdicts -> {[(v['id'], v['status']) for v in got]}, wanted {want}")
+    # an id that drew an edit has its verdict in the edit, not here
+    vcases += 1
+    if verdicts([], ["50.037"], {"50.037"}, set(), "code"):
+        bad += 1
+        print("FAIL verdicts listed 50.037 as unanswered though it drew an edit")
+
+    # the heading must not claim a read the rows deny
+    vcases += 1
+    outage = verdict_table([{"id": "50.037", "status": "no provider answered", "why": ""}], "mod")
+    if "read" in outage[0] and "left alone" in outage[0]:
+        bad += 1
+        print(f"FAIL verdict_table heads an outage with {outage[0]!r}")
+
+    total = len(SELF_CHECK) + len(SELF_CHECK_MINORS) + vcases
     print(f"{total - bad}/{total} validator cases ok")
     return 1 if bad else 0
 
 
+def section(accepted, rejected, judged, providers) -> dict:
+    return {
+        "accepted": [dict(e, outcome=o) for e, o in accepted],
+        "rejected": [{"edit": e, "why": w} for e, w in rejected],
+        "verdicts": judged,
+        "providers": sorted(providers),
+    }
+
+
 def run_prereqs(path, report, args, codes):
-    """Mod records against their own pages. Returns (accepted, rejected, skipped, providers)."""
+    """Mod records against their own pages. Returns (accepted, summary dict)."""
     rows = candidates(json.loads(pathlib.Path(path).read_text(encoding="utf-8")))
     if args.limit:
         rows = rows[: args.limit]
     if not rows:
         report += ["### prerequisites", "",
                    "Nothing to propose: no mod record disagrees with its page.", ""]
-        return [], [], [], set()
+        return [], section([], [], [], set())
 
     by_code = {r["code"]: r for r in rows}
     accepted, rejected, skipped, providers = [], [], [], set()
+    answered, unanswered = set(), set()
     for i in range(0, len(rows), BATCH):
         batch = rows[i : i + BATCH]
         answer = llm.chat(SYSTEM, payload(batch), timeout=120.0)
         if answer is None:
             # One batch failing is not the run failing. The others still have
             # their evidence, and a partial set of proposals is reviewable.
-            report.append(f"- no provider answered for {', '.join(r['code'] for r in batch)}")
+            # verdicts() names each of these mods, under its own heading.
+            unanswered |= {r["code"] for r in batch}
             continue
         provider, parsed = answer
         providers.add(provider)
         for edit in parsed.get("edits") or []:
+            answered.add(str(edit.get("code", "")))
             ok, why = validate(edit, by_code, codes)
             if ok:
                 accepted.append((edit, apply(edit, args.dry_run)))
             else:
                 rejected.append((edit, why))
         skipped += parsed.get("skipped") or []
+    judged = verdicts(skipped, list(by_code), answered, unanswered, "code")
 
     report += ["### prerequisites", "",
                f"{len(rows)} mod record(s) disagreed with their page.", ""]
@@ -591,12 +678,8 @@ def run_prereqs(path, report, args, codes):
         report += [f"| {e.get('code', '?')} | {e.get('field', '?')} | {why} |"
                    for e, why in rejected]
         report.append("")
-    if skipped:
-        report += ["read and left alone:", "", "| mod | why |", "|---|---|"]
-        report += [f"| {s.get('code', '?')} | {str(s.get('why', '')).strip()} |"
-                   for s in skipped[:40]]
-        report.append("")
-    return accepted, rejected, skipped, providers
+    report += verdict_table(judged, "mod")
+    return accepted, section(accepted, rejected, judged, providers)
 
 
 def run_minors(path, report, args, codes):
@@ -607,28 +690,31 @@ def run_minors(path, report, args, codes):
     if not rows:
         report += ["### minors", "",
                    "Nothing to propose: no minor page names a code its record lacks.", ""]
-        return [], [], [], set()
+        return [], section([], [], [], set())
 
     book = json.loads(MINORS.read_text(encoding="utf-8"))
     book_ids = {m.get("id"): m for m in book.get("minors") or []}
     by_id = {r["id"]: r for r in rows}
     accepted, rejected, skipped, providers = [], [], [], set()
+    answered, unanswered = set(), set()
 
     for i in range(0, len(rows), BATCH):
         batch = rows[i : i + BATCH]
         answer = llm.chat(MINOR_SYSTEM, minor_payload(batch, book), timeout=120.0)
         if answer is None:
-            report.append(f"- no provider answered for {', '.join(r['id'] for r in batch)}")
+            unanswered |= {r["id"] for r in batch}
             continue
         provider, parsed = answer
         providers.add(provider)
         for edit in parsed.get("edits") or []:
+            answered.add(str(edit.get("minor", "")))
             ok, why = validate_minor(edit, by_id, book_ids, codes)
             if ok:
                 accepted.append((edit, "would write" if args.dry_run else apply_minor(edit, book)))
             else:
                 rejected.append((edit, why))
         skipped += parsed.get("skipped") or []
+    judged = verdicts(skipped, list(by_id), answered, unanswered, "minor")
 
     # One write, after every edit. data/minors.json holds all of them, so a
     # write per edit would reread a file the previous edit had already changed.
@@ -651,12 +737,8 @@ def run_minors(path, report, args, codes):
         report += [f"| {e.get('minor', '?')} | {', '.join(e.get('add') or []) or '?'} | {why} |"
                    for e, why in rejected]
         report.append("")
-    if skipped:
-        report += ["read and left alone:", "", "| minor | why |", "|---|---|"]
-        report += [f"| {s.get('minor', '?')} | {str(s.get('why', '')).strip()} |"
-                   for s in skipped[:40]]
-        report.append("")
-    return accepted, rejected, skipped, providers
+    report += verdict_table(judged, "minor")
+    return accepted, section(accepted, rejected, judged, providers)
 
 
 def main() -> int:
@@ -666,6 +748,8 @@ def main() -> int:
     ap.add_argument("--prereqs", help="audit_prereqs.py --json output")
     ap.add_argument("--minors", help="gather_minors.py --json output")
     ap.add_argument("--report-out", default="")
+    ap.add_argument("--json-out", default="",
+                    help="the same findings as JSON, which is what the refresh PR body reads")
     ap.add_argument("--dry-run", action="store_true", help="decide, write nothing")
     ap.add_argument("--limit", type=int, default=0, help="candidates per report, not requests")
     args = ap.parse_args()
@@ -681,15 +765,18 @@ def main() -> int:
             "above still say what changed, and applying them stays a human job "
             "until one of `GEMINI_TOKEN`, `GROQ_TOKEN` or `OPENAI_TOKEN` exists. "
             "`.env.example` says where each goes.", "",
-        ], args.report_out)
+        ], args.report_out, args.json_out, {"configured": False})
 
     codes = known_codes()
     accepted, providers = [], set()
-    for flag, runner in ((args.prereqs, run_prereqs), (args.minors, run_minors)):
+    summary: dict = {"configured": True}
+    for name, flag, runner in (("prereqs", args.prereqs, run_prereqs),
+                               ("minors", args.minors, run_minors)):
         if flag and pathlib.Path(flag).exists():
-            a, _r, _s, pv = runner(flag, report, args, codes)
+            a, part = runner(flag, report, args, codes)
             accepted += a
-            providers |= pv
+            providers |= set(part["providers"])
+            summary[name] = part
 
     report[1:1] = ["", f"Read by {', '.join(sorted(providers)) or 'nothing'}."]
     if accepted:
@@ -699,7 +786,8 @@ def main() -> int:
             "it is copied from the page, and the page is what the record has to "
             "match.", "",
         ]
-    return emit(report, args.report_out)
+    summary["providers"] = sorted(providers)
+    return emit(report, args.report_out, args.json_out, summary)
 
 
 
