@@ -33,6 +33,12 @@ MODS = ROOT / "data" / "mods" if (ROOT / "data" / "mods").exists() else ROOT / "
 
 CODE = re.compile(r"\b(\d{2}\.\d{3}[A-Za-z]?)\b")
 
+# Starts each <li> of the block. 50.037 lists 50.004 and 50.005 as bullets of
+# their own and ends a THIRD bullet with "are helpful but not required";
+# joined with spaces the three read as one sentence disowning all five.
+# propose_edits.py splits on this to scope a hedge to its own bullet.
+BULLET = "\u2022"
+
 SITEMAPS = (
     "https://www.sutd.edu.sg/course-sitemap.xml",
     "https://www.sutd.edu.sg/course-sitemap2.xml",
@@ -78,7 +84,7 @@ def prereq_block(html: str) -> str:
             state = "prereq" if re.match(r"(?i)^\s*pre-?requisites?", text) else "other"
             continue
         if state == "prereq" and text:
-            out.append(text)
+            out.append(f"{BULLET} {text}" if el.name == "li" else text)
     return " ".join(" ".join(out).split())
 
 
@@ -108,8 +114,41 @@ def repo_codes(d: dict) -> set[str]:
     return set(d.get("prerequisites") or []) | set(tree_codes(d.get("prereqTree")))
 
 
+def says_nothing(text: str) -> bool:
+    """A block of dashes and bullet marks only: SUTD's way of printing none."""
+    return not re.sub(rf"[\s–—{BULLET}-]+", "", text)
+
+
+# 50.037's block as SUTD serves it, trimmed.
+SELF_CHECK_HTML = """<main><h5><strong>Prerequisite/ Co-requisite/ Mutually exclusive
+subject(s)</strong></h5><p>The course assumes a basic familiarity with computer
+programming.</p><ul><li><a>50.004 Algorithms</a></li>
+<li><a>50.005 Computer System Engineering</a></li>
+<li><a>50.012 Networks</a>, <a>50.020 Security</a>, and <a>50.043 Database
+Systems</a> are helpful but not required.</li></ul>
+<h5>Learning objectives</h5><ol><li>Understand blockchains</li></ol></main>"""
+
+
+def self_check() -> int:
+    text = prereq_block(SELF_CHECK_HTML)
+    parts = [p.strip() for p in text.split(BULLET)]
+    fails = []
+    if parts[1:3] != ["50.004 Algorithms", "50.005 Computer System Engineering"]:
+        fails.append(f"50.004 and 50.005 are not bullets of their own: {parts}")
+    if "not required" not in parts[-1] or "Understand" in text:
+        fails.append(f"the hedge left its bullet, or the block ran past its heading: {text!r}")
+    dash = prereq_block("<main><h5>Prerequisite</h5><ul><li>\u2013</li></ul></main>")
+    if not says_nothing(dash):
+        fails.append(f"a bulleted dash no longer reads as none listed: {dash!r}")
+    for f in fails:
+        print("FAIL", f)
+    print(f"{3 - len(fails)}/3 audit_prereqs cases ok")
+    return 1 if fails else 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--self-check", action="store_true")
     ap.add_argument("--json")
     ap.add_argument("--csv")
     ap.add_argument("--limit", type=int, default=0)
@@ -119,6 +158,8 @@ def main() -> int:
     # at where a mistake is allowed to hide.
     ap.add_argument("--min-prereqs", type=int, default=0)
     args = ap.parse_args()
+    if args.self_check:
+        return self_check()
 
     todo = []
     for f in sorted(MODS.glob("*.json")):
@@ -170,7 +211,7 @@ def main() -> int:
         # Which makes it evidence only when the record agrees. Where the record
         # names something the page omits, a human still has to decide: 01.401
         # Capstone 2 prints no prerequisite and plainly needs 01.400.
-        if not re.sub(r"[\s–—-]+", "", text):
+        if says_nothing(text):
             row["status"] = "none listed" if not row["repo"] else "record adds"
             rows.append(row)
             continue

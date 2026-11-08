@@ -62,6 +62,9 @@ MODS = ROOT / "data" / "mods" if (ROOT / "data" / "mods").exists() else ROOT / "
 FIELDS = {"prerequisites", "corequisites", "prereqTree"}
 MINORS = ROOT / "data" / "minors.json"
 CODE_RE = re.compile(r"^\d{2}\.\d{3}[A-Za-z]?$")
+# audit_prereqs.BULLET, the mark starting each <li> of a page's block. Copied,
+# not imported: that module pulls in the HTTP stack and bs4 at import time.
+BULLET = "\u2022"
 
 # Five, not one and not fifty. One per request is forty round trips for a
 # monthly job; a batch big enough to matter is a batch where one malformed reply
@@ -97,9 +100,12 @@ Rules you must follow:
   {"code": "10.027", "cohort": ["ay2026"]}. The only cohorts are ay2024
   (AY2024 and every earlier batch), ay2025 and ay2026 (AY2026 onwards). If
   `record_prereq_tree` already scopes leaves by cohort, your tree must too.
-- When the page says the mod needs nothing ("None", or every code it names is
-  "helpful but not required"), `value` is [] for prerequisites, and `quote` is
-  the sentence that says so, naming the codes it disowns.
+- Page text marks each bullet of a list with •. A sentence in one bullet says
+  nothing about a code in another: "• 50.004 Algorithms • 50.012 Networks are
+  helpful but not required" requires 50.004 and disowns only 50.012.
+- When the page says the mod needs nothing ("None", or every code the record
+  holds is "helpful but not required" in its own bullet), `value` is [] for
+  prerequisites, and `quote` is the sentence that says so.
 - `quote` MUST be copied character for character from the page text you were
   given for that mod. If you cannot quote the page, put the mod in
   `skipped` instead.
@@ -518,9 +524,28 @@ def validate_clear(code: str, field: str, quote: str, record: dict,
     missing = [c for c in current if c.lower() not in q]
     if missing and not says_none:
         return False, f"quote does not disown {', '.join(missing)}"
+    if not says_none:
+        kept = [c for c in current if not hedged_in_own_bullet(c, page)]
+        if kept:
+            return False, (f"{', '.join(kept)} sits in a bullet with no hedge; the hedge "
+                           "is in another bullet and disowns only that one")
     if q not in norm(page):
         return False, "quote is not in the page text this mod was reported with"
     return True, ""
+
+
+def hedged_in_own_bullet(code: str, page: str) -> bool:
+    """True when some bullet of the page names `code` AND disowns it.
+
+    audit_prereqs.py starts each <li> with BULLET. On 50.037 the hedge closes
+    the third bullet, so 50.004 and 50.005 in the first two stay required
+    however a quote spanning all three is cut. Prose with no bullets is one
+    segment, which is the old reading.
+    """
+    for part in norm(page).split(BULLET):
+        if code.lower() in part and any(h in part for h in HEDGES):
+            return True
+    return False
 
 
 def applied(record: dict, edit: dict) -> dict:
@@ -632,11 +657,23 @@ QUOTE_001 = ("10.014 Computational Thinking for Design (For AY2020 to AY2024) or
 SCOPED_001 = {"or": [{"code": "10.014", "cohort": ["ay2024"]},
                      {"code": "10.025", "cohort": ["ay2025"]},
                      {"code": "10.027", "cohort": ["ay2026"]}]}
-CLEAR_037 = ("50.004 Algorithms 50.005 Computer System Engineering 50.012 Networks , "
-             "50.020 Security , and 50.043 Database Systems are helpful but not required")
+# 50.037's block as audit_prereqs.py reads it. 50.004 and 50.005 are bullets
+# of their own; only the third bullet is helpful but not required.
+PAGE_037 = ("The course assumes a basic familiarity with computer programming and "
+            "knowledge of the Python language. \u2022 50.004 Algorithms \u2022 50.005 "
+            "Computer System Engineering \u2022 50.012 Networks , 50.020 Security , and "
+            "50.043 Database Systems are helpful but not required.")
+SPAN_037 = ("\u2022 50.004 Algorithms \u2022 50.005 Computer System Engineering \u2022 "
+            "50.012 Networks , 50.020 Security , and 50.043 Database Systems are "
+            "helpful but not required")
+# A page that really disowns both, in one bullet. Its own record, 50.038,
+# so it cannot lend 50.037's block the hedge that block lacks.
+CLEAR_038 = ("\u2022 50.004 Algorithms and 50.005 Computer System Engineering are "
+             "helpful but not required")
 # The records as they stood, so a case keeps its verdict after /data moves on.
 FIXTURE_RECORDS = {
     "50.037": {"prerequisites": ["50.004", "50.005"]},
+    "50.038": {"prerequisites": ["50.004", "50.005"]},
     "50.001": {"prerequisites": ["10.014", "10.025"],
                "prereqTree": {"or": [{"code": "10.014", "cohort": ["ay2024"]},
                                      {"code": "10.025", "cohort": ["ay2025", "ay2026"]}]}},
@@ -672,9 +709,18 @@ SELF_CHECK: list[tuple[dict, bool]] = [
     # disowns, but names neither of the two codes it would take away
     ({"code": "50.037", "field": "prerequisites", "value": [],
       "quote": "These mods are helpful but not required"}, False),
-    # 50.037's own sentence: every code it names, then "not required"
+    # 50.037's real block, quoted across its bullets: the hedge is in the
+    # third, so 50.004 and 50.005 stay
     ({"code": "50.037", "field": "prerequisites", "value": [],
-      "quote": CLEAR_037}, True),
+      "quote": SPAN_037}, False),
+    ({"code": "50.038", "field": "prerequisites", "value": [],
+      "quote": CLEAR_038}, True),
+    # The page disowns both in-bullet, but the QUOTE has to carry the evidence:
+    # one naming neither code, and one naming both with no hedge, are refused.
+    ({"code": "50.038", "field": "prerequisites", "value": [],
+      "quote": "Computer System Engineering are helpful but not required"}, False),
+    ({"code": "50.038", "field": "prerequisites", "value": [],
+      "quote": "50.004 Algorithms and 50.005 Computer System Engineering"}, False),
     # disowns one of the two the record holds
     ({"code": "50.037", "field": "prerequisites", "value": [],
       "quote": "50.012 Networks is helpful but not required for this"}, False),
@@ -728,7 +774,17 @@ def self_check() -> int:
     bad = 0
 
     by_code = {
-        "50.037": {"listed": "Students must have completed 50.004 before taking this. 50.012 Networks is helpful but not required for this. 50.012 Networks , 50.020 Security , and more. These mods are   HELPFUL but not required for 50.037. Prerequisite: None, open to every student. Students must have completed 50.004 and 50.005 first. " + CLEAR_037},
+        # One bullet per sentence, so no hedge shares a bullet with a code it
+        # does not disown, and the real block after them.
+        "50.037": {"listed": " \u2022 ".join([
+            "Students must have completed 50.004 before taking this.",
+            "50.012 Networks is helpful but not required for this.",
+            "50.012 Networks , 50.020 Security , and more.",
+            "These mods are   HELPFUL but not required for 50.037.",
+            "Prerequisite: None, open to every student.",
+            "Students must have completed 50.004 and 50.005 first.",
+        ]) + " " + PAGE_037},
+        "50.038": {"listed": CLEAR_038},
         "50.001": {"listed": "Students must have completed 10.014 or 10.025 first. " + QUOTE_001},
         "50.055": {"listed": "Students must have completed 50.007 and 50.039 first."},
     }

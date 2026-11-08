@@ -85,6 +85,7 @@ jobs:
         run: |
           python mods_refresh.py --self-check
           python what_changed.py --self-check
+          python audit_prereqs.py --self-check
 
       # The enrolment reader turns a term's six registry PDFs into every mod's
       # schedule at once, so a reader that drifts writes the wrong room into 40
