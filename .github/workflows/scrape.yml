@@ -107,6 +107,13 @@ jobs:
                       tail -20 /tmp/web2api.log || true
                   fi
 
+            # The PR body IS the report, and mods_refresh.py writes it whole:
+            # the change table first and unfolded, then what needs a
+            # decision, then one line per step, with the raw output folded
+            # last and cut first when GitHub's 65536-character limit is near.
+            # Assembling it here in shell meant a size limit nothing could
+            # count and an order nothing could test; build_body() and its
+            # --self-check are where both live now.
             - name: refresh the mods
               id: refresh
               if: steps.when.outputs.go == 'true'
@@ -127,47 +134,8 @@ jobs:
                   # own RENAME_CAP.
                   MODS_RENAME_CAP: ${{ inputs.rename_cap }}
               run: |
-                  python tools/scraper/mods_refresh.py --status-out "$GITHUB_OUTPUT" > /tmp/refresh.md
+                  python tools/scraper/mods_refresh.py --status-out "$GITHUB_OUTPUT" --body-out /tmp/pr-body.md > /tmp/refresh.md
                   cat /tmp/refresh.md >> "$GITHUB_STEP_SUMMARY"
-
-            # The PR body IS the report. Pointing a reviewer at a run summary
-            # they have to go and open is how the prereq and minor findings came
-            # to sit unread: the diff is in front of them and the reasoning was
-            # somewhere else.
-            - name: assemble the PR body
-              if: steps.when.outputs.go == 'true'
-              run: |
-                  {
-                    if [ -n "${{ steps.refresh.outputs.failed }}" ]; then
-                      echo "> PARTIAL REFRESH. These steps failed and their part of the data is unchanged: ${{ steps.refresh.outputs.failed }}."
-                      echo
-                    fi
-                    echo 'Opened by `tools/scraper/mods_refresh.py`.'
-                    echo
-                    echo 'Skim the diff. SUTD HTML changes silently and a parser can pull in junk;'
-                    echo 'if something looks wrong, kick this back and patch the source under'
-                    echo '`tools/scraper/`. Two things are worth a closer look every time:'
-                    echo
-                    echo '- **Term dates.** They decide where a weekly-view paste puts a term of classes.'
-                    echo '- **Data changes.** The run output names the RECORD each change landed in'
-                    echo '  and the source URL that record carries. Open that URL, not the diff hunk:'
-                    echo '  a hunk in a 21-track JSON file does not say which track it belongs to.'
-                    echo '- **Prerequisites.** Every proposed edit below quotes the page it came from.'
-                    echo '  Read the quote. A page can name a code and then disown it.'
-                    echo
-                    # Re-titles and term moves, in full. The run output below
-                    # keeps only each step's last lines, and .reports/ is
-                    # gitignored, so this is the one place they reach a reviewer.
-                    cat tools/scraper/.reports/mods-review.md 2>/dev/null || true
-                    echo
-                    cat tools/scraper/.reports/proposed.md 2>/dev/null || true
-                    echo
-                    echo '<details><summary>full run output</summary>'
-                    echo
-                    cat /tmp/refresh.md
-                    echo
-                    echo '</details>'
-                  } > /tmp/pr-body.md
 
             - name: open PR with diff
               if: steps.when.outputs.go == 'true'

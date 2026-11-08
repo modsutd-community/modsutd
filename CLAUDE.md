@@ -436,7 +436,9 @@ Two are deliberately not monthly, and say why in their own headers:
   frequently a different record. `tools/scraper/what_changed.py` walks both
   documents and prints each change with its record and the source URL that
   record itself carries, which is the line a reviewer opens. `mods_refresh.py`
-  runs it on every refresh. Lists of records are matched on `id`/`code`/`name`
+  runs it on every refresh and puts its table, one row per record, first in the
+  PR body and outside any fold; the rest of the body's order is in
+  `docs/scraper.md`. Lists of records are matched on `id`/`code`/`name`
   rather than index, because inserting one record makes every later index look
   changed.
 - `tools/scraper/reports/drift.md` is **generated**, by `mods_refresh.py`, and
@@ -445,7 +447,9 @@ Two are deliberately not monthly, and say why in their own headers:
   minor checks change no file by design, so their findings used to reach a run
   summary and stop there. It carries no timestamp, so a month that finds the same
   drift as the last changes nothing and opens nothing. Deleted when there is
-  nothing to say. Do not hand-edit it.
+  nothing to say. Do not hand-edit it. A `## ` line inside a section's code
+  fence is that step's output, not a new section, and a section no step owns
+  is dropped on the next run rather than carried.
 - **A model proposes prerequisite edits; it never writes one.**
   `tools/scraper/propose_edits.py` reads `audit_prereqs.py`'s JSON, asks a model
   whether the page MEANT the codes it names, and validates every proposal before

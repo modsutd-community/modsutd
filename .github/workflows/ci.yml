@@ -76,6 +76,16 @@ jobs:
         working-directory: tools/scraper
         run: python propose_edits.py --self-check
 
+      # The refresh PR body is the only place the monthly findings are read,
+      # and a body that hides one looks exactly like a month with nothing to
+      # say. These pin its order, its size limit, the change table's rows and
+      # drift.md's sections. No network, no model.
+      - name: the refresh PR body still shows what it should
+        working-directory: tools/scraper
+        run: |
+          python mods_refresh.py --self-check
+          python what_changed.py --self-check
+
       # The enrolment reader turns a term's six registry PDFs into every mod's
       # schedule at once, so a reader that drifts writes the wrong room into 40
       # mod files in one run. Its parsing is pure and needs no PDF: the

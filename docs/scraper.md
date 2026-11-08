@@ -111,4 +111,43 @@ away. It is a fine-grained PAT with `contents: write` and
 
 The report-only steps have a tracked artefact of their own,
 `tools/scraper/reports/drift.md`, because a run that changes no file opens no
-PR. Each run rewrites only the sections of the steps it ran.
+PR. Each run rewrites only the sections of the steps it ran, and drops any
+section no step owns.
+
+### The PR body
+
+`mods_refresh.py --body-out` writes it and the workflow only passes it on, so
+its order and its size are in `build_body()` and pinned by
+`mods_refresh.py --self-check`. Top to bottom, in the order a reviewer acts:
+
+1. a PARTIAL REFRESH banner naming the steps that failed, when any did;
+2. **What changed in /data**: `what_changed.py`'s table, one row per record
+   with its name, the change and the record's own page link. A new mod, a tag
+   or term edit, a re-title and a track note are each a row, and a batch-chat
+   flag flip sorts first under a warning. Never folded. If `what_changed.py`
+   fails, this lists the changed files instead, and never says nothing
+   changed;
+3. **Needs your decision**: the re-titles and term moves `gather_mods.py`
+   reports, pasted from its `--review-out` markdown, or failing that a table
+   from its `--renames-out` JSON, each re-title marked written or not
+   (accepting a capped batch is in the gather-mods skill); edits a model made
+   with the quote they rest on; proposals the validator dropped; minors whose
+   page names a code the record lacks, minors SUTD lists and the repo does
+   not, and records SUTD no longer lists; every prerequisite gap no model
+   answered for, which includes rows too short to send and rows no provider
+   answered; and the `[!]` and `!!` lines a step printed, the first 30 per
+   step. Each `gather_mods.py` flag is passed only when its `--help` lists it;
+4. **Checked and fine**: one line per step, taken from a summary line that
+   step prints itself. A step whose line is reworded falls back to "ok in Ns"
+   rather than breaking the body;
+5. folded, the model's verdicts that changed nothing, once each, checked
+   against the records it was actually sent: an id it was never sent is shown
+   as such, and a record it never answered is listed as "no verdict";
+6. folded, every step's whole output, stdout and stderr.
+
+GitHub refuses a body over 65536 characters, and a refused body loses the
+month's data along with it. When one would pass that, the full output is cut
+first and says so, then the verdicts, then rows from the end of the change
+table, and last the head itself, each with a note. The whole output is always
+in the run's step summary. A body that fails to build at all is replaced by a
+short one naming the changed files, so the pull request still opens.
