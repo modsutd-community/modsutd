@@ -66,7 +66,7 @@ DRIFT = ROOT / "tools" / "scraper" / "reports" / "drift.md"
 STEPS: list[tuple[str, list[str], str]] = [
     (
         "mods",
-        ["gather_mods.py"],
+        ["gather_mods.py", "--review-out", str(SCRATCH / "mods-review.md")],
         "every mod on sutd.edu.sg, walked from the two mod sitemaps: new "
         "mods, tags, descriptions, source URLs, grading and workload",
     ),

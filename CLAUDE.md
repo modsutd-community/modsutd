@@ -198,7 +198,9 @@ Singapore**, because a runner that finds nothing changed still costs a runner.
 cron cannot express "first Saturday" - with day-of-month and day-of-week both
 set it fires when EITHER matches - so each is scheduled Fridays 16:00 UTC and
 gates every later step on a first step that keeps only the runs where the
-Singapore day is 7 or less. Copy that shape for a new monthly job.
+Singapore day is 7 or less. Copy that shape for a new monthly job. `scrape`
+lets a manual dispatch through on any day, because its `rename_cap` input is
+run by hand.
 
 Two are deliberately not monthly, and say why in their own headers:
 

@@ -95,7 +95,7 @@ is `agents/llm.py`, and the tokens are in `.env.example` at the repo root.
 
 ## CI
 
-The workflow lives at `.github/workflows/scrape.yml`, on the repo's usual monthly schedule (first Saturday, 00:00 Singapore - the shape is in [CLAUDE.md](../CLAUDE.md)). SUTD data changes about once a term, so monthly is plenty. `workflow_dispatch` is on, so you can run it from the Actions tab without waiting.
+The workflow lives at `.github/workflows/scrape.yml`, on the repo's usual monthly schedule (first Saturday, 00:00 Singapore - the shape is in [CLAUDE.md](../CLAUDE.md)). SUTD data changes about once a term, so monthly is plenty. `workflow_dispatch` is on and skips the first-Saturday check, so you can run it from the Actions tab without waiting. Its one input, `rename_cap`, is for a real bulk rename: the gather-mods skill says when to use it.
 
 The job installs `tools/scraper/requirements.txt` on Python 3.12 and runs
 `python tools/scraper/mods_refresh.py`. It opens a PR titled

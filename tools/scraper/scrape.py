@@ -47,8 +47,8 @@ SOURCES: dict[str, ScrapeFn] = {
 # MERGE, NEVER REPLACE. This used to write `mod.model_dump()` over the whole
 # file whenever it differed, which is backwards from the docstring's promise and
 # from the rule CLAUDE.md records: the RICHER the existing record, the more
-# certain the overwrite. `sourceUrl` is not even a field on `Mod`, so a replace
-# deleted it outright, along with every tag the catalogue walk had collected,
+# certain the overwrite. `sourceUrl` comes from the catalogue walk and a HASS
+# page never sets it, so a replace deleted it, along with every tag that walk had collected,
 # the grading table, the workload and any contributed schedules.
 #
 # It has not bitten because sources/hass.py currently yields nothing. That is

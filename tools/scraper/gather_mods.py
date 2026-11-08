@@ -4,9 +4,10 @@
 Walks the Yoast sitemaps, keeps /course/<NN-NNN...> pages, and
 merges what it finds into /data/mods/:
 
-* existing mods  -> only the "tags" field is added/replaced (plus the
-  description, but ONLY when the repo description is empty). Schedules,
-  grading, workload, credits, term, prerequisites are never touched.
+* existing mods  -> tags, sourceUrl and term follow the page (term only when
+  the page names one), the description is filled ONLY when the repo's is
+  empty, and grading/workload are replaced when the page publishes them.
+  Schedules, credits and prerequisites are never touched.
 * new mods       -> full JSON validated through schema.Mod before writing.
 
 Mods that mention LKYCIC or NAMIC (as standalone tokens - "Dynamics"
@@ -14,6 +15,7 @@ must not match "NAMIC") are skipped.
 
 Run with:  python gather_mods.py [--dry-run] [--limit N]
                                     [--delay 0.25] [--ttl-hours 168]
+                                    [--review-out PATH] [--rename-cap N]
 
 Raw HTML is cached under .cache/ (shared with sources/_http.py) so
 re-runs are cheap and polite.
@@ -23,6 +25,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from collections import Counter
@@ -198,6 +201,28 @@ def undergrad_urls(
     return chosen, extras, dropped, off_space
 
 
+# The code at the front of an h1, letter suffix included. The suffix has to be
+# glued to the digits and end on a word boundary: "02.184DH Minds" loses "DH"
+# whole, where a single optional letter took the "D" and left "H Minds", and
+# "02.153 A History of Nuclear Strategy" keeps its "A" because a space stands
+# between it and the number.
+TITLE_CODE_RE = re.compile(r"^\s*\d{2}[.\-]\s?\d{3}(?:[A-Za-z]{1,3}\b)?\s*")
+
+# Some h1s carry the page's breadcrumb inside them, as SUTD's own markup: 02.138
+# reads "... Cultures of Appraisal Home / Education / Undergraduate Subjects /".
+# Left on, it is proposed as a re-title of a mod nobody renamed.
+TITLE_BREADCRUMB_RE = re.compile(r"\s+Home\s*/(?:[^/]*/)*\s*$")
+
+
+def name_from_title(title: str, slug_suffix: str = "") -> str:
+    """slug_suffix only catches a suffix spaced off the code ("02.131 DH");
+    a glued one ("02.184DH") is TITLE_CODE_RE's, so both are needed."""
+    name = TITLE_BREADCRUMB_RE.sub("", TITLE_CODE_RE.sub("", title))
+    if slug_suffix:  # e.g. 02-131dh -> h1 "02.131 DH Non-Fiction ..."
+        name = re.sub(rf"(?i)^{re.escape(slug_suffix)}\b[\s:\u2013-]*", "", name)
+    return name.strip(" -\u2013:")
+
+
 def parse_page(html: str, code: str, slug_suffix: str) -> dict:
     """Extract name/description/prereqs/coreqs/credits/tags.
 
@@ -216,10 +241,7 @@ def parse_page(html: str, code: str, slug_suffix: str) -> dict:
     if h1 is None:
         raise ValueError("no <h1>")
     title = h1.get_text(" ", strip=True)
-    name = re.sub(r"^\s*\d{2}[.\-]\s?\d{3}[A-Za-z]?\s*", "", title)
-    if slug_suffix:  # e.g. 02-131dh -> h1 "02.131 DH Non-Fiction ..."
-        name = re.sub(rf"(?i)^{re.escape(slug_suffix)}\b[\s:–-]*", "", name)
-    name = name.strip(" -–-:")
+    name = name_from_title(title, slug_suffix)
     if not name:
         raise ValueError(f"could not derive name from h1 {title!r}")
 
@@ -444,17 +466,127 @@ FRESHMORE_DEFAULT = "1"
 # replacement. Over this many in one run, none are written: a redesign that
 # changes every h1 would otherwise rewrite the catalogue in a single pull
 # request, and a reviewer cannot read 300 re-titles. A real bulk rename is
-# merged by raising this deliberately, in a pull request that says why.
+# merged by raising it for one run: `--rename-cap N`, or the scrape workflow's
+# rename_cap input, after reading the list the capped run put in its pull
+# request (--review-out) and finding the titles real.
 RENAME_CAP = 10
 
+# What the scrape workflow sets from its rename_cap input. Read as the flag's
+# default rather than passed as an argument, so mods_refresh.py does not grow a
+# per-step argument channel for one number.
+RENAME_CAP_ENV = "MODS_RENAME_CAP"
 
-def rename_batch_ok(count: int) -> bool:
+
+def rename_batch_ok(count: int, cap: int = RENAME_CAP) -> bool:
     """Whether a run's re-titles are written at all.
 
     All or none, deliberately: half a redesign applied is worse than none of
     it, because the half that landed looks reviewed.
     """
-    return count <= RENAME_CAP
+    return count <= cap
+
+
+def default_rename_cap(env: dict[str, str]) -> int:
+    raw = (env.get(RENAME_CAP_ENV) or "").strip()
+    if raw and not raw.isdigit():
+        # Loud rather than falling back: a typo in the workflow input that
+        # quietly meant 10 would cap the run it was typed to uncap.
+        raise SystemExit(f"{RENAME_CAP_ENV} must be a whole number, got {raw!r}")
+    return int(raw) if raw else RENAME_CAP
+
+
+def renames_report(renames: list[tuple[str, str, str, str]], written: set[str],
+                   cap: int) -> dict:
+    """Every re-title found, and whether it landed.
+
+    Built whether or not the batch was written, because the capped run is the one a
+    reviewer most needs the list from: it is how they tell a real bulk rename
+    from a parser that retitled the catalogue, before raising the cap.
+    """
+    return {
+        "count": len(renames),
+        "cap": cap,
+        "written": bool(written),
+        "renames": [
+            {"code": code, "old": old, "new": new, "url": url,
+             "written": code in written}
+            for code, old, new, url in renames
+        ],
+    }
+
+
+def renames_headline(report: dict, dry_run: bool) -> str:
+    """The rename verdict, which has to stand alone.
+
+    A reader of a truncated log sees this line or nothing, so it carries the
+    count and the verdict together.
+    """
+    n, cap = report["count"], report["cap"]
+    if dry_run:
+        verdict = "dry run, none written"
+    elif n > cap:
+        verdict = f"over the cap of {cap}, NONE written (raise it with --rename-cap)"
+    else:
+        done = sum(r["written"] for r in report["renames"])
+        verdict = f"{done} written, cap {cap}"
+    return f"re-titled by their page    : {n} - {verdict}"
+
+
+def run_tail(report: dict, term_dropped: list[tuple[str, str, str]],
+             dry_run: bool) -> list[str]:
+    """The end of the run's output, verdict on the very last line.
+
+    mods_refresh.py shows only the last few lines of a step, so whatever a
+    reviewer must not miss goes at the bottom, after the list it sums up
+    rather than above it: with the headline first, any batch long enough to
+    be over the cap pushed its own verdict out of that tail.
+    """
+    lines: list[str] = []
+    for r in report["renames"]:
+        lines.append(f"    {r['code']} {r['old']!r}")
+        lines.append(f"        -> {r['new']!r}  {r['url']}")
+    if term_dropped:
+        lines.append("!! page stopped naming a term, filed untermed : "
+                     f"{[f'{c} ({old} -> {new})' for c, old, new in term_dropped]}")
+    if report["renames"]:
+        lines.append(renames_headline(report, dry_run))
+    return lines
+
+
+def review_markdown(report: dict, term_moved: list[tuple[str, str, str]],
+                    term_dropped: list[tuple[str, str, str]], dry_run: bool) -> str:
+    """What a reviewer of the refresh pull request decides on, as markdown.
+
+    The scrape workflow puts this file in the pull request body itself. The
+    run's stdout is truncated there, and a list left on the runner is gone
+    with it, so this is the only place the full re-title list and the term
+    moves reach the person who merges. Empty when there is nothing to decide,
+    so a quiet month adds nothing to the body.
+    """
+    out: list[str] = []
+    if report["renames"]:
+        out.append(f"### Re-titles: {renames_headline(report, dry_run).split(': ', 1)[1]}")
+        out.append("")
+        if report["count"] > report["cap"] and not dry_run:
+            out.append("None of these were written. If they are SUTD's own titles, "
+                       "dispatch the `scrape` workflow with `rename_cap` at least "
+                       f"{report['count']}, then close this pull request: the rerun "
+                       "opens a fresh one carrying the same data plus the names.")
+            out.append("")
+        for r in report["renames"]:
+            mark = "" if r["written"] else " (not written)"
+            out.append(f"- `{r['code']}` {r['old']} -> **{r['new']}**{mark} {r['url']}")
+        out.append("")
+    if term_moved or term_dropped:
+        out.append("### Terms")
+        out.append("")
+        for code, old, new in term_moved:
+            out.append(f"- `{code}` term {old} -> {new}")
+        for code, old, new in term_dropped:
+            out.append(f"- `{code}` term {old} -> {new}: its page stopped naming any "
+                       "term, so it is filed as untermed, the same as a new record.")
+        out.append("")
+    return "\n".join(out)
 
 
 def name_change(current: str, scraped: str) -> str | None:
@@ -489,6 +621,60 @@ def term_from_tags(tags: list[str], default: str | None = None) -> str:
     return FRESHMORE_DEFAULT if FRESHMORE_TAG in tags else UNTERMED_ELECTIVE
 
 
+def has_term_tag(tags: list[str]) -> bool:
+    return any(TERM_TAG_RE.match(t) for t in tags)
+
+
+def term_tag_dropped(old_tags: list[str], new_tags: list[str]) -> bool:
+    """Whether the page stopped naming a term this refresh.
+
+    Keyed on the transition, not on "no tag": most electives have never
+    published one and sit at a term a person chose, so naming every untagged
+    record each month would bury the one whose page just changed. The run that
+    sees the tag go is the one whose pull request a reviewer reads. An empty
+    new tag list is a broken parse, not a page that dropped its term.
+    """
+    return bool(new_tags) and has_term_tag(old_tags) and not has_term_tag(new_tags)
+
+
+def page_term(code: str, tags: list[str], description: str,
+              current: str | None = None) -> str | None:
+    """The term this page backs for this code, or None when it names none.
+
+    The one term rule, shared by a new record and an existing one. A master's
+    pin read off the page wins, then a Term tag, then an admitted code's pinned
+    term, which is a fallback for a page that publishes no tag rather than an
+    override of one that does.
+
+    `current` is the record's own term. When the page lists several terms and
+    that is one of them, it stands: data-format.md asks a person to pick the
+    canonical offering, and 50.007 at 6 under "Term 5, Term 6, Term 8" is the
+    page agreeing with that pick, not contradicting it. Only a term the page
+    no longer lists moves.
+
+    A pinned master's code answers from its pin or not at all. When the page
+    loses the words the pin was read off, falling through to the Term tag
+    would refile 02.522 under its programme's term 2, among the sophomores,
+    on the strength of a copy-edit; None keeps the record where a person put
+    it while the run reports the stale pin.
+
+    None means the page said nothing, and the caller decides what that is
+    worth: a new record still needs a term and takes the untermed fallback. An
+    existing record keeps the one it has unless this is the run that saw the
+    page drop its Term tag (refresh_existing): a term a person chose for a page
+    that never published one is not contradicted by the page staying silent.
+    """
+    if code in GRADUATE_PAGE:
+        return graduate_term(code, description)
+    admit = UNDERGRADUATE_WHITELIST.get(code)
+    if not has_term_tag(tags):
+        return admit[1] if admit else None
+    listed = {term_from_tags([t]) for t in tags if TERM_TAG_RE.match(t)}
+    if current in listed:
+        return current
+    return term_from_tags(tags)
+
+
 def prefix_precedents() -> dict[str, tuple[str, str]]:
     """prefix -> (pillar, department) by majority vote over existing files."""
     votes: dict[str, Counter] = {}
@@ -521,8 +707,10 @@ def pillar_department(
 def merge_existing(path: Path, parsed: dict, dry_run: bool) -> str:
     """Add/replace tags; fill description only when repo's is empty; and
     replace grading/workload whenever the OFFICIAL page publishes them
-    (official beats hand-curated placeholders). Everything else
-    (schedules/credits/term/prereqs) is never touched.
+    (official beats hand-curated placeholders). `parsed["term"]` replaces the
+    record's term when it is set, and it is None for a page that names no
+    term, which leaves the record's alone. Schedules, credits and prereqs are
+    never touched.
     Returns unchanged|tags-updated.
 
     Known hazard: SUTD publishes 03.007, 03.007A and 03.007B as three separate
@@ -547,7 +735,14 @@ def merge_existing(path: Path, parsed: dict, dry_run: bool) -> str:
     grading_changed = bool(page_grading) and data.get("grading") != page_grading
     page_workload = parsed.get("workload")
     workload_changed = bool(page_workload) and data.get("workload") != page_workload
-    if (same_tags or not parsed["tags"]) and not fill_desc and not grading_changed and not workload_changed:
+    # The app files a mod by `term` - the catalogue filter, the T badge, where
+    # the plan first puts it - and `tags` only feeds the track badges. A
+    # refresh that moved the tags and left this would show "Term 4" in the tag
+    # row of a mod the filter still finds under 7.
+    new_term = parsed.get("term")
+    term_changed = bool(new_term) and data.get("term") != new_term
+    if ((same_tags or not parsed["tags"]) and not fill_desc and not grading_changed
+            and not workload_changed and not term_changed):
         return "unchanged"
 
     updated = dict(data)
@@ -559,11 +754,14 @@ def merge_existing(path: Path, parsed: dict, dry_run: bool) -> str:
         updated["grading"] = page_grading
     if workload_changed:
         updated["workload"] = page_workload
+    if term_changed:
+        updated["term"] = new_term
 
     if dry_run:
         return "tags-updated"
 
-    if "tags" not in data and not fill_desc and not grading_changed and not workload_changed:
+    if ("tags" not in data and not fill_desc and not grading_changed
+            and not workload_changed and not term_changed):
         # Surgical append: preserve the file's original formatting.
         body = original.rstrip()
         assert body.endswith("}")
@@ -581,6 +779,71 @@ def merge_existing(path: Path, parsed: dict, dry_run: bool) -> str:
     return "tags-updated"
 
 
+def new_mod(code: str, parsed: dict, pillar: str, department: str) -> Mod:
+    """A record for a mod /data has never held, from its parsed page.
+
+    Everything merge_existing would keep in step on a later run is set here
+    too, sourceUrl and workload included, so a new file does not wait a month
+    for its first refresh to be complete.
+    """
+    return Mod(
+        code=code,
+        name=parsed["name"],
+        description=parsed["description"],
+        credits=parsed["credits"],
+        department=department,
+        pillar=pillar,
+        term=parsed.get("term") or term_from_tags(parsed["tags"]),
+        prerequisites=parsed["prerequisites"],
+        corequisites=parsed["corequisites"],
+        schedules=[],
+        grading=parsed.get("grading"),
+        workload=parsed.get("workload"),
+        tags=parsed["tags"],
+        sourceUrl=parsed.get("sourceUrl"),
+    )
+
+
+def refresh_existing(path: Path, code: str, parsed: dict, dry_run: bool) -> dict:
+    """One existing record brought in step with its page.
+
+    Its own function so the self-check drives the same wiring main does: the
+    term is decided HERE, against the record's current term, and a check that
+    hands merge_existing a ready-made parsed["term"] would stay green with
+    this step deleted.
+
+    A page that stops naming a term is the page saying the mod no longer runs
+    in one, so the record is filed where an untermed one goes (term_from_tags:
+    8, or 1 for a Freshmore Core) rather than left at a term nothing backs. The
+    app then shows it beside every other untermed elective. Only on the run
+    that sees the tag go, and never for a master's pin, whose None means its
+    words went stale and the run reports that instead.
+
+    Returns status, the term move (code, old, new) or None, the dropped-term
+    move (code, old, new) or None, and the page's re-title or None.
+    """
+    record = json.loads(path.read_text(encoding="utf-8"))
+    before = record.get("name", "")
+    old_term = record.get("term", "")
+    parsed["term"] = page_term(code, parsed["tags"], parsed["description"],
+                               current=old_term)
+    moved = dropped = None
+    if parsed["term"] and parsed["term"] != old_term:
+        moved = (code, old_term, parsed["term"])
+    elif (term_tag_dropped(record.get("tags", []), parsed["tags"])
+          and code not in GRADUATE_PAGE):
+        parsed["term"] = term_from_tags(parsed["tags"])
+        if parsed["term"] != old_term:
+            dropped = (code, old_term, parsed["term"])
+    return {
+        "status": merge_existing(path, parsed, dry_run),
+        "moved": moved,
+        "dropped": dropped,
+        "retitle": name_change(before, parsed["name"]),
+        "before": before,
+    }
+
+
 def write_new(path: Path, mod: Mod, dry_run: bool) -> None:
     payload = mod.model_dump(exclude_none=True)
     if not dry_run:
@@ -593,7 +856,16 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=0, help="only first N mods")
     ap.add_argument("--delay", type=float, default=0.25)
     ap.add_argument("--ttl-hours", type=float, default=168.0)
+    ap.add_argument("--review-out", default="",
+                    help="write the re-titles and term moves a reviewer decides "
+                         "on to this markdown file (removed when there are none)")
+    ap.add_argument("--rename-cap", type=int,
+                    default=default_rename_cap(dict(os.environ)),
+                    help=f"write the re-titles only when there are at most "
+                         f"this many (default {RENAME_CAP}, or ${RENAME_CAP_ENV})")
     args = ap.parse_args()
+    if args.rename_cap < 0:
+        ap.error("--rename-cap must be 0 or more")
 
     mod_urls = sitemap_mod_urls(delay=args.delay, ttl_hours=args.ttl_hours)
     chosen, extras, dropped_dups, off_space = undergrad_urls(mod_urls)
@@ -610,6 +882,11 @@ def main() -> int:
     grad_stale: list[str] = []
     # (path, code, the name in the repo, the name on the page, the page url)
     renames: list[tuple[Path, str, str, str, str]] = []
+    # (code, the term in the repo, the term on the page)
+    term_moved: list[tuple[str, str, str]] = []
+    # Records whose page carried a Term tag last time and carries none now.
+    # Their term is kept, and they are named so a person reads the page.
+    term_dropped: list[tuple[str, str, str]] = []
     new_written: list[str] = []
     tag_updated: list[str] = []
     unchanged: list[str] = []
@@ -696,14 +973,18 @@ def main() -> int:
             admit_stale.append(code)
 
         if path.exists():
-            before = json.loads(path.read_text(encoding="utf-8")).get("name", "")
-            status = merge_existing(path, parsed, args.dry_run)
-            (tag_updated if status == "tags-updated" else unchanged).append(code)
-            retitle = name_change(before, parsed["name"])
-            if retitle:
-                renames.append((path, code, before, retitle,
+            res = refresh_existing(path, code, parsed, args.dry_run)
+            (tag_updated if res["status"] == "tags-updated" else unchanged).append(code)
+            if res["moved"]:
+                term_moved.append(res["moved"])
+            if res["dropped"]:
+                term_dropped.append(res["dropped"])
+            if res["retitle"]:
+                renames.append((path, code, res["before"], res["retitle"],
                                 parsed.get("sourceUrl") or ""))
             continue
+
+        parsed["term"] = page_term(code, parsed["tags"], parsed["description"])
 
         # A mod already in /data keeps its record and its tag updates
         # whatever the page now says. One that has never been written is the
@@ -736,22 +1017,7 @@ def main() -> int:
                 continue
             pillar, department = pd
         try:
-            mod = Mod(
-                code=code,
-                name=parsed["name"],
-                description=parsed["description"],
-                credits=parsed["credits"],
-                department=department,
-                pillar=pillar,
-                term=graduate_term(code, parsed["description"])
-                or term_from_tags(parsed["tags"],
-                                  default=admit[1] if admit else None),
-                prerequisites=parsed["prerequisites"],
-                corequisites=parsed["corequisites"],
-                schedules=[],
-                grading=parsed.get("grading"),
-                tags=parsed["tags"],
-            )
+            mod = new_mod(code, parsed, pillar, department)
         except Exception as exc:  # noqa: BLE001
             print(f"[!] {code} schema validation failed: {exc}", file=sys.stderr)
             failed.append(code)
@@ -765,9 +1031,10 @@ def main() -> int:
     # out. The scraper cannot tell SUTD renaming a mod from SUTD replacing
     # one, and the name is what a student searches by and what their plan shows,
     # so the decision is the reviewer's rather than this file's.
-    applied = rename_batch_ok(len(renames))
+    applied = rename_batch_ok(len(renames), args.rename_cap)
+    renamed: set[str] = set()
     if renames and applied and not args.dry_run:
-        for path, _, before, after, _ in renames:
+        for path, code, before, after, _ in renames:
             data = json.loads(path.read_text(encoding="utf-8"))
             # The name is re-read and compared here, not taken on trust from
             # the loop above. merge_existing rewrites the same file in between
@@ -781,6 +1048,20 @@ def main() -> int:
             data["name"] = after
             path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + chr(10),
                             encoding="utf-8")
+            renamed.add(code)
+
+    report = renames_report([(c, b, a, u) for _, c, b, a, u in renames],
+                            renamed, args.rename_cap)
+    if args.review_out:
+        out = Path(args.review_out)
+        review = review_markdown(report, term_moved, term_dropped, args.dry_run)
+        if review:
+            out.parent.mkdir(parents=True, exist_ok=True)
+            out.write_text(review, encoding="utf-8")
+        else:
+            # A file left by an earlier local run would otherwise be pasted
+            # into a pull request it says nothing true about.
+            out.unlink(missing_ok=True)
 
     print()
     print(f"sitemap /course/ URLs      : {len(mod_urls)}")
@@ -806,16 +1087,17 @@ def main() -> int:
     print(f"refused as (Elective) dup  : {len(refused_dup)} {refused_dup}")
     print(f"new mods written           : {len(new_written)}")
     print(f"existing mods tag-updated  : {len(tag_updated)}")
-    if renames:
-        over = "" if applied else f" - over the cap of {RENAME_CAP}, none written"
-        print(f"re-titled by their page    : {len(renames)}{over}")
-        for _, code, before, after, url in renames:
-            print(f"    {code} {before!r}")
-            print(f"        -> {after!r}  {url}")
+    print(f"term moved by its page     : {len(term_moved)}")
+    for code, old, new in term_moved:
+        print(f"    {code} {old} -> {new}")
     print(f"existing mods unchanged    : {len(unchanged)}")
     print(f"failed to parse            : {len(failed)} {failed}")
     if args.dry_run:
         print("(dry run - nothing written)")
+    tail = run_tail(report, term_dropped, args.dry_run)
+    if tail:
+        print()
+        print("\n".join(tail))
     return 1 if failed else 0
 
 
@@ -976,13 +1258,234 @@ def self_check() -> int:
     if term_from_tags(["Term 8", "SMT"], default="6") != "8":
         fails.append("a Term tag on an admitted page no longer wins over the pin")
 
+    # The code off the front of an h1. Real titles from sutd.edu.sg, with the
+    # name each one should leave.
+    for title, suffix, want, why in [
+        ("02.184DH Minds, Machines, and Design", "", "Minds, Machines, and Design",
+         "a two-letter HASS suffix glued to the code goes whole"),
+        ("03.007A Design Science", "", "Design Science",
+         "a one-letter suffix glued to the code"),
+        ("02.108dh Narratives of Health", "", "Narratives of Health",
+         "a lower-case suffix"),
+        ("02.153 A History of Nuclear Strategy", "",
+         "A History of Nuclear Strategy",
+         "a title starting with a one-letter word keeps it"),
+        ("02.131 DH Non-Fiction Writing", "dh", "Non-Fiction Writing",
+         "a spaced suffix is taken by the slug, as before"),
+        ("40.008 \u2013 Operations Research", "", "Operations Research",
+         "a dash between code and name is stripped"),
+        ("50.001 Information Systems & Programming", "",
+         "Information Systems & Programming", "a plain code"),
+        ("02.138 On Genre and Judgement: Cultures of Appraisal Home / Education "
+         "/ Undergraduate Subjects /", "",
+         "On Genre and Judgement: Cultures of Appraisal",
+         "a breadcrumb inside the h1 is not part of the name"),
+        ("10.020 Data Driven World", "", "Data Driven World",
+         "a title with no breadcrumb is left whole"),
+    ]:
+        got = name_from_title(title, suffix)
+        if got != want:
+            fails.append(f"title strip, {why}: {title!r} gave {got!r}, want {want!r}")
+
+    # A new record carries the page it was read from, at the key position the
+    # existing records use (straight after tags).
+    url = "https://www.sutd.edu.sg/course/02-184dh-minds-machines-and-design/"
+    fresh = new_mod("02.184", {
+        "name": "Minds, Machines, and Design", "description": "", "credits": 12,
+        "prerequisites": [], "corequisites": [], "tags": ["Term 5", "HASS"],
+        "sourceUrl": url, "term": "5",
+    }, "HASS", "Humanities, Arts and Social Sciences").model_dump(exclude_none=True)
+    keys = list(fresh)
+    if fresh.get("sourceUrl") != url:
+        fails.append("a new record is written without its sourceUrl")
+    elif keys.index("sourceUrl") != keys.index("tags") + 1:
+        fails.append(f"sourceUrl is not straight after tags in a new record: {keys}")
+
+    # The one term rule, for a new record and an existing one alike. Literal
+    # codes, tags and terms.
+    for code, tags, description, current, want, why in [
+        ("02.208", ["Term 4", "Term 6", "Term 8", "HASS"], "", None, "4",
+         "a new record on a page naming several terms takes the first"),
+        ("02.208", ["Term 4", "Term 6", "Term 8", "HASS"], "", "7", "4",
+         "a record at a term its page no longer lists moves"),
+        ("50.007", ["Term 5", "Term 6", "Term 8", "AI Track"], "", "6", "6",
+         "a record at one of the terms its page lists stays there"),
+        ("02.146", ["Elective / Technical Elective", "HASS"], "", "7", None,
+         "a page with no Term tag says nothing about the term"),
+        ("02.001", ["Term 1", "Term 3", "Freshmore Core", "HASS"], "", None, "1",
+         "a freshmore core keeps term 1"),
+        ("10.001", ["Freshmore Core", "SMT"], "", None, None,
+         "an untagged freshmore core says nothing either"),
+        ("02.563", ["Term 3", "HASS"],
+         "students complete a Masters Research Project.", "8", "8",
+         "a master's pin beats the Term tag"),
+        ("02.522", ["Term 2", "Core"], "a reworded description", "8", None,
+         "a pinned master's page that lost its words does not fall to its tag"),
+        ("99.504", ["Core", "SMT"], "", None, "6",
+         "an admitted code with no tag takes its pinned term"),
+        ("99.504", ["Term 8", "SMT"], "", "6", "8",
+         "and a tag it starts publishing beats that pin"),
+    ]:
+        got = page_term(code, tags, description, current=current)
+        if got != want:
+            fails.append(f"page term, {why}: {code} {tags} at {current!r} "
+                         f"gave {got!r}, want {want!r}")
+
+    for old, new, want, why in [
+        (["Term 7", "HASS"], ["Elective / Technical Elective", "HASS"], True,
+         "the page stopped naming its term"),
+        (["Elective / Technical Elective"], ["Elective / Technical Elective"], False,
+         "a page that never named one is not news"),
+        (["Term 7"], [], False, "an empty parse is not a dropped term"),
+        (["Term 7"], ["Term 4"], False, "a moved term is not a dropped one"),
+    ]:
+        if term_tag_dropped(old, new) is not want:
+            fails.append(f"dropped term, {why}: {old} -> {new} gave {not want}")
+
+    # merge_existing on a real file, because the term is only kept in step if
+    # that function writes it, and it used to write tags alone.
+    import tempfile
+    with tempfile.TemporaryDirectory() as tmp:
+        for term_on_page, tags, want, why in [
+            ("4", ["Term 4", "Term 6", "Term 8", "HASS"], "4",
+             "an existing record's term follows the page"),
+            (None, ["Elective / Technical Elective", "HASS"], "7",
+             "a page with no term leaves the record's alone"),
+        ]:
+            p = Path(tmp) / "02_208.json"
+            p.write_text(json.dumps({
+                "code": "02.208", "name": "X", "description": "d", "term": "7",
+                "tags": ["Term 7", "HASS"],
+            }), encoding="utf-8")
+            merge_existing(p, {"description": "d", "tags": tags, "term": term_on_page,
+                               "grading": None, "workload": None}, dry_run=False)
+            got = json.loads(p.read_text(encoding="utf-8")).get("term")
+            if got != want:
+                fails.append(f"merge, {why}: term {got!r}, want {want!r}")
+        # Tags already current, so the term is the only thing that differs:
+        # the early "unchanged" return must not swallow it.
+        p = Path(tmp) / "02_108.json"
+        p.write_text(json.dumps({"code": "02.108", "name": "X", "description": "d",
+                                 "term": "8", "tags": ["Term 7", "HASS"]}),
+                     encoding="utf-8")
+        merge_existing(p, {"description": "d", "tags": ["Term 7", "HASS"], "term": "7",
+                           "grading": None, "workload": None}, dry_run=False)
+        if json.loads(p.read_text(encoding="utf-8")).get("term") != "7":
+            fails.append("merge: a term change with unchanged tags is not written")
+
+        # The wiring main uses, with no ready-made term in `parsed`: the term
+        # has to be decided inside refresh_existing for these to pass.
+        for code, term, tags, want, moved, why in [
+            ("02.208", "7", ["Term 4", "Term 6", "Term 8", "HASS"], "4", True,
+             "a record whose page dropped its term moves to the page's"),
+            ("50.007", "6", ["Term 5", "Term 6", "Term 8", "AI Track"], "6", False,
+             "a record at a term its page still lists stays"),
+        ]:
+            p = Path(tmp) / f"{code.replace('.', '_')}.json"
+            p.write_text(json.dumps({"code": code, "name": "X", "description": "d",
+                                     "term": term, "tags": ["Term 7"]}),
+                         encoding="utf-8")
+            res = refresh_existing(p, code, {"name": "X", "description": "d",
+                                             "tags": list(tags), "grading": None,
+                                             "workload": None}, dry_run=False)
+            got = json.loads(p.read_text(encoding="utf-8")).get("term")
+            if got != want or bool(res["moved"]) is not moved:
+                fails.append(f"refresh, {why}: term {got!r} moved {res['moved']}, "
+                             f"want {want!r}")
+
+        # A page that drops its Term tag files the record as untermed, on that
+        # run only; a page that never had one leaves a hand-chosen term alone.
+        for code, term, old_tags, tags, want, dropped, why in [
+            ("02.146", "7", ["Term 7", "HASS"], ["Elective / Technical Elective", "HASS"],
+             "8", True, "an elective whose page dropped its term goes to 8"),
+            ("10.001", "2", ["Term 2", "Freshmore Core"], ["Freshmore Core", "SMT"],
+             "1", True, "a freshmore core whose page dropped its term goes to 1"),
+            ("02.153", "5", ["Elective / Technical Elective"],
+             ["Elective / Technical Elective", "HASS"],
+             "5", False, "a page that never named a term keeps the chosen one"),
+            # At 6 rather than its pinned 8, so being refiled would show.
+            ("02.522", "6", ["Term 2", "Core"], ["Core", "HASS"],
+             "6", False, "a master's pin is never refiled by a dropped tag"),
+        ]:
+            p = Path(tmp) / f"{code.replace('.', '_')}.json"
+            p.write_text(json.dumps({"code": code, "name": "X", "description": "d",
+                                     "term": term, "tags": old_tags}),
+                         encoding="utf-8")
+            res = refresh_existing(p, code, {"name": "X", "description": "d",
+                                             "tags": list(tags), "grading": None,
+                                             "workload": None}, dry_run=False)
+            got = json.loads(p.read_text(encoding="utf-8")).get("term")
+            if got != want or bool(res["dropped"]) is not dropped:
+                fails.append(f"refresh, {why}: term {got!r} dropped {res['dropped']}, "
+                             f"want {want!r}")
+
+    # A new record whose page names no term still gets one, from the fallback.
+    untermed = new_mod("10.001", {
+        "name": "Advanced Mathematics I", "description": "", "credits": 12,
+        "prerequisites": [], "corequisites": [], "tags": ["Freshmore Core", "SMT"],
+        "term": None,
+    }, "SMT", "Science, Mathematics and Technology")
+    if untermed.term != "1":
+        fails.append(f"a new untagged freshmore core gets term {untermed.term!r}, want '1'")
+
+    # The verdict has to survive mods_refresh.py's tail of the last 12 lines,
+    # on a batch over the cap, which is the run that needs it most.
+    eleven = [(f"40.{i:03d}", f"Old {i}", f"New {i}", f"https://x/{i}/")
+              for i in range(11)]
+    over = renames_report(eleven, set(), cap=10)
+    tail = run_tail(over, [("02.146", "7", "8")], dry_run=False)[-12:]
+    if "NONE written" not in tail[-1]:
+        fails.append(f"the over-cap verdict is not the last line of the run: {tail[-1]!r}")
+    if not any("02.146" in ln for ln in tail):
+        fails.append("the dropped-term line falls outside the shown tail")
+    review = review_markdown(over, [("02.208", "7", "4")], [("02.146", "7", "8")],
+                             dry_run=False)
+    missing = [c for c, _, _, _ in eleven if f"`{c}`" not in review]
+    if missing or "None of these were written" not in review:
+        fails.append(f"the review file drops re-titles {missing} or the verdict")
+    if "`02.208` term 7 -> 4" not in review or "`02.146` term 7 -> 8" not in review:
+        fails.append("the review file drops the term moves")
+    if review_markdown(renames_report([], set(), 10), [], [], False):
+        fails.append("a quiet run still writes a review file")
+
+    # The cap, overridden for one run, and the list a capped run still hands over.
+    if not rename_batch_ok(20, cap=25):
+        fails.append("--rename-cap 25 still refuses a batch of 20")
+    if rename_batch_ok(11):
+        fails.append("the default cap no longer refuses 11")
+    if default_rename_cap({}) != 10 or default_rename_cap({"MODS_RENAME_CAP": ""}) != 10:
+        fails.append("an unset or empty MODS_RENAME_CAP does not mean the default")
+    if default_rename_cap({"MODS_RENAME_CAP": "30"}) != 30:
+        fails.append("MODS_RENAME_CAP is not read")
+    try:
+        default_rename_cap({"MODS_RENAME_CAP": "ten"})
+        fails.append("a MODS_RENAME_CAP that is not a number is accepted")
+    except SystemExit:
+        pass
+    found = [("50.001", "Information Systems & Programming",
+              "Object-Oriented Software Design: Principles and Practice",
+              "https://www.sutd.edu.sg/course/50-001/")]
+    capped = renames_report(found, set(), cap=0)
+    if capped["written"] or capped["renames"][0]["written"] or capped["count"] != 1:
+        fails.append(f"a capped run's report claims a write: {capped}")
+    if capped["renames"][0]["new"] != found[0][2]:
+        fails.append("the report does not carry the new title")
+    head = renames_headline(capped, dry_run=False)
+    if not head.startswith("re-titled by their page    : 1 -") or "NONE written" not in head:
+        fails.append(f"the capped headline does not say how many and that none landed: {head!r}")
+    done = renames_report(found, {"50.001"}, cap=10)
+    if not done["written"] or "1 written" not in renames_headline(done, dry_run=False):
+        fails.append(f"a written batch does not say so: {done}")
+
     if fails:
         print(f"self-check: {len(fails)} failure(s)")
         for f in fails:
             print(f"  - {f}")
         return 1
-    print("self-check: term_from_tags, the (Elective) guard, the prefix gate "
-          "and the admission re-check behave")
+    print("self-check: term_from_tags, page_term, refresh_existing and the term "
+          "merge, the title strip, new-record sourceUrl, the (Elective) guard, "
+          "the prefix gate, the admission re-check, the rename report, the run "
+          "tail and the review file behave")
     return 0
 
 
