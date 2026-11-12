@@ -12,6 +12,15 @@
     {
       "type": "Cohort",
       "day": "Monday",
+      "startTime": "08:30",
+      "endTime": "10:30",
+      "location": "2.405",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
       "startTime": "09:00",
       "endTime": "11:30",
       "location": "1.413",
@@ -84,6 +93,15 @@
     {
       "type": "Cohort",
       "day": "Tuesday",
+      "startTime": "10:30",
+      "endTime": "13:00",
+      "location": "2.405",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
       "startTime": "12:30",
       "endTime": "15:00",
       "location": "2.307",
@@ -98,6 +116,15 @@
       "location": "1.413",
       "instructors": [],
       "source": "subject-enrolment"
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "15:30",
+      "endTime": "18:00",
+      "location": "2.405",
+      "instructors": [],
+      "source": "contributed"
     },
     {
       "type": "Cohort",

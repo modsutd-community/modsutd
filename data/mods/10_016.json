@@ -39,6 +39,15 @@
     {
       "type": "Cohort",
       "day": "Monday",
+      "startTime": "14:00",
+      "endTime": "16:00",
+      "location": "2.405",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
+      "day": "Monday",
       "startTime": "16:30",
       "endTime": "18:30",
       "location": "1.414",
@@ -62,6 +71,15 @@
       "location": "1.414",
       "instructors": [],
       "source": "subject-enrolment"
+    },
+    {
+      "type": "Cohort",
+      "day": "Tuesday",
+      "startTime": "12:30",
+      "endTime": "15:00",
+      "location": "2.405",
+      "instructors": [],
+      "source": "contributed"
     },
     {
       "type": "Cohort",
@@ -125,6 +143,15 @@
       "location": "1.414",
       "instructors": [],
       "source": "subject-enrolment"
+    },
+    {
+      "type": "Cohort",
+      "day": "Thursday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "2.405",
+      "instructors": [],
+      "source": "contributed"
     },
     {
       "type": "Cohort",
@@ -159,6 +186,15 @@
       "startTime": "15:30",
       "endTime": "18:00",
       "location": "2.307",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "09:00",
+      "endTime": "11:30",
+      "location": "2.405",
       "instructors": [],
       "source": "contributed"
     }

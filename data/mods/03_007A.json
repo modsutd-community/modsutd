@@ -19,6 +19,15 @@
       "source": "subject-enrolment"
     },
     {
+      "type": "Cohort",
+      "day": "Monday",
+      "startTime": "12:30",
+      "endTime": "15:00",
+      "location": "2.405",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
       "type": "Lecture",
       "day": "Monday",
       "startTime": "15:30",
@@ -80,6 +89,15 @@
       "location": "1.413",
       "instructors": [],
       "source": "subject-enrolment"
+    },
+    {
+      "type": "Cohort",
+      "day": "Friday",
+      "startTime": "14:30",
+      "endTime": "17:00",
+      "location": "2.405",
+      "instructors": [],
+      "source": "contributed"
     }
   ],
   "tags": [

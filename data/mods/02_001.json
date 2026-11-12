@@ -10,6 +10,15 @@
   "schedules": [
     {
       "type": "Cohort",
+      "day": "Wednesday",
+      "startTime": "09:00",
+      "endTime": "11:00",
+      "location": "2.507",
+      "instructors": [],
+      "source": "contributed"
+    },
+    {
+      "type": "Cohort",
       "day": "Thursday",
       "startTime": "13:00",
       "endTime": "15:00",
